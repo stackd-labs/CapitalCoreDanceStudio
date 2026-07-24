@@ -90,12 +90,12 @@ export default function Home() {
         June 2026 recital wrapped.
       */}
       <section className="py-10 px-6" style={{ backgroundColor: '#ede0fa' }}>
-        <div className="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-5">
           {[
             {
               to: '/classes',
-              img: '/flyer-fall-schedule.png',
-              alt: 'Fall 2026 dance class schedule, August 24 to December 18 — ballet, jazz, hip hop, contemporary, tap, acro, tumble, and adult classes Monday through Friday — Capital Core Dance Studio Midlothian VA',
+              img: '/flyer-fall-classes.png',
+              alt: 'Check out our Fall classes — classes for every age, skills for every stage — Capital Core Dance Studio Midlothian VA',
               imgClass: 'object-cover',
               title: 'Fall Classes',
               subtitle: 'Aug 24 – Dec 18 · registration open',
@@ -108,6 +108,15 @@ export default function Home() {
               imgClass: 'object-cover',
               title: 'Birthday Parties',
               subtitle: 'Private packages from $199',
+              accent: 'text-[#c0392b]',
+            },
+            {
+              to: '/dance-company',
+              img: '/flyer-comp-team.png',
+              alt: 'Capital Core Dance Company — founding season auditions August 10 to 13, ages 6+, $80 per dancer, led by director Yul Tyler — Capital Core Dance Studio',
+              imgClass: 'object-cover',
+              title: 'Dance Company',
+              subtitle: 'Founding season auditions · Aug 10–13',
               accent: 'text-[#c0392b]',
             },
           ].map(({ to, img, alt, imgClass, imgStyle, title, subtitle, accent }) => (

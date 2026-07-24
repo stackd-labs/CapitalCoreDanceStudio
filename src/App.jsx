@@ -19,6 +19,7 @@ import Tuition from './pages/Tuition'
 // import AdultSeriesForm from './pages/AdultSeriesForm'
 // import AdultSeriesPayment from './pages/AdultSeriesPayment'
 // import AdultSeriesThankYou from './pages/AdultSeriesThankYou'
+import DanceCompany from './pages/DanceCompany'
 import Birthdays from './pages/Birthdays'
 import BirthdayForm from './pages/BirthdayForm'
 import BirthdayPayment from './pages/BirthdayPayment'
@@ -54,6 +55,8 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/tuition" element={<Tuition />} />
         <Route path="/classes" element={<Classes />} />
+        <Route path="/dance-company" element={<DanceCompany />} />
+        <Route path="/competition-team" element={<DanceCompany />} />
         {/* Summer 2026 routes retired 2026-07-23. Restore by uncommenting these
             and the imports above when summer registration reopens.
         <Route path="/camps" element={<Camps />} />

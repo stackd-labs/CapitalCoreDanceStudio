@@ -40,61 +40,6 @@ export default function Tuition() {
       <section className="bg-white flex-1 px-6 py-12">
         <div className="max-w-3xl mx-auto flex flex-col gap-10">
 
-          {/* ── Summer Classes (highlighted at top) ─────────────────────── */}
-          <div className="relative bg-gradient-to-br from-[#fff5f8] via-[#fff8f4] to-[#fff5e8] border-2 border-[#f4a8b4] rounded-xl px-6 py-7 shadow-lg shadow-[#f4a8b4]/20">
-            <div className="absolute -top-3 left-6 bg-brand-red text-white text-[10px] font-black tracking-[0.3em] uppercase px-3 py-1 rounded-sm shadow-md">
-              Summer 2026 · June 23 – July 30
-            </div>
-
-            <p className="text-brand-red text-xs font-bold tracking-[0.3em] uppercase mb-2 mt-2">Summer Class Pricing</p>
-            <h2 className="text-navy-dark text-2xl font-black mb-2">6-Week Summer Session</h2>
-            <p className="text-[#3a4a6a] text-sm leading-relaxed mb-5">
-              Three pricing options for our Tuesday / Wednesday summer schedule. A $50 deposit reserves your spot — applies toward tuition.
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-              <div className="bg-white border border-[#f4c8d4] rounded-lg p-4 text-center">
-                <p className="text-brand-red text-[10px] font-bold tracking-[0.3em] uppercase mb-1">Per Class</p>
-                <p className="text-navy-dark font-black text-2xl">$120–$180</p>
-                <p className="text-[#5a6a8a] text-xs mt-1">for the full 6 weeks</p>
-              </div>
-              <div className="bg-white border border-[#d7c4f4] rounded-lg p-4 text-center">
-                <p className="text-[#7a4ed8] text-[10px] font-bold tracking-[0.3em] uppercase mb-1">Summer Flex Pass</p>
-                <p className="text-navy-dark font-black text-2xl">$329</p>
-                <p className="text-[#5a6a8a] text-xs mt-1">unlimited · 6 weeks</p>
-              </div>
-              <div className="bg-white border border-[#f4d6b8] rounded-lg p-4 text-center">
-                <p className="text-[#c47830] text-[10px] font-bold tracking-[0.3em] uppercase mb-1">Drop-In</p>
-                <p className="text-navy-dark font-black text-2xl">$25</p>
-                <p className="text-[#5a6a8a] text-xs mt-1">per class / per week</p>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link
-                to="/summer-classes"
-                className="flex-1 bg-brand-red text-white text-center font-bold py-2.5 rounded-md hover:bg-red-700 transition-colors text-sm"
-              >
-                View Summer Classes
-              </Link>
-              <Link
-                to="/summer-classes/signup"
-                className="flex-1 bg-navy-dark text-white text-center font-bold py-2.5 rounded-md hover:bg-navy-mid transition-colors text-sm"
-              >
-                Sign Up Now →
-              </Link>
-            </div>
-          </div>
-
-          {/* Dotted divider — separates summer from semester pricing */}
-          <div className="flex items-center gap-4">
-            <div className="flex-1 border-t-2 border-dotted border-surface-border" />
-            <p className="text-[#8a9aaa] text-[10px] font-bold tracking-[0.4em] uppercase whitespace-nowrap">
-              Year-Round Tuition
-            </p>
-            <div className="flex-1 border-t-2 border-dotted border-surface-border" />
-          </div>
-
           {/* Semester info */}
           <div>
             <p className="text-brand-red text-xs font-bold tracking-[0.3em] uppercase mb-2">How It Works</p>

@@ -32,6 +32,7 @@ export default {
       fontFamily: {
         script: ['"Allura"', 'cursive'],
         serif: ['"Playfair Display"', '"Cormorant Garamond"', 'Georgia', 'serif'],
+        display: ['"Anton"', '"Arial Narrow"', 'Impact', 'sans-serif'],
       },
     },
   },

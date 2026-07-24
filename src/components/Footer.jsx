@@ -4,6 +4,7 @@ const NAV_LINKS = [
   { to: '/', label: 'Home' },
   { to: '/about', label: 'About Us' },
   { to: '/classes', label: 'Classes' },
+  { to: '/dance-company', label: 'Dance Company' },
   { to: '/tuition', label: 'Tuition' },
   { to: '/birthdays', label: 'Birthdays' },
   { to: '/blog', label: 'Blog' },

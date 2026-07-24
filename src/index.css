@@ -11,3 +11,25 @@ body {
   font-family: Inter, system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
+
+/* Dance Company page — scrolling ticker + on-load reveal */
+@keyframes cc-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.cc-marquee-track {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: cc-marquee 24s linear infinite;
+  will-change: transform;
+}
+@keyframes cc-rise {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.cc-rise { animation: cc-rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cc-marquee-track { animation: none; }
+  .cc-rise { animation: none; }
+}

@@ -6,6 +6,10 @@ import Footer from '../components/Footer'
 import SEO from '../components/SEO'
 import { courseListSchema, simpleBreadcrumb } from '../lib/schema'
 
+// Portal-hosted Fall class registration (public). Charges the registration fee
+// ($60 new dancer / $50 returning); monthly tuition is billed separately.
+const PORTAL_REGISTER_URL = 'https://studio.capitalcoredance.com/register/classes'
+
 const DANCE_STYLES = [
   'Ballet',
   'Jazz',
@@ -15,10 +19,10 @@ const DANCE_STYLES = [
   'Acro & Tumbling',
   'Lyrical',
   'Musical Theatre',
-  'Irish Dance',
+  'Breakdancing',
   'Pom & Cheer',
   'Preschool Creative Movement',
-  'Adult Fitness',
+  'Adult Classes',
 ]
 
 const CLASSES_JSON_LD = [
@@ -33,86 +37,55 @@ const ACCENT_COLORS = [
   'border-[#f4a060]',
 ]
 
-const MINI_SERIES = [
-  {
-    day: 'Monday',
-    classes: [
-      { name: 'Tiny Ballet + Tumble', time: '5:00 PM – 5:30 PM', level: 'Ages 2–5' },
-      { name: 'Ballet + Modern/Contemporary', time: '5:30 PM – 6:15 PM', level: 'Beg+' },
-      { name: 'Jazz + Acro Arts', time: '5:30 PM – 6:15 PM', level: 'Beg+' },
-      { name: 'Ballet + Jazz', time: '6:15 PM – 7:15 PM', level: 'Beg+' },
-      { name: 'Lyrical + Acro Arts', time: '6:15 PM – 7:15 PM', level: 'Beg+' },
-    ],
-  },
-  {
-    day: 'Wednesday',
-    classes: [
-      { name: 'Tiny Ballet + Tap', time: '5:30 PM – 6:00 PM', level: 'Ages 2–5' },
-    ],
-  },
-  {
-    day: 'Thursday',
-    classes: [
-      { name: 'Ballet + Tap', time: '6:00 PM – 6:45 PM', level: 'Beg–Nov' },
-      { name: 'Pom Pom + Cheer Dance', time: '6:45 PM – 7:30 PM', level: 'Beg+' },
-      { name: 'Tumble Techniques', time: '7:30 PM – 8:15 PM', level: 'All levels' },
-    ],
-  },
-  {
-    day: 'Friday',
-    classes: [
-      { name: 'Musical Theatre', time: '5:30 PM – 6:15 PM', level: 'Beg–Adv' },
-      { name: 'Tiny Ballet + Tap', time: '5:30 PM – 6:00 PM', level: 'Ages 2–5' },
-      { name: 'Hip Hop + Breakdancing', time: '6:15 PM – 7:00 PM', level: 'Beg–Adv' },
-    ],
-  },
-]
-
-// ageGroups: 'tiny' (2-5), 'kids' (4-12), 'teen' (6-17), 'adult' (16+)
-// category: 'tiny' | 'ballet' | 'jazz-acro' | 'hiphop' | 'irish' | 'tumble-cheer' | 'musical-theatre' | 'adult'
+// ageGroups: 'tiny' (2-5), 'kids' (5-12), 'teen' (6-17), 'adult' (16+)
+// category: 'tiny' | 'ballet' | 'jazz-acro' | 'hiphop' | 'lyrical-contemp' | 'tumble-cheer' | 'musical-theatre' | 'adult'
+// Fall 2026 schedule — verbatim from the studio flyer (Aug 24 – Dec 18).
 const SCHEDULE = [
   {
     day: 'Monday',
     classes: [
-      { name: 'Tiny Ballet + Tumble', time: '5:00 PM – 5:30 PM', ages: 'Ages 2–5', price: '$65/mo', ageGroups: ['tiny'], category: 'tiny' },
-      { name: 'Ballet + Modern/Contemporary', time: '5:30 PM – 6:15 PM', ages: 'Ages 4–17 · Beg–Adv', price: '$85/mo', ageGroups: ['kids', 'teen'], category: 'ballet' },
-      { name: 'Jazz + Acro Arts', time: '5:30 PM – 6:15 PM', ages: 'Ages 4–17 · Beg–Adv', price: '$85/mo', ageGroups: ['kids', 'teen'], category: 'jazz-acro' },
-      { name: 'Ballet + Jazz', time: '6:15 PM – 7:00 PM', ages: 'Ages 4–17 · Beg–Novice', price: '$85/mo', ageGroups: ['kids', 'teen'], category: 'ballet' },
-      { name: 'Lyrical + Acro Arts', time: '6:15 PM – 7:15 PM', ages: 'Ages 6–17 · Beg–Adv', price: '$105/mo', ageGroups: ['kids', 'teen'], category: 'jazz-acro' },
-      { name: 'Ballet Tech + Pre/Pointe', time: '7:15 PM – 8:15 PM', ages: 'Ages 6–18 · Novice–Adv', price: '$105/mo', ageGroups: ['teen'], category: 'ballet' },
+      { name: 'Tiny Ballet / Tumble', time: '5:00 – 5:30 PM', ages: 'Ages 2–5', ageGroups: ['tiny'], category: 'tiny' },
+      { name: 'Beginner Acro / Jazz', time: '5:30 – 6:15 PM', ages: 'Ages 5+ · Beginner', ageGroups: ['kids', 'teen'], category: 'jazz-acro' },
+      { name: 'Beginner Contemp / Jazz', time: '5:30 – 6:15 PM', ages: 'Ages 5+ · Beginner', ageGroups: ['kids', 'teen'], category: 'jazz-acro' },
+      { name: 'Beginner Hip Hop', time: '6:15 – 7:00 PM', ages: 'Ages 5+ · Beginner', ageGroups: ['kids', 'teen'], category: 'hiphop' },
+      { name: 'Acro / Lyrical', time: '6:15 – 7:15 PM', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'lyrical-contemp' },
+      { name: 'Ballet / Contemp', time: '7:15 – 8:00 PM', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'ballet' },
+      { name: 'Adult Femme / Flaire', time: '8:00 – 9:00 PM', ages: 'Ages 16+ · Adult', ageGroups: ['adult'], category: 'adult' },
     ],
   },
   {
     day: 'Tuesday',
     classes: [
-      { name: 'Irish Dance', time: '5:30 PM – 6:15 PM', ages: 'Ages 4–17 · Beg–Novice', price: 'Enrollment Closed', ageGroups: ['kids', 'teen'], category: 'irish' },
-      { name: 'Ballet + Hip Hop', time: '6:15 PM – 7:15 PM', ages: 'Ages 4–17 · Beg–Novice', price: 'Enrollment Closed', ageGroups: ['kids', 'teen'], category: 'hiphop' },
-      { name: 'Irish Dance', time: '7:15 PM – 8:00 PM', ages: 'Ages 6–17 · Int–Adv', price: 'Enrollment Closed', ageGroups: ['teen'], category: 'irish' },
+      { name: 'Tiny Ballet / Hip Hop', time: '5:00 – 5:30 PM', ages: 'Ages 2–5', ageGroups: ['tiny'], category: 'tiny' },
+      { name: 'Beginner Ballet / Hip Hop', time: '5:30 – 6:15 PM', ages: 'Ages 5+ · Beginner', ageGroups: ['kids', 'teen'], category: 'ballet' },
+      { name: 'Beginner Contemp / Jazz', time: '6:15 – 7:00 PM', ages: 'Ages 5+ · Beginner', ageGroups: ['kids', 'teen'], category: 'jazz-acro' },
+      { name: 'Tumble Tech', time: '7:00 – 7:45 PM', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'tumble-cheer' },
     ],
   },
   {
     day: 'Wednesday',
     classes: [
-      { name: 'Tiny Ballet + Tap', time: '5:30 PM – 6:00 PM', ages: 'Ages 2–5', price: '$65/mo', ageGroups: ['tiny'], category: 'tiny' },
-      { name: 'Daddy Daughter Dance', time: '6:00 PM', ages: 'All Ages', price: 'Free', ageGroups: ['tiny', 'kids', 'teen', 'adult'], category: 'special' },
+      { name: 'Tiny Ballet / Tap', time: '5:30 – 6:00 PM', ages: 'Ages 2–5', ageGroups: ['tiny'], category: 'tiny' },
+      { name: 'Beginner Hip Hop & Breakdancing', time: '6:00 – 6:45 PM', ages: 'Ages 5+ · Beginner', ageGroups: ['kids', 'teen'], category: 'hiphop' },
+      { name: 'Musical Theatre', time: '6:45 – 7:30 PM', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'musical-theatre' },
+      { name: 'Adult Pom', time: '7:30 – 8:15 PM', ages: 'Ages 16+ · Adult', ageGroups: ['adult'], category: 'adult' },
     ],
   },
   {
     day: 'Thursday',
     classes: [
-      { name: 'Opening Routine Practice', time: '5:15 PM', ages: 'Ages 5+', price: 'Free', ageGroups: ['kids', 'teen', 'adult'], category: 'special' },
-      { name: 'Ballet + Tap', time: '6:00 PM – 6:45 PM', ages: 'Ages 4–17 · Beg–Novice', price: '$85/mo', ageGroups: ['kids', 'teen'], category: 'ballet' },
-      { name: 'Pom Pom + Cheer Dance', time: '6:45 PM – 7:30 PM', ages: 'Ages 4–17 · Beg–Adv', price: '$85/mo', ageGroups: ['kids', 'teen'], category: 'tumble-cheer' },
-      { name: 'Tumble Techniques', time: '7:30 PM – 8:15 PM', ages: 'Ages 6–17 · Beg–Adv', price: '$85/mo', ageGroups: ['kids', 'teen'], category: 'tumble-cheer' },
+      { name: 'Beginner Ballet / Jazz', time: '5:15 – 6:00 PM', ages: 'Ages 5+ · Beginner', ageGroups: ['kids', 'teen'], category: 'ballet' },
+      { name: 'Beginner Ballet / Tap', time: '6:00 – 6:45 PM', ages: 'Ages 5+ · Beginner', ageGroups: ['kids', 'teen'], category: 'ballet' },
+      { name: 'Pom Cheer', time: '6:45 – 7:15 PM', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'tumble-cheer' },
+      { name: 'Tumble', time: '7:15 – 8:00 PM', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'tumble-cheer' },
     ],
   },
   {
     day: 'Friday',
     classes: [
-      { name: 'Tiny Ballet + Tumble', time: '5:30 PM – 6:00 PM', ages: 'Ages 2–5', price: '$65/mo', ageGroups: ['tiny'], category: 'tiny' },
-      { name: 'Musical Theatre', time: '5:30 PM – 6:15 PM', ages: 'Ages 6–17 · Beg–Adv', price: '$85/mo', ageGroups: ['kids', 'teen'], category: 'musical-theatre' },
-      { name: 'Hip Hop + Breakdancing', time: '6:15 PM – 7:00 PM', ages: 'Ages 5–17 · Beg–Adv', price: '$85/mo', ageGroups: ['kids', 'teen'], category: 'hiphop' },
-      { name: 'Adult Modern/Contemporary + Jazz', time: '7:00 PM – 8:00 PM', ages: 'Ages 16+ · Beg–Adv', price: '$85/mo', ageGroups: ['adult'], category: 'adult' },
+      { name: 'Beginner Ballet / Modern', time: '5:30 – 6:15 PM', ages: 'Ages 5+ · Beginner', ageGroups: ['kids', 'teen'], category: 'ballet' },
+      { name: 'Lyrical / Contemp', time: '6:15 – 7:00 PM', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'lyrical-contemp' },
+      { name: 'Adult Contemporary', time: '7:00 – 8:00 PM', ages: 'Ages 16+ · Adult', ageGroups: ['adult'], category: 'adult' },
     ],
   },
 ]
@@ -122,7 +95,7 @@ const DAYS = ['All', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
 const AGES = [
   { value: 'All', label: 'All Ages' },
   { value: 'tiny', label: 'Tiny (2–5)' },
-  { value: 'kids', label: 'Kids (4–12)' },
+  { value: 'kids', label: 'Kids (5–12)' },
   { value: 'teen', label: 'Teen (6–17)' },
   { value: 'adult', label: 'Adult (16+)' },
 ]
@@ -133,7 +106,7 @@ const CATEGORIES = [
   { value: 'ballet', label: 'Ballet' },
   { value: 'jazz-acro', label: 'Jazz & Acro' },
   { value: 'hiphop', label: 'Hip Hop' },
-  { value: 'irish', label: 'Irish Dance' },
+  { value: 'lyrical-contemp', label: 'Lyrical & Contemp' },
   { value: 'tumble-cheer', label: 'Tumble & Cheer' },
   { value: 'musical-theatre', label: 'Musical Theatre' },
   { value: 'adult', label: 'Adult Classes' },
@@ -160,7 +133,6 @@ function FilterSelect({ label, options, value, onChange }) {
 }
 
 export default function Classes() {
-  const [selectedTab, setSelectedTab] = useState('classes')
   const [selectedDay, setSelectedDay] = useState('All')
   const [selectedAge, setSelectedAge] = useState('All')
   const [selectedCategory, setSelectedCategory] = useState('All')
@@ -182,8 +154,8 @@ export default function Classes() {
   return (
     <div className="min-h-screen flex flex-col">
       <SEO
-        title="Dance Classes in Midlothian, VA | Ballet, Hip Hop, Jazz &amp; More – Capital Core Dance Studio"
-        description="Year-round dance classes for ages 2 through adult at Capital Core Dance Studio in Midlothian, VA. Ballet, jazz, hip hop, contemporary, tap, acro, lyrical, musical theatre, Irish dance, and pom/cheer. First class is always free."
+        title="Fall 2026 Dance Classes in Midlothian, VA | Ballet, Hip Hop, Jazz &amp; More – Capital Core Dance Studio"
+        description="Fall 2026 dance classes (Aug 24 – Dec 18) for ages 2 through adult at Capital Core Dance Studio in Midlothian, VA. Ballet, jazz, hip hop, contemporary, tap, acro, lyrical, musical theatre, tumble, and pom/cheer. First class is always free."
         canonical="/classes"
         jsonLd={CLASSES_JSON_LD}
       />
@@ -214,19 +186,21 @@ export default function Classes() {
         </div>
       </div>
 
-      {/* Mini Series Banner */}
+      {/* Register banner */}
       <section className="px-6 py-4" style={{ backgroundColor: '#FFA76B' }}>
         <div className="max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="text-center sm:text-left">
-            <p className="text-navy-dark font-black text-lg leading-snug">Curious about dance? Try our Mini Series.</p>
-            <p className="text-navy-dark/70 text-sm mt-0.5">Short-term classes combining two styles in one session.</p>
+            <p className="text-navy-dark font-black text-lg leading-snug">Fall registration is open.</p>
+            <p className="text-navy-dark/70 text-sm mt-0.5">Reserve your dancer's spot on our student portal — first class is always free.</p>
           </div>
-          <Link
-            to="/mini-series"
+          <a
+            href={PORTAL_REGISTER_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex-shrink-0 bg-navy-dark text-white text-sm font-bold px-6 py-2 rounded-md hover:bg-navy-mid transition-colors whitespace-nowrap"
           >
-            Explore the Mini Series →
-          </Link>
+            Register for Fall →
+          </a>
         </div>
       </section>
 
@@ -244,7 +218,7 @@ export default function Classes() {
       <section className="bg-white flex-1 px-6 py-12">
         <div className="max-w-3xl mx-auto">
           <p className="text-brand-red text-xs font-bold tracking-[0.3em] uppercase mb-2">
-            Spring 2026 Schedule
+            Fall 2026 · August 24 – December 18
           </p>
           <h2 className="text-navy-dark text-2xl font-black mb-8">
             Find the right class for your dancer
@@ -263,7 +237,7 @@ export default function Classes() {
                     <div className="flex-1 h-px bg-surface-border" />
                   </div>
                   <div className="flex flex-col gap-3">
-                    {classes.map(({ name, time, ages, price }, i) => (
+                    {classes.map(({ name, time, ages }, i) => (
                       <div
                         key={`${day}-${name}-${time}`}
                         className={`border border-surface-border border-l-4 ${ACCENT_COLORS[i % ACCENT_COLORS.length]} rounded-lg px-5 py-4 flex items-center justify-between gap-4`}
@@ -274,7 +248,6 @@ export default function Classes() {
                         </div>
                         <div className="text-right flex-shrink-0">
                           <div className="text-[#7ab3e8] text-sm font-medium">{time}</div>
-                          <div className="text-brand-red text-xs font-bold mt-0.5">{price}</div>
                         </div>
                       </div>
                     ))}
@@ -284,12 +257,19 @@ export default function Classes() {
             </div>
           )}
 
-          <Link
-            to="/contact"
-            className="mt-10 block w-full bg-navy-dark text-white text-center font-bold py-3 rounded-md hover:bg-navy-mid transition-colors"
+          <p className="text-[#8a9aaa] text-xs mt-8 text-center">
+            Beginner classes start at age 5+. Classes are subject to change based on interest and registrations.{' '}
+            See <Link to="/tuition" className="text-brand-red font-semibold hover:underline">Tuition</Link> for monthly pricing.
+          </p>
+
+          <a
+            href={PORTAL_REGISTER_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 block w-full bg-navy-dark text-white text-center font-bold py-3 rounded-md hover:bg-navy-mid transition-colors"
           >
             Enroll Now
-          </Link>
+          </a>
         </div>
       </section>
 

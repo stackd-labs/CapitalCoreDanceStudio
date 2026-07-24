@@ -20,7 +20,7 @@ test('renders all nav links', () => {
   renderNavbar()
   expect(screen.getAllByRole('link', { name: 'Home' })[0]).toBeInTheDocument()
   expect(screen.getAllByRole('link', { name: 'Classes' })[0]).toBeInTheDocument()
-  expect(screen.getAllByRole('link', { name: 'Camps' })[0]).toBeInTheDocument()
+  expect(screen.getAllByRole('link', { name: 'Tuition' })[0]).toBeInTheDocument()
   expect(screen.getAllByRole('link', { name: 'Birthdays' })[0]).toBeInTheDocument()
   expect(screen.getAllByRole('link', { name: 'Contact Us' })[0]).toBeInTheDocument()
 })

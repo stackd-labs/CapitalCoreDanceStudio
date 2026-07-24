@@ -4,19 +4,21 @@ import Home from './pages/Home'
 import Classes from './pages/Classes'
 import About from './pages/About'
 import Tuition from './pages/Tuition'
-import Camps from './pages/Camps'
-import CampForm from './pages/CampForm'
-import CampPayment from './pages/CampPayment'
-import CampThankYou from './pages/CampThankYou'
-import MiniSeries from './pages/MiniSeries'
-import SummerClasses from './pages/SummerClasses'
-import SummerClassesForm from './pages/SummerClassesForm'
-import SummerClassesPayment from './pages/SummerClassesPayment'
-import SummerClassesThankYou from './pages/SummerClassesThankYou'
-import AdultSummerSeries from './pages/AdultSummerSeries'
-import AdultSeriesForm from './pages/AdultSeriesForm'
-import AdultSeriesPayment from './pages/AdultSeriesPayment'
-import AdultSeriesThankYou from './pages/AdultSeriesThankYou'
+// Summer 2026 programming retired after the season (switched to Fall on 2026-07-23).
+// Page files are preserved — re-import and re-add the routes below to restore next summer.
+// import Camps from './pages/Camps'
+// import CampForm from './pages/CampForm'
+// import CampPayment from './pages/CampPayment'
+// import CampThankYou from './pages/CampThankYou'
+// import MiniSeries from './pages/MiniSeries'
+// import SummerClasses from './pages/SummerClasses'
+// import SummerClassesForm from './pages/SummerClassesForm'
+// import SummerClassesPayment from './pages/SummerClassesPayment'
+// import SummerClassesThankYou from './pages/SummerClassesThankYou'
+// import AdultSummerSeries from './pages/AdultSummerSeries'
+// import AdultSeriesForm from './pages/AdultSeriesForm'
+// import AdultSeriesPayment from './pages/AdultSeriesPayment'
+// import AdultSeriesThankYou from './pages/AdultSeriesThankYou'
 import Birthdays from './pages/Birthdays'
 import BirthdayForm from './pages/BirthdayForm'
 import BirthdayPayment from './pages/BirthdayPayment'
@@ -52,6 +54,8 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/tuition" element={<Tuition />} />
         <Route path="/classes" element={<Classes />} />
+        {/* Summer 2026 routes retired 2026-07-23. Restore by uncommenting these
+            and the imports above when summer registration reopens.
         <Route path="/camps" element={<Camps />} />
         <Route path="/camp-registration" element={<CampForm />} />
         <Route path="/camp-payment" element={<CampPayment />} />
@@ -66,6 +70,7 @@ export default function App() {
         <Route path="/adult-summer-series/signup" element={<AdultSeriesForm />} />
         <Route path="/adult-summer-series/payment" element={<AdultSeriesPayment />} />
         <Route path="/adult-summer-series/thankyou" element={<AdultSeriesThankYou />} />
+        */}
         <Route path="/birthdays" element={<Birthdays />} />
         <Route path="/birthday-booking" element={<BirthdayForm />} />
         <Route path="/birthday-payment" element={<BirthdayPayment />} />

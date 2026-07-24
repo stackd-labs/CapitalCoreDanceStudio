@@ -3,10 +3,7 @@ import { Link } from 'react-router-dom'
 const NAV_LINKS = [
   { to: '/', label: 'Home' },
   { to: '/about', label: 'About Us' },
-  { to: '/classes', label: 'Our Classes' },
-  { to: '/summer-classes', label: 'Summer Classes' },
-  { to: '/camps', label: 'Summer Camps' },
-  { to: '/adult-summer-series', label: 'Adult Summer Series' },
+  { to: '/classes', label: 'Classes' },
   { to: '/tuition', label: 'Tuition' },
   { to: '/birthdays', label: 'Birthdays' },
   { to: '/blog', label: 'Blog' },

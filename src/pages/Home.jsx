@@ -7,24 +7,14 @@ import { localBusinessSchema } from '../lib/schema'
 
 const SECTION_CARDS = [
   {
-    to: '/summer-classes',
+    to: '/classes',
     title: 'Classes',
-    subtitle: 'Summer 2026 · June 23 – July 30',
+    subtitle: 'Fall 2026 · Aug 24 – Dec 18',
     photo: '/card-classes.jpg',
     imageAlt: 'Kids dance classes at Capital Core Dance Studio in Midlothian, VA',
     description:
-      'Six weeks of summer ballet, hip hop, jazz, tap, contemporary, and tumble for ages 2 through teen. Per-class, Flex Pass, or drop-in.',
-    linkLabel: 'View Summer Classes',
-  },
-  {
-    to: '/camps',
-    title: 'Camps',
-    subtitle: 'Summer & holiday',
-    photo: '/card-camps.jpg',
-    imageAlt: 'Kids participating in summer dance camp at Capital Core Dance Studio',
-    description:
-      'Immersive multi-day camps packed with dance, creativity, and fun. Perfect for school breaks and summer schedules.',
-    linkLabel: 'View Camps',
+      'Year-round ballet, hip hop, jazz, tap, contemporary, acro, tumble, and adult classes for ages 2 through adult. Fall registration is open.',
+    linkLabel: 'View Fall Classes',
   },
   {
     to: '/birthdays',
@@ -35,16 +25,6 @@ const SECTION_CARDS = [
     description:
       'Celebrate in style at the studio! Custom dance party packages for kids of all ages. Unforgettable memories guaranteed.',
     linkLabel: 'View Packages',
-  },
-  {
-    to: '/adult-summer-series',
-    title: 'Adult Dance',
-    subtitle: 'Move. Connect. Grow.',
-    photo: '/card-adult-dance.jpg',
-    imageAlt: 'Women dancing together in an adult movement class at Capital Core Dance Studio',
-    description:
-      'A 90-minute Monday-night movement series for women — Throwback Energy, Femme Flow, and Calm Confidence. Beginner friendly. $25 drop-in or $120 series pass.',
-    linkLabel: 'Register Now',
   },
   {
     to: '/contact',
@@ -63,7 +43,7 @@ export default function Home() {
     <div className="min-h-screen flex flex-col">
       <SEO
         title="Capital Core Dance Studio | Dance Classes in Midlothian, VA"
-        description="Capital Core Dance Studio offers ballet, hip hop, jazz, contemporary, and tap classes for kids and adults in Midlothian, VA. Year-round programs, summer camps, birthday parties, and an annual recital. Serving Chesterfield County and Richmond."
+        description="Capital Core Dance Studio offers ballet, hip hop, jazz, contemporary, and tap classes for kids and adults in Midlothian, VA. Year-round programs, Fall 2026 classes, birthday parties, and an annual recital. Serving Chesterfield County and Richmond."
         canonical="/"
         jsonLd={localBusinessSchema}
       />
@@ -85,14 +65,14 @@ export default function Home() {
             <span className="text-[#f4a8b4]">PURPOSE</span>
           </h1>
           <p className="text-[#b8d4f0] text-base md:text-lg mb-10 leading-relaxed">
-            Classes, camps, and birthday parties for dancers of all ages and skill levels.
+            Fall dance classes and birthday parties for dancers of all ages and skill levels.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              to="/summer-classes"
+              to="/classes"
               className="bg-brand-red text-white font-bold px-8 py-3 rounded-md hover:bg-red-700 transition-colors"
             >
-              Explore Summer Classes
+              View Fall Classes
             </Link>
             <Link
               to="/birthdays"
@@ -106,56 +86,29 @@ export default function Home() {
 
       {/* Flyers */}
       {/*
-        Birthday Parties tile is hidden during the June 2026 studio-birthday
-        promo (we feature the June birthday flyer in its own pink side-by-side
-        card below). To restore — when the user says "add the birthday flyer
-        back" — re-insert this entry into the array before Summer Camps:
-
-        {
-          to: '/birthdays',
-          img: '/flyer-birthday-parties.png',
-          alt: 'Kids dance birthday party packages starting at $199 — Capital Core Dance Studio',
-          imgClass: 'object-cover',
-          title: 'Birthday Parties',
-          subtitle: 'Private packages from $199',
-          accent: 'text-[#c0392b]',
-        },
-
-        Then bump `lg:grid-cols-3` below to 4.
-
         The Recital Shop tile that used to lead this grid was removed after the
         June 2026 recital wrapped.
       */}
       <section className="py-10 px-6" style={{ backgroundColor: '#ede0fa' }}>
-        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-5">
           {[
             {
-              to: '/camps',
-              img: '/flyer-summer-camps.png',
-              alt: 'Summer 2026 dance camps — eight themed weeks for ages 4–13, $50 deposit reserves your spot — Capital Core Dance Studio Midlothian VA',
+              to: '/classes',
+              img: '/flyer-fall-schedule.png',
+              alt: 'Fall 2026 dance class schedule, August 24 to December 18 — ballet, jazz, hip hop, contemporary, tap, acro, tumble, and adult classes Monday through Friday — Capital Core Dance Studio Midlothian VA',
               imgClass: 'object-cover',
-              title: 'Summer Camps',
-              subtitle: '8 themed weeks · ages 4–13',
-              accent: 'text-[#7a4ed8]',
-            },
-            {
-              to: '/summer-classes',
-              img: '/flyer-summer-dance-classes.png',
-              alt: 'Summer dance classes June 23 to July 30, 6 weeks — ballet, tap, hip hop, jazz, contemporary, tumble — Capital Core Dance Studio Midlothian VA',
-              imgClass: 'object-contain',
-              imgStyle: { background: 'linear-gradient(to bottom, #ffffff 50%, #0d1b36 50%)' },
-              title: 'Summer Classes',
-              subtitle: '6 weeks · June 23 – July 30',
+              title: 'Fall Classes',
+              subtitle: 'Aug 24 – Dec 18 · registration open',
               accent: 'text-[#c0392b]',
             },
             {
-              to: '/adult-summer-series',
-              img: '/flyer-adult-summer-series.png',
-              alt: 'Adult Summer Series — a 90-minute movement experience for women — Throwback Energy, Femme Flow, Calm Confidence — Mondays 6 to 7:30 PM — Capital Core Dance Studio Midlothian VA',
+              to: '/birthdays',
+              img: '/flyer-birthday-parties.png',
+              alt: 'Kids dance birthday party packages starting at $199 — Capital Core Dance Studio',
               imgClass: 'object-cover',
-              title: 'Adult Summer Series',
-              subtitle: 'For women · registration open',
-              accent: 'text-[#7a3e42]',
+              title: 'Birthday Parties',
+              subtitle: 'Private packages from $199',
+              accent: 'text-[#c0392b]',
             },
           ].map(({ to, img, alt, imgClass, imgStyle, title, subtitle, accent }) => (
             <Link key={to} to={to} className="group flex flex-col">
@@ -176,43 +129,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* June Birthday Special announcement */}
-      <section className="px-6 py-10" style={{ backgroundColor: '#fff5f8' }}>
-        <div className="max-w-xl mx-auto">
-
-          {/* June Birthday Special */}
-          <div className="flex flex-col rounded-2xl bg-gradient-to-br from-[#fff0f6] via-[#ffd6e7] to-[#fff0f6] border border-[#f4c8d4] overflow-hidden shadow-md">
-            <img
-              src="/flyer-june-birthday-special.png"
-              alt="Capital Core Dance is turning 1 — June birthday party special: 50% off a package or two free upgrades"
-              className="w-full aspect-square object-cover"
-              loading="lazy"
-            />
-            <div className="p-6 text-center md:text-left flex flex-col flex-1">
-              <p className="text-[#d6336c] text-[11px] font-black tracking-[0.4em] uppercase mb-2">
-                All June Long
-              </p>
-              <h2 className="text-navy-dark text-xl md:text-2xl font-black leading-tight">
-                We're turning 1 — <span className="text-[#d6336c]">let's celebrate!</span>
-              </h2>
-              <p className="text-[#3a4a6a] text-sm mt-3 leading-relaxed flex-1">
-                Every party booked in June gets your pick:
-                <span className="font-bold text-[#d6336c]"> 50% off a birthday package</span> or
-                <span className="font-bold text-[#d6336c]"> two free upgrades</span>. Schedule
-                for any future available date — book in June to lock in the deal.
-              </p>
-              <Link
-                to="/birthday-booking"
-                className="inline-block self-center md:self-start mt-5 bg-[#d6336c] text-white font-bold px-7 py-3 rounded-md hover:bg-[#b82658] transition-colors text-sm tracking-wide"
-              >
-                Book Your Party →
-              </Link>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
       {/* First class free banner */}
       <section className="px-6 py-4" style={{ backgroundColor: '#daf0f7' }}>
         <div className="max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
@@ -220,12 +136,14 @@ export default function Home() {
             <p className="text-navy-dark font-black text-lg leading-snug">Your first class is always FREE.</p>
             <p className="text-[#3a6a8a] text-sm mt-0.5">Come try us out — code <span className="font-bold tracking-wider">TRYITFREE</span> covers your trial.</p>
           </div>
-          <Link
-            to="/summer-classes/signup?promo=TRYITFREE"
+          <a
+            href="https://studio.capitalcoredance.com/register/classes"
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex-shrink-0 bg-navy-dark text-white text-sm font-bold px-6 py-2 rounded-md hover:bg-navy-mid transition-colors whitespace-nowrap"
           >
             Register for a Trial →
-          </Link>
+          </a>
         </div>
       </section>
 
@@ -236,7 +154,7 @@ export default function Home() {
         </p>
         <h2 className="text-navy-dark text-3xl font-black">Everything your dancer needs</h2>
         <p className="text-[#5a6a8a] text-sm mt-2">
-          From weekly classes to summer camps and unforgettable birthday parties
+          From weekly dance classes to unforgettable birthday parties
         </p>
       </section>
 

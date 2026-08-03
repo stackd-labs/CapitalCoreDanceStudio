@@ -41,3 +41,43 @@ test('mobile menu toggle shows and hides menu', () => {
   fireEvent.click(toggleBtn)
   expect(screen.getAllByRole('link', { name: 'Classes' })).toHaveLength(1)
 })
+
+test('caret button toggles the Classes dropdown', () => {
+  renderNavbar()
+  const caret = screen.getByRole('button', { name: 'Classes menu' })
+  expect(caret).toHaveAttribute('aria-expanded', 'false')
+  expect(screen.queryByRole('link', { name: 'Class Levels' })).not.toBeInTheDocument()
+
+  fireEvent.click(caret)
+  expect(caret).toHaveAttribute('aria-expanded', 'true')
+  expect(screen.getByRole('link', { name: 'Class Schedule' })).toHaveAttribute('href', '/classes')
+  expect(screen.getByRole('link', { name: 'Class Levels' })).toHaveAttribute('href', '/class-levels')
+
+  fireEvent.click(caret)
+  expect(caret).toHaveAttribute('aria-expanded', 'false')
+  expect(screen.queryByRole('link', { name: 'Class Levels' })).not.toBeInTheDocument()
+})
+
+test('Escape closes the open dropdown', () => {
+  renderNavbar()
+  const caret = screen.getByRole('button', { name: 'Classes menu' })
+  fireEvent.click(caret)
+  expect(screen.getByRole('link', { name: 'Class Levels' })).toBeInTheDocument()
+
+  fireEvent.keyDown(document, { key: 'Escape' })
+  expect(screen.queryByRole('link', { name: 'Class Levels' })).not.toBeInTheDocument()
+  expect(caret).toHaveAttribute('aria-expanded', 'false')
+})
+
+test('highlights the Classes parent on /class-levels', () => {
+  renderNavbar('/class-levels')
+  const classesLinks = screen.getAllByRole('link', { name: 'Classes' })
+  expect(classesLinks[0].className).toContain('text-[#f4a8b4]')
+})
+
+test('mobile menu includes the Classes sub-links', () => {
+  renderNavbar()
+  fireEvent.click(screen.getByLabelText('Toggle menu'))
+  expect(screen.getAllByRole('link', { name: 'Class Schedule' })).toHaveLength(1)
+  expect(screen.getAllByRole('link', { name: 'Class Levels' })).toHaveLength(1)
+})

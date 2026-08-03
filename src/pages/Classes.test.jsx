@@ -27,7 +27,10 @@ test('renders real class names', () => {
   expect(within(grid).getByRole('button', { name: /Tiny Ballet \/ Tumble/ })).toBeInTheDocument()
   expect(within(grid).getByRole('button', { name: /Beginner Hip Hop & Breakdancing/ })).toBeInTheDocument()
   expect(within(grid).getByRole('button', { name: /Musical Theatre/ })).toBeInTheDocument()
-  expect(within(grid).getByRole('button', { name: /Tumble Tech/ })).toBeInTheDocument()
+  // Anchored by day: two schedule rows are named Tumble Tech since the 2026-08-03
+  // merge, so an unanchored /Tumble Tech/ matches both blocks.
+  expect(within(grid).getByRole('button', { name: /Tumble Tech, Tuesday/ })).toBeInTheDocument()
+  expect(within(grid).getByRole('button', { name: /Tumble Tech, Thursday/ })).toBeInTheDocument()
 })
 
 test('does not render Private Lessons', () => {

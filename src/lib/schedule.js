@@ -15,7 +15,7 @@ export const SCHEDULE = [
       { name: 'Beginner Hip Hop', time: '6:15 – 7:00 PM', start: '18:15', end: '19:00', infoKey: 'Beginner Hip Hop', ages: 'Ages 5+ · Beginner', ageGroups: ['kids', 'teen'], category: 'hiphop' },
       { name: 'Acro / Lyrical', time: '6:15 – 7:15 PM', start: '18:15', end: '19:15', infoKey: 'Acro & Lyrical', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'lyrical-contemp' },
       { name: 'Ballet / Contemp', time: '7:15 – 8:00 PM', start: '19:15', end: '20:00', infoKey: 'Ballet & Contemporary', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'ballet' },
-      { name: 'Adult Femme / Flaire', time: '8:00 – 9:00 PM', start: '20:00', end: '21:00', infoKey: 'Adult Femme Flair', ages: 'Ages 16+ · Adult', ageGroups: ['adult'], category: 'adult' },
+      { name: 'Adult Femme / Flaire', time: '8:00 – 8:45 PM', start: '20:00', end: '20:45', infoKey: 'Adult Femme Flair', ages: 'Ages 16+ · Adult', ageGroups: ['adult'], category: 'adult' },
     ],
   },
   {
@@ -42,7 +42,10 @@ export const SCHEDULE = [
       { name: 'Beginner Ballet / Jazz', time: '5:15 – 6:00 PM', start: '17:15', end: '18:00', infoKey: 'Beginner Ballet & Jazz', ages: 'Ages 5+ · Beginner', ageGroups: ['kids', 'teen'], category: 'ballet' },
       { name: 'Beginner Ballet / Tap', time: '6:00 – 6:45 PM', start: '18:00', end: '18:45', infoKey: 'Beginner Ballet & Tap', ages: 'Ages 5+ · Beginner', ageGroups: ['kids', 'teen'], category: 'ballet' },
       { name: 'Pom Cheer', time: '6:45 – 7:15 PM', start: '18:45', end: '19:15', infoKey: 'Pom Cheer', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'tumble-cheer' },
-      { name: 'Tumble', time: '7:15 – 8:00 PM', start: '19:15', end: '20:00', infoKey: 'Tumble', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'tumble-cheer' },
+      // Renamed from 'Tumble' to 'Tumble Tech' on 2026-08-03 at the studio's request —
+      // both tumbling classes now carry the same name and share one description. This is
+      // an intentional divergence from the printed flyer, which reads 'Tumble'.
+      { name: 'Tumble Tech', time: '7:15 – 8:00 PM', start: '19:15', end: '20:00', infoKey: 'Tumble Tech', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'tumble-cheer' },
     ],
   },
   {

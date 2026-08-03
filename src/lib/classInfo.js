@@ -49,12 +49,12 @@ export const CLASS_INFO = {
   'Ballet & Contemporary': {
     description: 'A technique-focused class blending classical ballet with contemporary dance. Dancers develop alignment, flexibility, artistry, turns, extensions, and musicality.',
   },
+  // Covers both tumbling classes (Tue 7:00 and Thu 7:15). The separate 'Tumble' entry
+  // was merged in here on 2026-08-03: it was an in-house draft, and the studio's own
+  // text below already covers everything it said, so nothing drafted remains for this
+  // class.
   'Tumble Tech': {
     description: 'Designed for dancers wanting to improve tumbling technique. Students work on rolls, cartwheels, walkovers, handstands, flexibility, strength, and proper progressions at their own level.',
-  },
-  'Tumble': {
-    draft: true,
-    description: 'A tumbling class for dancers building skills at their own pace. Students work on rolls, cartwheels, handstands, flexibility, and strength with proper spotting and progressions.',
   },
   'Lyrical & Contemporary': {
     draft: true,

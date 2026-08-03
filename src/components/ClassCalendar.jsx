@@ -97,6 +97,15 @@ export default function ClassCalendar({ schedule }) {
   // "adjust state during render" pattern — safe here because the guard condition
   // (`selected && !stillPresent`) is false immediately after the call, so it cannot
   // loop.
+  //
+  // Note: unlike closePanel(), this reset does not call lastTriggerRef.current?.focus().
+  // Forcibly refocusing the old trigger would steal focus away from whatever the user
+  // is doing right now (e.g. the <select> they just changed to narrow the schedule),
+  // which would be worse than leaving focus alone. Skipping it here is production-safe
+  // only because the one caller, Classes.jsx, drives `schedule` changes from <select>
+  // elements that stay mounted and keep focus themselves — nothing in that path sends
+  // focus to <body>. A future caller whose control disappears when `schedule` changes
+  // (unlike a persistent <select>) would need to handle focus restoration itself.
   const stillPresent = selected != null && schedule.some(
     ({ day, classes }) =>
       day === selected.day &&

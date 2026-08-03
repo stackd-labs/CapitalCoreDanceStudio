@@ -137,14 +137,29 @@ test('shows an empty state when handed nothing', () => {
   expect(screen.queryByTestId('class-grid')).not.toBeInTheDocument()
 })
 
-test('closes an open panel instead of leaving it as a ghost selection when the schedule narrows to empty', () => {
+test('does not resurrect a closed panel when the filter is later relaxed back to include the previously selected class', () => {
+  // Regression test for the Task 5 review finding: narrowing the schedule to zero
+  // must not merely hide the open panel — it must clear the selection. A test that
+  // only checks "no dialog right after narrowing to empty" cannot tell that apart
+  // from the pre-fix bug, because React unmounts the whole subtree (panel included)
+  // the moment the component's root JSX flips from a fragment of grid+list+panel to
+  // a bare empty-state <div> — regardless of what `selected` still holds. The real
+  // bug only shows up one step later, when the filter relaxes back: with the bug,
+  // `selected` is still the stale class, so it reappears with no click. This test
+  // exercises that full round trip.
   const { rerender } = renderCalendar()
   const grid = screen.getByTestId('class-grid')
   fireEvent.click(within(grid).getByRole('button', { name: /Musical Theatre/ }))
   expect(screen.getByRole('dialog')).toBeInTheDocument()
 
+  // Narrow to empty — Musical Theatre is filtered out.
   rerender(<ClassCalendar schedule={[]} />)
-
   expect(screen.getByText('No classes match your filters. Try adjusting your selection.')).toBeInTheDocument()
+  expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+
+  // Relax the filter back to a schedule that again contains Musical Theatre (Wednesday).
+  // The panel must stay closed — reopening it requires a click, not a filter change.
+  const wednesday = SCHEDULE.find((d) => d.day === 'Wednesday')
+  rerender(<ClassCalendar schedule={[wednesday]} />)
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
 })

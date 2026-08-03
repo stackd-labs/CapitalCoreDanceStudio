@@ -56,3 +56,44 @@ test('links to the class schedule and the register portal', () => {
     'https://studio.capitalcoredance.com/register/classes'
   )
 })
+
+test('renders all eleven styles', () => {
+  renderClassLevels()
+  const styles = [
+    'Ballet',
+    'Jazz',
+    'Hip Hop',
+    'Contemporary',
+    'Tap',
+    'Acro & Tumbling',
+    'Lyrical',
+    'Breakdancing',
+    'Musical Theatre',
+    'Pom & Cheer',
+    'Creative Movement',
+  ]
+  for (const style of styles) {
+    expect(screen.getAllByText(style).length).toBeGreaterThan(0)
+  }
+  expect(screen.getAllByTestId('style-card')).toHaveLength(11)
+})
+
+test('every style card has a non-empty description and at least one level badge', () => {
+  renderClassLevels()
+  for (const card of screen.getAllByTestId('style-card')) {
+    const description = card.querySelector('[data-testid="style-description"]')
+    expect(description).not.toBeNull()
+    expect(description.textContent.trim().length).toBeGreaterThan(20)
+    expect(card.querySelectorAll('[data-testid="style-badge"]').length).toBeGreaterThan(0)
+  }
+})
+
+test('does not list Adult as a style', () => {
+  renderClassLevels()
+  // Adult is a level, not a style — it appears as a badge, never as a style card.
+  const styleNames = screen
+    .getAllByTestId('style-card')
+    .map((card) => card.querySelector('[data-testid="style-name"]').textContent.trim())
+  expect(styleNames).not.toContain('Adult')
+  expect(styleNames).not.toContain('Adult Classes')
+})

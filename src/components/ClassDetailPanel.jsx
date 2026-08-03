@@ -86,10 +86,7 @@ export default function ClassDetailPanel({ classInfo, onClose }) {
           <p className="text-[#5a6a8a] text-sm mt-1">{ages}</p>
 
           {info && (
-            <>
-              <p className="text-brand-red text-xs font-semibold mt-4">{info.audience}</p>
-              <p className="text-[#5a6a8a] text-sm mt-2 leading-relaxed">{info.description}</p>
-            </>
+            <p className="text-[#5a6a8a] text-sm mt-4 leading-relaxed">{info.description}</p>
           )}
         </div>
 

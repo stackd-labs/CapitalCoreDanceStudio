@@ -120,7 +120,6 @@ export default function AdultClasses() {
                       <span className="whitespace-nowrap">{time}</span>
                     </div>
                   </div>
-                  <p className="text-brand-red text-xs font-semibold mt-1">{info?.audience}</p>
                   <p data-testid="adult-class-description" className="text-[#5a6a8a] text-sm mt-2 leading-relaxed">
                     {info?.description}
                   </p>

@@ -142,10 +142,12 @@ export default function Tuition() {
             </p>
           </div>
 
-          {/* Specialty note */}
+          {/* Separately priced programs note. "Specialty Classes" was removed here on
+              2026-08-03: the Class Levels page uses that term for Musical Theatre and
+              Pom Cheer, which are regular schedule classes on standard tuition. */}
           <div className="border border-dashed border-surface-border rounded-lg px-5 py-4 text-center">
             <p className="text-[#5a6a8a] text-sm">
-              Dance Teams, Events, Clinics, Workshops, and Specialty Classes have their own pricing — view details on their individual event pages.
+              Dance Teams, Events, Clinics, and Workshops have their own pricing — view details on their individual event pages.
             </p>
           </div>
 

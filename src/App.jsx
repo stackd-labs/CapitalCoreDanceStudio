@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 import Home from './pages/Home'
 import Classes from './pages/Classes'
+import ClassLevels from './pages/ClassLevels'
 import About from './pages/About'
 import Tuition from './pages/Tuition'
 // Summer 2026 programming retired after the season (switched to Fall on 2026-07-23).
@@ -55,6 +56,7 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/tuition" element={<Tuition />} />
         <Route path="/classes" element={<Classes />} />
+        <Route path="/class-levels" element={<ClassLevels />} />
         <Route path="/dance-company" element={<DanceCompany />} />
         <Route path="/competition-team" element={<DanceCompany />} />
         {/* Summer 2026 routes retired 2026-07-23. Restore by uncommenting these

@@ -4,6 +4,7 @@ import PageHeader from '../components/PageHeader'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
 import { simpleBreadcrumb } from '../lib/schema'
+import { getClassInfo } from '../lib/classInfo'
 
 // Same portal registration link as the Classes and Class Levels pages.
 const PORTAL_REGISTER_URL = 'https://studio.capitalcoredance.com/register/classes'
@@ -15,32 +16,12 @@ const ACCENT_COLORS = [
   'border-[#f4a060]',
 ]
 
-// Descriptions are the studio's own copy (2026-08-03), moved here from the Adult
-// Program group on the Class Levels page. `audience` lines are drafted in-house.
-// Day and time mirror the Fall 2026 schedule in Classes.jsx — update both together
-// each semester.
+// Day and time mirror the Fall 2026 adult rows in Classes.jsx — update both together
+// each semester. Prose lives in src/lib/classInfo.js, keyed by the names below.
 const ADULT_CLASSES = [
-  {
-    name: 'Adult Femme Flair',
-    day: 'Monday',
-    time: '8:00 – 9:00 PM',
-    audience: 'Perfect for adults returning to dance or starting fresh.',
-    description: "An empowering dance class focused on confidence, musicality, and expressive choreography. Whether you're returning to dance or trying something new, you'll leave feeling stronger and more confident.",
-  },
-  {
-    name: 'Adult Pom',
-    day: 'Wednesday',
-    time: '7:30 – 8:15 PM',
-    audience: "Great for adults who want a workout that doesn't feel like one.",
-    description: "A fun, upbeat class featuring pom technique, jazz-inspired movement, and energetic choreography. It's a great workout while learning exciting routines.",
-  },
-  {
-    name: 'Adult Contemporary',
-    day: 'Friday',
-    time: '7:00 – 8:00 PM',
-    audience: 'Ideal for adults who want to move expressively in a welcoming room.',
-    description: 'Explore movement, creativity, and expression through contemporary dance. Improve flexibility, balance, strength, and artistry in a supportive, welcoming environment.',
-  },
+  { infoKey: 'Adult Femme Flair', day: 'Monday', time: '8:00 – 9:00 PM' },
+  { infoKey: 'Adult Pom', day: 'Wednesday', time: '7:30 – 8:15 PM' },
+  { infoKey: 'Adult Contemporary', day: 'Friday', time: '7:00 – 8:00 PM' },
 ]
 
 // Studio's own copy, carried over from the Class Levels Important Information notes.
@@ -110,28 +91,31 @@ export default function AdultClasses() {
           </h2>
 
           <div className="flex flex-col gap-3">
-            {ADULT_CLASSES.map(({ name, day, time, audience, description }, i) => (
-              <div
-                key={name}
-                data-testid="adult-class-card"
-                className={`border border-surface-border border-l-4 ${ACCENT_COLORS[i % ACCENT_COLORS.length]} rounded-lg px-5 py-4`}
-              >
-                <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                  <div data-testid="adult-class-name" className="text-navy-dark font-bold text-base">
-                    {name}
+            {ADULT_CLASSES.map(({ infoKey, day, time }, i) => {
+              const info = getClassInfo(infoKey)
+              return (
+                <div
+                  key={infoKey}
+                  data-testid="adult-class-card"
+                  className={`border border-surface-border border-l-4 ${ACCENT_COLORS[i % ACCENT_COLORS.length]} rounded-lg px-5 py-4`}
+                >
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                    <div data-testid="adult-class-name" className="text-navy-dark font-bold text-base">
+                      {infoKey}
+                    </div>
+                    <div data-testid="adult-class-when" className="text-[#7ab3e8] text-sm font-medium">
+                      <span className="text-[#8a9aaa] text-xs font-bold uppercase tracking-wider">{day}</span>
+                      {' · '}
+                      <span className="whitespace-nowrap">{time}</span>
+                    </div>
                   </div>
-                  <div data-testid="adult-class-when" className="text-[#7ab3e8] text-sm font-medium">
-                    <span className="text-[#8a9aaa] text-xs font-bold uppercase tracking-wider">{day}</span>
-                    {' · '}
-                    <span className="whitespace-nowrap">{time}</span>
-                  </div>
+                  <p className="text-brand-red text-xs font-semibold mt-1">{info.audience}</p>
+                  <p data-testid="adult-class-description" className="text-[#5a6a8a] text-sm mt-2 leading-relaxed">
+                    {info.description}
+                  </p>
                 </div>
-                <p className="text-brand-red text-xs font-semibold mt-1">{audience}</p>
-                <p data-testid="adult-class-description" className="text-[#5a6a8a] text-sm mt-2 leading-relaxed">
-                  {description}
-                </p>
-              </div>
-            ))}
+              )
+            })}
           </div>
 
           <p className="text-[#8a9aaa] text-xs mt-8 text-center">

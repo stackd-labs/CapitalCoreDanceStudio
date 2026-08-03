@@ -60,7 +60,13 @@ function NavGroup({ link, className }) {
         aria-haspopup="true"
         aria-expanded={open}
         aria-label={`${link.label} menu`}
-        onClick={() => setOpen((o) => !o)}
+        // Hover already opens/closes this menu for pointer users. A real mouse click
+        // fires right after mouseenter has just opened it, so toggling on every click
+        // would immediately close what hover just opened. `event.detail` is 0 for
+        // synthetic clicks dispatched by keyboard activation (Enter/Space on a
+        // focused button) and >=1 for actual mouse clicks, so only keyboard
+        // activation toggles here. Do not "fix" this back to an unconditional toggle.
+        onClick={(e) => { if (e.detail === 0) setOpen((o) => !o) }}
         className="text-[#b8d4f0] hover:text-white text-[9px] leading-none px-0.5"
       >
         ▼

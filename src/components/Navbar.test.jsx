@@ -58,6 +58,20 @@ test('caret button toggles the Classes dropdown', () => {
   expect(screen.queryByRole('link', { name: 'Class Levels' })).not.toBeInTheDocument()
 })
 
+test('mouse click on the caret does not close a hover-opened menu', () => {
+  renderNavbar()
+  const caret = screen.getByRole('button', { name: 'Classes menu' })
+
+  // Open via a keyboard-equivalent activation (detail: 0), same as hover would leave it.
+  fireEvent.click(caret)
+  expect(caret).toHaveAttribute('aria-expanded', 'true')
+
+  // A real mouse click (detail >= 1) must not toggle it closed.
+  fireEvent.click(caret, { detail: 1 })
+  expect(caret).toHaveAttribute('aria-expanded', 'true')
+  expect(screen.getByRole('link', { name: 'Class Levels' })).toBeInTheDocument()
+})
+
 test('Escape closes the open dropdown', () => {
   renderNavbar()
   const caret = screen.getByRole('button', { name: 'Classes menu' })

@@ -27,8 +27,14 @@ function NavGroup({ link, className }) {
   const groupRef = useRef(null)
   const caretRef = useRef(null)
 
-  // Close on route change.
-  useEffect(() => { setOpen(false) }, [pathname])
+  // Close on route change. Adjusting state during render (rather than in an
+  // effect) is React's recommended pattern for resetting state when an input
+  // changes, and avoids the cascading re-render that set-state-in-effect warns about.
+  const [lastPathname, setLastPathname] = useState(pathname)
+  if (lastPathname !== pathname) {
+    setLastPathname(pathname)
+    setOpen(false)
+  }
 
   useEffect(() => {
     if (!open) return

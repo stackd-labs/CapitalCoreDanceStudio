@@ -16,13 +16,16 @@ test('renders logo text', () => {
   expect(screen.getByText('DANCE STUDIO')).toBeInTheDocument()
 })
 
-test('renders all nav links', () => {
+test('renders all top-level nav links', () => {
   renderNavbar()
   expect(screen.getAllByRole('link', { name: 'Home' })[0]).toBeInTheDocument()
   expect(screen.getAllByRole('link', { name: 'Classes' })[0]).toBeInTheDocument()
-  expect(screen.getAllByRole('link', { name: 'Tuition' })[0]).toBeInTheDocument()
+  expect(screen.getAllByRole('link', { name: 'Dance Company' })[0]).toBeInTheDocument()
   expect(screen.getAllByRole('link', { name: 'Birthdays' })[0]).toBeInTheDocument()
   expect(screen.getAllByRole('link', { name: 'Contact Us' })[0]).toBeInTheDocument()
+  // Tuition moved under the Classes dropdown on 2026-08-03 — it is deliberately
+  // NOT a top-level item any more. See the dropdown test below.
+  expect(screen.queryByRole('link', { name: 'Tuition' })).not.toBeInTheDocument()
 })
 
 test('highlights active link on /classes', () => {
@@ -52,6 +55,7 @@ test('caret button toggles the Classes dropdown', () => {
   expect(caret).toHaveAttribute('aria-expanded', 'true')
   expect(screen.getByRole('link', { name: 'Class Schedule' })).toHaveAttribute('href', '/classes')
   expect(screen.getByRole('link', { name: 'Class Levels' })).toHaveAttribute('href', '/class-levels')
+  expect(screen.getByRole('link', { name: 'Tuition' })).toHaveAttribute('href', '/tuition')
 
   fireEvent.click(caret)
   expect(caret).toHaveAttribute('aria-expanded', 'false')
@@ -111,9 +115,18 @@ test('highlights the Classes parent on /class-levels', () => {
   expect(classesLinks[0].className).toContain('text-[#f4a8b4]')
 })
 
+test('highlights the Classes parent on /tuition', () => {
+  // Tuition is a child of Classes now, so its own page must light up the parent —
+  // otherwise a visitor on /tuition sees nothing in the nav marked as current.
+  renderNavbar('/tuition')
+  const classesLinks = screen.getAllByRole('link', { name: 'Classes' })
+  expect(classesLinks[0].className).toContain('text-[#f4a8b4]')
+})
+
 test('mobile menu includes the Classes sub-links', () => {
   renderNavbar()
   fireEvent.click(screen.getByLabelText('Toggle menu'))
   expect(screen.getAllByRole('link', { name: 'Class Schedule' })).toHaveLength(1)
   expect(screen.getAllByRole('link', { name: 'Class Levels' })).toHaveLength(1)
+  expect(screen.getAllByRole('link', { name: 'Tuition' })).toHaveLength(1)
 })

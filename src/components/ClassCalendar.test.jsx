@@ -136,3 +136,15 @@ test('shows an empty state when handed nothing', () => {
   expect(screen.getByText('No classes match your filters. Try adjusting your selection.')).toBeInTheDocument()
   expect(screen.queryByTestId('class-grid')).not.toBeInTheDocument()
 })
+
+test('closes an open panel instead of leaving it as a ghost selection when the schedule narrows to empty', () => {
+  const { rerender } = renderCalendar()
+  const grid = screen.getByTestId('class-grid')
+  fireEvent.click(within(grid).getByRole('button', { name: /Musical Theatre/ }))
+  expect(screen.getByRole('dialog')).toBeInTheDocument()
+
+  rerender(<ClassCalendar schedule={[]} />)
+
+  expect(screen.getByText('No classes match your filters. Try adjusting your selection.')).toBeInTheDocument()
+  expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+})

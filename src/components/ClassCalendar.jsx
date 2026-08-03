@@ -89,133 +89,154 @@ export default function ClassCalendar({ schedule }) {
     lastTriggerRef.current?.focus()
   }
 
-  if (schedule.length === 0) {
-    return (
-      <div className="border border-dashed border-surface-border rounded-lg px-6 py-10 text-center">
-        <p className="text-[#8a9aaa] text-sm">No classes match your filters. Try adjusting your selection.</p>
-      </div>
-    )
+  // If the schedule narrows (a filter change) so the currently open class is no
+  // longer in it, drop the selection now, during render, instead of letting the
+  // panel unmount silently when the empty state takes over. Without this, `selected`
+  // stays set even though nothing is rendering it, and the panel can silently
+  // reappear if the filter is later relaxed back to include that class. This is the
+  // "adjust state during render" pattern — safe here because the guard condition
+  // (`selected && !stillPresent`) is false immediately after the call, so it cannot
+  // loop.
+  const stillPresent = selected != null && schedule.some(
+    ({ day, classes }) =>
+      day === selected.day &&
+      classes.some((c) => c.name === selected.name && c.start === selected.start)
+  )
+  if (selected && !stillPresent) {
+    setSelected(null)
   }
+  const visibleSelected = stillPresent ? selected : null
 
-  const byDay = DAY_ORDER.map((day) => ({
-    day,
-    classes: schedule.find((d) => d.day === day)?.classes || [],
-  }))
+  const isEmpty = schedule.length === 0
+  const byDay = isEmpty
+    ? []
+    : DAY_ORDER.map((day) => ({
+        day,
+        classes: schedule.find((d) => d.day === day)?.classes || [],
+      }))
   const gridHeight = TOTAL_SLOTS * SLOT_PX
 
   return (
     <>
-      {/* Desktop week grid */}
-      <div data-testid="class-grid" className="hidden md:block">
-        <div className="flex">
-          <div className="w-12 flex-shrink-0" />
-          {byDay.map(({ day }) => (
-            <div
-              key={day}
-              className="flex-1 text-center text-navy-dark text-xs font-black uppercase tracking-wider pb-2"
-            >
-              {day}
-            </div>
-          ))}
+      {isEmpty ? (
+        <div className="border border-dashed border-surface-border rounded-lg px-6 py-10 text-center">
+          <p className="text-[#8a9aaa] text-sm">No classes match your filters. Try adjusting your selection.</p>
         </div>
-
-        <div className="flex">
-          {/* Time gutter */}
-          <div className="w-12 flex-shrink-0 relative" style={{ height: gridHeight }}>
-            {timeLabels().map(({ key, text, slot }) => (
-              <div
-                key={key}
-                data-testid="time-label"
-                className="absolute right-2 text-[#8a9aaa] text-[10px] font-semibold -translate-y-1/2"
-                style={{ top: slot * SLOT_PX }}
-              >
-                {text}
-              </div>
-            ))}
-          </div>
-
-          {/* Day columns */}
-          {byDay.map(({ day, classes }) => (
-            <div
-              key={day}
-              className="flex-1 relative border-l border-surface-border"
-              style={{ height: gridHeight }}
-            >
-              {timeLabels().map(({ key, slot }) => (
+      ) : (
+        <>
+          {/* Desktop week grid */}
+          <div data-testid="class-grid" className="hidden md:block">
+            <div className="flex">
+              <div className="w-12 flex-shrink-0" />
+              {byDay.map(({ day }) => (
                 <div
-                  key={key}
-                  className="absolute left-0 right-0 border-t border-surface-border"
-                  style={{ top: slot * SLOT_PX }}
-                />
+                  key={day}
+                  className="flex-1 text-center text-navy-dark text-xs font-black uppercase tracking-wider pb-2"
+                >
+                  {day}
+                </div>
               ))}
-
-              {clusterByOverlap(classes).map((cluster) =>
-                cluster.map((cls, index) => {
-                  const { startSlot, span } = slotsFor(cls)
-                  const width = 100 / cluster.length
-                  return (
-                    <button
-                      key={`${cls.name}-${cls.start}`}
-                      type="button"
-                      data-testid="class-block"
-                      data-start-slot={startSlot}
-                      data-span={span}
-                      data-cluster-size={cluster.length}
-                      data-cluster-index={index}
-                      onClick={(e) => openClass(cls, day, e)}
-                      aria-label={`${cls.name}, ${day} ${cls.time}`}
-                      className={`absolute rounded px-1.5 py-1 text-left overflow-hidden hover:bg-surface-light focus:outline-none focus:ring-2 focus:ring-navy-dark ${BLOCK_BASE} ${CATEGORY_ACCENTS[cls.category] || CATEGORY_ACCENTS.adult}`}
-                      style={{
-                        top: startSlot * SLOT_PX + 1,
-                        height: span * SLOT_PX - 2,
-                        left: `${index * width}%`,
-                        width: `${width}%`,
-                      }}
-                    >
-                      <span className="block text-[10px] font-bold leading-tight">{cls.name}</span>
-                      <span className="block text-[9px] opacity-75 leading-tight">{cls.time}</span>
-                    </button>
-                  )
-                })
-              )}
             </div>
-          ))}
-        </div>
-      </div>
 
-      {/* Mobile day list */}
-      <div data-testid="class-list" className="md:hidden flex flex-col gap-8">
-        {byDay
-          .filter(({ classes }) => classes.length > 0)
-          .map(({ day, classes }) => (
-            <div key={day}>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="text-navy-dark font-black text-lg">{day}</div>
-                <div className="flex-1 h-px bg-surface-border" />
-              </div>
-              <div className="flex flex-col gap-3">
-                {classes.map((cls) => (
-                  <button
-                    key={`${cls.name}-${cls.start}`}
-                    type="button"
-                    data-testid="class-list-item"
-                    onClick={(e) => openClass(cls, day, e)}
-                    aria-label={`${cls.name}, ${day} ${cls.time}`}
-                    className={`w-full rounded-lg px-5 py-4 flex items-center justify-between gap-4 text-left hover:bg-surface-light transition-colors ${BLOCK_BASE} ${CATEGORY_ACCENTS[cls.category] || CATEGORY_ACCENTS.adult}`}
+            <div className="flex">
+              {/* Time gutter */}
+              <div className="w-12 flex-shrink-0 relative" style={{ height: gridHeight }}>
+                {timeLabels().map(({ key, text, slot }) => (
+                  <div
+                    key={key}
+                    data-testid="time-label"
+                    className="absolute right-2 text-[#8a9aaa] text-[10px] font-semibold -translate-y-1/2"
+                    style={{ top: slot * SLOT_PX }}
                   >
-                    <span className="flex-1 min-w-0">
-                      <span className="block font-bold text-base">{cls.name}</span>
-                      <span className="block text-[#5a6a8a] text-sm mt-0.5">{cls.ages}</span>
-                    </span>
-                    <span className="text-[#7ab3e8] text-sm font-medium flex-shrink-0">{cls.time}</span>
-                  </button>
+                    {text}
+                  </div>
                 ))}
               </div>
-            </div>
-          ))}
-      </div>
 
-      <ClassDetailPanel classInfo={selected} onClose={closePanel} />
+              {/* Day columns */}
+              {byDay.map(({ day, classes }) => (
+                <div
+                  key={day}
+                  className="flex-1 relative border-l border-surface-border"
+                  style={{ height: gridHeight }}
+                >
+                  {timeLabels().map(({ key, slot }) => (
+                    <div
+                      key={key}
+                      className="absolute left-0 right-0 border-t border-surface-border"
+                      style={{ top: slot * SLOT_PX }}
+                    />
+                  ))}
+
+                  {clusterByOverlap(classes).map((cluster) =>
+                    cluster.map((cls, index) => {
+                      const { startSlot, span } = slotsFor(cls)
+                      const width = 100 / cluster.length
+                      return (
+                        <button
+                          key={`${cls.name}-${cls.start}`}
+                          type="button"
+                          data-testid="class-block"
+                          data-start-slot={startSlot}
+                          data-span={span}
+                          data-cluster-size={cluster.length}
+                          data-cluster-index={index}
+                          onClick={(e) => openClass(cls, day, e)}
+                          aria-label={`${cls.name}, ${day} ${cls.time}`}
+                          className={`absolute rounded px-1.5 py-1 text-left overflow-hidden hover:bg-surface-light focus:outline-none focus:ring-2 focus:ring-navy-dark ${BLOCK_BASE} ${CATEGORY_ACCENTS[cls.category] || CATEGORY_ACCENTS.adult}`}
+                          style={{
+                            top: startSlot * SLOT_PX + 1,
+                            height: span * SLOT_PX - 2,
+                            left: `${index * width}%`,
+                            width: `${width}%`,
+                          }}
+                        >
+                          <span className="block text-[10px] font-bold leading-tight">{cls.name}</span>
+                          <span className="block text-[9px] opacity-75 leading-tight">{cls.time}</span>
+                        </button>
+                      )
+                    })
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Mobile day list */}
+          <div data-testid="class-list" className="md:hidden flex flex-col gap-8">
+            {byDay
+              .filter(({ classes }) => classes.length > 0)
+              .map(({ day, classes }) => (
+                <div key={day}>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="text-navy-dark font-black text-lg">{day}</div>
+                    <div className="flex-1 h-px bg-surface-border" />
+                  </div>
+                  <div className="flex flex-col gap-3">
+                    {classes.map((cls) => (
+                      <button
+                        key={`${cls.name}-${cls.start}`}
+                        type="button"
+                        data-testid="class-list-item"
+                        onClick={(e) => openClass(cls, day, e)}
+                        aria-label={`${cls.name}, ${day} ${cls.time}`}
+                        className={`w-full rounded-lg px-5 py-4 flex items-center justify-between gap-4 text-left hover:bg-surface-light transition-colors ${BLOCK_BASE} ${CATEGORY_ACCENTS[cls.category] || CATEGORY_ACCENTS.adult}`}
+                      >
+                        <span className="flex-1 min-w-0">
+                          <span className="block font-bold text-base">{cls.name}</span>
+                          <span className="block text-[#5a6a8a] text-sm mt-0.5">{cls.ages}</span>
+                        </span>
+                        <span className="text-[#7ab3e8] text-sm font-medium flex-shrink-0">{cls.time}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+          </div>
+        </>
+      )}
+
+      <ClassDetailPanel classInfo={visibleSelected} onClose={closePanel} />
     </>
   )
 }

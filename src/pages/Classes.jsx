@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar'
 import PageHeader from '../components/PageHeader'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
+import ClassCalendar from '../components/ClassCalendar'
 import { courseListSchema, simpleBreadcrumb } from '../lib/schema'
 
 // Portal-hosted Fall class registration (public). Charges the registration fee
@@ -28,13 +29,6 @@ const DANCE_STYLES = [
 const CLASSES_JSON_LD = [
   courseListSchema(DANCE_STYLES),
   simpleBreadcrumb('Classes', '/classes'),
-]
-
-const ACCENT_COLORS = [
-  'border-brand-red',
-  'border-[#7ab3e8]',
-  'border-[#f4a8b4]',
-  'border-[#f4a060]',
 ]
 
 // ageGroups: 'tiny' (2-5), 'kids' (5-12), 'teen' (6-17), 'adult' (16+)
@@ -91,8 +85,6 @@ export const SCHEDULE = [
   },
 ]
 
-const DAYS = ['All', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
-
 const AGES = [
   { value: 'All', label: 'All Ages' },
   { value: 'tiny', label: 'Tiny (2–5)' },
@@ -134,12 +126,10 @@ function FilterSelect({ label, options, value, onChange }) {
 }
 
 export default function Classes() {
-  const [selectedDay, setSelectedDay] = useState('All')
   const [selectedAge, setSelectedAge] = useState('All')
   const [selectedCategory, setSelectedCategory] = useState('All')
 
   const filteredSchedule = SCHEDULE
-    .filter(({ day }) => selectedDay === 'All' || day === selectedDay)
     .map(({ day, classes }) => ({
       day,
       classes: classes.filter((c) => {
@@ -149,8 +139,6 @@ export default function Classes() {
       }),
     }))
     .filter(({ classes }) => classes.length > 0)
-
-  const hasResults = filteredSchedule.length > 0
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -208,8 +196,7 @@ export default function Classes() {
       {/* Filter bar */}
       <div className="bg-surface-light border-b border-surface-border px-6 py-4 sticky top-16 z-40">
         <div className="max-w-3xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <FilterSelect label="Day" options={DAYS} value={selectedDay} onChange={setSelectedDay} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FilterSelect label="Age Group" options={AGES} value={selectedAge} onChange={setSelectedAge} />
             <FilterSelect label="Dance Style" options={CATEGORIES} value={selectedCategory} onChange={setSelectedCategory} />
           </div>
@@ -225,38 +212,7 @@ export default function Classes() {
             Find the right class for your dancer
           </h2>
 
-          {!hasResults ? (
-            <div className="border border-dashed border-surface-border rounded-lg px-6 py-10 text-center">
-              <p className="text-[#8a9aaa] text-sm">No classes match your filters. Try adjusting your selection.</p>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-10">
-              {filteredSchedule.map(({ day, classes }) => (
-                <div key={day}>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="text-navy-dark font-black text-lg">{day}</div>
-                    <div className="flex-1 h-px bg-surface-border" />
-                  </div>
-                  <div className="flex flex-col gap-3">
-                    {classes.map(({ name, time, ages }, i) => (
-                      <div
-                        key={`${day}-${name}-${time}`}
-                        className={`border border-surface-border border-l-4 ${ACCENT_COLORS[i % ACCENT_COLORS.length]} rounded-lg px-5 py-4 flex items-center justify-between gap-4`}
-                      >
-                        <div className="flex-1 min-w-0">
-                          <div className="text-navy-dark font-bold text-base">{name}</div>
-                          <div className="text-[#5a6a8a] text-sm mt-0.5">{ages}</div>
-                        </div>
-                        <div className="text-right flex-shrink-0">
-                          <div className="text-[#7ab3e8] text-sm font-medium">{time}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          <ClassCalendar schedule={filteredSchedule} />
 
           <p className="text-[#8a9aaa] text-xs mt-8 text-center">
             Beginner classes start at age 5+. Classes are subject to change based on interest and registrations.{' '}

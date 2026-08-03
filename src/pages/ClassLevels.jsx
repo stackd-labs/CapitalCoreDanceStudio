@@ -67,7 +67,7 @@ const ADULT_CLASSES_PATH = '/adult-classes'
 
 const CLASS_LEVELS_JSON_LD = [simpleBreadcrumb('Class Levels', '/class-levels')]
 
-function ClassCard({ name, audience, description, accent }) {
+function ClassCard({ name, description, accent }) {
   return (
     <div
       data-testid="class-card"
@@ -76,9 +76,6 @@ function ClassCard({ name, audience, description, accent }) {
       <div data-testid="class-name" className="text-navy-dark font-bold text-base">
         {name}
       </div>
-      <p data-testid="class-audience" className="text-brand-red text-xs font-semibold mt-1">
-        {audience}
-      </p>
       <p data-testid="class-description" className="text-[#5a6a8a] text-sm mt-2 leading-relaxed">
         {description}
       </p>
@@ -99,7 +96,7 @@ export default function ClassLevels() {
       <PageHeader
         eyebrow="Capital Core Dance"
         title="Class Levels"
-        subtitle="What every class involves and who it's built for — so you can find the right fit before you register."
+        subtitle="What every class involves — so you can find the right fit before you register."
       />
 
       {CLASS_GROUPS.map(({ title, ages, intro, infoKeys }, groupIndex) => (
@@ -124,7 +121,6 @@ export default function ClassLevels() {
                   <ClassCard
                     key={key}
                     name={key}
-                    audience={info?.audience}
                     description={info?.description}
                     accent={ACCENT_COLORS[i % ACCENT_COLORS.length]}
                   />

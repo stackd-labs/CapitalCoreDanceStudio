@@ -5,12 +5,18 @@ test('holds an entry for all 21 distinct classes', () => {
   expect(Object.keys(CLASS_INFO)).toHaveLength(21)
 })
 
-test('every entry has a usable audience line and description', () => {
+test('every entry has a usable description', () => {
   for (const [key, info] of Object.entries(CLASS_INFO)) {
-    expect(info.audience, `${key} audience`).toBeTruthy()
-    expect(info.audience.length, `${key} audience too short`).toBeGreaterThan(20)
     expect(info.description, `${key} description`).toBeTruthy()
     expect(info.description.length, `${key} description too short`).toBeGreaterThan(60)
+  }
+})
+
+test('carries no audience lines', () => {
+  // The "who is this class for?" lines were removed on 2026-08-03 at the studio's
+  // request. This guards against them being reintroduced by a copy-paste.
+  for (const [key, info] of Object.entries(CLASS_INFO)) {
+    expect(info, `${key} still has an audience line`).not.toHaveProperty('audience')
   }
 })
 

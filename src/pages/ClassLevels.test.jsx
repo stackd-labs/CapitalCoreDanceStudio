@@ -88,18 +88,20 @@ test('distinguishes classes whose names are prefixes of others', () => {
   expect(names.filter((n) => n === 'Tumble Tech')).toHaveLength(1)
 })
 
-test('every class card has an audience line and a description', () => {
+test('every class card has a description and no audience line', () => {
   renderClassLevels()
   const cards = screen.getAllByTestId('class-card')
   expect(cards).toHaveLength(18)
   for (const card of cards) {
     const name = card.querySelector('[data-testid="class-name"]').textContent.trim()
-    const audience = card.querySelector('[data-testid="class-audience"]')
     const description = card.querySelector('[data-testid="class-description"]')
-    expect(audience, `${name} is missing an audience line`).not.toBeNull()
-    expect(audience.textContent.trim().length, `${name} audience too short`).toBeGreaterThan(20)
     expect(description, `${name} is missing a description`).not.toBeNull()
     expect(description.textContent.trim().length, `${name} description too short`).toBeGreaterThan(60)
+    // "Who is this class for?" lines were removed 2026-08-03 at the studio's request.
+    expect(
+      card.querySelector('[data-testid="class-audience"]'),
+      `${name} still renders an audience line`
+    ).toBeNull()
   }
 })
 

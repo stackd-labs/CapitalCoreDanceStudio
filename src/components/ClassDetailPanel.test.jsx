@@ -26,8 +26,9 @@ test('shows the class name, day, time, ages, and prose', () => {
   expect(screen.getByText(/Monday/)).toBeInTheDocument()
   expect(screen.getByText(/5:30 – 6:15 PM/)).toBeInTheDocument()
   expect(screen.getByText('Ages 5+ · Beginner')).toBeInTheDocument()
-  expect(screen.getByText('Great for energetic kids who love to flip and tumble.')).toBeInTheDocument()
   expect(screen.getByText(/A high-energy class introducing dancers/)).toBeInTheDocument()
+  // Audience lines were removed 2026-08-03 at the studio's request.
+  expect(screen.queryByText(/Great for energetic kids/)).not.toBeInTheDocument()
 })
 
 test('is an accessible modal dialog labelled by the class name', () => {

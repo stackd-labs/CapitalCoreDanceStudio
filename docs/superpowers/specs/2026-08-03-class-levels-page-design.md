@@ -2,7 +2,9 @@
 
 **Date:** 2026-08-03
 **Project:** capitalcoredancewebsite (Vite · React 19 · Tailwind)
-**Status:** Approved, pending implementation plan
+**Status:** Implemented, then revised — see "Revision: studio copy" at the end of this
+document. The content model below (level cards + style cards) was **replaced**; the
+navigation, routing, and page-shell decisions still stand.
 
 ## Problem
 
@@ -196,3 +198,67 @@ Framework is already in place: Vitest + jsdom + Testing Library, `npm test`.
 - Repo is on `master`. Per project convention, branch before implementation and do not
   commit or push without an explicit request.
 - Restart the dev server after any build.
+
+---
+
+## Revision: studio copy (2026-08-03, same day)
+
+The studio supplied real copy, and it is organised **per individual class**, not per
+style. That supersedes the level-card + style-card model specified above.
+
+### What changed
+
+| Before | After |
+|---|---|
+| 6 level explainer cards (Tiny, Beginner, Intermediate, Advanced, Adult, Specialty) | Removed — the group headers and their intro lines carry this |
+| 11 style cards with level badges | 21 class cards, one per distinct class on the Fall schedule |
+| Level badges (`Tiny`, `Beginner`, `Intermediate/Advanced`, `Adult`, `Specialty`) | Removed — each class now sits in exactly one group, so badges were redundant |
+| Placeholder copy written in-house | Studio's own copy, transcribed verbatim |
+| — | New "Important Information" section (4 studio notes, on a `navy-dark` band) |
+| — | New per-class "who is this for?" audience line, drafted in-house |
+
+### Groups, in the studio's order
+
+`Tiny Dancers` (2–5, 3 classes) · `Beginner Program` (5+, 8) ·
+`Intermediate & Technique Classes` (5+, 5) · `Specialty Classes` (5+, 2) ·
+`Adult Program` (16+, 3). **21 classes total**, matching the 21 distinct rows on the
+Fall 2026 schedule.
+
+**There is deliberately no Advanced group** — the studio's copy does not have one, and a
+test asserts the page never renders the word "Advanced" so it cannot creep back in.
+
+### Copy provenance, tracked in the data
+
+Everything in `CLASS_GROUPS` is the studio's verbatim copy except:
+
+1. **Three class descriptions** the studio's copy did not cover, each marked
+   `draft: true` in the data: `Beginner Hip Hop` (Mon 6:15), `Tumble` (Thu 7:15),
+   `Lyrical & Contemporary` (Fri 6:15). These are separate schedule rows from
+   `Beginner Hip Hop & Breakdancing`, `Tumble Tech`, and `Ballet & Contemporary`
+   respectively — a test guards the prefix-collision pairs.
+2. **All 21 audience lines**, drafted in-house from the studio's own descriptions and the
+   schedule's age ranges. The studio proposed this field; the wording awaits review.
+
+`Adult Femme Flair` uses the studio's spelling. The printed flyer — and therefore
+`SCHEDULE` in `Classes.jsx` — reads `Adult Femme / Flaire`. The flyer text was left alone.
+
+### Consequences for earlier open items
+
+- **Level badge accuracy** (the Jazz / Hip Hop over-claim) is moot — badges are gone.
+- **"By placement" wording** is resolved: the studio's own note now reads "Class
+  placement recommendations may be made by instructors to ensure every dancer is in the
+  class that best supports their growth."
+- **The "Specialty" / Tuition pricing-term collision still stands.** `Tuition.jsx:148`
+  uses "Specialty Classes" to mean separately priced classes with their own event pages;
+  this page uses it for Musical Theatre and Pom Cheer, which are ordinary schedule rows.
+  Still an owner decision.
+- **"Creative Movement" naming** is moot — the page no longer lists styles.
+- **`Adult Femme / Flaire` and `Modern` coverage** is resolved: every schedule row now
+  has a card.
+
+### Still true from the original design
+
+The route, the Navbar dropdown, the page shell (`SEO` → `Navbar` → `PageHeader` →
+sections → `Footer`), the Tailwind token restrictions, the copy-at-top-of-file
+convention, and the "do not touch `Classes.jsx` or `schema.js`" constraint are all
+unchanged.

@@ -15,111 +15,196 @@ const ACCENT_COLORS = [
   'border-[#f4a060]',
 ]
 
-// PLACEHOLDER COPY — generic to each level, makes no claim about our curriculum,
-// instructors, or placement process. Chanel replaces these blurbs with studio copy.
-const LEVELS = [
+// Class descriptions are the studio's own copy (supplied 2026-08-03), transcribed
+// verbatim. Three classes on the Fall schedule had no studio copy and are drafted
+// in-house pending review — each is marked `draft: true` below:
+//   Beginner Hip Hop (Mon 6:15), Tumble (Thu 7:15), Lyrical & Contemporary (Fri 6:15).
+// Every `audience` line is also drafted in-house, derived only from the studio's own
+// description and the age ranges on the Fall schedule.
+// Group order and titles follow the studio's copy — note there is deliberately no
+// Advanced group, and "Adult Femme Flair" uses the studio's spelling (the printed
+// flyer reads "Adult Femme / Flaire").
+const CLASS_GROUPS = [
   {
-    name: 'Tiny',
+    title: 'Tiny Dancers',
     ages: 'Ages 2–5',
-    blurb: 'Thirty-minute classes built for the shortest attention spans — songs, shapes, and safe first tumbling. No experience needed.',
+    intro: null,
+    classes: [
+      {
+        name: 'Tiny Ballet & Tumble',
+        audience: 'Perfect for first-time dancers who love to move and climb.',
+        description: 'Perfect for little ones just beginning their dance journey! Dancers explore basic ballet movements, balance, coordination, and beginner tumbling skills through music, imagination, and creative play. This class builds confidence while developing important motor skills in a fun, encouraging environment.',
+      },
+      {
+        name: 'Tiny Ballet & Hip Hop',
+        audience: 'Great for high-energy little ones who love music and games.',
+        description: 'A fun introduction to both ballet and hip hop! Young dancers build rhythm, coordination, confidence, and creativity while learning age-appropriate movement through upbeat music, games, and imaginative activities.',
+      },
+      {
+        name: 'Tiny Ballet & Tap',
+        audience: 'Perfect for little dancers who love making noise with their feet.',
+        description: 'Introduce your little dancer to the grace of ballet and the excitement of tap! This class develops rhythm, musicality, balance, listening skills, and confidence while making learning fun.',
+      },
+    ],
   },
   {
-    name: 'Beginner',
+    title: 'Beginner Program',
     ages: 'Ages 5+',
-    blurb: 'Where technique starts: positions, counts, and across-the-floor basics at a pace set for first-timers.',
+    intro: 'No previous dance experience required!',
+    classes: [
+      {
+        name: 'Beginner Ballet & Jazz',
+        audience: 'Ideal for a first-time dancer who wants a strong foundation.',
+        description: 'A wonderful introduction to dance! Students build a strong ballet foundation while learning energetic jazz technique that improves flexibility, coordination, confidence, and performance quality.',
+      },
+      {
+        name: 'Beginner Ballet & Hip Hop',
+        audience: 'Great for dancers who want structure and fun in one class.',
+        description: 'The perfect combination of structure and fun! Dancers learn ballet technique while exploring the exciting energy of hip hop, helping them become well-rounded performers.',
+      },
+      {
+        name: 'Beginner Ballet & Tap',
+        audience: 'Perfect for beginners drawn to rhythm and timing.',
+        description: 'Students develop ballet fundamentals while learning rhythm, timing, and musicality through tap dancing. A great class for dancers beginning their dance education.',
+      },
+      {
+        name: 'Beginner Ballet & Modern',
+        audience: 'Ideal for expressive dancers who like to create.',
+        description: 'Explore both classical ballet and creative modern dance. Students learn proper technique while developing body awareness, expression, flexibility, and artistry.',
+      },
+      {
+        name: 'Beginner Acro & Jazz',
+        audience: 'Great for energetic kids who love to flip and tumble.',
+        description: 'A high-energy class introducing dancers to basic acrobatics alongside exciting jazz movement. Students build strength, flexibility, coordination, balance, and confidence.',
+      },
+      {
+        name: 'Beginner Contemporary & Jazz',
+        audience: 'Perfect for dancers who want to move and tell a story.',
+        description: 'Learn expressive movement while building strong jazz fundamentals. Dancers improve flexibility, musicality, creativity, and performance skills in this engaging combo class.',
+      },
+      {
+        name: 'Beginner Hip Hop & Breakdancing',
+        audience: 'Great for energetic dancers who want to freestyle.',
+        description: 'A favorite for energetic dancers! Students learn hip hop grooves, beginner breakdancing foundations, freestyle skills, musicality, and coordination in an encouraging atmosphere.',
+      },
+      {
+        name: 'Beginner Hip Hop',
+        draft: true,
+        audience: "Perfect for a first-time dancer who loves to move to today's music.",
+        description: 'An upbeat introduction to hip hop! Dancers learn grooves, rhythm, and beginner choreography while building coordination, musicality, and confidence in a supportive class.',
+      },
+    ],
   },
   {
-    name: 'Intermediate',
-    ages: 'By placement',
-    blurb: 'For dancers with a season or two behind them — longer combinations, faster corrections, more demanding choreography.',
+    title: 'Intermediate & Technique Classes',
+    ages: 'Ages 5+',
+    intro: 'Perfect for dancers ready to continue developing their skills.',
+    classes: [
+      {
+        name: 'Acro & Lyrical',
+        audience: 'Ideal for dancers with tumbling experience who love to perform.',
+        description: 'This class combines acrobatic skills with expressive lyrical dance. Students focus on flexibility, strength, control, artistry, and emotional storytelling through movement.',
+      },
+      {
+        name: 'Ballet & Contemporary',
+        audience: 'Ideal for dancers focused on serious technique.',
+        description: 'A technique-focused class blending classical ballet with contemporary dance. Dancers develop alignment, flexibility, artistry, turns, extensions, and musicality.',
+      },
+      {
+        name: 'Tumble Tech',
+        audience: 'Great for any dancer working toward a new tumbling skill — all levels welcome.',
+        description: 'Designed for dancers wanting to improve tumbling technique. Students work on rolls, cartwheels, walkovers, handstands, flexibility, strength, and proper progressions at their own level.',
+      },
+      {
+        name: 'Tumble',
+        draft: true,
+        audience: 'Great for dancers building tumbling confidence at their own pace.',
+        description: 'A tumbling class for dancers building skills at their own pace. Students work on rolls, cartwheels, handstands, flexibility, and strength with proper spotting and progressions.',
+      },
+      {
+        name: 'Lyrical & Contemporary',
+        draft: true,
+        audience: 'Ideal for dancers who connect to music and emotion.',
+        description: 'Expressive movement set to the music that inspires it. Dancers develop control, flexibility, artistry, and storytelling while strengthening lyrical and contemporary technique.',
+      },
+    ],
   },
   {
-    name: 'Advanced',
-    ages: 'By placement',
-    blurb: 'Full combinations, refined technique, and performance-level choreography for dancers who train consistently.',
+    title: 'Specialty Classes',
+    ages: 'Ages 5+',
+    intro: null,
+    classes: [
+      {
+        name: 'Musical Theatre',
+        audience: 'Perfect for the dancer who loves to sing, act, and perform — all levels welcome.',
+        description: 'Love to perform? This Broadway-inspired class combines dance, acting, and storytelling while helping students build confidence, stage presence, and performance skills.',
+      },
+      {
+        name: 'Pom Cheer',
+        audience: 'Great for dancers who love team routines and performing.',
+        description: 'Learn pom technique, cheer motions, jumps, and exciting dance combinations while developing teamwork, confidence, and performance quality.',
+      },
+    ],
   },
   {
-    name: 'Adult',
+    title: 'Adult Program',
     ages: 'Ages 16+',
-    blurb: "Evening classes for grown dancers, whether it's your first class or your return after years away.",
-  },
-  {
-    name: 'Specialty',
-    ages: 'Ages 5+',
-    blurb: 'Style-specific classes beyond the studio staples — Musical Theatre, Pom, and Cheer.',
+    intro: 'No dance experience necessary!',
+    classes: [
+      {
+        name: 'Adult Femme Flair',
+        audience: 'Perfect for adults returning to dance or starting fresh.',
+        description: "An empowering dance class focused on confidence, musicality, and expressive choreography. Whether you're returning to dance or trying something new, you'll leave feeling stronger and more confident.",
+      },
+      {
+        name: 'Adult Pom',
+        audience: "Great for adults who want a workout that doesn't feel like one.",
+        description: "A fun, upbeat class featuring pom technique, jazz-inspired movement, and energetic choreography. It's a great workout while learning exciting routines.",
+      },
+      {
+        name: 'Adult Contemporary',
+        audience: 'Ideal for adults who want to move expressively in a welcoming room.',
+        description: 'Explore movement, creativity, and expression through contemporary dance. Improve flexibility, balance, strength, and artistry in a supportive, welcoming environment.',
+      },
+    ],
   },
 ]
 
-// Level badges are derived from the Fall 2026 schedule in Classes.jsx.
-// Intermediate and Advanced are one combined badge because the schedule does not
-// distinguish them. "Adult" is a level, not a style — it appears only as a badge.
-// PLACEHOLDER COPY — generic to each art form. Chanel replaces these descriptions.
-const STYLES = [
-  {
-    name: 'Ballet',
-    levels: ['Tiny', 'Beginner', 'Intermediate/Advanced'],
-    description: 'The foundation under every other style: alignment, turnout, and the vocabulary dancers carry into everything else.',
-  },
-  {
-    name: 'Jazz',
-    levels: ['Beginner'],
-    description: 'Sharp, upbeat, and musical — isolations, turns, and leaps set to current music.',
-  },
-  {
-    name: 'Hip Hop',
-    levels: ['Tiny', 'Beginner'],
-    description: 'Groove, rhythm, and attitude, with age-appropriate music and choreography at every level.',
-  },
-  {
-    name: 'Contemporary',
-    levels: ['Beginner', 'Intermediate/Advanced', 'Adult'],
-    description: 'Movement built on breath and weight, borrowing from ballet and modern to tell a story.',
-  },
-  {
-    name: 'Tap',
-    levels: ['Tiny', 'Beginner'],
-    description: 'Rhythm you can hear. Dancers build clean sounds and timing one step at a time.',
-  },
-  {
-    name: 'Acro & Tumbling',
-    levels: ['Tiny', 'Beginner', 'Intermediate/Advanced'],
-    description: 'Strength, flexibility, and controlled tricks — rolls and cartwheels through to advanced skills, spotted and progressed safely.',
-  },
-  {
-    name: 'Lyrical',
-    levels: ['Intermediate/Advanced'],
-    description: 'Ballet technique with contemporary freedom, danced to the lyrics of a song.',
-  },
-  {
-    name: 'Breakdancing',
-    levels: ['Beginner'],
-    description: 'Toprock, footwork, and freezes — the athletic, foundational side of hip hop.',
-  },
-  {
-    name: 'Musical Theatre',
-    levels: ['Specialty'],
-    description: 'Choreography paired with character and storytelling, drawn from stage repertoire.',
-  },
-  {
-    name: 'Pom & Cheer',
-    levels: ['Specialty', 'Adult'],
-    description: 'Sharp motions, jumps, and team-style routines; good preparation for school squads.',
-  },
-  {
-    name: 'Creative Movement',
-    levels: ['Tiny'],
-    description: 'Preschool-paced exploration of rhythm and coordination through imagination and play.',
-  },
+// Studio's own copy, verbatim.
+const IMPORTANT_INFO = [
+  'Tiny Classes are designed for dancers ages 2–5.',
+  'Beginner Classes are designed for dancers ages 5 and older with little or no dance experience.',
+  'Adult, Tumble Tech, Pom Cheer, and Musical Theatre classes are beginner-friendly and welcome dancers of all experience levels.',
+  'Class placement recommendations may be made by instructors to ensure every dancer is in the class that best supports their growth.',
 ]
 
 const CLASS_LEVELS_JSON_LD = [simpleBreadcrumb('Class Levels', '/class-levels')]
+
+function ClassCard({ name, audience, description, accent }) {
+  return (
+    <div
+      data-testid="class-card"
+      className={`border border-surface-border border-l-4 ${accent} rounded-lg px-5 py-4`}
+    >
+      <div data-testid="class-name" className="text-navy-dark font-bold text-base">
+        {name}
+      </div>
+      <p data-testid="class-audience" className="text-brand-red text-xs font-semibold mt-1">
+        {audience}
+      </p>
+      <p data-testid="class-description" className="text-[#5a6a8a] text-sm mt-2 leading-relaxed">
+        {description}
+      </p>
+    </div>
+  )
+}
 
 export default function ClassLevels() {
   return (
     <div className="min-h-screen flex flex-col">
       <SEO
-        title="Dance Class Levels &amp; Styles | Capital Core Dance Studio — Midlothian, VA"
-        description="Which dance class fits your dancer? Capital Core Dance Studio in Midlothian, VA offers Tiny (ages 2–5), Beginner, Intermediate, Advanced, Adult, and Specialty levels across ballet, jazz, hip hop, contemporary, tap, acro, lyrical, musical theatre, and pom/cheer."
+        title="Dance Class Descriptions &amp; Levels | Capital Core Dance Studio — Midlothian, VA"
+        description="Which dance class fits your dancer? Full class descriptions for Capital Core Dance Studio in Midlothian, VA — Tiny Dancers (ages 2–5), the Beginner Program (ages 5+), Intermediate &amp; Technique classes, Specialty classes including Musical Theatre and Pom Cheer, and Adult classes (16+)."
         canonical="/class-levels"
         jsonLd={CLASS_LEVELS_JSON_LD}
       />
@@ -127,86 +212,57 @@ export default function ClassLevels() {
       <PageHeader
         eyebrow="Capital Core Dance"
         title="Class Levels"
-        subtitle="What each level means and what every style involves — so you can find the right fit before you register."
+        subtitle="What every class involves and who it's built for — so you can find the right fit before you register."
       />
 
-      {/* Levels */}
-      <section className="bg-surface-light px-6 py-12">
-        <div className="max-w-3xl mx-auto">
-          <p className="text-brand-red text-xs font-bold tracking-[0.3em] uppercase mb-2">
-            Which level?
-          </p>
-          <h2 className="text-navy-dark text-2xl font-black mb-8">
-            Six levels, ages 2 through adult
-          </h2>
+      {CLASS_GROUPS.map(({ title, ages, intro, classes }, groupIndex) => (
+        <section
+          key={title}
+          data-testid="class-group"
+          className={`px-6 py-12 ${groupIndex % 2 === 0 ? 'bg-surface-light' : 'bg-white'}`}
+        >
+          <div className="max-w-3xl mx-auto">
+            <p className="text-brand-red text-xs font-bold tracking-[0.3em] uppercase mb-2">
+              {ages}
+            </p>
+            <h2 data-testid="group-title" className="text-navy-dark text-2xl font-black">
+              {title}
+            </h2>
+            {intro && <p className="text-[#5a6a8a] text-sm mt-2">{intro}</p>}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {LEVELS.map(({ name, ages, blurb }, i) => (
-              <div
-                key={name}
-                data-testid="level-card"
-                className={`bg-white border border-surface-border border-l-4 ${ACCENT_COLORS[i % ACCENT_COLORS.length]} rounded-lg px-5 py-4`}
-              >
-                <div className="text-navy-dark font-bold text-base">{name}</div>
-                <div className="text-[#8a9aaa] text-xs font-bold uppercase tracking-wider mt-0.5">
-                  {ages}
-                </div>
-                <p data-testid="level-blurb" className="text-[#5a6a8a] text-sm mt-2 leading-relaxed">
-                  {blurb}
-                </p>
-              </div>
-            ))}
+            <div className="flex flex-col gap-3 mt-8">
+              {classes.map(({ name, audience, description }, i) => (
+                <ClassCard
+                  key={name}
+                  name={name}
+                  audience={audience}
+                  description={description}
+                  accent={ACCENT_COLORS[i % ACCENT_COLORS.length]}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ))}
 
-      {/* Styles */}
-      <section className="bg-white px-6 py-12">
+      {/* Important information */}
+      <section className="bg-navy-dark px-6 py-12">
         <div className="max-w-3xl mx-auto">
-          <p className="text-brand-red text-xs font-bold tracking-[0.3em] uppercase mb-2">
-            Our styles
+          <p className="text-[#f4a8b4] text-xs font-bold tracking-[0.3em] uppercase mb-2">
+            Important information
           </p>
-          <h2 className="text-navy-dark text-2xl font-black mb-8">
-            What each class involves
-          </h2>
-
-          <div className="flex flex-col gap-3">
-            {STYLES.map(({ name, levels, description }, i) => (
-              <div
-                key={name}
-                data-testid="style-card"
-                className={`border border-surface-border border-l-4 ${ACCENT_COLORS[i % ACCENT_COLORS.length]} rounded-lg px-5 py-4`}
+          <h2 className="text-white text-2xl font-black mb-6">Before you register</h2>
+          <ul className="flex flex-col gap-3">
+            {IMPORTANT_INFO.map((item) => (
+              <li
+                key={item}
+                data-testid="info-bullet"
+                className="text-[#b8d4f0] text-sm leading-relaxed pl-4 border-l-2 border-navy-mid"
               >
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-                  <div data-testid="style-name" className="text-navy-dark font-bold text-base">
-                    {name}
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {levels.map((level) => (
-                      <span
-                        key={level}
-                        data-testid="style-badge"
-                        className="bg-surface-light text-[#5a6a8a] text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"
-                      >
-                        {level}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                <p data-testid="style-description" className="text-[#5a6a8a] text-sm mt-2 leading-relaxed">
-                  {description}
-                </p>
-              </div>
+                {item}
+              </li>
             ))}
-          </div>
-
-          <p className="text-[#8a9aaa] text-xs mt-8 text-center">
-            Not every style runs every session. See the{' '}
-            <Link to="/classes" className="text-brand-red font-semibold hover:underline">
-              Fall schedule
-            </Link>{' '}
-            for what's on the calendar now.
-          </p>
+          </ul>
         </div>
       </section>
 

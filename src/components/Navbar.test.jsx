@@ -72,6 +72,18 @@ test('mouse click on the caret does not close a hover-opened menu', () => {
   expect(screen.getByRole('link', { name: 'Class Levels' })).toBeInTheDocument()
 })
 
+test('pointer click opens the menu when closed (touch has no hover)', () => {
+  renderNavbar()
+  const caret = screen.getByRole('button', { name: 'Classes menu' })
+  expect(caret).toHaveAttribute('aria-expanded', 'false')
+
+  // Touch/pen at desktop width never fires mouseenter, so a pointer click
+  // (detail >= 1) on a closed menu must still open it.
+  fireEvent.click(caret, { detail: 1 })
+  expect(caret).toHaveAttribute('aria-expanded', 'true')
+  expect(screen.getByRole('link', { name: 'Class Levels' })).toBeInTheDocument()
+})
+
 test('Escape closes the open dropdown', () => {
   renderNavbar()
   const caret = screen.getByRole('button', { name: 'Classes menu' })

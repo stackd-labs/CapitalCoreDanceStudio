@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, within } from '@testing-library/react'
 import ClassCalendar, { clusterByOverlap } from './ClassCalendar'
-import { SCHEDULE } from '../pages/Classes'
+import { SCHEDULE } from '../lib/schedule'
 
 function renderCalendar(schedule = SCHEDULE) {
   return render(<ClassCalendar schedule={schedule} />)

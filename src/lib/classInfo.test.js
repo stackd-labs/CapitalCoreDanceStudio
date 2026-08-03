@@ -1,5 +1,5 @@
 import { CLASS_INFO, getClassInfo } from './classInfo'
-import { SCHEDULE } from '../pages/Classes'
+import { SCHEDULE } from './schedule'
 
 test('holds an entry for all 21 distinct classes', () => {
   expect(Object.keys(CLASS_INFO)).toHaveLength(21)

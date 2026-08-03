@@ -45,13 +45,14 @@ const CLASS_GROUPS = [
     title: 'Intermediate & Technique Classes',
     ages: 'Ages 5+',
     intro: 'Perfect for dancers ready to continue developing their skills.',
-    infoKeys: ['Acro & Lyrical', 'Ballet & Contemporary', 'Tumble Tech', 'Tumble', 'Lyrical & Contemporary'],
+    infoKeys: ['Acro & Lyrical', 'Ballet & Contemporary', 'Lyrical & Contemporary'],
   },
   {
     title: 'Specialty Classes',
     ages: 'Ages 5+',
     intro: null,
-    infoKeys: ['Musical Theatre', 'Pom Cheer'],
+    // Tumble Tech moved here from Intermediate & Technique on 2026-08-03.
+    infoKeys: ['Musical Theatre', 'Pom Cheer', 'Tumble Tech'],
   },
 ]
 

@@ -98,7 +98,7 @@ export default function AdultClasses() {
             Ages 16+
           </p>
           <h2 className="text-navy-dark text-2xl font-black mb-8">
-            Three classes a week
+            Get back to the beat
           </h2>
 
           <div className="flex flex-col gap-3">

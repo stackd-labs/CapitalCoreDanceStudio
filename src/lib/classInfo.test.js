@@ -2,7 +2,8 @@ import { CLASS_INFO, getClassInfo } from './classInfo'
 import { SCHEDULE } from './schedule'
 
 test('holds an entry for all 21 distinct classes', () => {
-  expect(Object.keys(CLASS_INFO)).toHaveLength(21)
+  // 20, not 21: 'Tumble' was merged into 'Tumble Tech' on 2026-08-03.
+  expect(Object.keys(CLASS_INFO)).toHaveLength(20)
 })
 
 test('every entry has a usable description', () => {
@@ -20,12 +21,14 @@ test('carries no audience lines', () => {
   }
 })
 
-test('marks exactly the three in-house drafted descriptions', () => {
+test('marks exactly the in-house drafted descriptions', () => {
   const drafts = Object.entries(CLASS_INFO)
     .filter(([, info]) => info.draft)
     .map(([key]) => key)
     .sort()
-  expect(drafts).toEqual(['Beginner Hip Hop', 'Lyrical & Contemporary', 'Tumble'])
+  // Two, not three: merging 'Tumble' into 'Tumble Tech' dropped a drafted description,
+  // because the studio's own Tumble Tech text already covered it.
+  expect(drafts).toEqual(['Beginner Hip Hop', 'Lyrical & Contemporary'])
 })
 
 test('getClassInfo returns the entry for a known key', () => {

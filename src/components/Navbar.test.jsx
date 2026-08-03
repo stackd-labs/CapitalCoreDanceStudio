@@ -55,6 +55,7 @@ test('caret button toggles the Classes dropdown', () => {
   expect(caret).toHaveAttribute('aria-expanded', 'true')
   expect(screen.getByRole('link', { name: 'Class Schedule' })).toHaveAttribute('href', '/classes')
   expect(screen.getByRole('link', { name: 'Class Levels' })).toHaveAttribute('href', '/class-levels')
+  expect(screen.getByRole('link', { name: 'Adult Classes' })).toHaveAttribute('href', '/adult-classes')
   expect(screen.getByRole('link', { name: 'Tuition' })).toHaveAttribute('href', '/tuition')
 
   fireEvent.click(caret)
@@ -115,6 +116,12 @@ test('highlights the Classes parent on /class-levels', () => {
   expect(classesLinks[0].className).toContain('text-[#f4a8b4]')
 })
 
+test('highlights the Classes parent on /adult-classes', () => {
+  renderNavbar('/adult-classes')
+  const classesLinks = screen.getAllByRole('link', { name: 'Classes' })
+  expect(classesLinks[0].className).toContain('text-[#f4a8b4]')
+})
+
 test('highlights the Classes parent on /tuition', () => {
   // Tuition is a child of Classes now, so its own page must light up the parent —
   // otherwise a visitor on /tuition sees nothing in the nav marked as current.
@@ -128,5 +135,6 @@ test('mobile menu includes the Classes sub-links', () => {
   fireEvent.click(screen.getByLabelText('Toggle menu'))
   expect(screen.getAllByRole('link', { name: 'Class Schedule' })).toHaveLength(1)
   expect(screen.getAllByRole('link', { name: 'Class Levels' })).toHaveLength(1)
+  expect(screen.getAllByRole('link', { name: 'Adult Classes' })).toHaveLength(1)
   expect(screen.getAllByRole('link', { name: 'Tuition' })).toHaveLength(1)
 })

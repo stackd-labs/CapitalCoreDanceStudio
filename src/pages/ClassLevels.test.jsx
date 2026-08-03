@@ -38,10 +38,8 @@ const GROUPS = [
     title: 'Specialty Classes',
     classes: ['Musical Theatre', 'Pom Cheer'],
   },
-  {
-    title: 'Adult Program',
-    classes: ['Adult Femme Flair', 'Adult Pom', 'Adult Contemporary'],
-  },
+  // The Adult Program group moved to its own page on 2026-08-03 — its coverage lives
+  // in AdultClasses.test.jsx. This page is ages 2–17 only.
 ]
 
 const ALL_CLASSES = GROUPS.flatMap((g) => g.classes)
@@ -51,21 +49,33 @@ test('renders page title', () => {
   expect(screen.getByRole('heading', { name: 'Class Levels' })).toBeInTheDocument()
 })
 
-test('renders all five class groups with their age lines', () => {
+test('renders all four youth class groups with their age lines', () => {
   renderClassLevels()
   const titles = screen.getAllByTestId('group-title').map((el) => el.textContent.trim())
   expect(titles).toEqual(GROUPS.map((g) => g.title))
-  // 'Ages 5+' is shared by three groups; the other two ages appear once each.
+  // 'Ages 5+' is shared by three groups; Tiny's range appears once.
   expect(screen.getAllByText('Ages 5+')).toHaveLength(3)
   expect(screen.getAllByText('Ages 2–5')).toHaveLength(1)
-  expect(screen.getAllByText('Ages 16+')).toHaveLength(1)
 })
 
-test('renders every class on the Fall schedule, in group order', () => {
+test('renders every youth class on the Fall schedule, in group order', () => {
   renderClassLevels()
   const names = screen.getAllByTestId('class-name').map((el) => el.textContent.trim())
   expect(names).toEqual(ALL_CLASSES)
-  expect(names).toHaveLength(21)
+  expect(names).toHaveLength(18)
+})
+
+test('adult classes live on their own page, not duplicated here', () => {
+  renderClassLevels()
+  const names = screen.getAllByTestId('class-name').map((el) => el.textContent.trim())
+  // Duplicating these would mean maintaining the studio's copy in two files.
+  for (const adult of ['Adult Femme Flair', 'Adult Pom', 'Adult Contemporary']) {
+    expect(names).not.toContain(adult)
+  }
+  expect(screen.getByRole('link', { name: 'See Adult Classes →' })).toHaveAttribute(
+    'href',
+    '/adult-classes'
+  )
 })
 
 test('distinguishes classes whose names are prefixes of others', () => {
@@ -81,7 +91,7 @@ test('distinguishes classes whose names are prefixes of others', () => {
 test('every class card has an audience line and a description', () => {
   renderClassLevels()
   const cards = screen.getAllByTestId('class-card')
-  expect(cards).toHaveLength(21)
+  expect(cards).toHaveLength(18)
   for (const card of cards) {
     const name = card.querySelector('[data-testid="class-name"]').textContent.trim()
     const audience = card.querySelector('[data-testid="class-audience"]')
@@ -107,7 +117,7 @@ test('does not present a level the studio does not offer', () => {
   renderClassLevels()
   // The studio's copy has no Advanced group — the page must not invent one.
   expect(screen.queryByText('Advanced')).not.toBeInTheDocument()
-  expect(screen.getAllByTestId('group-title')).toHaveLength(5)
+  expect(screen.getAllByTestId('group-title')).toHaveLength(4)
 })
 
 test('links to the class schedule and the register portal', () => {

@@ -9,6 +9,7 @@ const NAV_LINKS = [
     children: [
       { to: '/classes', label: 'Class Schedule' },
       { to: '/class-levels', label: 'Class Levels' },
+      { to: '/adult-classes', label: 'Adult Classes' },
       // Tuition moved out of the top-level bar and under Classes on 2026-08-03.
       { to: '/tuition', label: 'Tuition' },
     ],

@@ -146,28 +146,10 @@ const CLASS_GROUPS = [
       },
     ],
   },
-  {
-    title: 'Adult Program',
-    ages: 'Ages 16+',
-    intro: 'No dance experience necessary!',
-    classes: [
-      {
-        name: 'Adult Femme Flair',
-        audience: 'Perfect for adults returning to dance or starting fresh.',
-        description: "An empowering dance class focused on confidence, musicality, and expressive choreography. Whether you're returning to dance or trying something new, you'll leave feeling stronger and more confident.",
-      },
-      {
-        name: 'Adult Pom',
-        audience: "Great for adults who want a workout that doesn't feel like one.",
-        description: "A fun, upbeat class featuring pom technique, jazz-inspired movement, and energetic choreography. It's a great workout while learning exciting routines.",
-      },
-      {
-        name: 'Adult Contemporary',
-        audience: 'Ideal for adults who want to move expressively in a welcoming room.',
-        description: 'Explore movement, creativity, and expression through contemporary dance. Improve flexibility, balance, strength, and artistry in a supportive, welcoming environment.',
-      },
-    ],
-  },
+  // The Adult Program group moved to its own page on 2026-08-03 — see
+  // src/pages/AdultClasses.jsx. Its three classes and their descriptions live there
+  // now, so this page covers ages 2–17 only. Don't re-add them here; the copy would
+  // then have to be kept in sync in two files.
 ]
 
 // Studio's own copy, verbatim.
@@ -177,6 +159,8 @@ const IMPORTANT_INFO = [
   'Adult, Tumble Tech, Pom Cheer, and Musical Theatre classes are beginner-friendly and welcome dancers of all experience levels.',
   'Class placement recommendations may be made by instructors to ensure every dancer is in the class that best supports their growth.',
 ]
+
+const ADULT_CLASSES_PATH = '/adult-classes'
 
 const CLASS_LEVELS_JSON_LD = [simpleBreadcrumb('Class Levels', '/class-levels')]
 
@@ -204,7 +188,7 @@ export default function ClassLevels() {
     <div className="min-h-screen flex flex-col">
       <SEO
         title="Dance Class Descriptions &amp; Levels | Capital Core Dance Studio — Midlothian, VA"
-        description="Which dance class fits your dancer? Full class descriptions for Capital Core Dance Studio in Midlothian, VA — Tiny Dancers (ages 2–5), the Beginner Program (ages 5+), Intermediate &amp; Technique classes, Specialty classes including Musical Theatre and Pom Cheer, and Adult classes (16+)."
+        description="Which dance class fits your dancer? Full class descriptions for Capital Core Dance Studio in Midlothian, VA — Tiny Dancers (ages 2–5), the Beginner Program (ages 5+), Intermediate &amp; Technique classes, and Specialty classes including Musical Theatre and Pom Cheer. Adult classes (16+) have their own page."
         canonical="/class-levels"
         jsonLd={CLASS_LEVELS_JSON_LD}
       />
@@ -244,6 +228,26 @@ export default function ClassLevels() {
           </div>
         </section>
       ))}
+
+      {/* Adults pointer — their classes live on their own page */}
+      <section className="bg-white px-6 pb-12">
+        <div className="max-w-3xl mx-auto">
+          <div className="border border-dashed border-surface-border rounded-lg px-5 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="text-center sm:text-left">
+              <p className="text-navy-dark font-bold text-base">Dancing as an adult?</p>
+              <p className="text-[#5a6a8a] text-sm mt-0.5">
+                Our 16+ evening classes have their own page — Femme Flair, Pom, and Contemporary.
+              </p>
+            </div>
+            <Link
+              to={ADULT_CLASSES_PATH}
+              className="flex-shrink-0 bg-navy-dark text-white text-sm font-bold px-6 py-2 rounded-md hover:bg-navy-mid transition-colors whitespace-nowrap"
+            >
+              See Adult Classes →
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* Important information */}
       <section className="bg-navy-dark px-6 py-12">

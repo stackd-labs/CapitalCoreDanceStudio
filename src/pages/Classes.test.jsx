@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import Classes from './Classes'
 
@@ -23,11 +23,11 @@ test('renders day group headers by default', () => {
 
 test('renders real class names', () => {
   renderClasses()
-  expect(screen.getAllByText('Tiny Ballet / Tumble').length).toBeGreaterThan(0)
-  expect(screen.getByText('Beginner Hip Hop & Breakdancing')).toBeInTheDocument()
-  // Musical Theatre appears as both a filter option and class name
-  expect(screen.getAllByText('Musical Theatre').length).toBeGreaterThan(0)
-  expect(screen.getByText('Tumble Tech')).toBeInTheDocument()
+  const grid = screen.getByTestId('class-grid')
+  expect(within(grid).getByRole('button', { name: /Tiny Ballet \/ Tumble/ })).toBeInTheDocument()
+  expect(within(grid).getByRole('button', { name: /Beginner Hip Hop & Breakdancing/ })).toBeInTheDocument()
+  expect(within(grid).getByRole('button', { name: /Musical Theatre/ })).toBeInTheDocument()
+  expect(within(grid).getByRole('button', { name: /Tumble Tech/ })).toBeInTheDocument()
 })
 
 test('does not render Private Lessons', () => {
@@ -35,20 +35,50 @@ test('does not render Private Lessons', () => {
   expect(screen.queryByText('Private Lessons')).not.toBeInTheDocument()
 })
 
-test('renders filter bar with day, age, and style filters', () => {
+test('renders filter bar with age and style filters', () => {
   renderClasses()
-  // Day, Age Group, and Dance Style are <select> dropdowns
-  expect(screen.getAllByRole('combobox')).toHaveLength(3)
+  // The Day dropdown was removed when the schedule became a week calendar — a week
+  // view already shows every day.
+  expect(screen.getAllByRole('combobox')).toHaveLength(2)
   expect(screen.getByRole('option', { name: 'Tiny (2–5)' })).toBeInTheDocument()
   expect(screen.getByRole('option', { name: 'Hip Hop' })).toBeInTheDocument()
+  expect(screen.queryByRole('option', { name: 'All Days' })).not.toBeInTheDocument()
 })
 
-test('day filter shows only selected day', () => {
+test('style filter narrows the calendar to matching classes', () => {
   renderClasses()
-  const [daySelect] = screen.getAllByRole('combobox')
-  fireEvent.change(daySelect, { target: { value: 'Wednesday' } })
-  expect(screen.getByText('Wednesday', { selector: 'div' })).toBeInTheDocument()
-  expect(screen.queryByText('Monday', { selector: 'div' })).not.toBeInTheDocument()
+  const grid = screen.getByTestId('class-grid')
+  expect(within(grid).getAllByTestId('class-block')).toHaveLength(22)
+
+  const [, styleSelect] = screen.getAllByRole('combobox')
+  fireEvent.change(styleSelect, { target: { value: 'hiphop' } })
+
+  // Only two rows carry category 'hiphop': Monday's Beginner Hip Hop and Wednesday's
+  // Beginner Hip Hop & Breakdancing. Tiny Ballet / Hip Hop is category 'tiny' and
+  // Beginner Ballet / Hip Hop is category 'ballet', so neither is included.
+  const blocks = within(screen.getByTestId('class-grid')).getAllByTestId('class-block')
+  expect(blocks).toHaveLength(2)
+  for (const block of blocks) {
+    expect(block.getAttribute('aria-label')).toMatch(/Hip Hop/)
+  }
+})
+
+test('age filter narrows the calendar to matching classes', () => {
+  renderClasses()
+  const [ageSelect] = screen.getAllByRole('combobox')
+  fireEvent.change(ageSelect, { target: { value: 'adult' } })
+  const blocks = within(screen.getByTestId('class-grid')).getAllByTestId('class-block')
+  expect(blocks).toHaveLength(3)
+})
+
+test('a filter combination with no classes shows the empty state', () => {
+  renderClasses()
+  const [ageSelect, styleSelect] = screen.getAllByRole('combobox')
+  fireEvent.change(ageSelect, { target: { value: 'tiny' } })
+  fireEvent.change(styleSelect, { target: { value: 'musical-theatre' } })
+  expect(
+    screen.getByText('No classes match your filters. Try adjusting your selection.')
+  ).toBeInTheDocument()
 })
 
 test('renders Enroll Now CTA', () => {

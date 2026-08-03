@@ -1,10 +1,14 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import PageHeader from '../components/PageHeader'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
 import { simpleBreadcrumb } from '../lib/schema'
+
+// Party requests are handled on the studio portal as of 2026-08-03. The old on-site
+// form (/birthday-booking → /birthday-payment → /birthday-thankyou) is retired; see
+// the commented-out block in App.jsx.
+const PORTAL_PARTY_REQUEST_URL = 'https://studio.capitalcoredance.com/party-request'
 
 const INCLUDED = [
   'Private studio space',
@@ -78,12 +82,14 @@ export default function Birthdays() {
             <p className="text-navy-dark font-black text-lg leading-snug">Ready to book your party?</p>
             <p className="text-navy-dark/70 text-sm mt-0.5">Get started in minutes — no phone tag required.</p>
           </div>
-          <Link
-            to="/birthday-booking"
+          <a
+            href={PORTAL_PARTY_REQUEST_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex-shrink-0 bg-navy-dark text-white text-sm font-bold px-6 py-2 rounded-md hover:bg-navy-mid transition-colors whitespace-nowrap"
           >
-            Complete Our Form Now →
-          </Link>
+            Request Your Party →
+          </a>
         </div>
       </section>
 
@@ -197,12 +203,17 @@ export default function Birthdays() {
             </ul>
           </div>
 
-          <Link
-            to="/birthday-booking"
+          <a
+            href={PORTAL_PARTY_REQUEST_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             className="block w-full bg-brand-red text-white text-center font-bold py-3 rounded-md hover:bg-red-700 transition-colors"
           >
-            Book Your Party →
-          </Link>
+            Start Your Party Request →
+          </a>
+          <p className="text-[#8a9aaa] text-xs mt-3 text-center">
+            Requests are handled on our studio portal — we'll confirm your date and details within 1–2 business days.
+          </p>
         </div>
       </section>
 

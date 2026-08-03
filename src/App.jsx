@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 import Home from './pages/Home'
 import Classes from './pages/Classes'
@@ -22,9 +22,13 @@ import Tuition from './pages/Tuition'
 // import AdultSeriesThankYou from './pages/AdultSeriesThankYou'
 import DanceCompany from './pages/DanceCompany'
 import Birthdays from './pages/Birthdays'
-import BirthdayForm from './pages/BirthdayForm'
-import BirthdayPayment from './pages/BirthdayPayment'
-import BirthdayThankYou from './pages/BirthdayThankYou'
+// On-site birthday booking retired 2026-08-03 — party requests now go to the studio
+// portal at https://studio.capitalcoredance.com/party-request, linked from Birthdays.jsx.
+// Page files are preserved; to restore, re-add these imports and the routes below, and
+// recover BirthdayForm.test.jsx from git history.
+// import BirthdayForm from './pages/BirthdayForm'
+// import BirthdayPayment from './pages/BirthdayPayment'
+// import BirthdayThankYou from './pages/BirthdayThankYou'
 import Contact from './pages/Contact'
 // Recital pages removed from the public site after the June 2026 recital wrapped.
 // Page files are preserved — re-import and re-add the routes below to restore.
@@ -77,9 +81,19 @@ export default function App() {
         <Route path="/adult-summer-series/thankyou" element={<AdultSeriesThankYou />} />
         */}
         <Route path="/birthdays" element={<Birthdays />} />
+        {/* On-site birthday booking retired 2026-08-03 (see imports above). Requests now
+            go to the studio portal. These paths were live and may be bookmarked or sitting
+            in old emails, and this app has no catch-all route — without these redirects an
+            old link renders a blank white page. Restore the flow by uncommenting the
+            original routes below and the imports above, and deleting these redirects. */}
+        <Route path="/birthday-booking" element={<Navigate to="/birthdays" replace />} />
+        <Route path="/birthday-payment" element={<Navigate to="/birthdays" replace />} />
+        <Route path="/birthday-thankyou" element={<Navigate to="/birthdays" replace />} />
+        {/*
         <Route path="/birthday-booking" element={<BirthdayForm />} />
         <Route path="/birthday-payment" element={<BirthdayPayment />} />
         <Route path="/birthday-thankyou" element={<BirthdayThankYou />} />
+        */}
         <Route path="/contact" element={<Contact />} />
         {/* Recital routes removed after the June 2026 recital. Restore by
             uncommenting these and the imports above.

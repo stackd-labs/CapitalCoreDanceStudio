@@ -10,42 +10,104 @@ function renderClassLevels() {
   )
 }
 
+// Every distinct class on the Fall 2026 schedule in Classes.jsx, grouped as the
+// studio grouped them. If a class is added to the schedule, it belongs here too.
+const GROUPS = [
+  {
+    title: 'Tiny Dancers',
+    classes: ['Tiny Ballet & Tumble', 'Tiny Ballet & Hip Hop', 'Tiny Ballet & Tap'],
+  },
+  {
+    title: 'Beginner Program',
+    classes: [
+      'Beginner Ballet & Jazz',
+      'Beginner Ballet & Hip Hop',
+      'Beginner Ballet & Tap',
+      'Beginner Ballet & Modern',
+      'Beginner Acro & Jazz',
+      'Beginner Contemporary & Jazz',
+      'Beginner Hip Hop & Breakdancing',
+      'Beginner Hip Hop',
+    ],
+  },
+  {
+    title: 'Intermediate & Technique Classes',
+    classes: ['Acro & Lyrical', 'Ballet & Contemporary', 'Tumble Tech', 'Tumble', 'Lyrical & Contemporary'],
+  },
+  {
+    title: 'Specialty Classes',
+    classes: ['Musical Theatre', 'Pom Cheer'],
+  },
+  {
+    title: 'Adult Program',
+    classes: ['Adult Femme Flair', 'Adult Pom', 'Adult Contemporary'],
+  },
+]
+
+const ALL_CLASSES = GROUPS.flatMap((g) => g.classes)
+
 test('renders page title', () => {
   renderClassLevels()
   expect(screen.getByRole('heading', { name: 'Class Levels' })).toBeInTheDocument()
 })
 
-test('renders all six levels with their age lines', () => {
+test('renders all five class groups with their age lines', () => {
   renderClassLevels()
-  const levels = [
-    ['Tiny', 'Ages 2–5'],
-    ['Beginner', 'Ages 5+'],
-    ['Intermediate', 'By placement'],
-    ['Advanced', 'By placement'],
-    ['Adult', 'Ages 16+'],
-    ['Specialty', 'Ages 5+'],
-  ]
-  for (const [name, ages] of levels) {
-    expect(screen.getAllByText(name).length).toBeGreaterThan(0)
-    expect(screen.getAllByText(ages).length).toBeGreaterThan(0)
-  }
-  // 'By placement' is shared by Intermediate and Advanced; 'Ages 5+' by Beginner
-  // and Specialty. The unique ones must appear exactly once.
-  expect(screen.getAllByText('By placement')).toHaveLength(2)
-  expect(screen.getAllByText('Ages 5+')).toHaveLength(2)
+  const titles = screen.getAllByTestId('group-title').map((el) => el.textContent.trim())
+  expect(titles).toEqual(GROUPS.map((g) => g.title))
+  // 'Ages 5+' is shared by three groups; the other two ages appear once each.
+  expect(screen.getAllByText('Ages 5+')).toHaveLength(3)
   expect(screen.getAllByText('Ages 2–5')).toHaveLength(1)
   expect(screen.getAllByText('Ages 16+')).toHaveLength(1)
 })
 
-test('every level card has a non-empty blurb', () => {
+test('renders every class on the Fall schedule, in group order', () => {
   renderClassLevels()
-  const cards = screen.getAllByTestId('level-card')
-  expect(cards).toHaveLength(6)
+  const names = screen.getAllByTestId('class-name').map((el) => el.textContent.trim())
+  expect(names).toEqual(ALL_CLASSES)
+  expect(names).toHaveLength(21)
+})
+
+test('distinguishes classes whose names are prefixes of others', () => {
+  renderClassLevels()
+  const names = screen.getAllByTestId('class-name').map((el) => el.textContent.trim())
+  // These pairs are separate rows on the schedule and must not be collapsed.
+  expect(names.filter((n) => n === 'Beginner Hip Hop')).toHaveLength(1)
+  expect(names.filter((n) => n === 'Beginner Hip Hop & Breakdancing')).toHaveLength(1)
+  expect(names.filter((n) => n === 'Tumble')).toHaveLength(1)
+  expect(names.filter((n) => n === 'Tumble Tech')).toHaveLength(1)
+})
+
+test('every class card has an audience line and a description', () => {
+  renderClassLevels()
+  const cards = screen.getAllByTestId('class-card')
+  expect(cards).toHaveLength(21)
   for (const card of cards) {
-    const blurb = card.querySelector('[data-testid="level-blurb"]')
-    expect(blurb).not.toBeNull()
-    expect(blurb.textContent.trim().length).toBeGreaterThan(20)
+    const name = card.querySelector('[data-testid="class-name"]').textContent.trim()
+    const audience = card.querySelector('[data-testid="class-audience"]')
+    const description = card.querySelector('[data-testid="class-description"]')
+    expect(audience, `${name} is missing an audience line`).not.toBeNull()
+    expect(audience.textContent.trim().length, `${name} audience too short`).toBeGreaterThan(20)
+    expect(description, `${name} is missing a description`).not.toBeNull()
+    expect(description.textContent.trim().length, `${name} description too short`).toBeGreaterThan(60)
   }
+})
+
+test('renders the studio Important Information notes', () => {
+  renderClassLevels()
+  const bullets = screen.getAllByTestId('info-bullet').map((el) => el.textContent.trim())
+  expect(bullets).toHaveLength(4)
+  expect(bullets[0]).toBe('Tiny Classes are designed for dancers ages 2–5.')
+  expect(bullets[3]).toBe(
+    'Class placement recommendations may be made by instructors to ensure every dancer is in the class that best supports their growth.'
+  )
+})
+
+test('does not present a level the studio does not offer', () => {
+  renderClassLevels()
+  // The studio's copy has no Advanced group — the page must not invent one.
+  expect(screen.queryByText('Advanced')).not.toBeInTheDocument()
+  expect(screen.getAllByTestId('group-title')).toHaveLength(5)
 })
 
 test('links to the class schedule and the register portal', () => {
@@ -55,45 +117,4 @@ test('links to the class schedule and the register portal', () => {
     'href',
     'https://studio.capitalcoredance.com/register/classes'
   )
-})
-
-test('renders all eleven styles', () => {
-  renderClassLevels()
-  const styles = [
-    'Ballet',
-    'Jazz',
-    'Hip Hop',
-    'Contemporary',
-    'Tap',
-    'Acro & Tumbling',
-    'Lyrical',
-    'Breakdancing',
-    'Musical Theatre',
-    'Pom & Cheer',
-    'Creative Movement',
-  ]
-  for (const style of styles) {
-    expect(screen.getAllByText(style).length).toBeGreaterThan(0)
-  }
-  expect(screen.getAllByTestId('style-card')).toHaveLength(11)
-})
-
-test('every style card has a non-empty description and at least one level badge', () => {
-  renderClassLevels()
-  for (const card of screen.getAllByTestId('style-card')) {
-    const description = card.querySelector('[data-testid="style-description"]')
-    expect(description).not.toBeNull()
-    expect(description.textContent.trim().length).toBeGreaterThan(20)
-    expect(card.querySelectorAll('[data-testid="style-badge"]').length).toBeGreaterThan(0)
-  }
-})
-
-test('does not list Adult as a style', () => {
-  renderClassLevels()
-  // Adult is a level, not a style — it appears as a badge, never as a style card.
-  const styleNames = screen
-    .getAllByTestId('style-card')
-    .map((card) => card.querySelector('[data-testid="style-name"]').textContent.trim())
-  expect(styleNames).not.toContain('Adult')
-  expect(styleNames).not.toContain('Adult Classes')
 })

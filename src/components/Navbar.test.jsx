@@ -95,6 +95,16 @@ test('Escape closes the open dropdown', () => {
   expect(caret).toHaveAttribute('aria-expanded', 'false')
 })
 
+test('Escape returns focus to the caret so Tab does not restart at the top of the document', () => {
+  renderNavbar()
+  const caret = screen.getByRole('button', { name: 'Classes menu' })
+  fireEvent.click(caret)
+  screen.getByRole('link', { name: 'Class Levels' }).focus()
+
+  fireEvent.keyDown(document, { key: 'Escape' })
+  expect(document.activeElement).toBe(caret)
+})
+
 test('highlights the Classes parent on /class-levels', () => {
   renderNavbar('/class-levels')
   const classesLinks = screen.getAllByRole('link', { name: 'Classes' })

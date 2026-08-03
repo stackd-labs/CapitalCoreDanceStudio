@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar'
 import PageHeader from '../components/PageHeader'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
-import { courseListSchema, simpleBreadcrumb } from '../lib/schema'
+import { simpleBreadcrumb } from '../lib/schema'
 
 // Same portal registration link as the Classes page.
 const PORTAL_REGISTER_URL = 'https://studio.capitalcoredance.com/register/classes'
@@ -62,12 +62,12 @@ const STYLES = [
   },
   {
     name: 'Jazz',
-    levels: ['Beginner', 'Intermediate/Advanced'],
+    levels: ['Beginner'],
     description: 'Sharp, upbeat, and musical — isolations, turns, and leaps set to current music.',
   },
   {
     name: 'Hip Hop',
-    levels: ['Tiny', 'Beginner', 'Intermediate/Advanced'],
+    levels: ['Tiny', 'Beginner'],
     description: 'Groove, rhythm, and attitude, with age-appropriate music and choreography at every level.',
   },
   {
@@ -112,10 +112,7 @@ const STYLES = [
   },
 ]
 
-const CLASS_LEVELS_JSON_LD = [
-  courseListSchema(STYLES.map(({ name }) => name)),
-  simpleBreadcrumb('Class Levels', '/class-levels'),
-]
+const CLASS_LEVELS_JSON_LD = [simpleBreadcrumb('Class Levels', '/class-levels')]
 
 export default function ClassLevels() {
   return (

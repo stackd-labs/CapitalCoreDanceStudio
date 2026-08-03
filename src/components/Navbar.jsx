@@ -25,6 +25,7 @@ function NavGroup({ link, className }) {
   const { pathname } = useLocation()
   const [open, setOpen] = useState(false)
   const groupRef = useRef(null)
+  const caretRef = useRef(null)
 
   // Close on route change.
   useEffect(() => { setOpen(false) }, [pathname])
@@ -35,7 +36,10 @@ function NavGroup({ link, className }) {
       if (groupRef.current && !groupRef.current.contains(e.target)) setOpen(false)
     }
     function handleKeyDown(e) {
-      if (e.key === 'Escape') setOpen(false)
+      if (e.key === 'Escape') {
+        setOpen(false)
+        caretRef.current?.focus()
+      }
     }
     document.addEventListener('mousedown', handlePointerDown)
     document.addEventListener('keydown', handleKeyDown)
@@ -56,8 +60,8 @@ function NavGroup({ link, className }) {
         {link.label}
       </Link>
       <button
+        ref={caretRef}
         type="button"
-        aria-haspopup="true"
         aria-expanded={open}
         aria-label={`${link.label} menu`}
         // detail === 0 means keyboard activation (Enter/Space on a focused button):

@@ -5,6 +5,26 @@ import Footer from '../components/Footer'
 import SEO from '../components/SEO'
 import { simpleBreadcrumb } from '../lib/schema'
 
+// Fall dates match the schedule on the Classes page (Aug 24 – Dec 18). Both
+// end-of-semester performance dates are tentative until the studio confirms them.
+const SEMESTERS = [
+  {
+    name: 'Fall Semester',
+    dates: 'August 24 – December 18, 2026',
+    showLabel: 'Recital',
+    showDate: 'December 19',
+  },
+  {
+    name: 'Spring Semester',
+    dates: 'January 11 – May 21, 2027',
+    showLabel: 'Show',
+    showDate: 'May 22',
+  },
+]
+
+// Parents pay through the studio portal (login required).
+const PORTAL_URL = 'https://studio.capitalcoredance.com'
+
 const CLASS_PRICES = [
   { duration: '30 Min', monthly: '$65' },
   { duration: '45 Min', monthly: '$85' },
@@ -26,7 +46,7 @@ export default function Tuition() {
     <div className="min-h-screen flex flex-col">
       <SEO
         title="Dance Class Tuition &amp; Fees | Capital Core Dance Studio – Midlothian, VA"
-        description="Transparent dance class pricing in Midlothian, VA. Monthly rates from $65 (30-min) to $150 (90-min) classes. Registration fee, sibling discounts, and recital costs explained."
+        description="Transparent dance class pricing in Midlothian, VA. Monthly rates from $65 (30-min) to $150 (90-min) classes. Fall semester runs August 24 – December 18, 2026; spring runs January 11 – May 21, 2027. Registration fees, returning-student and sibling discounts explained."
         canonical="/tuition"
         jsonLd={simpleBreadcrumb('Tuition', '/tuition')}
       />
@@ -48,14 +68,19 @@ export default function Tuition() {
               Once registered, dancers are locked into their classes and prices for the semester.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
-              <div className="flex-1 bg-[#f0f6ff] border border-[#c8ddf4] rounded-lg px-5 py-4 text-center">
-                <div className="text-navy-dark font-black text-base mb-1">Fall Semester</div>
-                <div className="text-[#5a6a8a] text-sm">August – December</div>
-              </div>
-              <div className="flex-1 bg-[#f0f6ff] border border-[#c8ddf4] rounded-lg px-5 py-4 text-center">
-                <div className="text-navy-dark font-black text-base mb-1">Spring Semester</div>
-                <div className="text-[#5a6a8a] text-sm">January – June</div>
-              </div>
+              {SEMESTERS.map(({ name, dates, showLabel, showDate }) => (
+                <div
+                  key={name}
+                  className="flex-1 bg-[#f0f6ff] border border-[#c8ddf4] rounded-lg px-5 py-4 text-center"
+                >
+                  <div className="text-navy-dark font-black text-base mb-1">{name}</div>
+                  <div className="text-[#5a6a8a] text-sm">{dates}</div>
+                  <div className="text-[#8a9aaa] text-xs mt-2 pt-2 border-t border-[#c8ddf4]">
+                    {showLabel} <span className="whitespace-nowrap">{showDate}</span>
+                    <span className="italic"> (tentative)</span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -98,10 +123,6 @@ export default function Tuition() {
                 </div>
               ))}
             </div>
-
-            <p className="text-[#5a6a8a] text-xs mt-4 italic">
-              Semester rates vary — reach out to us directly for full-semester pricing.
-            </p>
           </div>
 
           {/* Discounts callout */}
@@ -109,6 +130,7 @@ export default function Tuition() {
             <p className="text-brand-red text-xs font-bold tracking-[0.3em] uppercase mb-2">Discounts Available</p>
             <ul className="flex flex-col gap-2">
               {[
+                'Returning students receive a $5–$10 discount per semester',
                 'Multi-class discount for dancers enrolled in more than one class',
                 'Multi-student discounts for families with multiple dancers',
                 'Sibling discounts and family fee caps on registration fees',
@@ -129,13 +151,26 @@ export default function Tuition() {
               {[
                 'All major credit/debit cards accepted',
                 'ACH transfers and checks accepted',
-                'Payments made directly through our iClassPortal website',
               ].map((item) => (
                 <li key={item} className="text-[#3a4a6a] text-sm flex gap-2">
                   <span className="text-[#f4a060] mt-0.5 flex-shrink-0">✓</span>
                   {item}
                 </li>
               ))}
+              <li className="text-[#3a4a6a] text-sm flex gap-2">
+                <span className="text-[#f4a060] mt-0.5 flex-shrink-0">✓</span>
+                <span>
+                  Payments are made through our{' '}
+                  <a
+                    href={PORTAL_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-brand-red font-semibold hover:underline"
+                  >
+                    studio portal
+                  </a>
+                </span>
+              </li>
             </ul>
             <p className="text-[#5a6a8a] text-xs italic">
               Having trouble with the portal? Reach out to us and we'll help.

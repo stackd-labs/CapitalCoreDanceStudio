@@ -8,11 +8,45 @@ const PORTAL_REGISTER_URL = 'https://studio.capitalcoredance.com/register/classe
 export default function ClassDetailPanel({ classInfo, onClose }) {
   const headingId = 'class-detail-heading'
   const closeRef = useRef(null)
+  const registerRef = useRef(null)
+
+  // Lock background scrolling while the panel is open — without this the page
+  // scrolls behind the fixed backdrop. Restore whatever the page had set on close.
+  useEffect(() => {
+    if (!classInfo) return
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [classInfo])
 
   useEffect(() => {
     if (!classInfo) return
     function handleKeyDown(e) {
-      if (e.key === 'Escape') onClose()
+      if (e.key === 'Escape') {
+        onClose()
+        return
+      }
+      // Trap Tab/Shift+Tab between the two focusable elements in the dialog (Close
+      // and Register) so focus can never land on the obscured page behind the
+      // backdrop, which sits under an opaque overlay and would otherwise let a
+      // keyboard user tab onto (and activate) a link they can't see.
+      if (e.key !== 'Tab') return
+      const closeEl = closeRef.current
+      const registerEl = registerRef.current
+      if (!closeEl || !registerEl) return
+      if (e.shiftKey) {
+        if (document.activeElement === closeEl) {
+          e.preventDefault()
+          registerEl.focus()
+        }
+      } else {
+        if (document.activeElement === registerEl) {
+          e.preventDefault()
+          closeEl.focus()
+        }
+      }
     }
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
@@ -39,7 +73,7 @@ export default function ClassDetailPanel({ classInfo, onClose }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby={headingId}
-        className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
+        className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-full overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="px-6 pt-6 pb-5">
@@ -69,6 +103,7 @@ export default function ClassDetailPanel({ classInfo, onClose }) {
             Close
           </button>
           <a
+            ref={registerRef}
             href={PORTAL_REGISTER_URL}
             target="_blank"
             rel="noopener noreferrer"

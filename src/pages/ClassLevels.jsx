@@ -124,8 +124,8 @@ export default function ClassLevels() {
                   <ClassCard
                     key={key}
                     name={key}
-                    audience={info.audience}
-                    description={info.description}
+                    audience={info?.audience}
+                    description={info?.description}
                     accent={ACCENT_COLORS[i % ACCENT_COLORS.length]}
                   />
                 )

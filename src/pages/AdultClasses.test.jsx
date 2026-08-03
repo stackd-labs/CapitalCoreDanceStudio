@@ -1,16 +1,28 @@
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import AdultClasses from './AdultClasses'
+import { SCHEDULE } from '../lib/schedule'
 
 const PORTAL_REGISTER_URL = 'https://studio.capitalcoredance.com/register/classes'
 
-// Day and time must match the Fall 2026 adult rows in Classes.jsx. If the schedule
-// changes and this page doesn't, an adult shows up on the wrong night.
-const CLASSES = [
-  { name: 'Adult Femme Flair', day: 'Monday', time: '8:00 – 9:00 PM' },
-  { name: 'Adult Pom', day: 'Wednesday', time: '7:30 – 8:15 PM' },
-  { name: 'Adult Contemporary', day: 'Friday', time: '7:00 – 8:00 PM' },
-]
+// Day and time are derived from SCHEDULE (the single source of truth), not
+// hard-coded here — a hard-coded copy is exactly the defect this page's day/time
+// used to have: SCHEDULE could change and this fixture would keep passing against
+// its own stale numbers. Deriving both from the same source means the two can no
+// longer disagree.
+const SCHEDULE_ROWS_BY_INFO_KEY = SCHEDULE.flatMap(({ day, classes }) =>
+  classes.map((c) => ({ ...c, day }))
+).reduce((acc, row) => {
+  acc[row.infoKey] = row
+  return acc
+}, {})
+
+const ADULT_INFO_KEYS = ['Adult Femme Flair', 'Adult Pom', 'Adult Contemporary']
+
+const CLASSES = ADULT_INFO_KEYS.map((infoKey) => {
+  const row = SCHEDULE_ROWS_BY_INFO_KEY[infoKey]
+  return { name: infoKey, day: row.day, time: row.time }
+})
 
 function renderAdultClasses() {
   return render(
@@ -39,6 +51,18 @@ test('each class shows its day and time from the Fall schedule', () => {
     const when = card.querySelector('[data-testid="adult-class-when"]').textContent
     expect(when).toContain(CLASSES[i].day)
     expect(when).toContain(CLASSES[i].time)
+  })
+})
+
+test('each rendered day/time matches the SCHEDULE row with that infoKey', () => {
+  // Independent of the CLASSES fixture above: reads SCHEDULE directly by infoKey so
+  // this still catches drift even if the fixture itself were ever hard-coded again.
+  renderAdultClasses()
+  const whens = screen.getAllByTestId('adult-class-when').map((el) => el.textContent)
+  ADULT_INFO_KEYS.forEach((infoKey, i) => {
+    const row = SCHEDULE_ROWS_BY_INFO_KEY[infoKey]
+    expect(whens[i], `${infoKey} when`).toContain(row.day)
+    expect(whens[i], `${infoKey} when`).toContain(row.time)
   })
 })
 

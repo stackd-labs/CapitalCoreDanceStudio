@@ -5,6 +5,7 @@ import Footer from '../components/Footer'
 import SEO from '../components/SEO'
 import { simpleBreadcrumb } from '../lib/schema'
 import { getClassInfo } from '../lib/classInfo'
+import { SCHEDULE } from '../lib/schedule'
 
 // Same portal registration link as the Classes and Class Levels pages.
 const PORTAL_REGISTER_URL = 'https://studio.capitalcoredance.com/register/classes'
@@ -16,13 +17,23 @@ const ACCENT_COLORS = [
   'border-[#f4a060]',
 ]
 
-// Day and time mirror the Fall 2026 adult rows in Classes.jsx — update both together
-// each semester. Prose lives in src/lib/classInfo.js, keyed by the names below.
-const ADULT_CLASSES = [
-  { infoKey: 'Adult Femme Flair', day: 'Monday', time: '8:00 – 9:00 PM' },
-  { infoKey: 'Adult Pom', day: 'Wednesday', time: '7:30 – 8:15 PM' },
-  { infoKey: 'Adult Contemporary', day: 'Friday', time: '7:00 – 8:00 PM' },
-]
+// Display order for the three adult classes. Day and time are derived from SCHEDULE
+// below (matched on infoKey) rather than duplicated here, so this page can never
+// drift out of sync with the Fall schedule. Prose lives in src/lib/classInfo.js,
+// keyed by the names below.
+const ADULT_INFO_KEYS = ['Adult Femme Flair', 'Adult Pom', 'Adult Contemporary']
+
+const SCHEDULE_ROWS_BY_INFO_KEY = SCHEDULE.flatMap(({ day, classes }) =>
+  classes.map((c) => ({ ...c, day }))
+).reduce((acc, row) => {
+  acc[row.infoKey] = row
+  return acc
+}, {})
+
+const ADULT_CLASSES = ADULT_INFO_KEYS.map((infoKey) => {
+  const row = SCHEDULE_ROWS_BY_INFO_KEY[infoKey]
+  return { infoKey, day: row.day, time: row.time }
+})
 
 // Studio's own copy, carried over from the Class Levels Important Information notes.
 const GOOD_TO_KNOW = [
@@ -109,9 +120,9 @@ export default function AdultClasses() {
                       <span className="whitespace-nowrap">{time}</span>
                     </div>
                   </div>
-                  <p className="text-brand-red text-xs font-semibold mt-1">{info.audience}</p>
+                  <p className="text-brand-red text-xs font-semibold mt-1">{info?.audience}</p>
                   <p data-testid="adult-class-description" className="text-[#5a6a8a] text-sm mt-2 leading-relaxed">
-                    {info.description}
+                    {info?.description}
                   </p>
                 </div>
               )

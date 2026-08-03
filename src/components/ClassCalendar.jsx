@@ -114,6 +114,13 @@ export default function ClassCalendar({ schedule }) {
   if (selected && !stillPresent) {
     setSelected(null)
   }
+  // `visibleSelected` must stay the *same* object reference as `selected` (not a
+  // freshly recomputed lookalike) when `stillPresent` is true. It gets set once by
+  // openClass() and forwarded as-is here, because ClassDetailPanel's focus-on-open
+  // effect keys off this prop by Object.is. Recomputing the selected row inline
+  // during render — a natural-looking "simplification" — would hand the panel a new
+  // object every render and yank focus back to Close on every keystroke in the
+  // filter bar above.
   const visibleSelected = stillPresent ? selected : null
 
   const isEmpty = schedule.length === 0
@@ -228,7 +235,7 @@ export default function ClassCalendar({ schedule }) {
                         type="button"
                         data-testid="class-list-item"
                         onClick={(e) => openClass(cls, day, e)}
-                        aria-label={`${cls.name}, ${day} ${cls.time}`}
+                        aria-label={`${cls.name}, ${day} ${cls.time}, ${cls.ages}`}
                         className={`w-full rounded-lg px-5 py-4 flex items-center justify-between gap-4 text-left hover:bg-surface-light transition-colors ${BLOCK_BASE} ${CATEGORY_ACCENTS[cls.category] || CATEGORY_ACCENTS.adult}`}
                       >
                         <span className="flex-1 min-w-0">

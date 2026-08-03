@@ -87,6 +87,19 @@ test('each block names its class, day, and time for screen readers', () => {
   ).toBeInTheDocument()
 })
 
+test('a mobile list item names its class, day, time, and ages for screen readers', () => {
+  // aria-label short-circuits name-from-contents, so the visible ages text
+  // ("Ages 5+ · Beginner") must be repeated explicitly in the label or a
+  // screen-reader user never hears it, even though a sighted user sees it.
+  renderCalendar()
+  const list = screen.getByTestId('class-list')
+  expect(
+    within(list).getByRole('button', {
+      name: 'Tumble Tech, Tuesday 7:00 – 7:45 PM, Ages 5+',
+    })
+  ).toBeInTheDocument()
+})
+
 test('renders all five weekday column headers', () => {
   renderCalendar()
   const grid = screen.getByTestId('class-grid')

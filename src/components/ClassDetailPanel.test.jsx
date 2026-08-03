@@ -69,6 +69,26 @@ test('clicking the backdrop closes the panel but clicking inside does not', () =
   expect(onClose).toHaveBeenCalledTimes(1)
 })
 
+test('Tab from the Register anchor wraps focus back to Close', () => {
+  renderPanel()
+  const register = screen.getByRole('link', { name: 'Register for Fall →' })
+  const close = screen.getByRole('button', { name: 'Close' })
+  register.focus()
+  expect(document.activeElement).toBe(register)
+  fireEvent.keyDown(document, { key: 'Tab' })
+  expect(document.activeElement).toBe(close)
+})
+
+test('Shift+Tab from the Close button wraps focus to Register', () => {
+  renderPanel()
+  const register = screen.getByRole('link', { name: 'Register for Fall →' })
+  const close = screen.getByRole('button', { name: 'Close' })
+  close.focus()
+  expect(document.activeElement).toBe(close)
+  fireEvent.keyDown(document, { key: 'Tab', shiftKey: true })
+  expect(document.activeElement).toBe(register)
+})
+
 test('falls back gracefully when a class has no prose entry', () => {
   render(
     <ClassDetailPanel

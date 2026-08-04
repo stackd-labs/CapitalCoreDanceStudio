@@ -14,7 +14,7 @@ test('clusterByOverlap puts concurrent classes in one cluster and sequential one
   expect(names).toEqual([
     ['Tiny Ballet / Tumble'],
     ['Beginner Acro / Jazz', 'Beginner Contemp / Jazz'],
-    ['Beginner Hip Hop', 'Acro / Lyrical'],
+    ['Beginner Hip Hop & Breakdancing', 'Acro / Lyrical'],
     ['Ballet / Contemp'],
     ['Adult Femme / Flaire'],
   ])

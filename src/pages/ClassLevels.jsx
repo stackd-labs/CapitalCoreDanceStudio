@@ -38,7 +38,6 @@ const CLASS_GROUPS = [
       'Beginner Acro & Jazz',
       'Beginner Contemporary & Jazz',
       'Beginner Hip Hop & Breakdancing',
-      'Beginner Hip Hop',
     ],
   },
   {

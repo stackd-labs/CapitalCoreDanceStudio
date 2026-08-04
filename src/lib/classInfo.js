@@ -36,12 +36,11 @@ export const CLASS_INFO = {
   'Beginner Contemporary & Jazz': {
     description: 'Learn expressive movement while building strong jazz fundamentals. Dancers improve flexibility, musicality, creativity, and performance skills in this engaging combo class.',
   },
+  // Covers both standalone hip hop classes (Mon 6:15 and Wed 6:00). The separate
+  // 'Beginner Hip Hop' entry was merged in here on 2026-08-04: it was an in-house
+  // draft, and the studio's own text below covers both classes.
   'Beginner Hip Hop & Breakdancing': {
     description: 'A favorite for energetic dancers! Students learn hip hop grooves, beginner breakdancing foundations, freestyle skills, musicality, and coordination in an encouraging atmosphere.',
-  },
-  'Beginner Hip Hop': {
-    draft: true,
-    description: 'An upbeat introduction to hip hop! Dancers learn grooves, rhythm, and beginner choreography while building coordination, musicality, and confidence in a supportive class.',
   },
   'Acro & Lyrical': {
     description: 'This class combines acrobatic skills with expressive lyrical dance. Students focus on flexibility, strength, control, artistry, and emotional storytelling through movement.',

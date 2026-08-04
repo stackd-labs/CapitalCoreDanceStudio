@@ -27,7 +27,6 @@ const GROUPS = [
       'Beginner Acro & Jazz',
       'Beginner Contemporary & Jazz',
       'Beginner Hip Hop & Breakdancing',
-      'Beginner Hip Hop',
     ],
   },
   {
@@ -62,8 +61,9 @@ test('renders every youth class on the Fall schedule, in group order', () => {
   renderClassLevels()
   const names = screen.getAllByTestId('class-name').map((el) => el.textContent.trim())
   expect(names).toEqual(ALL_CLASSES)
-  // 17, not 18: 'Tumble' merged into 'Tumble Tech' on 2026-08-03.
-  expect(names).toHaveLength(17)
+  // 16: 'Tumble' merged into 'Tumble Tech' (2026-08-03) and 'Beginner Hip Hop' into
+  // 'Beginner Hip Hop & Breakdancing' (2026-08-04).
+  expect(names).toHaveLength(16)
 })
 
 test('adult classes live on their own page, not duplicated here', () => {
@@ -82,9 +82,12 @@ test('adult classes live on their own page, not duplicated here', () => {
 test('distinguishes classes whose names are prefixes of others', () => {
   renderClassLevels()
   const names = screen.getAllByTestId('class-name').map((el) => el.textContent.trim())
-  // These two are separate classes on the schedule and must not be collapsed.
-  expect(names.filter((n) => n === 'Beginner Hip Hop')).toHaveLength(1)
+  // Hip Hop & Breakdancing covers both standalone hip hop classes since the 2026-08-04
+  // merge, so it appears once here even though two schedule rows point at it, and the old
+  // standalone 'Beginner Hip Hop' must not come back. The ballet combos are untouched.
   expect(names.filter((n) => n === 'Beginner Hip Hop & Breakdancing')).toHaveLength(1)
+  expect(names).not.toContain('Beginner Hip Hop')
+  expect(names).toContain('Beginner Ballet & Hip Hop')
   // Tumble Tech covers both tumbling classes since the 2026-08-03 merge, so it must
   // appear exactly once here even though two schedule rows point at it, and the old
   // standalone 'Tumble' must not come back.
@@ -95,7 +98,7 @@ test('distinguishes classes whose names are prefixes of others', () => {
 test('every class card has a description and no audience line', () => {
   renderClassLevels()
   const cards = screen.getAllByTestId('class-card')
-  expect(cards).toHaveLength(17)
+  expect(cards).toHaveLength(16)
   for (const card of cards) {
     const name = card.querySelector('[data-testid="class-name"]').textContent.trim()
     const description = card.querySelector('[data-testid="class-description"]')

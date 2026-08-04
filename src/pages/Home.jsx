@@ -17,6 +17,16 @@ const SECTION_CARDS = [
     linkLabel: 'View Fall Classes',
   },
   {
+    to: '/adult-classes',
+    title: 'Adult Classes',
+    subtitle: 'Ages 16+ · evenings',
+    photo: '/card-adult-dance.jpg',
+    imageAlt: 'Adults dancing in an evening class at Capital Core Dance Studio in Midlothian, VA',
+    description:
+      'Evening classes for grown dancers — Femme Flair, Pom, and Contemporary. Beginner-friendly whether it’s your first class ever or your return after years away.',
+    linkLabel: 'View Adult Classes',
+  },
+  {
     to: '/birthdays',
     title: 'Birthdays',
     subtitle: 'Party packages',
@@ -170,7 +180,7 @@ export default function Home() {
         <p className="text-brand-red text-xs font-bold tracking-[0.3em] uppercase mb-2">
           What We Offer
         </p>
-        <h2 className="text-navy-dark text-3xl font-black">Everything your dancer needs</h2>
+        <h2 className="text-navy-dark text-3xl font-black">Get ready to groove at the Core</h2>
         <p className="text-[#5a6a8a] text-sm mt-2">
           From weekly dance classes to unforgettable birthday parties
         </p>

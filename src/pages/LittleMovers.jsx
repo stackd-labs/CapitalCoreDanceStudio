@@ -32,6 +32,9 @@ const CLASSES = [
   {
     name: "Moovin' & Groovin'",
     ages: '2–5 years',
+    // The partnership is credited here rather than in the schedule table, which the
+    // studio asked to keep to class name and age range only.
+    partner: 'Our signature class, in partnership with Ms. Ryan',
     description: 'Signature movement and music experience featuring creative dance and active learning.',
   },
   {
@@ -227,7 +230,7 @@ export default function LittleMovers() {
           <h2 className="text-navy-dark text-2xl font-black mb-8">Six ways to move</h2>
 
           <div className="flex flex-col gap-3">
-            {CLASSES.map(({ name, ages, description }, i) => (
+            {CLASSES.map(({ name, ages, partner, description }, i) => (
               <div
                 key={name}
                 data-testid="little-movers-class"
@@ -241,6 +244,11 @@ export default function LittleMovers() {
                     {ages}
                   </div>
                 </div>
+                {partner && (
+                  <p data-testid="class-partner" className="text-brand-red text-xs font-semibold mt-1">
+                    {partner}
+                  </p>
+                )}
                 <p className="text-[#5a6a8a] text-sm mt-2 leading-relaxed">{description}</p>
               </div>
             ))}

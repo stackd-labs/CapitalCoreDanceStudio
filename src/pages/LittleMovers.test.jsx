@@ -103,11 +103,21 @@ test('the mobile list carries the same fifteen slots', () => {
   }
 })
 
-test('does not name an instructor in the schedule', () => {
+test('credits the Ms. Ryan partnership on the class card, not in the schedule', () => {
   renderLittleMovers()
-  // The "with Ms. Ryan" credit was removed from the view on 2026-08-03 at the
-  // studio's request; the schedule shows class name and age range only.
-  expect(screen.queryByText(/Ms\. Ryan/)).not.toBeInTheDocument()
+  // The studio asked for the schedule table to carry class name and age range only,
+  // so the partnership is credited once, on the Moovin' & Groovin' card.
+  const partners = screen.getAllByTestId('class-partner')
+  expect(partners).toHaveLength(1)
+  expect(partners[0].textContent).toBe('Our signature class, in partnership with Ms. Ryan')
+  expect(partners[0].closest('[data-testid="little-movers-class"]').textContent).toContain(
+    "Moovin' & Groovin'"
+  )
+
+  // Nothing in either schedule view names an instructor.
+  for (const testid of ['schedule-table', 'schedule-list']) {
+    expect(within(screen.getByTestId(testid)).queryByText(/Ms\. Ryan/)).not.toBeInTheDocument()
+  }
 })
 
 test('states that every class is 45 minutes and drop-off', () => {

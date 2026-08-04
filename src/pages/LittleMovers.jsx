@@ -5,8 +5,11 @@ import Footer from '../components/Footer'
 import SEO from '../components/SEO'
 import { simpleBreadcrumb } from '../lib/schema'
 
-// Same portal registration link as the Classes, Class Levels, and Adult Classes pages.
-const PORTAL_REGISTER_URL = 'https://studio.capitalcoredance.com/register/classes'
+// Little Movers is not open for registration yet, so every call to action points at
+// the contact page rather than the studio portal — the portal has no Little Movers
+// classes to select. When registration opens, swap these back to
+// https://studio.capitalcoredance.com/register/classes and drop the coming-soon
+// banner and badge below.
 
 const ACCENT_COLORS = [
   'border-brand-red',
@@ -160,7 +163,7 @@ export default function LittleMovers() {
     <div className="min-h-screen flex flex-col">
       <SEO
         title="Little Movers | Toddler &amp; Preschool Movement Classes in Midlothian, VA — Capital Core Dance"
-        description="Little Movers at Capital Core Dance in Midlothian, VA — a movement-based enrichment program for infants, toddlers, and preschoolers combining dance, music, sensory play, tumbling, and active exploration. Weekday mornings, 45-minute classes, drop-in $10."
+        description="Coming soon — Little Movers at Capital Core Dance in Midlothian, VA. A movement-based enrichment program for infants, toddlers, and preschoolers combining dance, music, sensory play, tumbling, and active exploration. Weekday mornings, 45-minute classes, drop-in $10. Contact us to be notified when registration opens."
         canonical="/little-movers"
         jsonLd={LITTLE_MOVERS_JSON_LD}
       />
@@ -168,7 +171,7 @@ export default function LittleMovers() {
       <PageHeader
         eyebrow="Capital Core Dance"
         title="Little Movers"
-        subtitle="Movement. Play. Learn. Grow. — a movement-based enrichment program for infants, toddlers, and preschoolers."
+        subtitle="Coming soon. Movement. Play. Learn. Grow. — a movement-based enrichment program for infants, toddlers, and preschoolers."
       />
 
       {/* Drop-in banner */}
@@ -176,20 +179,18 @@ export default function LittleMovers() {
         <div className="max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="text-center sm:text-left">
             <p className="text-navy-dark font-black text-lg leading-snug">
-              Choose one class or stay for the whole morning.
+              Coming soon — a brand new program for our littlest movers.
             </p>
             <p className="text-navy-dark/70 text-sm mt-0.5">
-              Drop in to any class for just $10 — no membership required.
+              Registration isn't open yet. Get in touch and we'll let you know the moment it is.
             </p>
           </div>
-          <a
-            href={PORTAL_REGISTER_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to="/contact"
             className="flex-shrink-0 bg-navy-dark text-white text-sm font-bold px-6 py-2 rounded-md hover:bg-navy-mid transition-colors whitespace-nowrap"
           >
-            Register Today →
-          </a>
+            Contact Us →
+          </Link>
         </div>
       </section>
 
@@ -266,7 +267,8 @@ export default function LittleMovers() {
             Monday – Friday mornings
           </h2>
           <p className="text-[#5a6a8a] text-sm mb-8">
-            Every class runs 45 minutes. Little Movers is a drop-off program.
+            Every class runs 45 minutes. Little Movers is a drop-off program. This is our
+            planned weekly schedule — start dates are coming soon.
           </p>
 
           {/* Table at md and up */}
@@ -345,7 +347,7 @@ export default function LittleMovers() {
           </h2>
           <p className="text-[#5a6a8a] text-sm mb-8">
             Three ways to join, depending on how often you plan to come. Every option works
-            for any class on the schedule.
+            for any class on the schedule. Pricing is set — registration opens soon.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -405,21 +407,16 @@ export default function LittleMovers() {
             Join the Little Movers family and discover a fun, flexible way for your child to
             learn, explore, and grow through movement.
           </p>
+          <p className="text-[#b8d4f0] text-sm mt-2">
+            More details coming soon — reach out and we'll keep you posted.
+          </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
             <Link
               to="/contact"
-              className="bg-white border border-navy-dark text-navy-dark text-sm font-bold px-6 py-3 rounded-md hover:bg-surface-light transition-colors"
-            >
-              Ask Us a Question
-            </Link>
-            <a
-              href={PORTAL_REGISTER_URL}
-              target="_blank"
-              rel="noopener noreferrer"
               className="bg-brand-red text-white text-sm font-bold px-6 py-3 rounded-md hover:bg-red-700 transition-colors"
             >
-              Register Today →
-            </a>
+              Get in Touch →
+            </Link>
           </div>
         </div>
       </section>

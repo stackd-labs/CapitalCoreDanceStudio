@@ -2,8 +2,6 @@ import { render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import LittleMovers from './LittleMovers'
 
-const PORTAL_REGISTER_URL = 'https://studio.capitalcoredance.com/register/classes'
-
 // The six classes and their age ranges, from the studio's Little Movers flyer.
 const CLASSES = [
   ['Baby & Me', '0–12 months'],
@@ -196,15 +194,27 @@ test('every pricing card explains what the option actually is', () => {
   }
 })
 
-test('both register CTAs point at the studio portal in a new tab', () => {
+test('says coming soon rather than inviting registration', () => {
   renderLittleMovers()
-  const links = screen.getAllByRole('link', { name: 'Register Today →' })
-  expect(links).toHaveLength(2)
-  for (const link of links) {
-    expect(link).toHaveAttribute('href', PORTAL_REGISTER_URL)
-    expect(link).toHaveAttribute('target', '_blank')
-    expect(link).toHaveAttribute('rel', 'noopener noreferrer')
-  }
+  // Registration is not open yet, so the page must say so in the banner, the header,
+  // and near the schedule and pricing.
+  expect(screen.getByText(/Coming soon — a brand new program/)).toBeInTheDocument()
+  expect(screen.getByText(/Registration isn't open yet/)).toBeInTheDocument()
+  expect(screen.getByText(/start dates are coming soon/)).toBeInTheDocument()
+  expect(screen.getByText(/registration opens soon/)).toBeInTheDocument()
+})
+
+test('every call to action goes to Contact, not the registration portal', () => {
+  renderLittleMovers()
+  // The portal has no Little Movers classes to select, so sending a parent there
+  // would be a dead end. Guard against the portal link being restored early.
+  const links = [...document.querySelectorAll('a[href]')]
+  const portalLinks = links.filter((a) => a.getAttribute('href').includes('studio.capitalcoredance.com'))
+  expect(portalLinks).toHaveLength(0)
+
+  expect(screen.getByRole('link', { name: 'Contact Us →' })).toHaveAttribute('href', '/contact')
+  expect(screen.getByRole('link', { name: 'Get in Touch →' })).toHaveAttribute('href', '/contact')
+  expect(screen.queryByRole('link', { name: /Register Today/ })).not.toBeInTheDocument()
 })
 
 test('closing call to action reads as the studio wrote it', () => {

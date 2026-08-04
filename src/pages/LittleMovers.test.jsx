@@ -103,11 +103,11 @@ test('the mobile list carries the same fifteen slots', () => {
   }
 })
 
-test('credits Ms. Ryan on the Wednesday Moovin & Groovin only', () => {
+test('does not name an instructor in the schedule', () => {
   renderLittleMovers()
-  // The flyer marks exactly one class as hers; it appears once in the table and once
-  // in the mobile list.
-  expect(screen.getAllByText('with Ms. Ryan')).toHaveLength(2)
+  // The "with Ms. Ryan" credit was removed from the view on 2026-08-03 at the
+  // studio's request; the schedule shows class name and age range only.
+  expect(screen.queryByText(/Ms\. Ryan/)).not.toBeInTheDocument()
 })
 
 test('states that every class is 45 minutes and drop-off', () => {
@@ -116,17 +116,74 @@ test('states that every class is 45 minutes and drop-off', () => {
   expect(screen.getByText(/drop-off program/i)).toBeInTheDocument()
 })
 
-test('renders the three pricing options with their exact figures', () => {
+test('renders the three ways to join, each framed by how often a family comes', () => {
   renderLittleMovers()
   const cards = screen.getAllByTestId('pricing-card')
   expect(cards).toHaveLength(3)
-  const text = cards.map((c) => c.textContent).join(' ')
-  expect(text).toContain('$10')
-  expect(text).toContain('5 visits — $45')
-  expect(text).toContain('10 visits — $85')
-  expect(text).toContain('Mini Membership — $39/month')
-  expect(text).toContain('Explorer Membership — $69/month')
-  expect(text).toContain('Adventure Membership — $99/month')
+
+  // Drop-in
+  expect(cards[0].textContent).toContain('Just want to try it?')
+  expect(cards[0].textContent).toContain('Drop-In')
+  expect(cards[0].textContent).toContain('$10')
+  expect(cards[0].textContent).toContain('per class')
+
+  // Passport
+  expect(cards[1].textContent).toContain('Come when you can')
+  expect(cards[1].textContent).toContain('Little Movers Passport')
+  expect(cards[1].textContent).toContain('5 visits — $45')
+  expect(cards[1].textContent).toContain('10 visits — $85')
+
+  // Membership
+  expect(cards[2].textContent).toContain("We're here every week")
+  expect(cards[2].textContent).toContain('Little Movers Membership')
+  expect(cards[2].textContent).toContain('$89')
+  expect(cards[2].textContent).toContain('per month')
+})
+
+test('only the membership carries the best-value badge', () => {
+  renderLittleMovers()
+  const badges = screen.getAllByTestId('pricing-badge')
+  expect(badges).toHaveLength(1)
+  expect(badges[0].textContent).toBe('Best value')
+  expect(badges[0].closest('[data-testid="pricing-card"]').textContent).toContain(
+    'Little Movers Membership'
+  )
+})
+
+test('membership lists unlimited classes and all five perks', () => {
+  renderLittleMovers()
+  const membership = screen.getAllByTestId('pricing-card')[2]
+  const lines = [...membership.querySelectorAll('[data-testid="pricing-line"]')].map((el) =>
+    el.textContent.replace('✓', '').trim()
+  )
+  expect(lines).toEqual([
+    'Unlimited Little Movers classes',
+    'Priority registration for camps',
+    'One free guest pass each month',
+    '10% off birthday parties',
+    '10% off retail',
+    'Exclusive Little Movers events',
+  ])
+})
+
+test('no longer advertises the retired three-tier membership prices', () => {
+  renderLittleMovers()
+  // Replaced by the single $89 unlimited membership on 2026-08-03.
+  for (const retired of ['$39', '$69', '$99', 'Mini Membership', 'Explorer Membership', 'Adventure Membership']) {
+    expect(screen.queryByText(new RegExp(retired.replace('$', '\\$')))).not.toBeInTheDocument()
+  }
+})
+
+test('every pricing card explains what the option actually is', () => {
+  renderLittleMovers()
+  for (const card of screen.getAllByTestId('pricing-card')) {
+    const label = card.querySelector('p:nth-of-type(1)').textContent
+    // The blurb sits between the unit line and the checklist; a price alone is not
+    // enough for a parent to tell these three apart.
+    const paragraphs = [...card.querySelectorAll('p')].map((p) => p.textContent.trim())
+    const hasBlurb = paragraphs.some((t) => t.length > 60)
+    expect(hasBlurb, `${label} has no explanatory blurb`).toBe(true)
+  }
 })
 
 test('both register CTAs point at the studio portal in a new tab', () => {

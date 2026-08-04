@@ -68,7 +68,7 @@ const BENEFITS = [
 ]
 
 // Every class runs 45 minutes, in three morning slots. Values are class names that
-// index into CLASSES above; `note` marks the one class Ms. Ryan teaches.
+// index into CLASSES above.
 const TIME_SLOTS = ['9:30 – 10:15 AM', '10:15 – 11:00 AM', '11:00 – 11:45 AM']
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
 
@@ -77,7 +77,7 @@ const SCHEDULE = [
   {
     Monday: { name: 'Baby & Me' },
     Tuesday: { name: 'Sensory Steps' },
-    Wednesday: { name: "Moovin' & Groovin'", note: 'with Ms. Ryan' },
+    Wednesday: { name: "Moovin' & Groovin'" },
     Thursday: { name: 'Little Movers Free Play Lab' },
     Friday: { name: 'Tiny Tumblers' },
   },
@@ -97,41 +97,56 @@ const SCHEDULE = [
   },
 ]
 
+// Three ways to join, framed by how often a family expects to come rather than by
+// price. `question` is the headline a parent recognises themselves in; `accent` is the
+// card's left border, drawn from the site's existing four accents.
 const PRICING = [
   {
+    question: 'Just want to try it?',
     label: 'Drop-In',
     headline: '$10',
     unit: 'per class',
-    lines: ['Use it for any Little Movers class'],
+    blurb: 'Pay as you go. Come to any single class, any morning, with nothing to sign up for.',
+    lines: ['Good for any Little Movers class', 'No membership or commitment'],
+    accent: 'border-l-[#7ab3e8]',
   },
   {
+    question: 'Come when you can',
     label: 'Little Movers Passport',
     headline: '5 visits — $45',
-    unit: '10 visits — $85',
-    lines: ['Good for any Little Movers class'],
+    unit: 'or 10 visits — $85',
+    blurb: 'A class pack that never locks you into a day or time — use the visits whenever your week allows.',
+    lines: ['Works for any Little Movers class', '10-visit pack is $8.50 a class'],
+    accent: 'border-l-[#f4a8b4]',
   },
   {
-    label: 'Memberships',
-    headline: 'From $39',
+    question: "We're here every week",
+    label: 'Little Movers Membership',
+    headline: '$89',
     unit: 'per month',
-    lines: ['Mini Membership — $39/month', 'Explorer Membership — $69/month', 'Adventure Membership — $99/month'],
+    badge: 'Best value',
+    blurb: 'Attend as many Little Movers classes as you would like. Worth it from about nine classes a month, and a bargain for families coming three mornings a week.',
+    lines: [
+      'Unlimited Little Movers classes',
+      'Priority registration for camps',
+      'One free guest pass each month',
+      '10% off birthday parties',
+      '10% off retail',
+      'Exclusive Little Movers events',
+    ],
+    accent: 'border-l-brand-red',
   },
 ]
 
 const LITTLE_MOVERS_JSON_LD = [simpleBreadcrumb('Little Movers', '/little-movers')]
 
-// One schedule cell: class name, age range, and the Ms. Ryan note where it applies.
+// One schedule cell: class name and age range.
 function ScheduleCell({ entry }) {
   if (!entry) return null
   const info = CLASSES_BY_NAME[entry.name]
   return (
     <div data-testid="schedule-entry" className="text-left">
       <div className="text-navy-dark font-bold text-sm leading-snug">{entry.name}</div>
-      {entry.note && (
-        <div className="text-brand-red text-[10px] font-bold uppercase tracking-wider mt-0.5">
-          {entry.note}
-        </div>
-      )}
       <div className="text-[#8a9aaa] text-xs mt-0.5">{info?.ages}</div>
     </div>
   )
@@ -317,25 +332,41 @@ export default function LittleMovers() {
           <p className="text-brand-red text-xs font-bold tracking-[0.3em] uppercase mb-2">
             Pricing
           </p>
-          <h2 className="text-navy-dark text-2xl font-black mb-8">
+          <h2 className="text-navy-dark text-2xl font-black mb-2">
             Flexible options for every family
           </h2>
+          <p className="text-[#5a6a8a] text-sm mb-8">
+            Three ways to join, depending on how often you plan to come. Every option works
+            for any class on the schedule.
+          </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {PRICING.map(({ label, headline, unit, lines }) => (
+            {PRICING.map(({ question, label, headline, unit, badge, blurb, lines, accent }) => (
               <div
                 key={label}
                 data-testid="pricing-card"
-                className="bg-white border border-surface-border rounded-lg px-5 py-5"
+                className={`bg-white border border-surface-border border-l-4 ${accent} rounded-lg px-5 py-5 flex flex-col`}
               >
-                <p className="text-brand-red text-[10px] font-bold tracking-[0.3em] uppercase mb-2">
-                  {label}
-                </p>
-                <p className="text-navy-dark text-2xl font-black leading-tight">{headline}</p>
+                <p className="text-navy-dark text-sm font-bold">{question}</p>
+                <div className="flex items-center gap-2 mt-3">
+                  <p className="text-brand-red text-[10px] font-bold tracking-[0.3em] uppercase">
+                    {label}
+                  </p>
+                  {badge && (
+                    <span
+                      data-testid="pricing-badge"
+                      className="bg-brand-red text-white text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap"
+                    >
+                      {badge}
+                    </span>
+                  )}
+                </div>
+                <p className="text-navy-dark text-2xl font-black leading-tight mt-1">{headline}</p>
                 <p className="text-[#8a9aaa] text-xs uppercase tracking-widest mt-1">{unit}</p>
+                <p className="text-[#5a6a8a] text-sm mt-3 leading-relaxed">{blurb}</p>
                 <ul className="flex flex-col gap-1.5 mt-4">
                   {lines.map((line) => (
-                    <li key={line} className="text-[#3a4a6a] text-sm flex gap-2">
+                    <li key={line} data-testid="pricing-line" className="text-[#3a4a6a] text-sm flex gap-2">
                       <span className="text-[#7ab3e8] mt-0.5 flex-shrink-0">✓</span>
                       {line}
                     </li>

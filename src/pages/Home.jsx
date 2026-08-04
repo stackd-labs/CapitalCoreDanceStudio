@@ -90,8 +90,17 @@ export default function Home() {
         June 2026 recital wrapped.
       */}
       <section className="py-10 px-6" style={{ backgroundColor: '#ede0fa' }}>
-        <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {[
+            {
+              to: '/little-movers',
+              img: '/flyer-little-movers.png',
+              alt: 'Little Movers coming soon — a brand new movement program for infants, toddlers and preschoolers at Capital Core Dance, in partnership with Moovin’ & Groovin’ with Ms. Ryan',
+              imgClass: 'object-cover',
+              title: 'Little Movers',
+              subtitle: 'Coming soon · ages 0–5',
+              accent: 'text-[#c0392b]',
+            },
             {
               to: '/classes',
               img: '/flyer-fall-classes.png',

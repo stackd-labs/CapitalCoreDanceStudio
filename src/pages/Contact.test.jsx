@@ -3,13 +3,8 @@ import { vi, afterEach } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
 import Contact from './Contact'
 
-vi.mock('../lib/supabase', () => ({
-  supabase: {
-    from: vi.fn(() => ({
-      insert: vi.fn(() => Promise.resolve({ error: null })),
-    })),
-  },
-}))
+// No Supabase mock: this form is email-only as of 2026-08-03 and must not import the
+// Supabase client at all. The test below asserts that.
 
 afterEach(() => {
   vi.restoreAllMocks()
@@ -56,16 +51,20 @@ test('renders submit button', () => {
   expect(screen.getByRole('button', { name: 'Send Message' })).toBeInTheDocument()
 })
 
-test('calls /api/notify with contact formType after successful submission', async () => {
-  global.fetch = vi.fn(() => Promise.resolve({ ok: true }))
-
-  renderContact()
-
+function fillAndSubmit() {
   fireEvent.change(screen.getByPlaceholderText('First name'), { target: { value: 'Jane' } })
   fireEvent.change(screen.getByPlaceholderText('Last name'), { target: { value: 'Doe' } })
   fireEvent.change(screen.getByPlaceholderText('your@email.com'), { target: { value: 'jane@example.com' } })
+  fireEvent.change(screen.getByPlaceholderText('(000) 000-0000'), { target: { value: '8045551234' } })
   fireEvent.change(screen.getByPlaceholderText('How can we help?'), { target: { value: 'Hello' } })
   fireEvent.click(screen.getByRole('button', { name: 'Send Message' }))
+}
+
+test('calls /api/notify with contact formType and every field the studio needs', async () => {
+  global.fetch = vi.fn(() => Promise.resolve({ ok: true }))
+
+  renderContact()
+  fillAndSubmit()
 
   await waitFor(() => {
     expect(global.fetch).toHaveBeenCalledWith('/api/notify', expect.objectContaining({
@@ -74,4 +73,73 @@ test('calls /api/notify with contact formType after successful submission', asyn
       body: expect.stringContaining('"formType":"contact"'),
     }))
   })
+
+  // The email is now the only record of the submission, so it has to carry the
+  // details a Supabase row used to hold.
+  const body = JSON.parse(global.fetch.mock.calls[0][1].body)
+  expect(body).toMatchObject({
+    formType: 'contact',
+    firstName: 'Jane',
+    lastName: 'Doe',
+    email: 'jane@example.com',
+    phone: '8045551234',
+    message: 'Hello',
+  })
+})
+
+test('does not write to Supabase', async () => {
+  global.fetch = vi.fn(() => Promise.resolve({ ok: true }))
+
+  renderContact()
+  fillAndSubmit()
+
+  await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1))
+  // Exactly one network call, to the email endpoint. If a database write is ever added
+  // back, this count changes and the intent of the 2026-08-03 change is flagged.
+  expect(global.fetch.mock.calls.map((c) => c[0])).toEqual(['/api/notify'])
+})
+
+test('confirms to the visitor only when the email actually sent', async () => {
+  global.fetch = vi.fn(() => Promise.resolve({ ok: true }))
+
+  renderContact()
+  fillAndSubmit()
+
+  await waitFor(() => {
+    expect(screen.getByRole('heading', { name: 'Message sent!' })).toBeInTheDocument()
+  })
+})
+
+test('shows the error and the direct email address when sending fails', async () => {
+  // A 500 from the endpoint must not read as success — with no database row behind it,
+  // a false confirmation means the enquiry is lost with nobody aware.
+  global.fetch = vi.fn(() => Promise.resolve({ ok: false, status: 500 }))
+
+  renderContact()
+  fillAndSubmit()
+
+  await waitFor(() => {
+    expect(
+      screen.getByText(
+        'Something went wrong. Please try again or email us directly at info@capitalcoredance.com.'
+      )
+    ).toBeInTheDocument()
+  })
+  expect(screen.queryByRole('heading', { name: 'Message sent!' })).not.toBeInTheDocument()
+})
+
+test('shows the error when the request itself throws', async () => {
+  global.fetch = vi.fn(() => Promise.reject(new Error('offline')))
+
+  renderContact()
+  fillAndSubmit()
+
+  await waitFor(() => {
+    expect(
+      screen.getByText(
+        'Something went wrong. Please try again or email us directly at info@capitalcoredance.com.'
+      )
+    ).toBeInTheDocument()
+  })
+  expect(screen.queryByRole('heading', { name: 'Message sent!' })).not.toBeInTheDocument()
 })

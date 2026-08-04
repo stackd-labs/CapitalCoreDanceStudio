@@ -4,7 +4,6 @@ import Navbar from '../components/Navbar'
 import PageHeader from '../components/PageHeader'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
-import { supabase } from '../lib/supabase'
 import { simpleBreadcrumb } from '../lib/schema'
 import PrivacyNotice from '../components/PrivacyNotice'
 
@@ -43,24 +42,13 @@ export default function Contact() {
     setStatus('submitting')
     setErrorMsg('')
 
-    const { error } = await supabase.from('contact_submissions').insert([
-      {
-        first_name: form.firstName,
-        last_name: form.lastName,
-        email: form.email,
-        phone: form.phone || null,
-        interest: form.interest || null,
-        dancer_name: form.dancerName || null,
-        dancer_age: form.dancerAge || null,
-        message: form.message,
-      },
-    ])
-
-    if (error) {
-      setStatus('error')
-      setErrorMsg('Something went wrong. Please try again or email us directly at info@capitalcoredance.com.')
-    } else {
-      fetch('/api/notify', {
+    // This form is email-only as of 2026-08-03 — it no longer writes to Supabase, so
+    // the Resend email IS the record of the submission. That means the request must be
+    // awaited and its result checked: the old fire-and-forget `.catch(() => {})` was
+    // safe when the database held the data, but here a swallowed failure would show
+    // the visitor "message sent" while nothing reached the studio.
+    try {
+      const response = await fetch('/api/notify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -74,9 +62,15 @@ export default function Contact() {
           dancerAge: form.dancerAge,
           message: form.message,
         }),
-      }).catch(() => {})
+      })
+
+      if (!response.ok) throw new Error(`notify responded ${response.status}`)
+
       setStatus('success')
       setForm(INITIAL_FORM)
+    } catch {
+      setStatus('error')
+      setErrorMsg('Something went wrong. Please try again or email us directly at info@capitalcoredance.com.')
     }
   }
 

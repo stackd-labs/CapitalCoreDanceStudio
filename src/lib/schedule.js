@@ -12,7 +12,10 @@ export const SCHEDULE = [
       { name: 'Tiny Ballet / Tumble', time: '5:00 – 5:30 PM', start: '17:00', end: '17:30', infoKey: 'Tiny Ballet & Tumble', ages: 'Ages 2–5', ageGroups: ['tiny'], category: 'tiny' },
       { name: 'Beginner Acro / Jazz', time: '5:30 – 6:15 PM', start: '17:30', end: '18:15', infoKey: 'Beginner Acro & Jazz', ages: 'Ages 5+ · Beginner', ageGroups: ['kids', 'teen'], category: 'jazz-acro' },
       { name: 'Beginner Contemp / Jazz', time: '5:30 – 6:15 PM', start: '17:30', end: '18:15', infoKey: 'Beginner Contemporary & Jazz', ages: 'Ages 5+ · Beginner', ageGroups: ['kids', 'teen'], category: 'jazz-acro' },
-      { name: 'Beginner Hip Hop', time: '6:15 – 7:00 PM', start: '18:15', end: '19:00', infoKey: 'Beginner Hip Hop', ages: 'Ages 5+ · Beginner', ageGroups: ['kids', 'teen'], category: 'hiphop' },
+      // Renamed from 'Beginner Hip Hop' on 2026-08-04 at the studio's request — both
+      // standalone hip hop classes are Hip Hop & Breakdancing and share one description.
+      // The ballet/hip hop combo classes are separate and were not touched.
+      { name: 'Beginner Hip Hop & Breakdancing', time: '6:15 – 7:00 PM', start: '18:15', end: '19:00', infoKey: 'Beginner Hip Hop & Breakdancing', ages: 'Ages 5+ · Beginner', ageGroups: ['kids', 'teen'], category: 'hiphop' },
       { name: 'Acro / Lyrical', time: '6:15 – 7:15 PM', start: '18:15', end: '19:15', infoKey: 'Acro & Lyrical', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'lyrical-contemp' },
       { name: 'Ballet / Contemp', time: '7:15 – 8:00 PM', start: '19:15', end: '20:00', infoKey: 'Ballet & Contemporary', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'ballet' },
       { name: 'Adult Femme / Flaire', time: '8:00 – 8:45 PM', start: '20:00', end: '20:45', infoKey: 'Adult Femme Flair', ages: 'Ages 16+ · Adult', ageGroups: ['adult'], category: 'adult' },

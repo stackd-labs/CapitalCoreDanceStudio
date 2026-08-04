@@ -25,7 +25,10 @@ test('renders real class names', () => {
   renderClasses()
   const grid = screen.getByTestId('class-grid')
   expect(within(grid).getByRole('button', { name: /Tiny Ballet \/ Tumble/ })).toBeInTheDocument()
-  expect(within(grid).getByRole('button', { name: /Beginner Hip Hop & Breakdancing/ })).toBeInTheDocument()
+  // Anchored by day: two rows are named Beginner Hip Hop & Breakdancing since the
+  // 2026-08-04 merge.
+  expect(within(grid).getByRole('button', { name: /Beginner Hip Hop & Breakdancing, Monday/ })).toBeInTheDocument()
+  expect(within(grid).getByRole('button', { name: /Beginner Hip Hop & Breakdancing, Wednesday/ })).toBeInTheDocument()
   expect(within(grid).getByRole('button', { name: /Musical Theatre/ })).toBeInTheDocument()
   // Anchored by day: two schedule rows are named Tumble Tech since the 2026-08-03
   // merge, so an unanchored /Tumble Tech/ matches both blocks.

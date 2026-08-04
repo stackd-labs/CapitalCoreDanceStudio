@@ -14,6 +14,7 @@ const NAV_LINKS = [
       { to: '/tuition', label: 'Tuition' },
     ],
   },
+  { to: '/little-movers', label: 'Little Movers' },
   { to: '/dance-company', label: 'Dance Company' },
   { to: '/birthdays', label: 'Birthdays' },
 ]

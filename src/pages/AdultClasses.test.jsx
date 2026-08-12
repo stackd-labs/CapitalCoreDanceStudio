@@ -34,7 +34,9 @@ function renderAdultClasses() {
 
 test('renders page title', () => {
   renderAdultClasses()
-  expect(screen.getByRole('heading', { name: 'Adult Classes' })).toBeInTheDocument()
+  // Sentence case since the 2026-08-11 conversion, matching every other hero; still
+  // "Adult Classes" in the nav and the URL.
+  expect(screen.getByRole('heading', { level: 1, name: 'Adult classes' })).toBeInTheDocument()
 })
 
 test('renders all three adult classes in schedule order', () => {
@@ -98,4 +100,37 @@ test('links to the register portal, the schedule, and tuition', () => {
   for (const link of tuitionLinks) {
     expect(link).toHaveAttribute('href', '/tuition')
   }
+})
+
+test('the evening window is derived from the schedule, not typed out', () => {
+  // This line read "between 7:00 and 9:00 PM" as a literal and nearly went stale when
+  // Friday's Adult Contemporary was shortened. It must track the real earliest start
+  // and latest end of the three adult classes.
+  renderAdultClasses()
+  const bullets = screen.getAllByTestId('adult-info-bullet').map((el) => el.textContent)
+  const window = bullets.find((b) => /run in the evening/.test(b))
+  expect(window).toBeTruthy()
+  // Mon 8:00–8:45, Wed 7:30–8:15, Fri 7:00–7:45 → earliest 7:00, latest 8:45.
+  expect(window).toContain('between 7:00 and 8:45 PM')
+  expect(window).not.toContain('9:00')
+})
+
+test('wears its own purple, not the Classes orange', () => {
+  renderAdultClasses()
+  expect(screen.getByTestId('hero-panel')).toHaveStyle({ background: '#9b3df0' })
+})
+
+test('does not stack two identical register buttons in the same eyeful', () => {
+  // The hero action and the reassurance strip sat a hundred pixels apart both saying
+  // "Register for Fall →". The strip is now text only.
+  renderAdultClasses()
+  expect(screen.getAllByRole('link', { name: 'Register for Fall →' })).toHaveLength(2)
+})
+
+test('carries no leftover light-theme surfaces', () => {
+  renderAdultClasses()
+  const white = [...document.querySelectorAll('[class*="bg-white"]')].filter(
+    (el) => !/bg-white\/\[?\d/.test(el.className)
+  )
+  expect(white.map((el) => el.className)).toEqual([])
 })

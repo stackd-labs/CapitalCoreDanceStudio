@@ -2,11 +2,12 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import ClassDetailPanel from './ClassDetailPanel'
 
 const ROW = {
-  name: 'Beginner Acro / Jazz',
+  name: 'Core Acro & Jazz',
   day: 'Monday',
   time: '5:30 – 6:15 PM',
-  ages: 'Ages 5+ · Beginner',
-  infoKey: 'Beginner Acro & Jazz',
+  ages: 'Ages 5+',
+  infoKey: 'Core Acro & Jazz',
+  program: 'core',
 }
 
 function renderPanel(props = {}) {
@@ -22,10 +23,10 @@ test('renders nothing when no class is selected', () => {
 
 test('shows the class name, day, time, ages, and prose', () => {
   renderPanel()
-  expect(screen.getByRole('heading', { name: 'Beginner Acro / Jazz' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'Core Acro & Jazz' })).toBeInTheDocument()
   expect(screen.getByText(/Monday/)).toBeInTheDocument()
   expect(screen.getByText(/5:30 – 6:15 PM/)).toBeInTheDocument()
-  expect(screen.getByText('Ages 5+ · Beginner')).toBeInTheDocument()
+  expect(screen.getByText('Ages 5+')).toBeInTheDocument()
   expect(screen.getByText(/A high-energy class introducing dancers/)).toBeInTheDocument()
   // Audience lines were removed 2026-08-03 at the studio's request.
   expect(screen.queryByText(/Great for energetic kids/)).not.toBeInTheDocument()
@@ -35,7 +36,7 @@ test('is an accessible modal dialog labelled by the class name', () => {
   renderPanel()
   const dialog = screen.getByRole('dialog')
   expect(dialog).toHaveAttribute('aria-modal', 'true')
-  expect(dialog).toHaveAccessibleName('Beginner Acro / Jazz')
+  expect(dialog).toHaveAccessibleName('Core Acro & Jazz')
 })
 
 test('registration button opens the portal in a new tab', () => {
@@ -99,6 +100,19 @@ test('falls back gracefully when a class has no prose entry', () => {
   )
   // The name, day, and time still come from the schedule row, so the panel is useful
   // even if a future schedule row is added before its copy is written.
-  expect(screen.getByRole('heading', { name: 'Beginner Acro / Jazz' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'Core Acro & Jazz' })).toBeInTheDocument()
   expect(screen.getByRole('link', { name: 'Register for Fall →' })).toBeInTheDocument()
+})
+
+test('shows the program tier as a badge', () => {
+  renderPanel()
+  expect(screen.getByTestId('program-badge')).toHaveTextContent('Core')
+})
+
+test('omits the badge for a row with no program tier', () => {
+  // Guards the optional render: a schedule row added without `program` should still
+  // open a usable panel rather than showing an empty badge chip.
+  const { program, ...rowWithoutProgram } = ROW
+  render(<ClassDetailPanel classInfo={rowWithoutProgram} onClose={() => {}} />)
+  expect(screen.queryByTestId('program-badge')).not.toBeInTheDocument()
 })

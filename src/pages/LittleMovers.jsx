@@ -1,22 +1,24 @@
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
-import PageHeader from '../components/PageHeader'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
+import Hero from '../components/Hero'
+import { Kicker, SectionHeading, PrimaryAction, GhostAction, CtaBand, InverseAction } from '../components/blocks'
 import { simpleBreadcrumb } from '../lib/schema'
+import { ACCENTS } from '../lib/pageAccents'
+import { onAccent } from '../lib/accentContrast'
+
+// Rebuilt 2026-08-11 to the studio's site mockup (page 1c, accent teal). The mockup
+// carries a hero, a row of age-tier cards and a "what a class looks like" strip; the
+// studio's own content — six classes, the benefits list, the weekday-morning grid and
+// the three pricing options — is kept and restyled onto the navy field.
+const ACCENT = ACCENTS.teal
 
 // Little Movers is not open for registration yet, so every call to action points at
 // the contact page rather than the studio portal — the portal has no Little Movers
 // classes to select. When registration opens, swap these back to
 // https://studio.capitalcoredance.com/register/classes and drop the coming-soon
 // banner and badge below.
-
-const ACCENT_COLORS = [
-  'border-brand-red',
-  'border-[#7ab3e8]',
-  'border-[#f4a8b4]',
-  'border-[#f4a060]',
-]
 
 // The six Little Movers classes. Single source of truth for name, age range, and
 // description — the weekly schedule below references these by name so the two can
@@ -104,8 +106,9 @@ const SCHEDULE = [
 ]
 
 // Three ways to join, framed by how often a family expects to come rather than by
-// price. `question` is the headline a parent recognises themselves in; `accent` is the
-// card's left border, drawn from the site's existing four accents.
+// price. `question` is the headline a parent recognises themselves in. The per-card
+// border colour was dropped in the 2026-08-11 redesign — every card now sits on the
+// page's single teal accent.
 const PRICING = [
   {
     question: 'Just want to try it?',
@@ -114,7 +117,6 @@ const PRICING = [
     unit: 'per class',
     blurb: 'Pay as you go. Come to any single class, any morning, with nothing to sign up for.',
     lines: ['Good for any Little Movers class', 'No membership or commitment'],
-    accent: 'border-l-[#7ab3e8]',
   },
   {
     question: 'Come when you can',
@@ -123,7 +125,6 @@ const PRICING = [
     unit: 'or 10 visits — $85',
     blurb: 'A class pack that never locks you into a day or time — use the visits whenever your week allows.',
     lines: ['Works for any Little Movers class', '10-visit pack is $8.50 a class'],
-    accent: 'border-l-[#f4a8b4]',
   },
   {
     question: "We're here every week",
@@ -140,11 +141,19 @@ const PRICING = [
       '10% off retail',
       'Exclusive Little Movers events',
     ],
-    accent: 'border-l-brand-red',
   },
 ]
 
 const LITTLE_MOVERS_JSON_LD = [simpleBreadcrumb('Little Movers', '/little-movers')]
+
+// PLACEHOLDER — the four steps come from the mockup, not the studio. They read true for
+// a toddler class but need confirming before launch.
+const CLASS_SHAPE = [
+  { n: '01', name: 'Arrive & warm up', blurb: 'Shoes off, circle up, and a song to settle everyone in.' },
+  { n: '02', name: 'Skill of the week', blurb: 'One idea at a time — a shape, a step, a way to balance.' },
+  { n: '03', name: 'Dance & play', blurb: 'Props, music and free movement across the floor.' },
+  { n: '04', name: 'Stickers & goodbye', blurb: 'A calm finish, a sticker, and something to show you.' },
+]
 
 // One schedule cell: class name and age range.
 function ScheduleCell({ entry }) {
@@ -152,15 +161,15 @@ function ScheduleCell({ entry }) {
   const info = CLASSES_BY_NAME[entry.name]
   return (
     <div data-testid="schedule-entry" className="text-left">
-      <div className="text-navy-dark font-bold text-sm leading-snug">{entry.name}</div>
-      <div className="text-[#8a9aaa] text-xs mt-0.5">{info?.ages}</div>
+      <div className="font-body text-white font-bold text-sm leading-snug">{entry.name}</div>
+      <div className="font-body text-mist-500 text-xs mt-0.5">{info?.ages}</div>
     </div>
   )
 }
 
 export default function LittleMovers() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-ink-base">
       <SEO
         title="Little Movers | Toddler &amp; Preschool Movement Classes in Midlothian, VA — Capital Core Dance"
         description="Coming soon — Little Movers at Capital Core Dance in Midlothian, VA. A movement-based enrichment program for infants, toddlers, and preschoolers combining dance, music, sensory play, tumbling, and active exploration. Weekday mornings, 45-minute classes, drop-in $10. Contact us to be notified when registration opens."
@@ -168,53 +177,128 @@ export default function LittleMovers() {
         jsonLd={LITTLE_MOVERS_JSON_LD}
       />
       <Navbar />
-      <PageHeader
-        eyebrow="Capital Core Dance"
-        title="Little Movers"
-        subtitle="Coming soon. Movement. Play. Learn. Grow. — a movement-based enrichment program for infants, toddlers, and preschoolers."
+
+      <Hero
+        eyebrow="Ages 0 – 5 years"
+        title={['Little', [{ text: 'Movers', accent: ACCENT }]]}
+        tagline="Movement. Play. Learn. Grow."
+        body="A first dance experience for infants, toddlers and preschoolers — 45-minute weekday-morning classes built on music, sensory play and active exploration."
+        photoCaption="Toddlers in class"
+        clipStart={20}
+        titleClassName="text-[42px] sm:text-[56px] lg:text-[76px] leading-[0.92]"
+        actions={
+          <>
+            <PrimaryAction to="/contact">Get notified</PrimaryAction>
+            <GhostAction href="#schedule">See class times</GhostAction>
+          </>
+        }
       />
 
-      {/* Drop-in banner */}
-      <section className="px-6 py-4" style={{ backgroundColor: '#f4a8b4' }}>
-        <div className="max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="text-center sm:text-left">
-            <p className="text-navy-dark font-black text-lg leading-snug">
+      {/* Coming-soon notice. Registration is not open, so every action points at contact
+          rather than the studio portal — the portal has no Little Movers classes yet. */}
+      <section className="px-6 lg:px-24 py-5" style={{ background: ACCENT }}>
+        <div className="max-w-[1440px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="text-center sm:text-left" style={{ color: onAccent(ACCENT) }}>
+            <p className="font-body font-bold text-lg leading-snug">
               Coming soon — a brand new program for our littlest movers.
             </p>
-            <p className="text-navy-dark/70 text-sm mt-0.5">
-              Registration isn't open yet. Get in touch and we'll let you know the moment it is.
+            <p className="font-body text-sm opacity-80 mt-0.5">
+              Registration isn&apos;t open yet. Get in touch and we&apos;ll let you know the moment it is.
             </p>
           </div>
           <Link
             to="/contact"
-            className="flex-shrink-0 bg-navy-dark text-white text-sm font-bold px-6 py-2 rounded-md hover:bg-navy-mid transition-colors whitespace-nowrap"
+            className="flex-shrink-0 bg-ink-base text-white font-body text-sm font-bold px-6 py-3 whitespace-nowrap hover:opacity-90 transition-opacity"
           >
             Contact Us →
           </Link>
         </div>
       </section>
 
-      {/* Intro + benefits */}
-      <section className="bg-white px-6 py-12">
-        <div className="max-w-3xl mx-auto">
-          <p className="text-[#3a4a6a] text-sm leading-relaxed mb-8">
-            A movement-based enrichment program for infants, toddlers, and preschoolers that
-            combines dance, music, sensory play, tumbling, and active exploration in a fun,
-            engaging environment.
-          </p>
+      {/* Six classes — the mockup's tier cards, filled with the studio's own classes */}
+      <section className="bg-ink-deep px-6 lg:px-24 py-16 lg:py-20">
+        <div className="max-w-[1440px] mx-auto">
+          <Kicker accent={ACCENT}>The classes</Kicker>
+          <SectionHeading className="text-white mb-10">Six ways to move</SectionHeading>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[26px]">
+            {CLASSES.map(({ name, ages, description, partner }) => (
+              <div
+                key={name}
+                data-testid="little-movers-class"
+                className="border border-white/[0.12] px-7 pt-8 pb-[34px]"
+              >
+                <div className="font-display text-[38px] leading-none" style={{ color: ACCENT }}>
+                  {ages}
+                </div>
+                <div
+                  data-testid="class-name"
+                  className="font-display uppercase text-white text-[26px] leading-none mt-3 mb-3"
+                >
+                  {name}
+                </div>
+                <p className="font-body text-[14.5px] leading-[1.6] text-mist-400 mb-4 m-0">
+                  {description}
+                </p>
+                {partner && (
+                  <div
+                    data-testid="class-partner"
+                    className="font-body text-[12px] font-semibold tracking-[0.14em] uppercase"
+                    style={{ color: ACCENT }}
+                  >
+                    {partner}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-          <p className="text-brand-red text-xs font-bold tracking-[0.3em] uppercase mb-2">
-            Why Little Movers?
-          </p>
-          <h2 className="text-navy-dark text-2xl font-black mb-2">
-            What your child builds here
-          </h2>
-          <p className="text-[#5a6a8a] text-sm mb-6">Little Movers helps children develop:</p>
+      {/* What a class looks like */}
+      <section className="px-6 lg:px-24 py-16 lg:py-20">
+        <div className="max-w-[1440px] mx-auto">
+          <SectionHeading className="text-white mb-10">What a class looks like</SectionHeading>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {CLASS_SHAPE.map(({ n, name, blurb }) => (
+              <div
+                key={n}
+                data-testid="class-step"
+                className="border-t-[3px] pt-[18px]"
+                style={{ borderColor: ACCENT }}
+              >
+                <div
+                  className="font-body text-[11px] font-semibold tracking-[0.2em] uppercase mb-2.5"
+                  style={{ color: ACCENT }}
+                >
+                  {n}
+                </div>
+                <div className="font-body font-bold text-[18px] leading-[1.3] text-white mb-2">
+                  {name}
+                </div>
+                <div className="font-body text-[14px] leading-[1.6] text-mist-400">{blurb}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
+      {/* Benefits */}
+      <section className="bg-ink-deep px-6 lg:px-24 py-16 lg:py-20">
+        <div className="max-w-[1440px] mx-auto">
+          <Kicker accent={ACCENT}>Why it matters</Kicker>
+          <SectionHeading className="text-white mb-3">
+            Little Movers helps children develop
+          </SectionHeading>
+          <ul className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-3 mt-8">
             {BENEFITS.map((item) => (
-              <li key={item} data-testid="benefit" className="text-[#3a4a6a] text-sm flex gap-2">
-                <span className="text-[#f4a8b4] mt-0.5 flex-shrink-0">✓</span>
+              <li
+                key={item}
+                data-testid="benefit"
+                className="font-body text-mist-300 text-sm flex gap-2.5"
+              >
+                <span className="flex-shrink-0" style={{ color: ACCENT }}>
+                  ✓
+                </span>
                 {item}
               </li>
             ))}
@@ -222,53 +306,14 @@ export default function LittleMovers() {
         </div>
       </section>
 
-      {/* Classes */}
-      <section className="bg-surface-light px-6 py-12">
-        <div className="max-w-3xl mx-auto">
-          <p className="text-brand-red text-xs font-bold tracking-[0.3em] uppercase mb-2">
-            Classes
-          </p>
-          <h2 className="text-navy-dark text-2xl font-black mb-8">Six ways to move</h2>
-
-          <div className="flex flex-col gap-3">
-            {CLASSES.map(({ name, ages, partner, description }, i) => (
-              <div
-                key={name}
-                data-testid="little-movers-class"
-                className={`bg-white border border-surface-border border-l-4 ${ACCENT_COLORS[i % ACCENT_COLORS.length]} rounded-lg px-5 py-4`}
-              >
-                <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                  <div data-testid="class-name" className="text-navy-dark font-bold text-base">
-                    {name}
-                  </div>
-                  <div className="text-[#8a9aaa] text-xs font-bold uppercase tracking-wider">
-                    {ages}
-                  </div>
-                </div>
-                {partner && (
-                  <p data-testid="class-partner" className="text-brand-red text-xs font-semibold mt-1">
-                    {partner}
-                  </p>
-                )}
-                <p className="text-[#5a6a8a] text-sm mt-2 leading-relaxed">{description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Weekly schedule */}
-      <section className="bg-white px-6 py-12">
-        <div className="max-w-5xl mx-auto">
-          <p className="text-brand-red text-xs font-bold tracking-[0.3em] uppercase mb-2">
-            Weekly schedule
-          </p>
-          <h2 className="text-navy-dark text-2xl font-black mb-2">
-            Monday – Friday mornings
-          </h2>
-          <p className="text-[#5a6a8a] text-sm mb-8">
-            Every class runs 45 minutes. Little Movers is a drop-off program. This is our
-            planned weekly schedule — start dates are coming soon.
+      <section id="schedule" className="px-6 lg:px-24 py-16 lg:py-20 scroll-mt-24">
+        <div className="max-w-[1440px] mx-auto">
+          <Kicker accent={ACCENT}>Weekly schedule</Kicker>
+          <SectionHeading className="text-white mb-3">Monday – Friday mornings</SectionHeading>
+          <p className="font-body text-mist-400 text-sm mb-10 max-w-2xl">
+            Every class runs 45 minutes. Little Movers is a drop-off program. This is our planned
+            weekly schedule — start dates are coming soon.
           </p>
 
           {/* Table at md and up */}
@@ -276,13 +321,13 @@ export default function LittleMovers() {
             <table data-testid="schedule-table" className="w-full border-collapse">
               <thead>
                 <tr>
-                  <th className="text-left text-[#8a9aaa] text-[10px] font-bold uppercase tracking-wider pb-3 pr-4 w-32">
+                  <th className="text-left font-body text-mist-500 text-[10px] font-bold uppercase tracking-wider pb-3 pr-4 w-32">
                     Time
                   </th>
                   {DAYS.map((day) => (
                     <th
                       key={day}
-                      className="text-left text-navy-dark text-xs font-black uppercase tracking-wider pb-3 px-3"
+                      className="text-left font-body text-white text-xs font-bold uppercase tracking-wider pb-3 px-3"
                     >
                       {day}
                     </th>
@@ -290,17 +335,18 @@ export default function LittleMovers() {
                 </tr>
               </thead>
               <tbody>
-                {SCHEDULE.map((slot, i) => (
-                  <tr key={TIME_SLOTS[i]} className="border-t border-surface-border align-top">
+                {SCHEDULE.map((row, i) => (
+                  <tr key={TIME_SLOTS[i]} className="border-t border-white/10">
                     <th
                       scope="row"
-                      className="text-left text-[#7ab3e8] text-sm font-semibold py-4 pr-4 whitespace-nowrap"
+                      className="text-left font-body text-sm font-semibold py-4 pr-4 whitespace-nowrap"
+                      style={{ color: ACCENT }}
                     >
                       {TIME_SLOTS[i]}
                     </th>
                     {DAYS.map((day) => (
-                      <td key={day} className="py-4 px-3">
-                        <ScheduleCell entry={slot[day]} />
+                      <td key={day} className="align-top py-4 px-3">
+                        <ScheduleCell entry={row[day]} />
                       </td>
                     ))}
                   </tr>
@@ -314,21 +360,26 @@ export default function LittleMovers() {
             {DAYS.map((day) => (
               <div key={day}>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="text-navy-dark font-black text-lg">{day}</div>
-                  <div className="flex-1 h-px bg-surface-border" />
+                  <div className="font-display uppercase text-white text-xl">{day}</div>
+                  <div className="flex-1 h-px bg-white/15" />
                 </div>
                 <div className="flex flex-col gap-3">
-                  {SCHEDULE.map((slot, i) => (
-                    <div
-                      key={`${day}-${TIME_SLOTS[i]}`}
-                      className={`border border-surface-border border-l-4 ${ACCENT_COLORS[i % ACCENT_COLORS.length]} rounded-lg px-5 py-4 flex items-start justify-between gap-4`}
-                    >
-                      <ScheduleCell entry={slot[day]} />
-                      <div className="text-[#7ab3e8] text-sm font-medium flex-shrink-0 text-right">
-                        {TIME_SLOTS[i]}
+                  {SCHEDULE.map((row, i) =>
+                    row[day] ? (
+                      <div
+                        key={`${day}-${i}`}
+                        className="border border-white/[0.12] bg-ink-panel px-4 py-3 flex items-start justify-between gap-4"
+                      >
+                        <ScheduleCell entry={row[day]} />
+                        <div
+                          className="font-body text-sm font-medium flex-shrink-0 text-right"
+                          style={{ color: ACCENT }}
+                        >
+                          {TIME_SLOTS[i]}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ) : null
+                  )}
                 </div>
               </div>
             ))}
@@ -337,47 +388,59 @@ export default function LittleMovers() {
       </section>
 
       {/* Pricing */}
-      <section className="bg-surface-light px-6 py-12">
-        <div className="max-w-3xl mx-auto">
-          <p className="text-brand-red text-xs font-bold tracking-[0.3em] uppercase mb-2">
-            Pricing
-          </p>
-          <h2 className="text-navy-dark text-2xl font-black mb-2">
+      <section className="bg-ink-deep px-6 lg:px-24 py-16 lg:py-20">
+        <div className="max-w-[1440px] mx-auto">
+          <Kicker accent={ACCENT}>Pricing</Kicker>
+          <SectionHeading className="text-white mb-3">
             Flexible options for every family
-          </h2>
-          <p className="text-[#5a6a8a] text-sm mb-8">
-            Three ways to join, depending on how often you plan to come. Every option works
-            for any class on the schedule. Pricing is set — registration opens soon.
+          </SectionHeading>
+          <p className="font-body text-mist-400 text-sm mb-10 max-w-2xl">
+            Three ways to join, depending on how often you plan to come. Every option works for any
+            class on the schedule. Pricing is set — registration opens soon.
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {PRICING.map(({ question, label, headline, unit, badge, blurb, lines, accent }) => (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-[26px]">
+            {PRICING.map(({ question, label, headline, unit, badge, blurb, lines }) => (
               <div
                 key={label}
                 data-testid="pricing-card"
-                className={`bg-white border border-surface-border border-l-4 ${accent} rounded-lg px-5 py-5 flex flex-col`}
+                className="border border-white/[0.12] bg-ink-base px-7 py-7 flex flex-col"
               >
-                <p className="text-navy-dark text-sm font-bold">{question}</p>
-                <div className="flex items-center gap-2 mt-3">
-                  <p className="text-brand-red text-[10px] font-bold tracking-[0.3em] uppercase">
+                <p className="font-body text-mist-300 text-sm font-semibold">{question}</p>
+                <div className="flex items-center justify-between gap-3 mt-1">
+                  <p
+                    className="font-body text-[10px] font-bold tracking-[0.3em] uppercase"
+                    style={{ color: ACCENT }}
+                  >
                     {label}
                   </p>
                   {badge && (
                     <span
                       data-testid="pricing-badge"
-                      className="bg-brand-red text-white text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap"
+                      className="font-body text-[10px] font-bold uppercase tracking-[0.14em] px-2 py-1"
+                      style={{ background: ACCENT, color: onAccent(ACCENT) }}
                     >
                       {badge}
                     </span>
                   )}
                 </div>
-                <p className="text-navy-dark text-2xl font-black leading-tight mt-1">{headline}</p>
-                <p className="text-[#8a9aaa] text-xs uppercase tracking-widest mt-1">{unit}</p>
-                <p className="text-[#5a6a8a] text-sm mt-3 leading-relaxed">{blurb}</p>
-                <ul className="flex flex-col gap-1.5 mt-4">
+                <p className="font-display uppercase text-white text-[32px] leading-none mt-3">
+                  {headline}
+                </p>
+                <p className="font-body text-mist-500 text-xs uppercase tracking-widest mt-1.5">
+                  {unit}
+                </p>
+                <p className="font-body text-mist-400 text-sm mt-4 leading-relaxed">{blurb}</p>
+                <ul className="flex flex-col gap-2 mt-5">
                   {lines.map((line) => (
-                    <li key={line} data-testid="pricing-line" className="text-[#3a4a6a] text-sm flex gap-2">
-                      <span className="text-[#7ab3e8] mt-0.5 flex-shrink-0">✓</span>
+                    <li
+                      key={line}
+                      data-testid="pricing-line"
+                      className="font-body text-mist-300 text-sm flex gap-2.5"
+                    >
+                      <span className="flex-shrink-0" style={{ color: ACCENT }}>
+                        ✓
+                      </span>
                       {line}
                     </li>
                   ))}
@@ -386,40 +449,22 @@ export default function LittleMovers() {
             ))}
           </div>
 
-          <p className="text-[#8a9aaa] text-xs mt-6 text-center">
-            Use your passport or membership for any Little Movers class. See{' '}
-            <Link to="/tuition" className="text-brand-red font-semibold hover:underline">
+          <p className="font-body text-mist-500 text-xs mt-8 text-center">
+            Little Movers pricing is separate from studio class tuition. See{' '}
+            <Link to="/tuition" className="font-semibold hover:underline" style={{ color: ACCENT }}>
               Tuition
             </Link>{' '}
-            for our year-round dance class pricing.
+            for our regular class rates.
           </p>
         </div>
       </section>
 
-      {/* Closing CTA */}
-      <section className="bg-navy-dark flex-1 px-6 py-12">
-        <div className="max-w-3xl mx-auto text-center">
-          <p className="text-[#f4a8b4] text-xs font-bold tracking-[0.3em] uppercase mb-2">
-            Let's move, play & grow together
-          </p>
-          <h2 className="text-white text-2xl font-black">Ready to Get Moving?</h2>
-          <p className="text-[#b8d4f0] text-sm mt-3 max-w-xl mx-auto leading-relaxed">
-            Join the Little Movers family and discover a fun, flexible way for your child to
-            learn, explore, and grow through movement.
-          </p>
-          <p className="text-[#b8d4f0] text-sm mt-2">
-            More details coming soon — reach out and we'll keep you posted.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
-            <Link
-              to="/contact"
-              className="bg-brand-red text-white text-sm font-bold px-6 py-3 rounded-md hover:bg-red-700 transition-colors"
-            >
-              Get in Touch →
-            </Link>
-          </div>
-        </div>
-      </section>
+      <CtaBand
+        accent={ACCENT}
+        headline="Ready to Get Moving?"
+        body="Join the Little Movers family and discover a fun, flexible way for your child to learn, explore, and grow through movement. More details coming soon — reach out and we'll keep you posted."
+        action={<InverseAction to="/contact">Get in Touch →</InverseAction>}
+      />
 
       <Footer />
     </div>

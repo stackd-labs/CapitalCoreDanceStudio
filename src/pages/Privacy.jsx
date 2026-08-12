@@ -1,9 +1,11 @@
-import { Link } from 'react-router-dom'
-import Navbar from '../components/Navbar'
-import PageHeader from '../components/PageHeader'
-import Footer from '../components/Footer'
-import SEO from '../components/SEO'
+import LegalPage from '../components/LegalPage'
 import { simpleBreadcrumb } from '../lib/schema'
+import { ACCENTS } from '../lib/pageAccents'
+
+// Rebuilt 2026-08-11 to the studio's site mockup (accent pink). Privacy and Terms are
+// the same layout in different accents, so both render the shared LegalPage shell; only
+// the copy below is page-specific. Section text is unchanged from before the redesign.
+const ACCENT = ACCENTS.pink
 
 const SECTIONS = [
   {
@@ -66,82 +68,27 @@ const SECTIONS = [
   },
 ]
 
+const PRIVACY_SEO = {
+  title: 'Privacy Policy | Capital Core Dance Studio',
+  description:
+    'Privacy Policy for Capital Core Dance Studio in Midlothian, VA — how we collect, use, and protect your information.',
+  canonical: '/privacy',
+  jsonLd: simpleBreadcrumb('Privacy Policy', '/privacy'),
+}
+
 export default function Privacy() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <SEO
-        title="Privacy Policy | Capital Core Dance Studio"
-        description="Privacy Policy for Capital Core Dance Studio in Midlothian, VA — how we collect, use, and protect your information."
-        canonical="/privacy"
-        jsonLd={simpleBreadcrumb('Privacy Policy', '/privacy')}
-      />
-      <Navbar />
-      <PageHeader
-        eyebrow="Legal"
-        title="Privacy Policy"
-        subtitle="How we collect, use, and protect the information you share with Capital Core Dance Studio."
-      />
-
-      <section className="bg-white flex-1 px-6 py-12">
-        <div className="max-w-3xl mx-auto flex flex-col gap-10">
-
-          <p className="text-[#5a6a8a] text-xs italic">Last Updated: May 1, 2026</p>
-
-          <p className="text-[#3a4a6a] text-sm leading-relaxed">
-            Capital Core Dance Studio (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;the studio&rdquo;) values your privacy. This policy explains what
-            information we collect when you visit our website or use our services, how we use it, and the choices
-            you have. By using our website you agree to the practices described below.
-          </p>
-
-          {SECTIONS.map(({ title, body, list, after }) => (
-            <div key={title}>
-              <h2 className="text-navy-dark text-lg font-black mb-3">{title}</h2>
-              <div className="flex flex-col gap-3">
-                {body.map((p, i) => (
-                  <p key={i} className="text-[#3a4a6a] text-sm leading-relaxed">{p}</p>
-                ))}
-                {list && (
-                  <ul className="list-disc pl-5 space-y-1.5">
-                    {list.map((item, i) => (
-                      <li key={i} className="text-[#3a4a6a] text-sm leading-relaxed">{item}</li>
-                    ))}
-                  </ul>
-                )}
-                {after && <p className="text-[#3a4a6a] text-sm leading-relaxed">{after}</p>}
-              </div>
-            </div>
-          ))}
-
-          {/* Contact card */}
-          <div className="bg-[#f0f6ff] border border-[#c8ddf4] rounded-lg px-5 py-5">
-            <p className="text-navy-dark font-black text-base mb-2">Questions about your privacy?</p>
-            <p className="text-[#5a6a8a] text-sm leading-relaxed mb-4">
-              Reach out anytime — we're happy to walk you through what we collect or update your information on request.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link
-                to="/contact"
-                className="inline-block bg-brand-red text-white font-bold px-6 py-2.5 rounded-md hover:bg-red-700 transition-colors text-sm text-center"
-              >
-                Contact Us
-              </Link>
-              <a
-                href="mailto:info@capitalcoredance.com"
-                className="inline-block border border-[#c8ddf4] text-navy-dark font-bold px-6 py-2.5 rounded-md hover:bg-white transition-colors text-sm text-center"
-              >
-                info@capitalcoredance.com
-              </a>
-            </div>
-          </div>
-
-          <p className="text-[#8a9aaa] text-xs text-center">
-            Capital Core Dance Studio · 13110 Midlothian Turnpike, Midlothian, VA 23113 · (804) 234-4014
-          </p>
-
-        </div>
-      </section>
-
-      <Footer />
-    </div>
+    <LegalPage
+      accent={ACCENT}
+      seo={PRIVACY_SEO}
+      eyebrow="Updated May 2026"
+      title={['Privacy', [{ text: 'policy', accent: ACCENT }]]}
+      tagline="What we collect and why"
+      intro="Capital Core Dance Studio values your privacy. This policy explains what information we collect when you visit our website or use our services, how we use it, and the choices you have."
+      lastUpdated="May 1, 2026"
+      sections={SECTIONS}
+      readLabel="Read the policy"
+      askLabel="Privacy questions"
+    />
   )
 }

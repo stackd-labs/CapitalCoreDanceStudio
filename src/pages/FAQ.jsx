@@ -1,10 +1,18 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
-import PageHeader from '../components/PageHeader'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
+import Hero from '../components/Hero'
+import { Kicker, SectionHeading, PrimaryAction, GhostAction, CtaBand, InverseAction } from '../components/blocks'
 import { simpleBreadcrumb } from '../lib/schema'
+import { ACCENTS } from '../lib/pageAccents'
+
+// Rebuilt 2026-08-11 to the studio's site mockup (page 1i, accent green). The mockup
+// shows every answer open in a two-column grid; with ~30 questions across seven
+// categories that would be an enormous wall, so the accordion behaviour is kept and the
+// mockup's presentation — two columns, hairline rule, green +, Barlow — is applied to
+// it. The FAQPage JSON-LD still indexes every question regardless of open state.
+const ACCENT = ACCENTS.green
 
 const FAQS = [
   {
@@ -187,34 +195,37 @@ const JSON_LD = {
   ),
 }
 
-const ACCENT_COLORS = [
-  'border-brand-red',
-  'border-[#7ab3e8]',
-  'border-[#f4a8b4]',
-  'border-[#f4a060]',
-  'border-[#d4b8f4]',
-  'border-[#b8f0d4]',
-]
-
-function FAQItem({ q, a, index }) {
+// One question. Collapsed by default — the mockup draws every answer open, but with
+// this many questions that is a wall of text, so the + rotates to × and the answer
+// expands. The question text itself is always in the DOM, so in-page search and the
+// FAQPage JSON-LD are unaffected by the open state.
+function FAQItem({ q, a }) {
   const [open, setOpen] = useState(false)
 
   return (
-    <div
-      className={`border border-surface-border border-l-4 ${ACCENT_COLORS[index % ACCENT_COLORS.length]} rounded-lg overflow-hidden`}
-    >
+    <div data-testid="faq-item" className="border-t border-white/[0.14] pt-[22px] pb-1">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="w-full text-left px-5 py-4 flex items-center justify-between gap-4 hover:bg-[#f8faff] transition-colors"
         aria-expanded={open}
+        className="w-full text-left flex gap-3.5 items-start group"
       >
-        <span className="text-navy-dark font-bold text-sm leading-snug">{q}</span>
-        <span className={`text-brand-red flex-shrink-0 text-lg font-bold transition-transform ${open ? 'rotate-45' : ''}`}>+</span>
+        <span
+          className={`font-display text-[22px] leading-none flex-none transition-transform ${
+            open ? 'rotate-45' : ''
+          }`}
+          style={{ color: ACCENT }}
+          aria-hidden="true"
+        >
+          +
+        </span>
+        <span className="font-body font-bold text-[19px] leading-[1.35] text-white group-hover:text-mist-200 transition-colors">
+          {q}
+        </span>
       </button>
       {open && (
-        <div className="px-5 pb-5 pt-1">
-          <p className="text-[#3a4a6a] text-sm leading-relaxed">{a}</p>
-        </div>
+        <p className="font-body text-[15px] leading-[1.65] text-mist-400 mt-2 ml-[30px] mb-0">
+          {a}
+        </p>
       )}
     </div>
   )
@@ -222,7 +233,7 @@ function FAQItem({ q, a, index }) {
 
 export default function FAQ() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-ink-base">
       <SEO
         title="FAQ | Capital Core Dance Studio – Midlothian, VA"
         description="Answers to common questions about classes, enrollment, tuition, summer camps, birthday parties, and our annual recital at Capital Core Dance Studio in Midlothian, VA. Serving Chesterfield County and Richmond."
@@ -231,37 +242,46 @@ export default function FAQ() {
       />
 
       <Navbar />
-      <PageHeader
-        eyebrow="Got Questions?"
-        title="Frequently Asked Questions"
-        subtitle="Everything you need to know about classes, enrollment, tuition, camps, and more."
+
+      <Hero
+        eyebrow="For new families"
+        title={['Common', [{ text: 'questions', accent: ACCENT }]]}
+        tagline="Dress code · trials · recital · billing"
+        body="Everything you need to know about classes, enrollment, tuition, camps, and more. If your question isn't here, just ask us."
+        photoCaption="Lobby photo"
+        clipStart={22}
+        actions={
+          <>
+            <PrimaryAction href="#answers">Browse answers</PrimaryAction>
+            <GhostAction to="/contact">Ask us directly</GhostAction>
+          </>
+        }
       />
 
-      <section className="bg-white flex-1 px-6 py-12">
-        <div className="max-w-3xl mx-auto flex flex-col gap-12">
-          {FAQS.map(({ category, items }, ci) => (
-            <div key={category}>
-              <p className="text-brand-red text-xs font-bold tracking-[0.3em] uppercase mb-2">{category}</p>
-              <div className="flex flex-col gap-3">
-                {items.map(({ q, a }, i) => (
-                  <FAQItem key={q} q={q} a={a} index={ci + i} />
+      <section
+        id="answers"
+        className="bg-ink-deep px-6 lg:px-24 py-16 lg:py-20 flex-1 scroll-mt-24"
+      >
+        <div className="max-w-[1440px] mx-auto flex flex-col gap-14">
+          {FAQS.map(({ category, items }) => (
+            <div key={category} data-testid="faq-category">
+              <Kicker accent={ACCENT}>{category}</Kicker>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-11 gap-y-[26px]">
+                {items.map(({ q, a }) => (
+                  <FAQItem key={q} q={q} a={a} />
                 ))}
               </div>
             </div>
           ))}
-
-          <div className="bg-[#f0f6ff] border border-[#c8ddf4] rounded-lg px-5 py-5 text-center">
-            <p className="text-navy-dark font-black text-base mb-1">Still have questions?</p>
-            <p className="text-[#5a6a8a] text-sm mb-4">We're happy to help — reach out and we'll get back to you quickly.</p>
-            <Link
-              to="/contact"
-              className="inline-block bg-brand-red text-white font-bold px-8 py-3 rounded-md hover:bg-red-700 transition-colors"
-            >
-              Contact Us
-            </Link>
-          </div>
         </div>
       </section>
+
+      <CtaBand
+        accent={ACCENT}
+        headline="Still have questions?"
+        body="We're happy to help — reach out and we'll get back to you quickly."
+        action={<InverseAction to="/contact">Contact Us</InverseAction>}
+      />
 
       <Footer />
     </div>

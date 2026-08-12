@@ -1,16 +1,37 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
-import PageHeader from '../components/PageHeader'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
+import Hero from '../components/Hero'
+import PhotoSlot from '../components/PhotoSlot'
 import ClassCalendar from '../components/ClassCalendar'
+import { Kicker, SectionHeading, PrimaryAction, GhostAction } from '../components/blocks'
 import { courseListSchema, simpleBreadcrumb } from '../lib/schema'
-import { SCHEDULE } from '../lib/schedule'
+import { SCHEDULE, PROGRAMS } from '../lib/schedule'
+import { getClassInfo } from '../lib/classInfo'
+import { ACCENTS } from '../lib/pageAccents'
+import { onAccent } from '../lib/accentContrast'
+
+// Rebuilt 2026-08-11 to the studio's site mockup (page 1b, accent orange). The mockup
+// shows a hero, a filter bar and a card grid; the studio asked to keep the interactive
+// week calendar as well, so the cards are the browsable entry point and the calendar
+// below is the full week — the one view a card grid genuinely cannot give you, since it
+// is the only place you can compare times across days.
+const ACCENT = ACCENTS.orange
 
 // Portal-hosted Fall class registration (public). Charges the registration fee
 // ($60 new dancer / $50 returning); monthly tuition is billed separately.
 const PORTAL_REGISTER_URL = 'https://studio.capitalcoredance.com/register/classes'
+
+// The studio's printed Fall flyer — the "Full Class Schedule" table, which carries the
+// program tier and an instructor column. SCHEDULE was reconciled to it on 2026-08-10;
+// the instructor column is still the one thing with no field in the data model.
+const FALL_FLYER = {
+  src: '/flyer-fall-schedule.png',
+  alt: 'Capital Core Dance Studio Fall 2026 full class schedule table, listing day, time, program tier, class, ages, and instructor for every class Monday through Friday',
+  filename: 'capital-core-fall-2026-schedule.png',
+}
 
 const DANCE_STYLES = [
   'Ballet',
@@ -30,6 +51,13 @@ const DANCE_STYLES = [
 const CLASSES_JSON_LD = [
   courseListSchema(DANCE_STYLES),
   simpleBreadcrumb('Classes', '/classes'),
+]
+
+const PROGRAM_OPTIONS = [
+  { value: 'All', label: 'All Programs' },
+  ...PROGRAMS.filter(({ value }) =>
+    SCHEDULE.some(({ classes }) => classes.some((c) => c.program === value))
+  ).map(({ value, label, ages }) => ({ value, label: `${label} (${ages})` })),
 ]
 
 const AGES = [
@@ -52,43 +80,112 @@ const CATEGORIES = [
   { value: 'adult', label: 'Adult Classes' },
 ]
 
+const PROGRAM_LABELS = Object.fromEntries(PROGRAMS.map((p) => [p.value, p.label]))
+
 function FilterSelect({ label, options, value, onChange }) {
   return (
-    <div className="flex flex-col gap-1 min-w-0">
-      <label className="text-[#8a9aaa] text-[10px] font-bold uppercase tracking-wider">{label}</label>
+    <div className="flex flex-col gap-1.5 min-w-0">
+      <label className="font-body text-mist-500 text-[11px] font-semibold uppercase tracking-[0.2em]">
+        {label}
+      </label>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="bg-white border border-surface-border text-navy-dark text-sm font-medium rounded-md px-3 py-2 pr-8 appearance-none cursor-pointer hover:border-navy-mid focus:outline-none focus:border-navy-dark transition-colors"
-        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235a6a8a' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 10px center' }}
+        className="bg-ink-panel border border-white/25 text-white font-body text-sm font-medium px-4 py-2.5 pr-9 appearance-none cursor-pointer hover:border-white/60 focus:outline-none focus:border-white transition-colors"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238fa5c6' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'right 12px center',
+        }}
       >
-        {options.map((opt) => {
-          const val = typeof opt === 'string' ? opt : opt.value
-          const display = typeof opt === 'string' ? opt : opt.label
-          return <option key={val} value={val}>{display}</option>
-        })}
+        {options.map((opt) => (
+          <option key={opt.value} value={opt.value} className="bg-ink-panel text-white">
+            {opt.label}
+          </option>
+        ))}
       </select>
     </div>
   )
 }
 
+// One class as a card — the mockup's grid item, filled from SCHEDULE + classInfo.
+function ClassCard({ cls }) {
+  const info = getClassInfo(cls.infoKey)
+  return (
+    <div
+      data-testid="class-card"
+      className="border border-white/[0.12] bg-ink-deep flex flex-col"
+    >
+      <div className="h-[170px]">
+        <PhotoSlot caption={`${cls.name} · photo`} className="w-full h-full" />
+      </div>
+      <div className="px-6 pt-6 pb-[26px] flex flex-col gap-3 flex-1">
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <span
+            className="font-body text-[10px] font-bold tracking-[0.14em] uppercase px-2 py-1"
+            style={{ background: ACCENT, color: onAccent(ACCENT) }}
+          >
+            {PROGRAM_LABELS[cls.program]}
+          </span>
+          <span className="font-body text-[11.5px] font-semibold tracking-[0.12em] text-mist-500 uppercase">
+            {cls.ages}
+          </span>
+        </div>
+        <div className="font-display uppercase text-white text-[26px] leading-none">{cls.name}</div>
+        <div className="font-body text-[14px] leading-[1.55] text-mist-400 flex-1">
+          {info?.description}
+        </div>
+        <div className="border-t border-white/[0.12] pt-3.5 flex items-center justify-between font-body text-[13px] font-semibold">
+          <span className="text-mist-200">
+            {cls.day} · {cls.time}
+          </span>
+          <a
+            href={PORTAL_REGISTER_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: ACCENT }}
+            className="hover:underline"
+          >
+            Register →
+          </a>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function Classes() {
+  const [selectedProgram, setSelectedProgram] = useState('All')
   const [selectedAge, setSelectedAge] = useState('All')
   const [selectedCategory, setSelectedCategory] = useState('All')
+  const [flyerOpen, setFlyerOpen] = useState(false)
 
-  const filteredSchedule = SCHEDULE
-    .map(({ day, classes }) => ({
-      day,
-      classes: classes.filter((c) => {
-        const ageMatch = selectedAge === 'All' || c.ageGroups.includes(selectedAge)
-        const catMatch = selectedCategory === 'All' || c.category === selectedCategory
-        return ageMatch && catMatch
-      }),
-    }))
-    .filter(({ classes }) => classes.length > 0)
+  useEffect(() => {
+    if (!flyerOpen) return
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setFlyerOpen(false)
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [flyerOpen])
+
+  const matches = (c) =>
+    (selectedProgram === 'All' || c.program === selectedProgram) &&
+    (selectedAge === 'All' || c.ageGroups.includes(selectedAge)) &&
+    (selectedCategory === 'All' || c.category === selectedCategory)
+
+  const filteredSchedule = SCHEDULE.map(({ day, classes }) => ({
+    day,
+    classes: classes.filter(matches),
+  })).filter(({ classes }) => classes.length > 0)
+
+  // The card grid is the same filtered set, flattened and carrying its day.
+  const filteredCards = filteredSchedule.flatMap(({ day, classes }) =>
+    classes.map((c) => ({ ...c, day }))
+  )
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-ink-base">
       <SEO
         title="Fall 2026 Dance Classes in Midlothian, VA | Ballet, Hip Hop, Jazz &amp; More – Capital Core Dance Studio"
         description="Fall 2026 dance classes (Aug 24 – Dec 18) for ages 2 through adult at Capital Core Dance Studio in Midlothian, VA. Ballet, jazz, hip hop, contemporary, tap, acro, lyrical, musical theatre, tumble, and pom/cheer. First class is always free."
@@ -96,88 +193,187 @@ export default function Classes() {
         jsonLd={CLASSES_JSON_LD}
       />
       <Navbar />
-      <PageHeader
-        eyebrow="Capital Core Dance"
-        title="Classes"
-        subtitle="Year-round dance instruction for all ages and skill levels in a supportive, energetic environment."
+
+      <Hero
+        eyebrow="2026 – 2027 Season"
+        title={['Find your', [{ text: 'class', accent: ACCENT }]]}
+        tagline="Ages 2 through adult · all levels"
+        body="Twenty-two classes a week across five evenings, from a first plié at two years old to adult contemporary. Your first class is always free."
+        photoSrc="/classes-hero-1.jpg"
+        photoAlt="Young dancers in class at Capital Core Dance Studio in Midlothian, VA"
+        photoObjectPosition="center 25%"
+        photoCaption="Class photo"
+        actions={
+          <>
+            <PrimaryAction href={PORTAL_REGISTER_URL}>Register now</PrimaryAction>
+            <GhostAction href="#schedule">See the schedule</GhostAction>
+          </>
+        }
       />
 
-      {/* Hero Photos */}
-      <div className="grid grid-cols-2 w-full overflow-hidden" style={{ maxHeight: '210px' }}>
-        <div className="relative" style={{ maxHeight: '210px' }}>
-          <img
-            src="/classes-hero-1.jpg"
-            alt="Young ballet dancers in tutus during class at Capital Core Dance Studio in Midlothian, VA"
-            className="w-full h-full object-cover"
-            style={{ maxHeight: '210px', objectPosition: 'center 25%' }}
-          />
-        </div>
-        <div className="relative" style={{ maxHeight: '210px' }}>
-          <img
-            src="/classes-hero-2.jpg"
-            alt="Kids ballet class sitting in a circle at Capital Core Dance Studio"
-            className="w-full h-full object-cover"
-            style={{ maxHeight: '210px', objectPosition: 'center 25%' }}
-          />
-        </div>
-      </div>
-
-      {/* Register banner */}
-      <section className="px-6 py-4" style={{ backgroundColor: '#FFA76B' }}>
-        <div className="max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="text-center sm:text-left">
-            <p className="text-navy-dark font-black text-lg leading-snug">Fall registration is open.</p>
-            <p className="text-navy-dark/70 text-sm mt-0.5">Reserve your dancer's spot on our student portal — first class is always free.</p>
-          </div>
-          <a
-            href={PORTAL_REGISTER_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-shrink-0 bg-navy-dark text-white text-sm font-bold px-6 py-2 rounded-md hover:bg-navy-mid transition-colors whitespace-nowrap"
-          >
-            Register for Fall →
-          </a>
-        </div>
-      </section>
-
       {/* Filter bar */}
-      <div className="bg-surface-light border-b border-surface-border px-6 py-4 sticky top-16 z-40">
-        <div className="max-w-3xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="bg-ink-base border-b border-white/[0.12] px-6 lg:px-24 py-8 lg:py-11 sticky top-[81px] z-40">
+        <div className="max-w-[1440px] mx-auto flex flex-col sm:flex-row sm:items-end gap-5">
+          <span className="font-body text-[11px] font-semibold tracking-[0.2em] text-mist-500 uppercase sm:pb-3">
+            Filter
+          </span>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 flex-1">
+            <FilterSelect label="Program" options={PROGRAM_OPTIONS} value={selectedProgram} onChange={setSelectedProgram} />
             <FilterSelect label="Age Group" options={AGES} value={selectedAge} onChange={setSelectedAge} />
             <FilterSelect label="Dance Style" options={CATEGORIES} value={selectedCategory} onChange={setSelectedCategory} />
           </div>
         </div>
       </div>
 
-      <section className="bg-white flex-1 px-6 py-12">
-        <div className="max-w-3xl mx-auto">
-          <p className="text-brand-red text-xs font-bold tracking-[0.3em] uppercase mb-2">
-            Fall 2026 · August 24 – December 18
+      {/* Class cards */}
+      <section className="px-6 lg:px-24 pt-14 lg:pt-[62px] pb-16">
+        <div className="max-w-[1440px] mx-auto">
+          {filteredCards.length === 0 ? (
+            <div className="border border-dashed border-white/20 px-6 py-10 text-center">
+              <p className="font-body text-mist-500 text-sm">
+                No classes match your filters. Try adjusting your selection.
+              </p>
+            </div>
+          ) : (
+            <div data-testid="class-cards" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[26px]">
+              {filteredCards.map((c) => (
+                <ClassCard key={`${c.day}-${c.name}-${c.start}`} cls={c} />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* The full week */}
+      <section id="schedule" className="bg-ink-deep px-6 lg:px-24 py-16 lg:py-20 scroll-mt-24">
+        <div className="max-w-[1440px] mx-auto">
+          <Kicker accent={ACCENT}>Fall 2026 · August 24 – December 18</Kicker>
+          <SectionHeading className="text-white mb-10">The full week</SectionHeading>
+
+          {/* The cards grid above already owns the empty state. Rendering the calendar
+              here when nothing matches would print the same sentence twice on one page. */}
+          {filteredSchedule.length > 0 ? (
+            <ClassCalendar schedule={filteredSchedule} accent={ACCENT} />
+          ) : (
+            <p className="font-body text-mist-500 text-sm">
+              Clear a filter above to see the full week.
+            </p>
+          )}
+
+          <p className="font-body text-mist-500 text-xs mt-8 text-center">
+            Core classes start at age 5+, and Core Plus at age 8+. Classes are subject to change
+            based on interest and registrations.{' '}
+            See{' '}
+            <Link to="/tuition" className="font-semibold hover:underline" style={{ color: ACCENT }}>
+              Tuition
+            </Link>{' '}
+            for monthly pricing.
           </p>
-          <h2 className="text-navy-dark text-2xl font-black mb-8">
-            Find the right class for your dancer
-          </h2>
 
-          <ClassCalendar schedule={filteredSchedule} />
+          {/* Program key */}
+          <div data-testid="program-key" className="mt-10 border border-white/[0.12] px-6 py-7">
+            <Kicker accent={ACCENT} className="mb-5">Program Key</Kicker>
+            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
+              {PROGRAMS.map(({ value, label, ages, level, blurb }) => (
+                <div key={value}>
+                  <dt className="flex flex-wrap items-baseline gap-x-2">
+                    <span className="font-body text-white font-bold text-sm">{label}</span>
+                    <span className="font-body text-mist-500 text-xs">({ages})</span>
+                    <span
+                      className="font-body text-[10px] font-bold uppercase tracking-[0.14em]"
+                      style={{ color: ACCENT }}
+                    >
+                      {level}
+                    </span>
+                  </dt>
+                  <dd className="font-body text-mist-400 text-xs mt-1 leading-relaxed">{blurb}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
 
-          <p className="text-[#8a9aaa] text-xs mt-8 text-center">
-            Beginner classes start at age 5+. Classes are subject to change based on interest and registrations.{' '}
-            See <Link to="/tuition" className="text-brand-red font-semibold hover:underline">Tuition</Link> for monthly pricing.
-          </p>
-
-          <a
-            href={PORTAL_REGISTER_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-6 block w-full bg-navy-dark text-white text-center font-bold py-3 rounded-md hover:bg-navy-mid transition-colors"
+          {/* Printable flyer */}
+          <div
+            data-testid="fall-flyer-card"
+            className="mt-8 border border-white/[0.12] bg-ink-panel px-6 py-6 flex flex-col sm:flex-row items-center gap-6"
           >
+            <button
+              onClick={() => setFlyerOpen(true)}
+              className="flex-shrink-0 w-full sm:w-56 border border-white/20 group relative cursor-zoom-in"
+            >
+              <img src={FALL_FLYER.src} alt={FALL_FLYER.alt} className="w-full h-auto block" />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors" />
+            </button>
+            <div className="text-center sm:text-left">
+              <Kicker accent={ACCENT} className="mb-2">Printable Fall Schedule</Kicker>
+              <h3 className="font-display uppercase text-white text-2xl leading-none mb-2">
+                Save the whole schedule on one page
+              </h3>
+              <p className="font-body text-mist-400 text-sm leading-relaxed mb-4">
+                Every Fall 2026 class with its program level, ages, and instructor — handy for the
+                fridge or sharing with another dance family.
+              </p>
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4">
+                <button
+                  onClick={() => setFlyerOpen(true)}
+                  className="font-body font-bold text-sm px-6 py-3 transition-opacity hover:opacity-90"
+                  style={{ background: ACCENT, color: onAccent(ACCENT) }}
+                >
+                  View Flyer
+                </button>
+                <a
+                  href={FALL_FLYER.src}
+                  download={FALL_FLYER.filename}
+                  className="font-body text-sm font-semibold hover:underline"
+                  style={{ color: ACCENT }}
+                >
+                  Download PNG
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <PrimaryAction accent={ACCENT} href={PORTAL_REGISTER_URL} className="mt-8">
             Enroll Now
-          </a>
+          </PrimaryAction>
         </div>
       </section>
 
       <Footer />
+
+      {/* Flyer lightbox */}
+      {flyerOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Fall 2026 schedule flyer"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4 py-6 overflow-y-auto"
+          onClick={() => setFlyerOpen(false)}
+        >
+          <div
+            className="relative bg-ink-panel border border-white/15 shadow-2xl max-w-5xl w-full overflow-hidden my-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img src={FALL_FLYER.src} alt={FALL_FLYER.alt} className="w-full h-auto block" />
+            <div className="flex items-center justify-between gap-3 px-5 py-4 border-t border-white/[0.12]">
+              <a
+                href={FALL_FLYER.src}
+                download={FALL_FLYER.filename}
+                className="font-body text-sm font-bold px-5 py-2.5 transition-opacity hover:opacity-90"
+                style={{ background: ACCENT, color: onAccent(ACCENT) }}
+              >
+                Download Flyer
+              </a>
+              <button
+                onClick={() => setFlyerOpen(false)}
+                className="font-body text-mist-500 text-sm hover:text-white transition-colors"
+              >
+                Close ✕
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

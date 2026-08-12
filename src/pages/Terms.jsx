@@ -1,9 +1,11 @@
-import { Link } from 'react-router-dom'
-import Navbar from '../components/Navbar'
-import PageHeader from '../components/PageHeader'
-import Footer from '../components/Footer'
-import SEO from '../components/SEO'
+import LegalPage from '../components/LegalPage'
 import { simpleBreadcrumb } from '../lib/schema'
+import { ACCENTS } from '../lib/pageAccents'
+
+// Rebuilt 2026-08-11 to the studio's site mockup (accent teal). Privacy and Terms are
+// the same layout in different accents, so both render the shared LegalPage shell; only
+// the copy below is page-specific. Section text is unchanged from before the redesign.
+const ACCENT = ACCENTS.teal
 
 const SECTIONS = [
   {
@@ -93,73 +95,27 @@ const SECTIONS = [
   },
 ]
 
+const TERMS_SEO = {
+  title: 'Terms of Service | Capital Core Dance Studio',
+  description:
+    'Terms of Service for Capital Core Dance Studio in Midlothian, VA — enrollment, tuition, refunds, recital, liability, and studio policies.',
+  canonical: '/terms',
+  jsonLd: simpleBreadcrumb('Terms of Service', '/terms'),
+}
+
 export default function Terms() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <SEO
-        title="Terms of Service | Capital Core Dance Studio"
-        description="Terms of Service for Capital Core Dance Studio in Midlothian, VA — enrollment, payments, refunds, liability, and policies."
-        canonical="/terms"
-        jsonLd={simpleBreadcrumb('Terms of Service', '/terms')}
-      />
-      <Navbar />
-      <PageHeader
-        eyebrow="Legal"
-        title="Terms of Service"
-        subtitle="The agreements that apply when you enroll, register, or participate in any Capital Core Dance Studio program or event."
-      />
-
-      <section className="bg-white flex-1 px-6 py-12">
-        <div className="max-w-3xl mx-auto flex flex-col gap-10">
-
-          <p className="text-[#5a6a8a] text-xs italic">Last Updated: May 1, 2026</p>
-
-          <p className="text-[#3a4a6a] text-sm leading-relaxed">
-            Welcome to Capital Core Dance Studio. These Terms of Service set out the rules and expectations for
-            using our website, enrolling in our programs, and attending our events. Please read them carefully.
-          </p>
-
-          {SECTIONS.map(({ title, body }) => (
-            <div key={title}>
-              <h2 className="text-navy-dark text-lg font-black mb-3">{title}</h2>
-              <div className="flex flex-col gap-3">
-                {body.map((p, i) => (
-                  <p key={i} className="text-[#3a4a6a] text-sm leading-relaxed">{p}</p>
-                ))}
-              </div>
-            </div>
-          ))}
-
-          {/* Contact card */}
-          <div className="bg-[#f0f6ff] border border-[#c8ddf4] rounded-lg px-5 py-5">
-            <p className="text-navy-dark font-black text-base mb-2">Questions about these Terms?</p>
-            <p className="text-[#5a6a8a] text-sm leading-relaxed mb-4">
-              We're happy to clarify anything you'd like to better understand before enrolling or registering.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link
-                to="/contact"
-                className="inline-block bg-brand-red text-white font-bold px-6 py-2.5 rounded-md hover:bg-red-700 transition-colors text-sm text-center"
-              >
-                Contact Us
-              </Link>
-              <Link
-                to="/privacy"
-                className="inline-block border border-[#c8ddf4] text-navy-dark font-bold px-6 py-2.5 rounded-md hover:bg-white transition-colors text-sm text-center"
-              >
-                View Privacy Policy
-              </Link>
-            </div>
-          </div>
-
-          <p className="text-[#8a9aaa] text-xs text-center">
-            Capital Core Dance Studio · 13110 Midlothian Turnpike, Midlothian, VA 23113 · (804) 234-4014
-          </p>
-
-        </div>
-      </section>
-
-      <Footer />
-    </div>
+    <LegalPage
+      accent={ACCENT}
+      seo={TERMS_SEO}
+      eyebrow="Updated May 2026"
+      title={['Terms &', [{ text: 'policies', accent: ACCENT }]]}
+      tagline="Enrollment · billing · conduct"
+      intro="These Terms of Service set out the rules and expectations for using our website, enrolling in our programs, and attending our events. Please read them carefully."
+      lastUpdated="May 1, 2026"
+      sections={SECTIONS}
+      readLabel="Read the terms"
+      askLabel="Ask a question"
+    />
   )
 }

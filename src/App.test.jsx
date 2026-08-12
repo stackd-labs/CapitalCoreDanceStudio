@@ -22,7 +22,7 @@ test.each(['/birthday-booking', '/birthday-payment', '/birthday-thankyou'])(
   'retired route %s lands on the Birthdays page instead of a blank screen',
   (path) => {
     renderAt(path)
-    expect(screen.getByRole('heading', { name: 'Birthday Parties' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Dance parties' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Request Your Party →' })).toBeInTheDocument()
   }
 )

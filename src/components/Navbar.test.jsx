@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import Navbar from './Navbar'
 
@@ -30,8 +30,11 @@ test('renders all top-level nav links', () => {
 
 test('highlights active link on /classes', () => {
   renderNavbar('/classes')
+  // The active item is marked with aria-current plus white text, not by its accent
+  // underline — every item carries an underline, so colour alone cannot mark 'current'.
   const classesLinks = screen.getAllByRole('link', { name: 'Classes' })
-  expect(classesLinks[0].className).toContain('text-[#f4a8b4]')
+  expect(classesLinks[0]).toHaveAttribute('aria-current', 'page')
+  expect(classesLinks[0].className).toContain('text-white')
 })
 
 test('mobile menu toggle shows and hides menu', () => {
@@ -55,8 +58,9 @@ test('caret button toggles the Classes dropdown', () => {
   expect(caret).toHaveAttribute('aria-expanded', 'true')
   expect(screen.getByRole('link', { name: 'Class Schedule' })).toHaveAttribute('href', '/classes')
   expect(screen.getByRole('link', { name: 'Class Levels' })).toHaveAttribute('href', '/class-levels')
-  expect(screen.getByRole('link', { name: 'Adult Classes' })).toHaveAttribute('href', '/adult-classes')
   expect(screen.getByRole('link', { name: 'Tuition' })).toHaveAttribute('href', '/tuition')
+  // Adults left this dropdown for the top bar on 2026-08-11 — it must not be in both.
+  expect(screen.queryByRole('link', { name: 'Adult Classes' })).not.toBeInTheDocument()
 
   fireEvent.click(caret)
   expect(caret).toHaveAttribute('aria-expanded', 'false')
@@ -112,29 +116,91 @@ test('Escape returns focus to the caret so Tab does not restart at the top of th
 
 test('highlights the Classes parent on /class-levels', () => {
   renderNavbar('/class-levels')
+  // The active item is marked with aria-current plus white text, not by its accent
+  // underline — every item carries an underline, so colour alone cannot mark 'current'.
   const classesLinks = screen.getAllByRole('link', { name: 'Classes' })
-  expect(classesLinks[0].className).toContain('text-[#f4a8b4]')
+  expect(classesLinks[0]).toHaveAttribute('aria-current', 'page')
+  expect(classesLinks[0].className).toContain('text-white')
 })
 
-test('highlights the Classes parent on /adult-classes', () => {
+test('Adults is its own top-level item, no longer under Classes', () => {
+  // Promoted out of the dropdown on 2026-08-11. On /adult-classes it is Adults that
+  // reads as current — Classes must not, or the bar points at the wrong section.
   renderNavbar('/adult-classes')
-  const classesLinks = screen.getAllByRole('link', { name: 'Classes' })
-  expect(classesLinks[0].className).toContain('text-[#f4a8b4]')
+  const adults = screen.getAllByRole('link', { name: 'Adults' })[0]
+  expect(adults).toHaveAttribute('href', '/adult-classes')
+  expect(adults).toHaveAttribute('aria-current', 'page')
+  expect(adults.className).toContain('text-white')
+
+  const classes = screen.getAllByRole('link', { name: 'Classes' })[0]
+  expect(classes).not.toHaveAttribute('aria-current')
+})
+
+test('Adults carries its own accent in the bar, not the Classes orange', () => {
+  renderNavbar('/adult-classes')
+  const adults = screen.getAllByRole('link', { name: 'Adults' })[0]
+  expect(adults).toHaveStyle({ borderColor: '#9b3df0' })
 })
 
 test('highlights the Classes parent on /tuition', () => {
   // Tuition is a child of Classes now, so its own page must light up the parent —
   // otherwise a visitor on /tuition sees nothing in the nav marked as current.
   renderNavbar('/tuition')
+  // The active item is marked with aria-current plus white text, not by its accent
+  // underline — every item carries an underline, so colour alone cannot mark 'current'.
   const classesLinks = screen.getAllByRole('link', { name: 'Classes' })
-  expect(classesLinks[0].className).toContain('text-[#f4a8b4]')
+  expect(classesLinks[0]).toHaveAttribute('aria-current', 'page')
+  expect(classesLinks[0].className).toContain('text-white')
 })
 
-test('mobile menu includes the Classes sub-links', () => {
+test('mobile menu includes the Classes sub-links and Adults at top level', () => {
+  // Scoped to the sheet: jsdom renders the desktop bar too — Tailwind's `hidden lg:flex`
+  // is never applied — so an unscoped query finds every top-level item twice.
   renderNavbar()
   fireEvent.click(screen.getByLabelText('Toggle menu'))
-  expect(screen.getAllByRole('link', { name: 'Class Schedule' })).toHaveLength(1)
-  expect(screen.getAllByRole('link', { name: 'Class Levels' })).toHaveLength(1)
-  expect(screen.getAllByRole('link', { name: 'Adult Classes' })).toHaveLength(1)
-  expect(screen.getAllByRole('link', { name: 'Tuition' })).toHaveLength(1)
+  const sheet = within(screen.getByTestId('mobile-menu'))
+  expect(sheet.getByRole('link', { name: 'Class Schedule' })).toHaveAttribute('href', '/classes')
+  expect(sheet.getByRole('link', { name: 'Class Levels' })).toHaveAttribute('href', '/class-levels')
+  expect(sheet.getByRole('link', { name: 'Tuition' })).toHaveAttribute('href', '/tuition')
+  // Adults sits beside Classes in the sheet now, not inside it.
+  expect(sheet.getByRole('link', { name: 'Adults' })).toHaveAttribute('href', '/adult-classes')
+  expect(sheet.queryByRole('link', { name: 'Adult Classes' })).not.toBeInTheDocument()
+})
+
+test('the top-level bar is in the studio\u2019s chosen order', () => {
+  // Order is a deliberate choice, not an accident of how NAV_LINKS grew: Home, About,
+  // then the programmes by audience — youth classes, the youngest, parties, adults,
+  // and the competitive company last. Nothing else pins it, so a reorder from adding
+  // an item would otherwise go unnoticed.
+  renderNavbar()
+  const bar = screen.getByTestId('desktop-nav')
+  const labels = [...bar.children].map((el) => el.textContent.replace('▼', '').trim())
+  expect(labels).toEqual([
+    'Home',
+    'About',
+    'Classes',
+    'Little Movers',
+    'Birthdays',
+    'Adults',
+    'Dance Company',
+  ])
+})
+
+test('the mobile sheet follows the same order as the bar', () => {
+  renderNavbar()
+  fireEvent.click(screen.getByLabelText('Toggle menu'))
+  const sheet = screen.getByTestId('mobile-menu')
+  // Top-level entries only — each is the first link inside its own group wrapper.
+  const labels = [...sheet.children]
+    .map((group) => group.querySelector('a')?.textContent.trim())
+    .filter(Boolean)
+  expect(labels.slice(0, 7)).toEqual([
+    'Home',
+    'About',
+    'Classes',
+    'Little Movers',
+    'Birthdays',
+    'Adults',
+    'Dance Company',
+  ])
 })

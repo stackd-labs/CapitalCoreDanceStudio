@@ -12,16 +12,16 @@ test('clusterByOverlap puts concurrent classes in one cluster and sequential one
   const clusters = clusterByOverlap(MONDAY)
   const names = clusters.map((c) => c.map((x) => x.name))
   expect(names).toEqual([
-    ['Tiny Ballet / Tumble'],
-    ['Beginner Acro / Jazz', 'Beginner Contemp / Jazz'],
-    ['Beginner Hip Hop & Breakdancing', 'Acro / Lyrical'],
-    ['Ballet / Contemp'],
-    ['Adult Femme / Flaire'],
+    ['Tiny Core Ballet & Tumble'],
+    ['Core Acro & Jazz', 'Core Contemporary & Jazz'],
+    ['Core Hip Hop & Breakdancing', 'Core Plus Acro & Lyrical'],
+    ['Core Plus Ballet & Contemporary'],
+    ['Adult Femme/Flair'],
   ])
 })
 
 test('clusterByOverlap treats a class ending exactly when the next starts as sequential', () => {
-  // Tiny ends 17:30 and Beginner Acro starts 17:30 — back to back, not overlapping.
+  // Tiny ends 17:30 and Core Acro starts 17:30 — back to back, not overlapping.
   const clusters = clusterByOverlap([MONDAY[0], MONDAY[1]])
   expect(clusters).toHaveLength(2)
 })
@@ -39,27 +39,27 @@ test('block height encodes duration', () => {
     within(grid).getByRole('button', { name: new RegExp(name.replace(/[/]/g, '\\/')) })
 
   // 30-minute class spans 2 slots, 45-minute spans 3, 60-minute spans 4.
-  expect(block('Tiny Ballet / Tumble')).toHaveAttribute('data-span', '2')
-  expect(block('Beginner Acro / Jazz')).toHaveAttribute('data-span', '3')
-  expect(block('Acro / Lyrical')).toHaveAttribute('data-span', '4')
+  expect(block('Tiny Core Ballet & Tumble')).toHaveAttribute('data-span', '2')
+  expect(block('Core Acro & Jazz')).toHaveAttribute('data-span', '3')
+  expect(block('Core Plus Acro & Lyrical')).toHaveAttribute('data-span', '4')
 })
 
 test('block start slot is measured from 5:00 PM', () => {
   renderCalendar()
   const grid = screen.getByTestId('class-grid')
   // 17:00 is slot 0; Thursday's 17:15 start is slot 1; 20:00 is slot 12.
-  expect(within(grid).getByRole('button', { name: /Tiny Ballet \/ Tumble/ })).toHaveAttribute('data-start-slot', '0')
-  expect(within(grid).getByRole('button', { name: /Beginner Ballet \/ Jazz/ })).toHaveAttribute('data-start-slot', '1')
-  expect(within(grid).getByRole('button', { name: /Adult Femme \/ Flaire/ })).toHaveAttribute('data-start-slot', '12')
+  expect(within(grid).getByRole('button', { name: /Tiny Core Ballet & Tumble/ })).toHaveAttribute('data-start-slot', '0')
+  expect(within(grid).getByRole('button', { name: /Core Ballet & Jazz, Thursday/ })).toHaveAttribute('data-start-slot', '1')
+  expect(within(grid).getByRole('button', { name: /Adult Femme\/Flair/ })).toHaveAttribute('data-start-slot', '12')
 })
 
 test('concurrent Monday classes render side by side, not stacked', () => {
   renderCalendar()
   const grid = screen.getByTestId('class-grid')
-  // Scoped to ", Monday" — "Beginner Contemp / Jazz" also recurs on Tuesday's schedule,
+  // Scoped to ", Monday" — "Core Contemporary & Jazz" also recurs on Tuesday's schedule,
   // so an unqualified name match is ambiguous across the whole (all-days) grid.
-  const acro = within(grid).getByRole('button', { name: /Beginner Acro \/ Jazz, Monday/ })
-  const contemp = within(grid).getByRole('button', { name: /Beginner Contemp \/ Jazz, Monday/ })
+  const acro = within(grid).getByRole('button', { name: /Core Acro & Jazz, Monday/ })
+  const contemp = within(grid).getByRole('button', { name: /Core Contemporary & Jazz, Monday/ })
 
   expect(acro).toHaveAttribute('data-cluster-size', '2')
   expect(contemp).toHaveAttribute('data-cluster-size', '2')
@@ -73,7 +73,7 @@ test('concurrent Monday classes render side by side, not stacked', () => {
 test('a class with no concurrent neighbour spans the full day column', () => {
   renderCalendar()
   const grid = screen.getByTestId('class-grid')
-  const solo = within(grid).getByRole('button', { name: /Adult Femme \/ Flaire/ })
+  const solo = within(grid).getByRole('button', { name: /Adult Femme\/Flair/ })
   expect(solo).toHaveAttribute('data-cluster-size', '1')
   expect(solo.style.left).toBe('0%')
   expect(solo.style.width).toBe('100%')
@@ -89,13 +89,13 @@ test('each block names its class, day, and time for screen readers', () => {
 
 test('a mobile list item names its class, day, time, and ages for screen readers', () => {
   // aria-label short-circuits name-from-contents, so the visible ages text
-  // ("Ages 5+ · Beginner") must be repeated explicitly in the label or a
-  // screen-reader user never hears it, even though a sighted user sees it.
+  // ("All Levels") must be repeated explicitly in the label or a screen-reader user
+  // never hears it, even though a sighted user sees it.
   renderCalendar()
   const list = screen.getByTestId('class-list')
   expect(
     within(list).getByRole('button', {
-      name: 'Tumble Tech, Tuesday 7:00 – 7:45 PM, Ages 5+',
+      name: 'Tumble Tech, Tuesday 7:00 – 7:45 PM, All Levels',
     })
   ).toBeInTheDocument()
 })

@@ -3,15 +3,17 @@
 // "quick answer" (tldr), uses question-style headings, ships FAQ structured
 // data, and links to the studio page(s) it references.
 //
-// Each post: { slug, category, accent, date (ISO), readMinutes, title,
+// Each post: { slug, category, date (ISO), readMinutes, title,
 //   metaTitle, metaDescription, excerpt, tldr, related[], sections[], faqs[] }
 // related[0] is rendered as the primary CTA button; all are shown as links.
+//
+// `accent` was removed 2026-08-11: it held a hex from the pre-redesign palette, and
+// both the blog index and the article page now use the blog section's own accent.
 
 export const POSTS = [
   {
     slug: 'summer-dance-camps-2026-themed-weeks',
     category: 'Summer Camps',
-    accent: '#7ab3e8',
     date: '2026-05-20',
     readMinutes: 5,
     title: 'Summer Dance Camps 2026: All 8 Themed Weeks Explained',
@@ -80,7 +82,6 @@ export const POSTS = [
   {
     slug: 'summer-dance-classes-2026-guide',
     category: 'Summer Classes',
-    accent: '#f4a060',
     date: '2026-05-18',
     readMinutes: 5,
     title: 'Your Guide to Summer Dance Classes 2026 (Ages 2 to Teen)',
@@ -145,7 +146,6 @@ export const POSTS = [
   {
     slug: 'adult-summer-series-movement-for-women',
     category: 'Adult Classes',
-    accent: '#f4a8b4',
     date: '2026-05-16',
     readMinutes: 4,
     title: 'The Adult Summer Series: Movement Classes for Women',
@@ -209,7 +209,6 @@ export const POSTS = [
   {
     slug: 'dance-birthday-party-guide-midlothian',
     category: 'Birthday Parties',
-    accent: '#d4b8f4',
     date: '2026-05-12',
     readMinutes: 5,
     title: 'How to Throw the Perfect Dance Birthday Party in Midlothian',
@@ -279,7 +278,6 @@ export const POSTS = [
   {
     slug: 'free-trial-dance-class-first-time',
     category: 'Getting Started',
-    accent: '#b8f0d4',
     date: '2026-05-08',
     readMinutes: 4,
     title: 'Trying Dance for the First Time? Start With a Free Trial Class',
@@ -330,7 +328,6 @@ export const POSTS = [
   {
     slug: 'what-is-the-mini-series',
     category: 'Classes',
-    accent: '#f4a060',
     date: '2026-05-06',
     readMinutes: 3,
     title: 'What Is the Mini Series? Two Dance Styles in One Class',
@@ -380,7 +377,6 @@ export const POSTS = [
   {
     slug: 'dance-styles-parents-guide',
     category: 'Classes',
-    accent: '#7ab3e8',
     date: '2026-05-04',
     readMinutes: 6,
     title: 'A Parent’s Guide to Dance Class Styles at Capital Core',
@@ -441,7 +437,6 @@ export const POSTS = [
   {
     slug: 'dance-tuition-fees-discounts-2026',
     category: 'Enrollment',
-    accent: '#d4b8f4',
     date: '2026-05-02',
     readMinutes: 5,
     title: 'Understanding Dance Tuition, Fees & Discounts for 2026',

@@ -1,21 +1,23 @@
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
-import PageHeader from '../components/PageHeader'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
+import Hero from '../components/Hero'
+import { Kicker, SectionHeading, PrimaryAction, GhostAction, CtaBand, InverseAction } from '../components/blocks'
 import { simpleBreadcrumb } from '../lib/schema'
 import { getClassInfo } from '../lib/classInfo'
 import { SCHEDULE } from '../lib/schedule'
+import { ACCENTS } from '../lib/pageAccents'
+import { onAccent } from '../lib/accentContrast'
+
+// Converted to the redesign 2026-08-11. No mockup covers this page, so it follows the
+// system. Promoted the same day from the Classes dropdown to a top-level nav item, and
+// given purple rather than the Classes orange — adults are a separate audience, not a
+// step in the youth-classes journey.
+const ACCENT = ACCENTS.purple
 
 // Same portal registration link as the Classes and Class Levels pages.
 const PORTAL_REGISTER_URL = 'https://studio.capitalcoredance.com/register/classes'
-
-const ACCENT_COLORS = [
-  'border-brand-red',
-  'border-[#7ab3e8]',
-  'border-[#f4a8b4]',
-  'border-[#f4a060]',
-]
 
 // Display order for the three adult classes. Day and time are derived from SCHEDULE
 // below (matched on infoKey) rather than duplicated here, so this page can never
@@ -32,22 +34,39 @@ const SCHEDULE_ROWS_BY_INFO_KEY = SCHEDULE.flatMap(({ day, classes }) =>
 
 const ADULT_CLASSES = ADULT_INFO_KEYS.map((infoKey) => {
   const row = SCHEDULE_ROWS_BY_INFO_KEY[infoKey]
-  return { infoKey, day: row.day, time: row.time }
+  return { infoKey, day: row.day, time: row.time, start: row.start, end: row.end }
 })
+
+// The evening window, computed from the three classes rather than typed out. This line
+// used to read "between 7:00 and 9:00 PM" as a literal and nearly went stale when
+// Friday's Adult Contemporary was shortened on 2026-08-10 — deriving it means it cannot.
+const toMinutes = (hhmm) => {
+  const [h, m] = hhmm.split(':').map(Number)
+  return h * 60 + m
+}
+const to12h = (hhmm) => {
+  const [h, m] = hhmm.split(':').map(Number)
+  return `${h > 12 ? h - 12 : h}:${String(m).padStart(2, '0')}`
+}
+const EVENING_WINDOW = (() => {
+  const starts = ADULT_CLASSES.map((c) => c.start).sort((a, b) => toMinutes(a) - toMinutes(b))
+  const ends = ADULT_CLASSES.map((c) => c.end).sort((a, b) => toMinutes(b) - toMinutes(a))
+  return `${to12h(starts[0])} and ${to12h(ends[0])} PM`
+})()
 
 // Studio's own copy, carried over from the Class Levels Important Information notes.
 const GOOD_TO_KNOW = [
   'Adult classes are for dancers ages 16 and up.',
   'Every adult class is beginner-friendly and welcomes dancers of all experience levels.',
   'No dance experience necessary.',
-  'All three classes run in the evening, between 7:00 and 9:00 PM.',
+  `All three classes run in the evening, between ${EVENING_WINDOW}.`,
 ]
 
 const ADULT_CLASSES_JSON_LD = [simpleBreadcrumb('Adult Classes', '/adult-classes')]
 
 export default function AdultClasses() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-ink-base">
       <SEO
         title="Adult Dance Classes in Midlothian, VA | Capital Core Dance Studio"
         description="Evening dance classes for adults 16+ in Midlothian, VA — Femme Flair on Mondays, Pom on Wednesdays, and Contemporary on Fridays. Beginner-friendly, no experience necessary, first class always free."
@@ -55,72 +74,74 @@ export default function AdultClasses() {
         jsonLd={ADULT_CLASSES_JSON_LD}
       />
       <Navbar />
-      <PageHeader
-        eyebrow="Capital Core Dance"
-        title="Adult Classes"
-        subtitle="Evening classes for grown dancers — whether it's your first class ever or your return after years away."
+
+      <Hero
+        eyebrow="Ages 16 and up"
+        title={['Adult', [{ text: 'classes', accent: ACCENT }]]}
+        tagline="Evenings · all levels welcome"
+        body="Whether it's your first class ever or your return after years away. Three evening classes a week, and the first one is always free."
+        photoSrc="/card-adult-dance.jpg"
+        photoAlt="Adults dancing in an evening class at Capital Core Dance Studio in Midlothian, VA"
+        photoObjectPosition="center 30%"
+        photoCaption="Adult class photo"
+        clipStart={22}
+        actions={
+          <>
+            <PrimaryAction href={PORTAL_REGISTER_URL}>Register for Fall →</PrimaryAction>
+            <GhostAction to="/contact">Ask us a question</GhostAction>
+          </>
+        }
       />
 
-      {/* Hero photo */}
-      <div className="w-full overflow-hidden" style={{ maxHeight: '210px' }}>
-        <img
-          src="/card-adult-dance.jpg"
-          alt="Adults dancing in an evening class at Capital Core Dance Studio in Midlothian, VA"
-          className="w-full h-full object-cover"
-          style={{ maxHeight: '210px', objectPosition: 'center 30%' }}
-        />
-      </div>
-
-      {/* Welcome banner */}
-      <section className="px-6 py-4" style={{ backgroundColor: '#f4a8b4' }}>
-        <div className="max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="text-center sm:text-left">
-            <p className="text-navy-dark font-black text-lg leading-snug">No experience necessary.</p>
-            <p className="text-navy-dark/70 text-sm mt-0.5">
-              Every adult class is beginner-friendly — and your first class is always free.
-            </p>
-          </div>
-          <a
-            href={PORTAL_REGISTER_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-shrink-0 bg-navy-dark text-white text-sm font-bold px-6 py-2 rounded-md hover:bg-navy-mid transition-colors whitespace-nowrap"
-          >
-            Register for Fall →
-          </a>
+      {/* Reassurance strip. Deliberately has no button: the hero's Register action sits
+          directly above it, and two identical calls to action a hundred pixels apart
+          read as a mistake rather than as emphasis. */}
+      <section className="px-6 lg:px-24 py-5" style={{ background: ACCENT }}>
+        <div
+          className="max-w-[1440px] mx-auto flex flex-col sm:flex-row sm:items-baseline gap-x-4 gap-y-1 text-center sm:text-left"
+          style={{ color: onAccent(ACCENT) }}
+        >
+          <p className="font-body font-bold text-lg leading-snug m-0">No experience necessary.</p>
+          <p className="font-body text-sm opacity-80 m-0">
+            Every adult class is beginner-friendly — and your first class is always free.
+          </p>
         </div>
       </section>
 
-      {/* Classes */}
-      <section className="bg-white px-6 py-12">
-        <div className="max-w-3xl mx-auto">
-          <p className="text-brand-red text-xs font-bold tracking-[0.3em] uppercase mb-2">
-            Ages 16+
-          </p>
-          <h2 className="text-navy-dark text-2xl font-black mb-8">
-            Get back to the beat
-          </h2>
+      {/* The three classes */}
+      <section className="bg-ink-deep px-6 lg:px-24 py-16 lg:py-20">
+        <div className="max-w-[1440px] mx-auto">
+          <Kicker accent={ACCENT}>Ages 16+</Kicker>
+          <SectionHeading className="text-white mb-10">Get back to the beat</SectionHeading>
 
-          <div className="flex flex-col gap-3">
-            {ADULT_CLASSES.map(({ infoKey, day, time }, i) => {
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-[26px]">
+            {ADULT_CLASSES.map(({ infoKey, day, time }) => {
               const info = getClassInfo(infoKey)
               return (
                 <div
                   key={infoKey}
                   data-testid="adult-class-card"
-                  className={`border border-surface-border border-l-4 ${ACCENT_COLORS[i % ACCENT_COLORS.length]} rounded-lg px-5 py-4`}
+                  className="border border-white/[0.14] bg-ink-base px-7 py-7 flex flex-col"
                 >
-                  <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                    <div data-testid="adult-class-name" className="text-navy-dark font-bold text-base">
-                      {infoKey}
-                    </div>
-                    <div data-testid="adult-class-when" className="text-[#7ab3e8] text-sm font-medium">
-                      <span className="text-[#8a9aaa] text-xs font-bold uppercase tracking-wider">{day}</span>
-                      {' · '}
-                      <span className="whitespace-nowrap">{time}</span>
-                    </div>
+                  <div
+                    data-testid="adult-class-when"
+                    className="font-body text-[11.5px] font-semibold tracking-[0.14em] uppercase mb-3"
+                    style={{ color: ACCENT }}
+                  >
+                    {day}
+                    {' · '}
+                    <span className="whitespace-nowrap">{time}</span>
                   </div>
-                  <p data-testid="adult-class-description" className="text-[#5a6a8a] text-sm mt-2 leading-relaxed">
+                  <div
+                    data-testid="adult-class-name"
+                    className="font-display uppercase text-white text-[26px] leading-none mb-3"
+                  >
+                    {infoKey}
+                  </div>
+                  <p
+                    data-testid="adult-class-description"
+                    className="font-body text-[14.5px] leading-[1.6] text-mist-400 m-0"
+                  >
                     {info?.description}
                   </p>
                 </div>
@@ -128,13 +149,13 @@ export default function AdultClasses() {
             })}
           </div>
 
-          <p className="text-[#8a9aaa] text-xs mt-8 text-center">
+          <p className="font-body text-mist-500 text-xs mt-8 text-center">
             Days and times are from the Fall 2026 schedule. See the{' '}
-            <Link to="/classes" className="text-brand-red font-semibold hover:underline">
+            <Link to="/classes" className="font-semibold hover:underline" style={{ color: ACCENT }}>
               full schedule
             </Link>{' '}
             for everything on the calendar, or{' '}
-            <Link to="/tuition" className="text-brand-red font-semibold hover:underline">
+            <Link to="/tuition" className="font-semibold hover:underline" style={{ color: ACCENT }}>
               Tuition
             </Link>{' '}
             for monthly pricing.
@@ -143,18 +164,17 @@ export default function AdultClasses() {
       </section>
 
       {/* Good to know */}
-      <section className="bg-navy-dark px-6 py-12">
-        <div className="max-w-3xl mx-auto">
-          <p className="text-[#f4a8b4] text-xs font-bold tracking-[0.3em] uppercase mb-2">
-            Good to know
-          </p>
-          <h2 className="text-white text-2xl font-black mb-6">Before your first class</h2>
-          <ul className="flex flex-col gap-3">
+      <section className="px-6 lg:px-24 py-16 lg:py-20">
+        <div className="max-w-[1440px] mx-auto">
+          <Kicker accent={ACCENT}>Good to know</Kicker>
+          <SectionHeading className="text-white mb-10">Before your first class</SectionHeading>
+          <ul className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-5">
             {GOOD_TO_KNOW.map((item) => (
               <li
                 key={item}
                 data-testid="adult-info-bullet"
-                className="text-[#b8d4f0] text-sm leading-relaxed pl-4 border-l-2 border-navy-mid"
+                className="font-body text-mist-300 text-[15px] leading-relaxed pl-5 border-l-2"
+                style={{ borderColor: ACCENT }}
               >
                 {item}
               </li>
@@ -163,31 +183,17 @@ export default function AdultClasses() {
         </div>
       </section>
 
-      {/* Closing CTA */}
-      <section className="bg-surface-light flex-1 px-6 py-12">
-        <div className="max-w-3xl mx-auto text-center">
-          <p className="text-navy-dark font-black text-xl">Come try one on us.</p>
-          <p className="text-[#5a6a8a] text-sm mt-2">
-            Your first class is always free — no commitment, no experience required.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
-            <Link
-              to="/contact"
-              className="bg-white border border-navy-dark text-navy-dark text-sm font-bold px-6 py-3 rounded-md hover:bg-surface-light transition-colors"
-            >
-              Ask Us a Question
-            </Link>
-            <a
-              href={PORTAL_REGISTER_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-navy-dark text-white text-sm font-bold px-6 py-3 rounded-md hover:bg-navy-mid transition-colors"
-            >
-              Register for Fall →
-            </a>
+      <CtaBand
+        accent={ACCENT}
+        headline="Come try one on us."
+        body="Your first class is always free — no commitment, no experience required."
+        action={
+          <div className="flex flex-col sm:flex-row gap-3">
+            <InverseAction href={PORTAL_REGISTER_URL}>Register for Fall →</InverseAction>
+            <InverseAction to="/contact">Ask Us a Question</InverseAction>
           </div>
-        </div>
-      </section>
+        }
+      />
 
       <Footer />
     </div>

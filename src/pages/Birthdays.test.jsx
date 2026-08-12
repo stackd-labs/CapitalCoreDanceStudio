@@ -10,7 +10,9 @@ function renderBirthdays() {
 
 test('renders page title', () => {
   renderBirthdays()
-  expect(screen.getByRole('heading', { name: 'Birthday Parties' })).toBeInTheDocument()
+  // The h1 became the mockup's "Dance parties" in the 2026-08-11 redesign. The page is
+  // still Birthday Parties in the nav, the SEO title and the URL.
+  expect(screen.getByRole('heading', { level: 1, name: 'Dance parties' })).toBeInTheDocument()
 })
 
 test('renders the package, themes, and details cards', () => {
@@ -45,4 +47,36 @@ test('states the deposit and booking terms', () => {
   renderBirthdays()
   expect(screen.getByText('$50 non-refundable deposit required')).toBeInTheDocument()
   expect(screen.getByText('Remaining balance due on party day')).toBeInTheDocument()
+})
+
+test('renders the three packages with the studio\u2019s real prices', () => {
+  // One party plus two upgrades — not three invented tiers. The prices come from
+  // birthday-flyer-pricing.png, so a wrong figure here contradicts the flyer on the
+  // same page.
+  renderBirthdays()
+  const cards = screen.getAllByTestId('package-card')
+  expect(cards).toHaveLength(3)
+  expect(cards[0]).toHaveTextContent('Standard Party')
+  expect(cards[0]).toHaveTextContent('$199')
+  expect(cards[1]).toHaveTextContent('$15')
+  expect(cards[2]).toHaveTextContent('$30')
+})
+
+test('every party action reaches the portal party-request page', () => {
+  renderBirthdays()
+  const actions = [...document.querySelectorAll('a[href]')].filter((a) =>
+    /Request|party/i.test(a.textContent)
+  )
+  expect(actions.length).toBeGreaterThan(0)
+  for (const a of actions) {
+    expect(a.getAttribute('href')).toBe('https://studio.capitalcoredance.com/party-request')
+  }
+})
+
+test('button text on pink is navy, which the mockup gets wrong', () => {
+  // The mockup draws white on #ff54a8 — 2.96:1, below AA. Navy is 5.79:1.
+  renderBirthdays()
+  expect(screen.getByRole('link', { name: 'Request Your Party →' })).toHaveStyle({
+    color: '#0d1b34',
+  })
 })

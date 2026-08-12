@@ -1,115 +1,135 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
+import { accentForPath } from '../lib/pageAccents'
 
-const NAV_LINKS = [
-  { to: '/', label: 'Home' },
-  { to: '/about', label: 'About Us' },
-  { to: '/classes', label: 'Classes' },
-  { to: '/dance-company', label: 'Dance Company' },
-  { to: '/tuition', label: 'Tuition' },
-  { to: '/birthdays', label: 'Birthdays' },
-  { to: '/blog', label: 'Blog' },
-  { to: '/faq', label: 'FAQ' },
-  // Internal recital orders viewer — hidden from the public footer.
-  // Re-enable by uncommenting when orders are open again. The /orders
-  // route still works directly (passcode-gated); this only controls the link.
-  // { to: '/orders', label: 'Admin Orders' },
-  { to: '/contact', label: 'Contact Us' },
+// Restyled 2026-08-11 to the studio's site mockups: four columns on the deep navy, a
+// heavy top border in the page's accent, Barlow throughout. Every address, link and
+// social account is unchanged from the previous footer — only the arrangement moved.
+//
+// The mockup's three link columns are filled with the studio's real sections rather
+// than the generic placeholders it shipped with.
+const LINK_COLUMNS = [
+  {
+    heading: 'Classes',
+    links: [
+      { to: '/classes', label: 'Class Schedule' },
+      { to: '/class-levels', label: 'Class Levels' },
+      { to: '/adult-classes', label: 'Adult Classes' },
+      { to: '/little-movers', label: 'Little Movers' },
+      { to: '/tuition', label: 'Tuition' },
+    ],
+  },
+  {
+    heading: 'Studio',
+    links: [
+      { to: '/about', label: 'About Us' },
+      { to: '/dance-company', label: 'Dance Company' },
+      { to: '/birthdays', label: 'Birthdays' },
+      { to: '/blog', label: 'Blog' },
+      // Internal recital orders viewer stays out of the public footer. The /orders
+      // route still works directly (passcode-gated); this only controls the link.
+    ],
+  },
+  {
+    heading: 'Help',
+    links: [
+      { to: '/faq', label: 'FAQ' },
+      { to: '/contact', label: 'Contact Us' },
+      { to: '/privacy', label: 'Privacy' },
+      { to: '/terms', label: 'Terms' },
+    ],
+  },
 ]
 
+const INSTAGRAM = 'https://www.instagram.com/capitalcoredance'
+const FACEBOOK = 'https://www.facebook.com/p/Capital-Core-Dance-Challenge-61566002721661/'
+
 export default function Footer() {
+  const { pathname } = useLocation()
+  const accent = accentForPath(pathname)
+
   return (
-    <footer className="bg-navy-dark px-6 pt-10 pb-6">
-      <div className="max-w-6xl mx-auto">
-
-        {/* Main footer grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pb-8 border-b border-[#2a3a5a]">
-
-          {/* Studio info */}
-          <div>
-            <div className="flex items-center gap-3 mb-3">
-              <img src="/logo.png" alt="Capital Core Dance Studio" className="h-10 w-10 object-contain flex-shrink-0" />
-              <div>
-                <div className="text-white font-black text-sm tracking-widest">CAPITAL CORE DANCE STUDIO</div>
-                <div className="text-[#7ab3e8] text-[10px] tracking-[0.3em]">MIDLOTHIAN, VIRGINIA</div>
-              </div>
-            </div>
-            <ul className="flex flex-col gap-2 text-[#8a9aaa] text-xs">
-              <li>
-                <a
-                  href="https://maps.google.com/?q=13110+Midlothian+Turnpike+Midlothian+VA+23113"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="hover:text-white transition-colors"
-                >
-                  13110 Midlothian Turnpike<br />Midlothian, VA 23113
-                </a>
-              </li>
-              <li>
-                <a href="tel:8042344014" className="hover:text-white transition-colors">
-                  804-234-4014
-                </a>
-              </li>
-              <li>
-                <a href="mailto:info@capitalcoredance.com" className="hover:text-white transition-colors">
-                  info@capitalcoredance.com
-                </a>
-              </li>
-            </ul>
-            {/* Social links */}
-            <div className="flex gap-3 mt-4">
-              <a
-                href="https://www.instagram.com/capitalcoredance"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Instagram"
-                className="flex items-center justify-center w-8 h-8 rounded-full bg-[#1e2f50] hover:bg-[#2a3f6a] transition-colors"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f4a8b4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-                </svg>
-              </a>
-              <a
-                href="https://www.facebook.com/p/Capital-Core-Dance-Challenge-61566002721661/"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Facebook"
-                className="flex items-center justify-center w-8 h-8 rounded-full bg-[#1e2f50] hover:bg-[#2a3f6a] transition-colors"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7ab3e8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
-                </svg>
-              </a>
-            </div>
+    <footer
+      className="bg-ink-deep font-body px-6 lg:px-24 pt-16 pb-10 border-t-4"
+      style={{ borderColor: accent }}
+    >
+      <div className="max-w-[1440px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr] gap-10">
+        <div>
+          <div className="text-white font-bold text-[15px] tracking-[0.14em] mb-3">
+            CAPITAL CORE DANCE STUDIO
           </div>
+          <address className="not-italic text-mist-500 text-sm leading-[1.7]">
+            <a
+              href="https://maps.google.com/?q=13110+Midlothian+Turnpike+Midlothian+VA+23113"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-white transition-colors"
+            >
+              13110 Midlothian Turnpike
+              <br />
+              Midlothian, VA 23113
+            </a>
+            <br />
+            <a href="tel:8042344014" className="hover:text-white transition-colors">
+              804-234-4014
+            </a>
+            <br />
+            <a href="mailto:info@capitalcoredance.com" className="hover:text-white transition-colors">
+              info@capitalcoredance.com
+            </a>
+          </address>
 
-          {/* Nav links */}
-          <div>
-            <div className="text-[#5a7aaa] text-xs font-bold uppercase tracking-widest mb-4">Quick Links</div>
-            <ul className="grid grid-cols-2 gap-x-4 gap-y-2">
-              {NAV_LINKS.map(({ to, label }) => (
+          <div className="flex gap-3 mt-5">
+            <a
+              href={INSTAGRAM}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Instagram"
+              className="flex items-center justify-center w-9 h-9 border border-white/20 hover:border-white/60 transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-core-pink">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+              </svg>
+            </a>
+            <a
+              href={FACEBOOK}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Facebook"
+              className="flex items-center justify-center w-9 h-9 border border-white/20 hover:border-white/60 transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-core-teal">
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        {LINK_COLUMNS.map(({ heading, links }) => (
+          <div key={heading}>
+            <div
+              className="text-[11px] font-semibold uppercase tracking-[0.2em] mb-4"
+              style={{ color: accent }}
+            >
+              {heading}
+            </div>
+            <ul className="flex flex-col gap-[9px]">
+              {links.map(({ to, label }) => (
                 <li key={to}>
-                  <Link to={to} className="text-[#8a9aaa] text-xs hover:text-white transition-colors">
+                  <Link to={to} className="text-mist-400 text-sm hover:text-white transition-colors">
                     {label}
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
+        ))}
+      </div>
 
-        </div>
-
-        {/* Bottom bar */}
-        <div className="pt-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-[#5a7aaa] text-xs">© 2026 Capital Core Dance Studio. All rights reserved.</p>
-          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
-            <Link to="/privacy" className="text-[#5a7aaa] text-xs hover:text-white transition-colors">Privacy</Link>
-            <Link to="/terms" className="text-[#5a7aaa] text-xs hover:text-white transition-colors">Terms</Link>
-            <a href="https://www.instagram.com/capitalcoredance" target="_blank" rel="noreferrer" className="text-[#5a7aaa] text-xs hover:text-[#f4a8b4] transition-colors">Instagram</a>
-            <a href="https://www.facebook.com/p/Capital-Core-Dance-Challenge-61566002721661/" target="_blank" rel="noreferrer" className="text-[#5a7aaa] text-xs hover:text-[#7ab3e8] transition-colors">Facebook</a>
-            <p className="text-[#3a4a6a] text-xs">Managed by Hicks Virtual Solutions LLC</p>
-          </div>
-        </div>
-
+      <div className="max-w-[1440px] mx-auto mt-14 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <p className="text-mist-500 text-xs">
+          © 2026 Capital Core Dance Studio. All rights reserved.
+        </p>
+        <p className="text-mist-500/60 text-xs">Managed by Hicks Virtual Solutions LLC</p>
       </div>
     </footer>
   )

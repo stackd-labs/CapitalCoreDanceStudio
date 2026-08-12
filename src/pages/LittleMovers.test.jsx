@@ -222,3 +222,21 @@ test('closing call to action reads as the studio wrote it', () => {
   expect(screen.getByRole('heading', { name: 'Ready to Get Moving?' })).toBeInTheDocument()
   expect(screen.getByText(/Join the Little Movers family/)).toBeInTheDocument()
 })
+
+test('uses the teal solid wedge, and every action still avoids the registration portal', () => {
+  // Little Movers is not open for registration, so no link may reach the studio portal.
+  // The redesign rewired every action, which is exactly when this could slip.
+  renderLittleMovers()
+  expect(screen.getByTestId('hero-panel')).toBeInTheDocument()
+  const portalLinks = [...document.querySelectorAll('a[href*="studio.capitalcoredance.com"]')]
+  expect(portalLinks.map((a) => a.textContent)).toEqual([])
+})
+
+test('the schedule time column is a row header, not a data cell', () => {
+  // Regression: it was briefly a <td>, which drops the row-header semantics screen
+  // readers use to announce which time slot a class sits in.
+  renderLittleMovers()
+  const table = screen.getByTestId('schedule-table')
+  const rowHeaders = within(table).getAllByRole('rowheader')
+  expect(rowHeaders.map((th) => th.textContent)).toEqual(SLOTS)
+})

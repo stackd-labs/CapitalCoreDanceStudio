@@ -7,8 +7,12 @@ function renderTuition() {
 }
 
 test('renders page title', () => {
+  // The h1 became the mockup's "Tuition made clear" in the 2026-08-11 redesign; the
+  // page is still Tuition in the nav and the URL.
   renderTuition()
-  expect(screen.getByRole('heading', { name: 'Tuition & Fees' })).toBeInTheDocument()
+  expect(
+    screen.getByRole('heading', { level: 1, name: 'Tuition made clear' })
+  ).toBeInTheDocument()
 })
 
 test('states both semester date ranges', () => {
@@ -51,11 +55,23 @@ test('does not claim semester rates vary', () => {
 
 test('renders the monthly class prices', () => {
   renderTuition()
-  // Scoped to the price row: $65 is also the per-semester registration fee, so a
+  // Scoped to the price card: $65 is also the per-semester registration fee, so a
   // bare getByText('$65') matches two different things on this page.
-  // The label element is itself a div, so closest('div') returns it — go up one.
-  const row = (label) => screen.getByText(label).parentElement
-  expect(row('30 Min Classes').textContent).toContain('$65')
-  expect(row('90 Min Classes').textContent).toContain('$150')
-  expect(row('30 Min Classes').textContent).toContain('Monthly')
+  const card = (label) => screen.getByText(label).closest('[data-testid="price-card"]')
+  expect(card('30 Min Classes').textContent).toContain('$65')
+  expect(card('90 Min Classes').textContent).toContain('$150')
+  expect(card('30 Min Classes').textContent).toMatch(/per month/i)
+  expect(screen.getAllByTestId('price-card')).toHaveLength(5)
+})
+
+test('each price card names real classes of that length, read from the schedule', () => {
+  // The examples are derived from SCHEDULE, so a class changing length can never leave
+  // this page quoting the wrong price against it.
+  renderTuition()
+  const card = (label) => screen.getByText(label).closest('[data-testid="price-card"]')
+  // Tiny Core classes are the 30-minute ones on the Fall schedule.
+  expect(card('30 Min Classes').textContent).toMatch(/Tiny Core/)
+  // Nothing on the Fall schedule runs 90 minutes, and the card says so rather than
+  // sitting empty.
+  expect(card('90 Min Classes').textContent).toMatch(/none on the Fall 2026 schedule/i)
 })

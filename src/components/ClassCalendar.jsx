@@ -11,22 +11,23 @@ const SLOT_MINUTES = 15
 const SLOT_PX = 22
 const TOTAL_SLOTS = (GRID_END_MINUTES - GRID_START_MINUTES) / SLOT_MINUTES
 
-// One accent per dance style so a style reads the same colour across the week. Only
-// the four accents already used elsewhere on the site are available, so the eight
-// categories share them in pairs — the point is that a given style is consistent, not
-// that every style is unique. Do not introduce new colour values here.
+// One accent per dance style so a style reads the same colour across the week. Repainted
+// 2026-08-11 onto the redesign's five brand accents; the eight categories share them in
+// pairs, because the point is that a given style stays consistent, not that every style
+// is unique. Draw only from `core` in tailwind.config.js — no new colour values here.
 const CATEGORY_ACCENTS = {
-  tiny: 'border-l-[#f4a8b4]',
-  'musical-theatre': 'border-l-[#f4a8b4]',
-  ballet: 'border-l-[#7ab3e8]',
-  'lyrical-contemp': 'border-l-[#7ab3e8]',
-  'jazz-acro': 'border-l-[#f4a060]',
-  hiphop: 'border-l-[#f4a060]',
-  'tumble-cheer': 'border-l-brand-red',
-  adult: 'border-l-navy-mid',
+  tiny: 'border-l-core-pink',
+  'musical-theatre': 'border-l-core-pink',
+  ballet: 'border-l-core-teal',
+  'lyrical-contemp': 'border-l-core-teal',
+  'jazz-acro': 'border-l-core-orange',
+  hiphop: 'border-l-core-orange',
+  'tumble-cheer': 'border-l-core-red',
+  adult: 'border-l-core-gold',
 }
 
-const BLOCK_BASE = 'bg-white border border-surface-border border-l-4 text-navy-dark'
+const BLOCK_BASE =
+  'bg-ink-panel border border-white/[0.12] border-l-4 text-white hover:bg-white/[0.06]'
 
 function toMinutes(hhmm) {
   const [hours, minutes] = hhmm.split(':').map(Number)
@@ -73,7 +74,9 @@ function timeLabels() {
   return labels
 }
 
-export default function ClassCalendar({ schedule }) {
+// `accent` is forwarded to the detail panel so the page's colour reaches it without
+// either component touching the router. See ClassDetailPanel for why.
+export default function ClassCalendar({ schedule, accent }) {
   const [selected, setSelected] = useState(null)
   const lastTriggerRef = useRef(null)
 
@@ -135,8 +138,8 @@ export default function ClassCalendar({ schedule }) {
   return (
     <>
       {isEmpty ? (
-        <div className="border border-dashed border-surface-border rounded-lg px-6 py-10 text-center">
-          <p className="text-[#8a9aaa] text-sm">No classes match your filters. Try adjusting your selection.</p>
+        <div className="border border-dashed border-white/20 px-6 py-10 text-center">
+          <p className="font-body text-mist-500 text-sm">No classes match your filters. Try adjusting your selection.</p>
         </div>
       ) : (
         <>
@@ -147,7 +150,7 @@ export default function ClassCalendar({ schedule }) {
               {byDay.map(({ day }) => (
                 <div
                   key={day}
-                  className="flex-1 text-center text-navy-dark text-xs font-black uppercase tracking-wider pb-2"
+                  className="flex-1 text-center font-body text-white text-xs font-bold uppercase tracking-wider pb-2"
                 >
                   {day}
                 </div>
@@ -161,7 +164,7 @@ export default function ClassCalendar({ schedule }) {
                   <div
                     key={key}
                     data-testid="time-label"
-                    className="absolute right-2 text-[#8a9aaa] text-[10px] font-semibold -translate-y-1/2"
+                    className="absolute right-2 font-body text-mist-500 text-[10px] font-semibold -translate-y-1/2"
                     style={{ top: slot * SLOT_PX }}
                   >
                     {text}
@@ -173,13 +176,13 @@ export default function ClassCalendar({ schedule }) {
               {byDay.map(({ day, classes }) => (
                 <div
                   key={day}
-                  className="flex-1 relative border-l border-surface-border"
+                  className="flex-1 relative border-l border-white/10"
                   style={{ height: gridHeight }}
                 >
                   {timeLabels().map(({ key, slot }) => (
                     <div
                       key={key}
-                      className="absolute left-0 right-0 border-t border-surface-border"
+                      className="absolute left-0 right-0 border-t border-white/10"
                       style={{ top: slot * SLOT_PX }}
                     />
                   ))}
@@ -199,7 +202,7 @@ export default function ClassCalendar({ schedule }) {
                           data-cluster-index={index}
                           onClick={(e) => openClass(cls, day, e)}
                           aria-label={`${cls.name}, ${day} ${cls.time}`}
-                          className={`absolute rounded px-1.5 py-1 text-left overflow-hidden hover:bg-surface-light focus:outline-none focus:ring-2 focus:ring-navy-dark ${BLOCK_BASE} ${CATEGORY_ACCENTS[cls.category] || CATEGORY_ACCENTS.adult}`}
+                          className={`absolute px-1.5 py-1 text-left overflow-hidden transition-colors focus:outline-none focus:ring-2 focus:ring-white ${BLOCK_BASE} ${CATEGORY_ACCENTS[cls.category] || CATEGORY_ACCENTS.adult}`}
                           style={{
                             top: startSlot * SLOT_PX + 1,
                             height: span * SLOT_PX - 2,
@@ -207,8 +210,8 @@ export default function ClassCalendar({ schedule }) {
                             width: `${width}%`,
                           }}
                         >
-                          <span className="block text-[10px] font-bold leading-tight">{cls.name}</span>
-                          <span className="block text-[9px] opacity-75 leading-tight">{cls.time}</span>
+                          <span className="block font-body text-[10px] font-bold leading-tight">{cls.name}</span>
+                          <span className="block font-body text-[9px] opacity-70 leading-tight">{cls.time}</span>
                         </button>
                       )
                     })
@@ -225,8 +228,8 @@ export default function ClassCalendar({ schedule }) {
               .map(({ day, classes }) => (
                 <div key={day}>
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="text-navy-dark font-black text-lg">{day}</div>
-                    <div className="flex-1 h-px bg-surface-border" />
+                    <div className="font-display uppercase text-white text-xl">{day}</div>
+                    <div className="flex-1 h-px bg-white/15" />
                   </div>
                   <div className="flex flex-col gap-3">
                     {classes.map((cls) => (
@@ -236,13 +239,13 @@ export default function ClassCalendar({ schedule }) {
                         data-testid="class-list-item"
                         onClick={(e) => openClass(cls, day, e)}
                         aria-label={`${cls.name}, ${day} ${cls.time}, ${cls.ages}`}
-                        className={`w-full rounded-lg px-5 py-4 flex items-center justify-between gap-4 text-left hover:bg-surface-light transition-colors ${BLOCK_BASE} ${CATEGORY_ACCENTS[cls.category] || CATEGORY_ACCENTS.adult}`}
+                        className={`w-full px-5 py-4 flex items-center justify-between gap-4 text-left transition-colors ${BLOCK_BASE} ${CATEGORY_ACCENTS[cls.category] || CATEGORY_ACCENTS.adult}`}
                       >
                         <span className="flex-1 min-w-0">
-                          <span className="block font-bold text-base">{cls.name}</span>
-                          <span className="block text-[#5a6a8a] text-sm mt-0.5">{cls.ages}</span>
+                          <span className="block font-body font-bold text-base">{cls.name}</span>
+                          <span className="block font-body text-mist-500 text-sm mt-0.5">{cls.ages}</span>
                         </span>
-                        <span className="text-[#7ab3e8] text-sm font-medium flex-shrink-0">{cls.time}</span>
+                        <span className="font-body text-mist-200 text-sm font-medium flex-shrink-0">{cls.time}</span>
                       </button>
                     ))}
                   </div>
@@ -252,7 +255,7 @@ export default function ClassCalendar({ schedule }) {
         </>
       )}
 
-      <ClassDetailPanel classInfo={visibleSelected} onClose={closePanel} />
+      <ClassDetailPanel classInfo={visibleSelected} onClose={closePanel} accent={accent} />
     </>
   )
 }

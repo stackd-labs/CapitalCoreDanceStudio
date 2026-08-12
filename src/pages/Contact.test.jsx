@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react'
 import { vi, afterEach } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
 import Contact from './Contact'
@@ -17,7 +17,9 @@ function renderContact() {
 
 test('renders page title', () => {
   renderContact()
-  expect(screen.getByRole('heading', { name: 'Contact Us' })).toBeInTheDocument()
+  // The h1 became the mockup's "Come say hello" in the 2026-08-11 redesign; the page
+  // is still Contact Us in the nav, the footer and the URL.
+  expect(screen.getByRole('heading', { level: 1, name: 'Come say hello' })).toBeInTheDocument()
 })
 
 test('renders first and last name fields', () => {
@@ -142,4 +144,48 @@ test('shows the error when the request itself throws', async () => {
     ).toBeInTheDocument()
   })
   expect(screen.queryByRole('heading', { name: 'Message sent!' })).not.toBeInTheDocument()
+})
+
+test('wears the five-accent stripe hero, with HELLO tinted a letter at a time', () => {
+  // Contact is one of only two pages the mockup marks "all five accents" — the other
+  // being Home. A single solid wedge here would be the wrong page.
+  renderContact()
+  expect(screen.getByTestId('accent-panel')).toBeInTheDocument()
+  expect(screen.queryByTestId('hero-panel')).not.toBeInTheDocument()
+
+  const tinted = [
+    ...screen.getByRole('heading', { level: 1 }).querySelectorAll('span[style*="color"]'),
+  ]
+  expect(tinted.map((el) => el.textContent).join('')).toBe('hello')
+  expect(new Set(tinted.map((el) => el.style.color)).size).toBe(5)
+})
+
+test('the ?interest=trial deep link preselects the trial and reveals the dancer fields', () => {
+  // The free-trial links across the site point here. The redesign rewrote this whole
+  // form, so the deep link needed pinning.
+  render(
+    <MemoryRouter initialEntries={['/contact?interest=trial']}>
+      <Contact />
+    </MemoryRouter>
+  )
+  expect(screen.getByLabelText(/interested in/i)).toHaveValue('trial')
+  expect(screen.getByText(/set up your free trial/i)).toBeInTheDocument()
+  expect(screen.getByLabelText(/Dancer.s Name/i)).toBeInTheDocument()
+  expect(screen.getByLabelText(/^Age$/i)).toBeInTheDocument()
+})
+
+test('lists the studio address, phone and email as real links', () => {
+  // Scoped to the details column — the footer carries the same three links on every
+  // page, so an unscoped query matches twice.
+  renderContact()
+  const details = within(screen.getByTestId('studio-details'))
+  expect(details.getByRole('link', { name: /13110 Midlothian Turnpike/ })).toHaveAttribute(
+    'href',
+    expect.stringContaining('maps.google.com')
+  )
+  expect(details.getByRole('link', { name: '804-234-4014' })).toHaveAttribute('href', 'tel:8042344014')
+  expect(details.getByRole('link', { name: 'info@capitalcoredance.com' })).toHaveAttribute(
+    'href',
+    'mailto:info@capitalcoredance.com'
+  )
 })

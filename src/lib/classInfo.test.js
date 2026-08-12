@@ -27,10 +27,10 @@ test('marks exactly the in-house drafted descriptions', () => {
     .filter(([, info]) => info.draft)
     .map(([key]) => key)
     .sort()
-  // One left: merging 'Tumble' into 'Tumble Tech' and 'Beginner Hip Hop' into
-  // 'Beginner Hip Hop & Breakdancing' each dropped an in-house draft, because the
+  // One left: merging 'Tumble' into 'Tumble Tech' and the standalone hip hop entry
+  // into 'Core Hip Hop & Breakdancing' each dropped an in-house draft, because the
   // studio's own text for the surviving class already covered both.
-  expect(drafts).toEqual(['Lyrical & Contemporary'])
+  expect(drafts).toEqual(['Core Plus Lyrical & Contemporary'])
 })
 
 test('getClassInfo returns the entry for a known key', () => {

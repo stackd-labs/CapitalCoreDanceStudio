@@ -2,6 +2,14 @@ import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import AdultClasses from './AdultClasses'
 import { SCHEDULE } from '../lib/schedule'
+import {
+  ADULT_PRICING,
+  CLASS_PRICES,
+  classLengthMinutes,
+  monthlyPriceForMinutes,
+  priceToNumber,
+} from '../lib/tuition'
+import { ACCENTS } from '../lib/pageAccents'
 
 const PORTAL_REGISTER_URL = 'https://studio.capitalcoredance.com/register/classes'
 
@@ -115,9 +123,12 @@ test('the evening window is derived from the schedule, not typed out', () => {
   expect(window).not.toContain('9:00')
 })
 
-test('wears its own purple, not the Classes orange', () => {
+test('wears its own lavender, not the Classes orange', () => {
+  // Recoloured from purple 2026-08-13. The point of the test is unchanged: Adults is a
+  // separate audience and must not borrow the youth-classes colour.
   renderAdultClasses()
-  expect(screen.getByTestId('hero-panel')).toHaveStyle({ background: '#9b3df0' })
+  expect(screen.getByTestId('hero-panel')).toHaveStyle({ background: ACCENTS.lavender })
+  expect(screen.getByTestId('hero-panel')).not.toHaveStyle({ background: ACCENTS.orange })
 })
 
 test('does not stack two identical register buttons in the same eyeful', () => {
@@ -125,6 +136,102 @@ test('does not stack two identical register buttons in the same eyeful', () => {
   // "Register for Fall →". The strip is now text only.
   renderAdultClasses()
   expect(screen.getAllByRole('link', { name: 'Register for Fall →' })).toHaveLength(2)
+})
+
+test('each class quotes the tuition rate for its own length, not a typed-in figure', () => {
+  // Same defect class as the day/time above: a price copied onto this page would keep
+  // rendering happily after the studio reprices a length or shortens a class. Every
+  // expectation here is computed from SCHEDULE plus the shared tuition table.
+  renderAdultClasses()
+  const prices = screen.getAllByTestId('adult-class-price').map((el) => el.textContent)
+  expect(prices).toHaveLength(3)
+  ADULT_INFO_KEYS.forEach((infoKey, i) => {
+    const row = SCHEDULE_ROWS_BY_INFO_KEY[infoKey]
+    const minutes = classLengthMinutes(row)
+    expect(prices[i], `${infoKey} length`).toContain(`${minutes} min`)
+    expect(prices[i], `${infoKey} price`).toContain(monthlyPriceForMinutes(minutes))
+  })
+})
+
+test('the headline price is the published rate for the length every class shares', () => {
+  // The band only stands while one rate covers all three classes. If the studio ever
+  // lengthens one, this test is the thing that notices the headline has to go — the
+  // per-class prices above carry on being right either way.
+  const lengths = new Set(
+    ADULT_INFO_KEYS.map((k) => classLengthMinutes(SCHEDULE_ROWS_BY_INFO_KEY[k]))
+  )
+  expect(lengths.size, 'adult classes no longer share one length — drop the headline band').toBe(1)
+
+  const [minutes] = [...lengths]
+  renderAdultClasses()
+  expect(screen.getByTestId('adult-headline-price')).toHaveTextContent(
+    monthlyPriceForMinutes(minutes)
+  )
+  expect(screen.getByText(new RegExp(`Every adult class runs ${minutes} minutes`))).toBeInTheDocument()
+})
+
+test('the tuition page and the adults page cannot quote different rates', () => {
+  // Both now read CLASS_PRICES. This asserts the shared table is genuinely the source
+  // the page rendered from, so re-introducing a local copy on either page fails here.
+  renderAdultClasses()
+  const minutes = classLengthMinutes(SCHEDULE_ROWS_BY_INFO_KEY['Adult Femme Flair'])
+  const fromTable = CLASS_PRICES.find((p) => p.minutes === minutes)
+  expect(fromTable, `no published rate for a ${minutes}-minute class`).toBeTruthy()
+  expect(screen.getByTestId('adult-headline-price')).toHaveTextContent(fromTable.monthly)
+})
+
+test('offers three ways to pay, each at the figure the tuition module holds', () => {
+  renderAdultClasses()
+  expect(screen.getAllByTestId('adult-price-card')).toHaveLength(3)
+
+  const minutes = classLengthMinutes(SCHEDULE_ROWS_BY_INFO_KEY['Adult Femme Flair'])
+  expect(screen.getByTestId('adult-headline-price')).toHaveTextContent(
+    monthlyPriceForMinutes(minutes)
+  )
+  expect(screen.getByTestId('adult-pass-price')).toHaveTextContent(
+    `$${ADULT_PRICING.unlimitedMonthly}`
+  )
+  expect(screen.getByTestId('adult-dropin-price')).toHaveTextContent(`$${ADULT_PRICING.dropIn}`)
+  expect(screen.getByTestId('adult-price-badge')).toHaveTextContent('Best value')
+})
+
+test('the pass works out its own saving rather than quoting a typed one', () => {
+  // The saving is the difference between the pass and paying for every adult class
+  // separately. Repricing either figure must move this number, not leave a stale one on
+  // the page — which a hard-coded "$90" would.
+  const single = priceToNumber(monthlyPriceForMinutes(45))
+  const expected = single * ADULT_INFO_KEYS.length - ADULT_PRICING.unlimitedMonthly
+
+  renderAdultClasses()
+  const pass = screen.getByTestId('adult-pass-price').closest('[data-testid="adult-price-card"]')
+  expect(pass).toHaveTextContent(`$${expected} a month`)
+  expect(pass).toHaveTextContent(`all ${ADULT_INFO_KEYS.length} adult classes`)
+})
+
+test('the "less than the price of two" claim appears only while it is arithmetically true', () => {
+  // $165 against $85 is true today by $5. It is one repricing away from being false, and
+  // a page that kept saying it would be advertising a discount the studio does not give.
+  const single = priceToNumber(monthlyPriceForMinutes(45))
+  const beatsTwo = ADULT_PRICING.unlimitedMonthly < single * 2
+
+  renderAdultClasses()
+  const pass = screen.getByTestId('adult-pass-price').closest('[data-testid="adult-price-card"]')
+  if (beatsTwo) {
+    expect(pass).toHaveTextContent('for less than the price of two')
+  } else {
+    expect(pass).not.toHaveTextContent('price of two')
+  }
+})
+
+test('the free-trial offer is a link to Contact, not a dead sentence', () => {
+  // Booking a free class goes through the studio, not the registration portal, so the
+  // sentence that makes the offer has to be the way to take it up.
+  renderAdultClasses()
+  expect(screen.getByTestId('free-trial-link')).toHaveAttribute('href', '/contact')
+  expect(screen.getByRole('link', { name: 'Book a Free Class' })).toHaveAttribute(
+    'href',
+    '/contact'
+  )
 })
 
 test('carries no leftover light-theme surfaces', () => {

@@ -120,6 +120,9 @@ export default function Contact() {
         tagline="Tours · trials · registration help"
         body="Questions about enrollment, schedules, or parties? Send a message and we'll get back to you within 1–2 business days — or just call the studio."
         photoCaption="Map or lobby photo"
+        photoSrc="/logo.png"
+        photoAlt="Capital Core Dance Studio crest"
+        photoFit="contain"
         actions={
           <>
             <PrimaryAction accent={ACCENT} href="#message">

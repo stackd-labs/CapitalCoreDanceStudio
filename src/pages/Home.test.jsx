@@ -106,3 +106,12 @@ test('Home uses the five-accent stripe panel, not a single solid wedge', () => {
   expect(screen.getByTestId('accent-panel')).toBeInTheDocument()
   expect(screen.queryByTestId('hero-panel')).not.toBeInTheDocument()
 })
+
+test('the hero free-trial offer links to Contact', () => {
+  // Matches the Adult Classes page: a free class is arranged through the studio, so the
+  // one claim on the hero a visitor can act on has to be actionable.
+  renderHome()
+  const link = screen.getByTestId('free-trial-link')
+  expect(link).toHaveAttribute('href', '/contact')
+  expect(link).toHaveTextContent('Your first class is always free')
+})

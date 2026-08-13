@@ -9,7 +9,7 @@ import ClassCalendar from '../components/ClassCalendar'
 import { Kicker, SectionHeading, PrimaryAction, GhostAction } from '../components/blocks'
 import { courseListSchema, simpleBreadcrumb } from '../lib/schema'
 import { SCHEDULE, PROGRAMS } from '../lib/schedule'
-import { getClassInfo } from '../lib/classInfo'
+import { getClassInfo, photoForClass } from '../lib/classInfo'
 import { ACCENTS } from '../lib/pageAccents'
 import { onAccent } from '../lib/accentContrast'
 
@@ -111,13 +111,23 @@ function FilterSelect({ label, options, value, onChange }) {
 // One class as a card — the mockup's grid item, filled from SCHEDULE + classInfo.
 function ClassCard({ cls }) {
   const info = getClassInfo(cls.infoKey)
+  // Matched on the schedule display name, by the studio's own rules — see
+  // CLASS_PHOTO_RULES in src/lib/classInfo.js. Classes no rule covers keep the empty
+  // captioned well, so the gap stays visible rather than being filled with something
+  // generic.
+  const art = photoForClass(cls.name)
   return (
     <div
       data-testid="class-card"
       className="border border-white/[0.12] bg-ink-deep flex flex-col"
     >
       <div className="h-[170px]">
-        <PhotoSlot caption={`${cls.name} · photo`} className="w-full h-full" />
+        <PhotoSlot
+          src={art?.photo}
+          alt={art?.photoAlt}
+          caption={`${cls.name} · photo`}
+          className="w-full h-full"
+        />
       </div>
       <div className="px-6 pt-6 pb-[26px] flex flex-col gap-3 flex-1">
         <div className="flex items-center gap-2.5 flex-wrap">
@@ -225,39 +235,28 @@ export default function Classes() {
         </div>
       </div>
 
-      {/* Class cards */}
-      <section className="px-6 lg:px-24 pt-14 lg:pt-[62px] pb-16">
-        <div className="max-w-[1440px] mx-auto">
-          {filteredCards.length === 0 ? (
-            <div className="border border-dashed border-white/20 px-6 py-10 text-center">
-              <p className="font-body text-mist-500 text-sm">
-                No classes match your filters. Try adjusting your selection.
-              </p>
-            </div>
-          ) : (
-            <div data-testid="class-cards" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[26px]">
-              {filteredCards.map((c) => (
-                <ClassCard key={`${c.day}-${c.name}-${c.start}`} cls={c} />
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* The full week */}
+      {/* The full week. Moved above the card grid on 2026-08-13: the calendar answers
+          "what is on, and when" for all twenty-two classes inside one screen, where the
+          cards take roughly ten screens to say the same thing. It also puts the sticky
+          filter bar's effect directly under the filter bar — change Age Group and the
+          week visibly redraws, instead of the result being four thousand pixels away.
+          The cards keep their place below as the browsing layer, which is what the
+          photography is for. */}
       <section id="schedule" className="bg-ink-deep px-6 lg:px-24 py-16 lg:py-20 scroll-mt-24">
         <div className="max-w-[1440px] mx-auto">
           <Kicker accent={ACCENT}>Fall 2026 · August 24 – December 18</Kicker>
           <SectionHeading className="text-white mb-10">The full week</SectionHeading>
 
-          {/* The cards grid above already owns the empty state. Rendering the calendar
-              here when nothing matches would print the same sentence twice on one page. */}
+          {/* Whichever section comes first owns the empty state, so it moved up here with
+              the calendar. Saying it twice on one page reads as a bug. */}
           {filteredSchedule.length > 0 ? (
             <ClassCalendar schedule={filteredSchedule} accent={ACCENT} />
           ) : (
-            <p className="font-body text-mist-500 text-sm">
-              Clear a filter above to see the full week.
-            </p>
+            <div className="border border-dashed border-white/20 px-6 py-10 text-center">
+              <p className="font-body text-mist-500 text-sm">
+                No classes match your filters. Try adjusting your selection.
+              </p>
+            </div>
           )}
 
           <p className="font-body text-mist-500 text-xs mt-8 text-center">
@@ -338,6 +337,32 @@ export default function Classes() {
           </PrimaryAction>
         </div>
       </section>
+
+      {/* Class cards. Below the calendar since 2026-08-13, which means they are no longer
+          the first thing on the page and can no longer be an unlabelled grid — a heading
+          says what they are, rather than leaving them to read as loose results under the
+          week. The section renders nothing at all when the filters match nothing: the
+          calendar above has already said so, and an empty titled section under it would
+          look broken. */}
+      {filteredCards.length > 0 && (
+        <section className="bg-ink-base px-6 lg:px-24 py-16 lg:py-20">
+          <div className="max-w-[1440px] mx-auto">
+            <Kicker accent={ACCENT}>Every class in detail</Kicker>
+            <SectionHeading className="text-white mb-3">What each class is</SectionHeading>
+            <p className="font-body text-mist-400 text-sm mb-10 max-w-2xl">
+              What your dancer actually does in the room, and who each class is for.
+            </p>
+            <div
+              data-testid="class-cards"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[26px]"
+            >
+              {filteredCards.map((c) => (
+                <ClassCard key={`${c.day}-${c.name}-${c.start}`} cls={c} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <Footer />
 

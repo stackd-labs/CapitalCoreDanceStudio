@@ -3,6 +3,7 @@ import Footer from '../components/Footer'
 import SEO from '../components/SEO'
 import Hero from '../components/Hero'
 import PhotoSlot from '../components/PhotoSlot'
+import { INSTRUCTORS } from '../lib/instructors'
 import {
   Kicker,
   SectionHeading,
@@ -52,13 +53,12 @@ const PROGRAMS = [
   'Birthday Parties and Special Events',
 ]
 
-// SCAFFOLD — the studio has supplied no staff names, roles, headshots or bios, and the
-// mockup's four cards were placeholders. Deliberately no invented people: each card
-// shows an empty headshot well and a labelled gap, so the section reads as unfinished
-// rather than as four fictional instructors. Replace with real entries when supplied;
-// the Fall flyer names nine instructors (Chanel, Milan, Adelle, Savannah, Jillian, Aro,
-// Hannah, Kendall, Yul) but gives no roles or bios.
-const STAFF_SLOTS = 4
+// The staff scaffold was replaced with real people on 2026-08-13, when the studio
+// supplied six "Meet the Instructor" flyers. Names, roles and bios live in
+// src/lib/instructors.js — see that file for what is and is not on a flyer. Three of the
+// nine instructors the Fall flyer names have no profile yet, hence the note under the
+// heading: the section says the roster is incomplete rather than implying it is the
+// whole faculty.
 
 export default function About() {
   return (
@@ -79,6 +79,12 @@ export default function About() {
         tagline="Family first, always"
         body="Where confidence, creativity, and community take center stage — a studio built on the belief that every dancer belongs."
         photoCaption="Team photo"
+        /* The crest rather than a photograph, at the studio's request 2026-08-13. It is
+           `contain` so the well cannot crop through the shield, and nothing is painted
+           behind it — the accent panel shows through the transparent PNG. */
+        photoSrc="/logo.png"
+        photoAlt="Capital Core Dance Studio crest"
+        photoFit="contain"
         clipStart={24}
         actions={
           <>
@@ -217,23 +223,55 @@ export default function About() {
         <div className="max-w-[1440px] mx-auto">
           <SectionHeading className="text-white mb-3">The staff</SectionHeading>
           <p className="font-body text-mist-400 text-sm mb-10 max-w-2xl">
-            Instructor profiles are on the way — names, training, and the classes each of them
-            teaches.
+            The people your dancer will actually see every week. More profiles are on the way —
+            this is not yet the whole faculty.
           </p>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-[26px]">
-            {Array.from({ length: STAFF_SLOTS }, (_, i) => (
-              <div key={i} data-testid="staff-card">
-                <div className="h-[220px] lg:h-[280px] border border-white/[0.12]">
-                  <PhotoSlot caption="Headshot" className="w-full h-full" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[26px]">
+            {INSTRUCTORS.map(({ slug, firstName, role, specialties, bio, photo, photoAlt }) => (
+              <div
+                key={slug}
+                data-testid="staff-card"
+                className="border border-white/[0.12] bg-ink-base flex flex-col"
+              >
+                {/* 3:2 rather than the square the headshots are cropped to, at the
+                    studio's request 2026-08-13 — a square photo on a 460px card is most
+                    of what you see before the words. Faces sit near the middle of every
+                    crop, so taking a third off the height is a band that still holds
+                    them. */}
+                <div className="aspect-[3/2]">
+                  {/* Biased upward, not centred. A 3:2 window over a square headshot drops
+                      a sixth off the top and bottom, and centring it took the crown of
+                      every head with it — the expendable third of a portrait is the torso
+                      below the chin, not the head above the eyes. */}
+                  <PhotoSlot
+                    src={photo}
+                    alt={photoAlt}
+                    caption="Headshot"
+                    objectPosition="center 20%"
+                    className="w-full h-full"
+                  />
                 </div>
-                <div className="font-display uppercase text-mist-500 text-[24px] leading-none mt-4 mb-1.5">
-                  Coming soon
-                </div>
-                <div
-                  className="font-body text-[11.5px] font-semibold tracking-[0.16em] uppercase mb-2.5"
-                  style={{ color: ACCENT }}
-                >
-                  Instructor
+                <div className="px-6 pt-6 pb-7 flex flex-col flex-1">
+                  <div
+                    data-testid="staff-name"
+                    className="font-display uppercase text-white text-[26px] leading-none mb-2"
+                  >
+                    {firstName}
+                  </div>
+                  <div
+                    data-testid="staff-role"
+                    className="font-body text-[11.5px] font-semibold tracking-[0.16em] uppercase mb-1"
+                    style={{ color: ACCENT }}
+                  >
+                    {role}
+                  </div>
+                  <div className="font-body text-mist-500 text-[12.5px] mb-4">{specialties}</div>
+                  <p
+                    data-testid="staff-bio"
+                    className="font-body text-[14.5px] leading-[1.6] text-mist-400 m-0"
+                  >
+                    {bio}
+                  </p>
                 </div>
               </div>
             ))}

@@ -157,12 +157,26 @@ test('a filter combination with no classes shows the empty state', () => {
   const [, ageSelect, styleSelect] = screen.getAllByRole('combobox')
   fireEvent.change(ageSelect, { target: { value: 'tiny' } })
   fireEvent.change(styleSelect, { target: { value: 'musical-theatre' } })
-  // Exactly once: the card grid owns the empty state, and the week section swaps its
-  // calendar for a shorter prompt rather than repeating the same sentence.
+  // Exactly once, and it belongs to whichever section comes first — the week calendar
+  // since the 2026-08-13 reorder. Saying it twice on one page reads as a bug.
   expect(
     screen.getAllByText('No classes match your filters. Try adjusting your selection.')
   ).toHaveLength(1)
-  expect(screen.getByText('Clear a filter above to see the full week.')).toBeInTheDocument()
+  // The card section drops out entirely rather than rendering an empty titled block
+  // under a message that has already explained the emptiness.
+  expect(screen.queryByTestId('class-cards')).not.toBeInTheDocument()
+  expect(screen.queryByText('What each class is')).not.toBeInTheDocument()
+})
+
+test('the week calendar comes before the class cards', () => {
+  // The whole point of the 2026-08-13 reorder: the calendar answers "what is on, and
+  // when" in one screen, and the cards are the detail layer underneath it. A future edit
+  // that reinstates the old order would undo that silently, since both still render.
+  renderClasses()
+  const calendar = screen.getByTestId('class-grid')
+  const cards = screen.getByTestId('class-cards')
+  // DOCUMENT_POSITION_FOLLOWING === 4: `cards` comes after `calendar` in document order.
+  expect(calendar.compareDocumentPosition(cards) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
 })
 
 test('renders the printable Fall flyer card with a download link', () => {

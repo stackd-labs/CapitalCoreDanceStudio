@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import Navbar from './Navbar'
+import { ACCENTS, accentForPath } from '../lib/pageAccents'
 
 function renderNavbar(path = '/') {
   return render(
@@ -137,9 +138,13 @@ test('Adults is its own top-level item, no longer under Classes', () => {
 })
 
 test('Adults carries its own accent in the bar, not the Classes orange', () => {
+  // Read from ACCENTS rather than a literal: the underline is meant to be whatever the
+  // Adults page wears, and hard-coding the hex meant a recolour (purple → lavender,
+  // 2026-08-13) failed here as a "wrong colour" rather than reading as intended.
   renderNavbar('/adult-classes')
   const adults = screen.getAllByRole('link', { name: 'Adults' })[0]
-  expect(adults).toHaveStyle({ borderColor: '#9b3df0' })
+  expect(adults).toHaveStyle({ borderColor: accentForPath('/adult-classes') })
+  expect(adults).not.toHaveStyle({ borderColor: ACCENTS.orange })
 })
 
 test('highlights the Classes parent on /tuition', () => {

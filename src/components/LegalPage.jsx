@@ -43,6 +43,11 @@ export default function LegalPage({
         tagline={tagline}
         body={intro}
         photoCaption="Optional image"
+        /* Privacy and Terms both render through here, so the crest lands on both from one
+           place, each over its own accent. */
+        photoSrc="/logo.png"
+        photoAlt="Capital Core Dance Studio crest"
+        photoFit="contain"
         clipStart={22}
         actions={
           <>

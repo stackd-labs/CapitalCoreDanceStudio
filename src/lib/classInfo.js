@@ -80,3 +80,96 @@ export const CLASS_INFO = {
 export function getClassInfo(key) {
   return CLASS_INFO[key]
 }
+
+// Class photography, supplied by the studio 2026-08-13. The studio asked for these by
+// rule rather than class by class — "all hip hop classes", "any class with jazz in the
+// name" — so the rules are what is written down. A new hip hop class added to the
+// schedule next term is covered without anyone remembering to come back here.
+//
+// Rules are tried in order and the FIRST match wins, which is what resolves every overlap
+// in the current schedule:
+//
+//   Core Acro & Jazz          — acro and jazz both claim it; the studio named this class
+//                               specifically for the acro photo, so the named rule leads.
+//   Tiny Core Ballet & Hip Hop — tiny and hip hop both claim it; the hip hop photograph
+//                               is of a teenager and these dancers are 2–5, so tiny leads.
+//   Tiny Core Ballet & Tumble  — same again, against the tumble photo. `tiny` sitting
+//                               second in this list is the whole reason both hold.
+//   Core Plus Lyrical & Contemporary — lyrical and contemporary both claim it; it takes
+//                               the style its own name leads with.
+//   Core Contemporary & Jazz   — jazz and contemporary both claim it. Jazz leads because
+//                               the studio gave jazz an explicit naming rule ("any class
+//                               with jazz in the name") and has not asked to narrow it.
+//                               Move `contemporary` above `jazz` to flip just this one.
+//
+// The tiny photograph arrived a message later than the rest and now fills all three Tiny
+// Core classes. A rule with `photo: null` is still a legitimate state — it claims a class
+// away from the broader rules below while its art is outstanding, which is exactly what
+// kept the teenage hip hop photo off a class of 2-to-5-year-olds in the meantime.
+const CLASS_PHOTO_RULES = [
+  {
+    id: 'acro',
+    match: (name) => name === 'Core Acro & Jazz',
+    photo: '/class-acro.jpg',
+    photoAlt: 'A dancer holding an inverted acro split in the studio at Capital Core Dance',
+  },
+  {
+    id: 'tiny',
+    match: (name) => /^Tiny Core/.test(name),
+    photo: '/class-tiny-ballet.jpg',
+    photoAlt: 'A young dancer in a pink leotard holding her arms in fifth position at Capital Core Dance',
+  },
+  {
+    id: 'hip-hop',
+    match: (name) => /hip hop/i.test(name),
+    photo: '/class-hip-hop.jpg',
+    photoAlt: 'A dancer mid-freeze in a hip hop class at Capital Core Dance',
+  },
+  {
+    id: 'jazz',
+    match: (name) => /jazz/i.test(name),
+    photo: '/class-jazz.jpg',
+    photoAlt: 'A dancer in a jazz line with one arm extended at Capital Core Dance',
+  },
+  {
+    id: 'pom',
+    match: (name) => /pom/i.test(name),
+    photo: '/class-pom.jpg',
+    photoAlt: 'Three dancers posed with pom poms raised at Capital Core Dance',
+  },
+  {
+    // Above `contemporary` so 'Core Plus Lyrical & Contemporary' — the one class both
+    // claim — takes the style its name leads with.
+    id: 'lyrical',
+    match: (name) => /lyrical/i.test(name),
+    photo: '/class-lyrical.jpg',
+    photoAlt: 'A dancer in a lyrical pose with a flowing skirt at Capital Core Dance',
+  },
+  {
+    id: 'contemporary',
+    match: (name) => /contemporary/i.test(name),
+    photo: '/class-contemporary.jpg',
+    photoAlt: 'A dancer kneeling in a contemporary extension at Capital Core Dance',
+  },
+  {
+    // Below `tiny`, which is what keeps this photograph of a teenager off Tiny Core
+    // Ballet & Tumble — a class of two-to-five-year-olds.
+    id: 'tumble',
+    match: (name) => /tumbl/i.test(name),
+    photo: '/class-tumble.jpg',
+    photoAlt: 'A dancer holding a handstand with one leg extended at Capital Core Dance',
+  },
+]
+
+// The photo for a class, by its schedule display name (not its infoKey — the rules the
+// studio gave are about what a class is called on the schedule). Returns null when no
+// rule matches or the matched rule is still waiting on its image.
+export function photoForClass(name = '') {
+  const rule = CLASS_PHOTO_RULES.find((r) => r.match(name))
+  return rule?.photo ? { photo: rule.photo, photoAlt: rule.photoAlt } : null
+}
+
+// Exported for the test that pins what the rules currently resolve to across the whole
+// Fall schedule — the rules are deliberately broad, so the assignment they produce is
+// worth having visible rather than inferred.
+export const CLASS_PHOTO_RULE_IDS = CLASS_PHOTO_RULES.map((r) => r.id)

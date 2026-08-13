@@ -14,6 +14,12 @@ import { onAccent } from '../lib/accentContrast'
 // the three pricing options — is kept and restyled onto the navy field.
 const ACCENT = ACCENTS.teal
 
+// The coming-soon banner alone breaks the page accent, at the studio's request
+// (2026-08-13). Gold reads as a notice rather than as more of the page, which is the
+// point of the strip — it is a temporary status, not part of the Little Movers identity.
+// It goes when registration opens, and takes this constant with it.
+const NOTICE_ACCENT = ACCENTS.gold
+
 // Little Movers is not open for registration yet, so every call to action points at
 // the contact page rather than the studio portal — the portal has no Little Movers
 // classes to select. When registration opens, swap these back to
@@ -184,6 +190,8 @@ export default function LittleMovers() {
         tagline="Movement. Play. Learn. Grow."
         body="A first dance experience for infants, toddlers and preschoolers — 45-minute weekday-morning classes built on music, sensory play and active exploration."
         photoCaption="Toddlers in class"
+        photoSrc="/little-movers-hero.jpg"
+        photoAlt="Five toddlers in pastel leotards and tutus standing at the barre in a Little Movers class"
         clipStart={20}
         titleClassName="text-[42px] sm:text-[56px] lg:text-[76px] leading-[0.92]"
         actions={
@@ -196,9 +204,13 @@ export default function LittleMovers() {
 
       {/* Coming-soon notice. Registration is not open, so every action points at contact
           rather than the studio portal — the portal has no Little Movers classes yet. */}
-      <section className="px-6 lg:px-24 py-5" style={{ background: ACCENT }}>
+      <section
+        data-testid="coming-soon-banner"
+        className="px-6 lg:px-24 py-5"
+        style={{ background: NOTICE_ACCENT }}
+      >
         <div className="max-w-[1440px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="text-center sm:text-left" style={{ color: onAccent(ACCENT) }}>
+          <div className="text-center sm:text-left" style={{ color: onAccent(NOTICE_ACCENT) }}>
             <p className="font-body font-bold text-lg leading-snug">
               Coming soon — a brand new program for our littlest movers.
             </p>

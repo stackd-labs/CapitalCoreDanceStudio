@@ -46,17 +46,23 @@ const PROGRAMS = [
     name: 'Dance Company',
     blurb:
       'Our youth performance and competition program. Founding season 2026/2027, beginner-friendly, ages 6 and up.',
-    // No src: the only Dance Company art in the repo is the audition-clinic flyer, and
-    // a poster in a photo well reads as a mistake. Awaiting a team photograph.
     photoCaption: 'Company team · photo',
+    // A 16:9 crop of the same stage photograph the Dance Company hero uses, cut to the
+    // card shape (the hero's is a portrait well) so the dancers' faces survive the
+    // card's much wider box.
+    photoSrc: '/card-dance-company.jpg',
+    photoAlt: 'Capital Core Dance Company dancers performing on stage in navy costumes',
   },
   {
     to: '/little-movers',
     name: 'Little Movers',
     blurb:
       'A movement-based enrichment program for infants, toddlers and preschoolers, with a caregiver alongside.',
-    // No src — same reason; the Little Movers asset is a "coming soon" graphic.
     photoCaption: 'Toddler class · photo',
+    // 16:9 crop of the Little Movers hero photograph, cut to the card shape for the
+    // same reason as the Dance Company card above.
+    photoSrc: '/card-little-movers.jpg',
+    photoAlt: 'Toddlers in pastel leotards and tutus at the barre in a Little Movers class',
   },
 ]
 
@@ -87,9 +93,27 @@ export default function Home() {
         eyebrow="Now enrolling · 2026 – 2027"
         title={['Every dancer', ['has a ', ...CORE_LETTERS].map((c) => (typeof c === 'string' ? { text: c } : c))]}
         tagline="Recreational · Competition · Little Movers"
-        /* PLACEHOLDER — mockup filler, needs the studio's own intro. */
-        body="Classes for every age from two through adult, taught by a faculty who know every dancer by name. Your first class is always free — come see the room before you commit."
+        /* PLACEHOLDER — mockup filler, needs the studio's own intro. The free-trial
+           offer is a link to Contact as of 2026-08-13: it is the one claim here a visitor
+           can act on, and booking a free class goes through the studio rather than the
+           registration portal. */
+        body={
+          <>
+            Classes for every age from two through adult, taught by a faculty who know every
+            dancer by name.{' '}
+            <Link
+              to="/contact"
+              data-testid="free-trial-link"
+              className="font-semibold underline underline-offset-2 text-white hover:opacity-80 transition-opacity"
+            >
+              Your first class is always free
+            </Link>{' '}
+            — come see the room before you commit.
+          </>
+        }
         photoCaption="Hero photo · full studio"
+        photoSrc="/home-hero-collage.jpg"
+        photoAlt="A collage of Capital Core dancers — toddlers at the barre, hip hop, acro, ballet, and the company on stage"
         actions={
           <>
             <PrimaryAction to="/classes">Find a class</PrimaryAction>

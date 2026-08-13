@@ -1,4 +1,5 @@
 import { ACCENTS, STRIPE, DEFAULT_ACCENT, accentForPath } from './pageAccents'
+import { onAccent, ON_LIGHT } from './accentContrast'
 
 test('each section resolves to the accent its mockup specifies', () => {
   expect(accentForPath('/')).toBe(ACCENTS.red)
@@ -7,19 +8,19 @@ test('each section resolves to the accent its mockup specifies', () => {
   expect(accentForPath('/little-movers')).toBe(ACCENTS.teal)
   expect(accentForPath('/birthdays')).toBe(ACCENTS.pink)
   expect(accentForPath('/about')).toBe(ACCENTS.gold)
-  expect(accentForPath('/tuition')).toBe(ACCENTS.purple)
+  expect(accentForPath('/tuition')).toBe(ACCENTS.mint)
   expect(accentForPath('/faq')).toBe(ACCENTS.green)
-  expect(accentForPath('/adult-classes')).toBe(ACCENTS.purple)
+  expect(accentForPath('/adult-classes')).toBe(ACCENTS.lavender)
 })
 
 test('schedule and levels share one colour; Adults has its own', () => {
   // Schedule and Class Levels are a single journey and must not change colour between
-  // them. Adults was promoted to a top-level nav item on 2026-08-11 and given purple —
-  // it is a separate audience, not a step in the youth-classes journey.
+  // them. Adults was promoted to a top-level nav item on 2026-08-11 and given its own
+  // accent — it is a separate audience, not a step in the youth-classes journey.
   for (const path of ['/classes', '/class-levels']) {
     expect(accentForPath(path), path).toBe(ACCENTS.orange)
   }
-  expect(accentForPath('/adult-classes')).toBe(ACCENTS.purple)
+  expect(accentForPath('/adult-classes')).toBe(ACCENTS.lavender)
 })
 
 test('a sub-page keeps the accent of the page that sent the visitor there', () => {
@@ -53,17 +54,48 @@ test('tolerates trailing slashes and casing', () => {
 })
 
 test('the signature stripe is the five brand accents, in order', () => {
-  // Purple and green are page accents only. Letting them into the stripe would make it
-  // read as a paint box rather than a brand mark.
+  // Purple, green and their two tints are page accents only. Letting any of them into
+  // the stripe would make it read as a paint box rather than a brand mark — and the
+  // palette grew on 2026-08-13, which is exactly when that could slip.
   expect(STRIPE).toEqual([ACCENTS.red, ACCENTS.orange, ACCENTS.gold, ACCENTS.teal, ACCENTS.pink])
-  expect(STRIPE).not.toContain(ACCENTS.purple)
-  expect(STRIPE).not.toContain(ACCENTS.green)
+  for (const pageOnly of ['purple', 'green', 'lavender', 'mint']) {
+    expect(STRIPE, `${pageOnly} must stay out of the stripe`).not.toContain(ACCENTS[pageOnly])
+  }
 })
 
-test('every accent is a valid hex and the set is exactly seven', () => {
+test('every accent is a valid hex and no two are the same colour', () => {
   const values = Object.values(ACCENTS)
-  expect(new Set(values).size).toBe(7)
+  expect(values).toHaveLength(9)
+  expect(new Set(values).size).toBe(9)
   for (const hex of values) {
     expect(hex, `${hex} is not a 6-digit hex`).toMatch(/^#[0-9a-f]{6}$/)
   }
+})
+
+test('no two pages share an accent unless they are one journey', () => {
+  // Colour is doing navigational work here, so an accidental collision tells a visitor
+  // two unrelated pages are the same place. Schedule and Class Levels are the single
+  // deliberate exception — they are one journey and must not change colour between them.
+  const pages = ['/', '/dance-company', '/classes', '/class-levels', '/adult-classes',
+                 '/little-movers', '/birthdays', '/about', '/tuition', '/faq']
+  const byAccent = {}
+  for (const path of pages) {
+    const accent = accentForPath(path)
+    byAccent[accent] = [...(byAccent[accent] || []), path]
+  }
+  const shared = Object.values(byAccent).filter((paths) => paths.length > 1)
+  expect(shared).toEqual([
+    ['/', '/dance-company'],
+    ['/classes', '/class-levels'],
+  ])
+})
+
+test('the two new tints are light enough to take navy text, like their neighbours', () => {
+  // onAccent() derives button and eyebrow text from luminance, so a tint that landed too
+  // dark would silently flip to white text and break the family. Both must read as the
+  // light half of the palette.
+  for (const tint of ['lavender', 'mint']) {
+    expect(onAccent(ACCENTS[tint]), `${tint} text colour`).toBe(ON_LIGHT)
+  }
+  expect(onAccent(ACCENTS.purple), 'purple is the dark original').toBe('#ffffff')
 })

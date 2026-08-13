@@ -138,8 +138,8 @@ export default function ClassLevels() {
         title={['Class', [{ text: 'levels', accent: ACCENT }]]}
         tagline="Tiny Core · Core · Core Plus"
         body="What every class involves, and who it's for — so you can find the right fit before you register. Adult classes have their own page."
-        photoSrc="/classes-hero-2.jpg"
-        photoAlt="Young dancers sitting together during class at Capital Core Dance Studio"
+        photoSrc="/class-levels-hero.jpg"
+        photoAlt="Young dancers in leotards and ballet shoes holding a pose with one arm raised in a mirrored studio at Capital Core Dance"
         photoCaption="Class photo"
         clipStart={22}
         actions={

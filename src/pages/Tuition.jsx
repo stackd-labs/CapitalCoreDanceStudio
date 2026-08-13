@@ -6,13 +6,14 @@ import Hero from '../components/Hero'
 import { Kicker, SectionHeading, PrimaryAction, GhostAction } from '../components/blocks'
 import { simpleBreadcrumb } from '../lib/schema'
 import { SCHEDULE } from '../lib/schedule'
+import { CLASS_PRICES, classLengthMinutes } from '../lib/tuition'
 import { ACCENTS } from '../lib/pageAccents'
 import { onAccent } from '../lib/accentContrast'
 
-// Rebuilt 2026-08-11 to the studio's site mockup (page 1h, accent purple): hero, a card
-// grid of prices, and a "fees at a glance" label/value list. Every figure is the
-// studio's own — nothing here is illustrative.
-const ACCENT = ACCENTS.purple
+// Rebuilt 2026-08-11 to the studio's site mockup (page 1h): hero, a card grid of prices,
+// and a "fees at a glance" label/value list. Every figure is the studio's own — nothing
+// here is illustrative. Recoloured from the mockup's purple to mint 2026-08-13.
+const ACCENT = ACCENTS.mint
 
 // Fall dates match the schedule on the Classes page (Aug 24 – Dec 18). Both
 // end-of-semester performance dates are tentative until the studio confirms them.
@@ -34,24 +35,11 @@ const SEMESTERS = [
 // Parents pay through the studio portal (login required).
 const PORTAL_URL = 'https://studio.capitalcoredance.com'
 
-const CLASS_PRICES = [
-  { minutes: 30, duration: '30 Min', monthly: '$65' },
-  { minutes: 45, duration: '45 Min', monthly: '$85' },
-  { minutes: 60, duration: '60 Min', monthly: '$105' },
-  { minutes: 75, duration: '75 Min', monthly: '$125' },
-  { minutes: 90, duration: '90 Min', monthly: '$150' },
-]
-
 // Which Fall classes run at each length, read from the schedule rather than typed out —
 // so a class moving from 45 to 60 minutes can never leave this page quoting the wrong
 // price. Lengths with nothing on the Fall schedule say so instead of listing nothing.
-const toMinutes = (hhmm) => {
-  const [h, m] = hhmm.split(':').map(Number)
-  return h * 60 + m
-}
-
 const EXAMPLES_BY_MINUTES = SCHEDULE.flatMap(({ classes }) => classes).reduce((acc, c) => {
-  const length = toMinutes(c.end) - toMinutes(c.start)
+  const length = classLengthMinutes(c)
   acc[length] = acc[length] || new Set()
   acc[length].add(c.name)
   return acc

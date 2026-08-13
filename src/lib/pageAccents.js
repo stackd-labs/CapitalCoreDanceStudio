@@ -7,9 +7,17 @@
 // that sent them there.
 //
 // STRIPE is the five-accent signature: the bar under the navbar, the skewed panel in
-// each hero, and the small rule beside every page eyebrow. Purple and green are page
-// accents only and deliberately stay out of it — five reads as a considered set, seven
-// reads as a paint box.
+// each hero, and the small rule beside every page eyebrow. Everything below `pink` is a
+// page accent only and deliberately stays out of it — five reads as a considered set, and
+// the stripe is the one place the brand speaks with a fixed voice.
+//
+// `lavender` and `mint` were added 2026-08-13 at the studio's request: Adults moved from
+// purple to a lighter purple, and Tuition from purple to a light green. They are tints of
+// `purple` and `green` rather than new hues, so the set stays a family.
+//
+// `purple` is currently unreferenced — Adults and Tuition were its only two pages. It is
+// kept because it is a brand colour the studio may want back, not because anything uses
+// it. Delete it if a future page picks a different direction.
 export const ACCENTS = {
   red: '#e01b22',
   orange: '#ff8c2b',
@@ -18,6 +26,8 @@ export const ACCENTS = {
   pink: '#ff54a8',
   purple: '#9b3df0',
   green: '#3ad46f',
+  lavender: '#c38bf6',
+  mint: '#89e5a9',
 }
 
 // Order matters — this is the left-to-right sequence everywhere the stripe appears.
@@ -45,8 +55,9 @@ const ACCENT_BY_PATH = {
 
   // Adults was promoted out of the Classes dropdown to a top-level nav item on
   // 2026-08-11 and given its own accent. It is a separate audience, not a step in the
-  // youth-classes journey, so sharing orange would have undersold it.
-  '/adult-classes': ACCENTS.purple,
+  // youth-classes journey, so sharing orange would have undersold it. Softened from
+  // purple to lavender on 2026-08-13.
+  '/adult-classes': ACCENTS.lavender,
 
   '/little-movers': ACCENTS.teal,
   '/terms': ACCENTS.teal,
@@ -63,7 +74,10 @@ const ACCENT_BY_PATH = {
   // reserves gold for the rules above the address/phone columns.
   '/contact': ACCENTS.red,
 
-  '/tuition': ACCENTS.purple,
+  // Tuition moved from purple to mint on 2026-08-13. Mint rather than FAQ's green on
+  // purpose: the accent is doing navigational work, so two unrelated pages answering
+  // different questions should not look like the same place.
+  '/tuition': ACCENTS.mint,
   '/faq': ACCENTS.green,
 
   // Dormant seasonal routes.

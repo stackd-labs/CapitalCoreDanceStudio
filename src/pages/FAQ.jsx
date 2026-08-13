@@ -249,6 +249,9 @@ export default function FAQ() {
         tagline="Dress code · trials · recital · billing"
         body="Everything you need to know about classes, enrollment, tuition, camps, and more. If your question isn't here, just ask us."
         photoCaption="Lobby photo"
+        photoSrc="/logo.png"
+        photoAlt="Capital Core Dance Studio crest"
+        photoFit="contain"
         clipStart={22}
         actions={
           <>

@@ -1,6 +1,7 @@
 import { render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import LittleMovers from './LittleMovers'
+import { ACCENTS } from '../lib/pageAccents'
 
 // The six classes and their age ranges, from the studio's Little Movers flyer.
 const CLASSES = [
@@ -192,6 +193,17 @@ test('every pricing card explains what the option actually is', () => {
     const hasBlurb = paragraphs.some((t) => t.length > 60)
     expect(hasBlurb, `${label} has no explanatory blurb`).toBe(true)
   }
+})
+
+test('the coming-soon banner is gold, deliberately off the page accent', () => {
+  // Requested by the studio 2026-08-13. The banner is a temporary status, not part of
+  // the Little Movers identity, so it does not wear the page's teal — which is also
+  // what stops a future "make everything the accent" tidy-up from reverting it.
+  renderLittleMovers()
+  const banner = screen.getByTestId('coming-soon-banner')
+  expect(banner).toHaveStyle({ background: ACCENTS.gold })
+  expect(banner).not.toHaveStyle({ background: ACCENTS.teal })
+  expect(banner).toHaveTextContent(/Coming soon — a brand new program/)
 })
 
 test('says coming soon rather than inviting registration', () => {

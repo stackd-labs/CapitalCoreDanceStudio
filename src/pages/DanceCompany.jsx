@@ -141,6 +141,8 @@ export default function DanceCompany() {
         tagline="Where passion meets purpose"
         body="Become a founding member of the Capital Core Dance Company — relentless training, fearless performances, and a family-first culture where every dancer is built to shine."
         photoCaption="Company on stage"
+        photoSrc="/dance-company-hero.jpg"
+        photoAlt="Capital Core Dance Company dancers in navy costumes performing on stage under theatre lights"
         clipStart={22}
         actions={
           <>

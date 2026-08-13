@@ -22,6 +22,8 @@ export default function Hero({
   photoSrc,
   photoAlt,
   photoObjectPosition,
+  // 'contain' for the logo, which must not be cropped by the well — see PhotoSlot.
+  photoFit,
   variant = 'solid',
   accent,
   // Both differ per page in the mockups — Classes cuts at 26% with an 84px title,
@@ -39,6 +41,7 @@ export default function Hero({
   const color = useAccent(accent)
   const onPanel = onAccent(color)
   const isStripe = variant === 'stripe'
+  const isFramed = photoFit !== 'contain'
 
   // The spoken form of the headline: lines joined by a space, chunks concatenated.
   const plainTitle = title
@@ -60,16 +63,26 @@ export default function Hero({
         />
       )}
 
-      {/* Photo well — over the panel, hidden below lg where the copy needs the width */}
+      {/* Photo well — over the panel, hidden below lg where the copy needs the width.
+          The rule frames a photograph, which is a rectangle that needs an edge. Contained
+          artwork is not: the logo has its own silhouette, and a box drawn around it just
+          reads as a stray rectangle on the accent. So the frame follows the fit. */}
       <div
-        className="hidden lg:block absolute top-[84px] bottom-[84px] right-16 w-[400px] border"
-        style={{ borderColor: isStripe ? 'rgba(255,255,255,.32)' : `${onPanel}4d` }}
+        className={`hidden lg:block absolute top-[84px] bottom-[84px] right-16 w-[400px] ${
+          isFramed ? 'border' : ''
+        }`}
+        style={
+          isFramed
+            ? { borderColor: isStripe ? 'rgba(255,255,255,.32)' : `${onPanel}4d` }
+            : undefined
+        }
       >
         <PhotoSlot
           src={photoSrc}
           alt={photoAlt}
           caption={photoCaption}
           objectPosition={photoObjectPosition}
+          fit={photoFit}
           className="w-full h-full"
           hatchOn={isStripe ? 'glass' : onPanel === '#0d1b34' ? 'light' : 'dark'}
         />

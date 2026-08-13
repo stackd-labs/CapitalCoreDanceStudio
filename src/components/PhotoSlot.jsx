@@ -7,6 +7,12 @@
 // is done. `caption` is what the studio needs to supply for that slot.
 // `hatchOn` picks the placeholder's contrast: 'dark' for a navy field (white hatch),
 // 'light' for a light accent panel (dark hatch) — a white hatch on orange is invisible.
+// `fit` is 'cover' for photographs — the well is a crop and the subject should fill it.
+// 'contain' is for artwork that must not be cropped, i.e. the logo: it fills the well
+// edge to edge and keeps its proportions, rather than having its shield sliced by a
+// 400×472 box it was never drawn for. Nothing is painted behind it — the logo is a
+// transparent PNG, so the hero's accent panel shows through and the crest reads as part
+// of the page rather than as a picture sitting on top of it.
 export default function PhotoSlot({
   src,
   alt,
@@ -14,6 +20,7 @@ export default function PhotoSlot({
   className = '',
   style,
   objectPosition,
+  fit = 'cover',
   hatchOn = 'dark',
 }) {
   if (src) {
@@ -21,7 +28,9 @@ export default function PhotoSlot({
       <img
         src={src}
         alt={alt || ''}
-        className={`block w-full h-full object-cover ${className}`}
+        className={`block w-full h-full ${
+          fit === 'contain' ? 'object-contain' : 'object-cover'
+        } ${className}`}
         style={{ objectPosition, ...style }}
       />
     )

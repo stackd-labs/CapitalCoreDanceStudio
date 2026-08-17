@@ -3,25 +3,48 @@ import { MemoryRouter } from 'react-router-dom'
 import LittleMovers from './LittleMovers'
 import { ACCENTS } from '../lib/pageAccents'
 
-// The six classes and their age ranges, from the studio's Little Movers flyer.
+// The six classes and their age ranges. Widened 2026-08-17 at the studio's request so the
+// morning hands off cleanly at 18 months: Baby & Me runs 0–18 months, and every class after
+// it takes 18 months–5 years. Parent & Me Dance keeps the flyer's 18 months–3 years — it is
+// currently dormant (Tuesday/Thursday only) and the studio did not revise it.
 const CLASSES = [
-  ['Baby & Me', '0–12 months'],
+  ['Baby & Me', '0–18 months'],
   ['Parent & Me Dance', '18 months–3 years'],
-  ["Moovin' & Groovin'", '2–5 years'],
-  ['Tiny Tumblers', '2–5 years'],
-  ['Sensory Steps', '2–5 years'],
-  ['Little Movers Free Play Lab', '1–5 years'],
+  ["Moovin' & Groovin'", '18 months–5 years'],
+  ['Tiny Tumblers', '18 months–5 years'],
+  ['Sensory Steps', '18 months–5 years'],
+  ['Little Movers Free Play Lab', '18 months–5 years'],
 ]
 
-// The weekly schedule exactly as the flyer lays it out: three 45-minute morning slots.
-const SLOTS = ['9:30 – 10:15 AM', '10:15 – 11:00 AM', '11:00 – 11:45 AM']
+// Three 45-minute morning slots with a 15-minute gap between them, first bell 9:30 AM —
+// the studio's revision of 2026-08-17. The flyer's original grid ran them back to back
+// (9:30 / 10:15 / 11:00), which left no room to clear one class out and settle the next in.
+const SLOTS = ['9:30 – 10:15 AM', '10:30 – 11:15 AM', '11:30 AM – 12:15 PM']
+
+// Parses either label form: '9:30 – 10:15 AM' (one shared meridiem) or
+// '11:30 AM – 12:15 PM' (one each, because that slot crosses noon).
+function parseSlot(label) {
+  const [left, right] = label.split('–').map((s) => s.trim())
+  const meridiemOf = (s) => s.match(/(AM|PM)/i)?.[1]?.toUpperCase()
+  const toMinutes = (part, fallback) => {
+    const [, h, m, mer] = part.match(/^(\d{1,2}):(\d{2})(?:\s*(AM|PM))?$/i)
+    const meridiem = (mer || fallback).toUpperCase()
+    return ((Number(h) % 12) + (meridiem === 'PM' ? 12 : 0)) * 60 + Number(m)
+  }
+  return {
+    start: toMinutes(left, meridiemOf(left) || meridiemOf(right)),
+    end: toMinutes(right, meridiemOf(right) || meridiemOf(left)),
+  }
+}
+// Monday/Wednesday/Friday only as of 2026-08-17 — Tuesday and Thursday came off the
+// public schedule (their line-ups are kept dormant in the page source). All three days
+// open the same way and differ only in the last slot.
 const EXPECTED = {
   Monday: ['Baby & Me', "Moovin' & Groovin'", 'Tiny Tumblers'],
-  Tuesday: ['Sensory Steps', 'Little Movers Free Play Lab', 'Parent & Me Dance'],
-  Wednesday: ["Moovin' & Groovin'", 'Tiny Tumblers', 'Baby & Me'],
-  Thursday: ['Little Movers Free Play Lab', 'Parent & Me Dance', 'Sensory Steps'],
-  Friday: ['Tiny Tumblers', 'Baby & Me', "Moovin' & Groovin'"],
+  Wednesday: ['Baby & Me', "Moovin' & Groovin'", 'Sensory Steps'],
+  Friday: ['Baby & Me', "Moovin' & Groovin'", 'Little Movers Free Play Lab'],
 }
+const DORMANT_DAYS = ['Tuesday', 'Thursday']
 
 function renderLittleMovers() {
   return render(
@@ -56,6 +79,35 @@ test('renders all eight benefits', () => {
   ])
 })
 
+test('a class that is not on the published schedule is badged Coming soon', () => {
+  // Parent & Me Dance ran only on Tuesday and Thursday, so when those days went dormant
+  // (2026-08-17) it was left listed among the classes but bookable on no day — a parent
+  // could read about it and never find when it meets. The badge is derived from SCHEDULE
+  // rather than hand-set, so it appears and disappears on its own as days change.
+  renderLittleMovers()
+  const cardFor = (name) =>
+    [...screen.getAllByTestId('little-movers-class')].find((c) =>
+      c.querySelector('[data-testid="class-name"]').textContent.includes(name)
+    )
+  const unscheduled = cardFor('Parent & Me Dance')
+  expect(unscheduled.querySelector('[data-testid="class-coming-soon"]')).toBeInTheDocument()
+  expect(unscheduled.textContent).toMatch(/coming soon/i)
+
+  // Everything on the grid must NOT be badged, or the badge means nothing.
+  for (const name of ['Baby & Me', "Moovin' & Groovin'", 'Tiny Tumblers', 'Sensory Steps']) {
+    expect(
+      cardFor(name).querySelector('[data-testid="class-coming-soon"]'),
+      `${name} is on the schedule and must not be badged`
+    ).toBeNull()
+  }
+})
+
+test('the classes heading does not hardcode a count that can go stale', () => {
+  // It read "Six ways to move" while only five classes were actually scheduled.
+  renderLittleMovers()
+  expect(screen.queryByText(/Six ways to move/i)).not.toBeInTheDocument()
+})
+
 test('renders all six classes with their age ranges and descriptions', () => {
   renderLittleMovers()
   const cards = screen.getAllByTestId('little-movers-class')
@@ -86,20 +138,44 @@ test('schedule table lists every day, slot, and class in the right cell', () => 
   // Walk each slot row and check the class in each day's column, in order.
   SLOTS.forEach((slot, slotIndex) => {
     const cells = within(rows[slotIndex + 1]).getAllByRole('cell')
-    expect(cells).toHaveLength(5)
+    expect(cells).toHaveLength(3)
     Object.keys(EXPECTED).forEach((day, dayIndex) => {
       expect(cells[dayIndex].textContent, `${day} ${slot}`).toContain(EXPECTED[day][slotIndex])
     })
   })
 })
 
-test('the mobile list carries the same fifteen slots', () => {
+test('the mobile list carries the same nine slots', () => {
   renderLittleMovers()
   const list = screen.getByTestId('schedule-list')
-  expect(within(list).getAllByTestId('schedule-entry')).toHaveLength(15)
+  expect(within(list).getAllByTestId('schedule-entry')).toHaveLength(9)
   for (const day of Object.keys(EXPECTED)) {
     expect(within(list).getByText(day)).toBeInTheDocument()
   }
+})
+
+test('Tuesday and Thursday are off the published schedule', () => {
+  // Kept in the page source but dormant, so they can be switched back on without
+  // rebuilding the grid. Nothing a parent reads may still offer them.
+  renderLittleMovers()
+  const table = screen.getByTestId('schedule-table')
+  const list = screen.getByTestId('schedule-list')
+  for (const day of DORMANT_DAYS) {
+    expect(within(table).queryByText(day), `${day} in the table`).not.toBeInTheDocument()
+    expect(within(list).queryByText(day), `${day} in the mobile list`).not.toBeInTheDocument()
+  }
+})
+
+test('all three days share an opening line-up and differ only in the last slot', () => {
+  // This is the shape the studio asked for: one predictable morning pattern, with the
+  // third class as the reason to pick a particular day.
+  const days = Object.keys(EXPECTED)
+  for (const slotIndex of [0, 1]) {
+    const atSlot = new Set(days.map((d) => EXPECTED[d][slotIndex]))
+    expect(atSlot.size, `slot ${slotIndex} should be identical across days`).toBe(1)
+  }
+  const lastSlot = days.map((d) => EXPECTED[d][2])
+  expect(new Set(lastSlot).size, 'each day needs its own last class').toBe(days.length)
 })
 
 test('credits the Ms. Ryan partnership on the class card, not in the schedule', () => {
@@ -119,6 +195,31 @@ test('credits the Ms. Ryan partnership on the class card, not in the schedule', 
   }
 })
 
+test('the membership includes a Tiny Core class and shows the top-up from $65', () => {
+  // Added 2026-08-17. The $24 is not a new price — it is $89 minus the $65 a Tiny Core
+  // class already costs, so a family reading either page reaches the same number.
+  renderLittleMovers()
+  const membership = screen.getAllByTestId('pricing-card')[2]
+  expect(membership.textContent).toContain('$89')
+  expect(membership.textContent).toMatch(/One Tiny Core class/i)
+  expect(membership.textContent).toContain('2–5')
+  expect(membership.textContent).toContain('$24')
+})
+
+test('every slot is 45 minutes, gapped by 15, starting at 9:30', () => {
+  // Asserts the shape of the schedule rather than three literal strings, so a future edit
+  // that mistypes one time is caught as a broken pattern instead of passing whatever it
+  // says. This is the invariant the studio asked for on 2026-08-17.
+  const slots = SLOTS.map(parseSlot)
+  expect(slots[0].start).toBe(9 * 60 + 30)
+  for (const { start, end } of slots) {
+    expect(end - start).toBe(45)
+  }
+  for (let i = 1; i < slots.length; i += 1) {
+    expect(slots[i].start - slots[i - 1].end).toBe(15)
+  }
+})
+
 test('states that every class is 45 minutes and drop-off', () => {
   renderLittleMovers()
   expect(screen.getByText(/Every class runs 45 minutes/)).toBeInTheDocument()
@@ -135,6 +236,10 @@ test('renders the three ways to join, each framed by how often a family comes', 
   expect(cards[0].textContent).toContain('Drop-In')
   expect(cards[0].textContent).toContain('$10')
   expect(cards[0].textContent).toContain('per class')
+  // The sibling rate, added 2026-08-17: $10 covers the first child, each additional $3.
+  expect(cards[0].textContent).toContain('first child')
+  expect(cards[0].textContent).toContain('$3')
+  expect(cards[0].textContent).toMatch(/additional (child|sibling)/i)
 
   // Passport
   expect(cards[1].textContent).toContain('Come when you can')
@@ -159,7 +264,10 @@ test('only the membership carries the best-value badge', () => {
   )
 })
 
-test('membership lists unlimited classes and all five perks', () => {
+test('membership lists unlimited classes, the Tiny Core inclusion, and all five perks', () => {
+  // The Tiny Core class and the $24 top-up were inserted directly after the unlimited
+  // line on 2026-08-17 — deliberately above the perks, because they are what the money
+  // buys rather than an extra that comes with it.
   renderLittleMovers()
   const membership = screen.getAllByTestId('pricing-card')[2]
   const lines = [...membership.querySelectorAll('[data-testid="pricing-line"]')].map((el) =>
@@ -167,6 +275,8 @@ test('membership lists unlimited classes and all five perks', () => {
   )
   expect(lines).toEqual([
     'Unlimited Little Movers classes',
+    'One Tiny Core class included (ages 2–5, your choice of day)',
+    'Already in a Tiny Core class? Just $24 more a month',
     'Priority registration for camps',
     'One free guest pass each month',
     '10% off birthday parties',

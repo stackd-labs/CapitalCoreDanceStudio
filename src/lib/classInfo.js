@@ -120,6 +120,14 @@ const CLASS_PHOTO_RULES = [
     photoAlt: 'A young dancer in a pink leotard holding her arms in fifth position at Capital Core Dance',
   },
   {
+    // Above `pom`, which would otherwise catch this class and give a 16+ evening class a
+    // photograph of three teenagers. 'Pom Cheer' still takes that one.
+    id: 'adult-pom',
+    match: (name) => /^Adult Pom/.test(name),
+    photo: '/class-adult-pom.jpg',
+    photoAlt: 'An adult dancer with both arms raised holding red pom poms in the studio at Capital Core Dance',
+  },
+  {
     id: 'hip-hop',
     match: (name) => /hip hop/i.test(name),
     photo: '/class-hip-hop.jpg',
@@ -136,6 +144,18 @@ const CLASS_PHOTO_RULES = [
     match: (name) => /pom/i.test(name),
     photo: '/class-pom.jpg',
     photoAlt: 'Three dancers posed with pom poms raised at Capital Core Dance',
+  },
+  {
+    id: 'femme-flair',
+    match: (name) => /femme|flair/i.test(name),
+    photo: '/class-femme-flair.jpg',
+    photoAlt: 'An adult dancer in an expressive pose with one arm raised in the studio at Capital Core Dance',
+  },
+  {
+    id: 'musical-theatre',
+    match: (name) => /musical theatre/i.test(name),
+    photo: '/class-musical-theatre.jpg',
+    photoAlt: 'Young dancers in period costume performing on stage with arms outstretched at a Capital Core Dance recital',
   },
   {
     // Above `contemporary` so 'Core Plus Lyrical & Contemporary' — the one class both
@@ -158,6 +178,18 @@ const CLASS_PHOTO_RULES = [
     match: (name) => /tumbl/i.test(name),
     photo: '/class-tumble.jpg',
     photoAlt: 'A dancer holding a handstand with one leg extended at Capital Core Dance',
+  },
+  {
+    // LAST, and that placement is the whole rule. Nine of the schedule's classes have
+    // "ballet" in the name but only two of them are ballet-first — the rest pair it with
+    // a style that has its own photograph (jazz, hip hop, contemporary) or belong to Tiny
+    // Core. Sitting at the bottom, this catches exactly the leftovers: Core Ballet & Tap
+    // and Core Ballet & Modern today, plus any future ballet class no narrower rule
+    // claims. Move it up and it silently repossesses six classes.
+    id: 'ballet',
+    match: (name) => /ballet/i.test(name),
+    photo: '/class-ballet.jpg',
+    photoAlt: 'A young ballet dancer in a burgundy leotard with one arm raised in the studio at Capital Core Dance',
   },
 ]
 

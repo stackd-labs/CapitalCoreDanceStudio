@@ -139,6 +139,16 @@ test('renders every youth class on the Fall schedule, in group order', () => {
   expect(names).toHaveLength(16)
 })
 
+test('the Tiny Core tier offers the $24 top-up to the Little Movers membership', () => {
+  // Added 2026-08-17, in the Tiny Core tier specifically: this is where a parent of a
+  // 2-to-5-year-old is choosing, so it is where the upgrade is worth knowing about.
+  renderClassLevels()
+  const note = screen.getByTestId('tiny-core-membership-note')
+  expect(note.textContent).toContain('$24')
+  expect(note.textContent).toMatch(/Little Movers/i)
+  expect(note.querySelector('a')).toHaveAttribute('href', '/little-movers')
+})
+
 test('adult classes live on their own page, not duplicated here', () => {
   renderClassLevels()
   const names = screen.getAllByTestId('class-name').map((el) => el.textContent.trim())

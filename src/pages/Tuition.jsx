@@ -6,7 +6,15 @@ import Hero from '../components/Hero'
 import { Kicker, SectionHeading, PrimaryAction, GhostAction } from '../components/blocks'
 import { simpleBreadcrumb } from '../lib/schema'
 import { SCHEDULE } from '../lib/schedule'
-import { CLASS_PRICES, classLengthMinutes } from '../lib/tuition'
+import {
+  ADULT_PRICING,
+  CLASS_PRICES,
+  COMPANY_PRICING,
+  classLengthMinutes,
+  money,
+  monthlyPriceForMinutes,
+  priceToNumber,
+} from '../lib/tuition'
 import { ACCENTS } from '../lib/pageAccents'
 import { onAccent } from '../lib/accentContrast'
 
@@ -34,6 +42,35 @@ const SEMESTERS = [
 
 // Parents pay through the studio portal (login required).
 const PORTAL_URL = 'https://studio.capitalcoredance.com'
+
+// The three programmes priced outside the by-length table. Every number is read from
+// src/lib/tuition.js — the one 30-minute rate below is the same $65 the price cards use, so
+// the Little Movers comparison can never contradict them. Little Movers' own rates live on
+// its page (drop-in / packs / membership) and are summarised, not restated, so there is one
+// place to change them.
+const SEPARATELY_PRICED = [
+  {
+    to: '/little-movers',
+    name: 'Little Movers',
+    price: 'From $10',
+    blurb:
+      'Ages 0–5, Monday/Wednesday/Friday mornings. Pay per class, buy a visit pack, or take the monthly membership — which includes a Tiny Core class.',
+  },
+  {
+    to: '/adult-classes',
+    name: 'Adult Classes',
+    price: `${money(priceToNumber(monthlyPriceForMinutes(45)))} a month`,
+    blurb: `Ages 16+, one 45-minute class a month. All three adult classes are ${money(
+      ADULT_PRICING.unlimitedMonthly
+    )} a month, or drop in for ${money(ADULT_PRICING.dropIn)}. First class free.`,
+  },
+  {
+    to: '/dance-company',
+    name: 'Dance Company',
+    price: `${money(COMPANY_PRICING.monthly)} a month`,
+    blurb: `${COMPANY_PRICING.practiceHoursPerWeek} hours of company practice a week, plus up to ${COMPANY_PRICING.includedClasses} Capital Core classes included — recommended, not required. Extra classes cost extra.`,
+  },
+]
 
 // Which Fall classes run at each length, read from the schedule rather than typed out —
 // so a class moving from 45 to 60 minutes can never leave this page quoting the wrong
@@ -86,6 +123,14 @@ export default function Tuition() {
         tagline="Monthly rates · no surprises"
         body="Classes are priced by length and billed monthly. Once you register, your dancer's classes and prices are locked for the whole semester."
         photoCaption="Studio photo"
+        /* The crest, at the studio's request 2026-08-17 — and it replaces a placeholder:
+           this hero had a photoCaption but no photoSrc, so the hatched "Studio photo" well
+           was live on the page. `contain` for the same reason the About hero uses it — the
+           crest is a shield and a cover crop cuts straight through it. Nothing is painted
+           behind it; logo.png is transparent, so the accent panel shows through. */
+        photoSrc="/logo.png"
+        photoAlt="Capital Core Dance Studio crest"
+        photoFit="contain"
         clipStart={22}
         actions={
           <>
@@ -159,6 +204,26 @@ export default function Tuition() {
               )
             })}
           </div>
+
+          {/* The $24 is arithmetic on the two numbers either side of it — the $65 card
+              above and the $89 membership on /little-movers — so it is stated here rather
+              than as a separate price a family has to take on trust. LittleMovers.jsx
+              carries the same figure and both are tested against it. */}
+          <p
+            data-testid="tiny-core-membership-note"
+            className="font-body text-[14.5px] leading-[1.6] text-mist-400 mt-8 max-w-3xl"
+          >
+            <span className="font-semibold text-white">Tiny Core families:</span> a 30-minute Tiny
+            Core class is $65 a month. For $24 more — $89 a month — the{' '}
+            <Link
+              to="/little-movers"
+              className="font-semibold underline underline-offset-2"
+              style={{ color: ACCENT }}
+            >
+              Little Movers membership
+            </Link>{' '}
+            covers that class plus unlimited Little Movers morning classes.
+          </p>
         </div>
       </section>
 
@@ -266,16 +331,48 @@ export default function Tuition() {
         </div>
       </section>
 
-      {/* Separately priced programs note. "Specialty Classes" was removed here on
+      {/* Separately priced programmes. "Specialty Classes" was removed here on
           2026-08-03: the Class Levels page uses that term for Musical Theatre and
-          Pom Cheer, which are regular schedule classes on standard tuition. */}
+          Pom Cheer, which are regular schedule classes on standard tuition.
+          Rebuilt as real links 2026-08-17 — it previously named "Dance Teams, Events,
+          Clinics, and Workshops" and linked to nothing, so a family had to go hunting for
+          three sets of rates that are not in the by-length table. Every figure below comes
+          from src/lib/tuition.js; none of it is typed here. */}
       <section className="px-6 lg:px-24 pb-16 lg:pb-20">
         <div className="max-w-[1440px] mx-auto">
-          <div className="border border-dashed border-white/20 px-6 py-5 text-center">
-            <p className="font-body text-mist-400 text-sm">
-              Dance Teams, Events, Clinics, and Workshops have their own pricing — view details on
-              their individual event pages.
-            </p>
+          <Kicker accent={ACCENT}>Priced separately</Kicker>
+          <SectionHeading className="text-white mb-3">Not in the table above</SectionHeading>
+          <p className="font-body text-mist-400 text-sm mb-8 max-w-2xl">
+            Three programmes are not priced by class length. Events, clinics and workshops are
+            priced per event — see the page for each.
+          </p>
+          <div data-testid="separately-priced" className="grid grid-cols-1 md:grid-cols-3 gap-[26px]">
+            {SEPARATELY_PRICED.map(({ to, name, price, blurb }) => (
+              <Link
+                key={to}
+                to={to}
+                className="border border-white/[0.14] px-7 py-7 flex flex-col hover:border-white/40 transition-colors"
+              >
+                <div className="font-display uppercase text-white text-[24px] leading-none">
+                  {name}
+                </div>
+                <div
+                  className="font-display text-[34px] leading-none mt-3"
+                  style={{ color: ACCENT }}
+                >
+                  {price}
+                </div>
+                <p className="font-body text-[14px] leading-[1.6] text-mist-400 mt-3 mb-0 flex-1">
+                  {blurb}
+                </p>
+                <span
+                  className="font-body text-[13px] font-bold mt-5"
+                  style={{ color: ACCENT }}
+                >
+                  See {name} →
+                </span>
+              </Link>
+            ))}
           </div>
           <PrimaryAction to="/contact" className="mt-8">
             Questions? Contact Us

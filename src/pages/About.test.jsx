@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import About from './About'
 import { INSTRUCTORS } from '../lib/instructors'
@@ -80,6 +80,84 @@ test('every instructor entry is complete enough to publish', () => {
     }
     expect(person.photo, `${person.slug} photo path`).toBe(`/instructor-${person.slug}.jpg`)
     expect(person.bio.length, `${person.slug} bio is too thin to publish`).toBeGreaterThan(120)
+  }
+})
+
+// ── Our story pull-quote, 2026-08-17 ──────────────────────────────────────────────
+// The empty "Founders portrait" well was removed at the studio's request; the studio has
+// supplied no founders photograph and an indefinitely hatched box reads as a broken page.
+// A pull-quote fills the column without asserting anything new — the line is the tagline
+// already approved in the hero, not new copy written for the space.
+
+test('the story section carries a pull-quote instead of an empty photo well', () => {
+  renderAbout()
+  expect(screen.getByTestId('story-pullquote')).toHaveTextContent(/Family first, always/i)
+})
+
+test('the Founders portrait placeholder is gone from the story section', () => {
+  // Guards the intent, not just the markup: re-adding an unfilled well here would put the
+  // hatched box back on a live page.
+  renderAbout()
+  expect(screen.queryByLabelText('Placeholder: Founders portrait')).not.toBeInTheDocument()
+})
+
+// ── Staff bio disclosure, 2026-08-17 ──────────────────────────────────────────────
+// The studio asked for uncropped headshots, which cost the height the bios used to
+// occupy, so each bio now sits behind a per-card toggle. These five pin the disclosure
+// contract: collapsed by default, a toggle that says whose bio it opens and what state
+// it is in, and cards that move independently of one another.
+//
+// The bios stay in the DOM when collapsed (the `hidden` attribute, not a conditional
+// render) so they remain in the page source for search engines — they are real
+// marketing copy. That is why these assert on visibility rather than presence.
+
+function staffCards() {
+  return screen.getAllByTestId('staff-card')
+}
+
+test('every staff bio is collapsed on first load', () => {
+  renderAbout()
+  for (const card of staffCards()) {
+    expect(card.querySelector('[data-testid="staff-bio"]')).not.toBeVisible()
+  }
+})
+
+test("each staff card's toggle names the instructor and reports the collapsed state", () => {
+  // A bare "+" tells a screen reader nothing about which of six cards it opens.
+  renderAbout()
+  const first = INSTRUCTORS[0]
+  const toggle = within(staffCards()[0]).getByRole('button')
+  expect(toggle).toHaveAccessibleName(`Show ${first.firstName}'s bio`)
+  expect(toggle).toHaveAttribute('aria-expanded', 'false')
+})
+
+test("clicking the toggle reveals that instructor's bio", () => {
+  renderAbout()
+  const card = staffCards()[0]
+  fireEvent.click(within(card).getByRole('button'))
+  expect(card.querySelector('[data-testid="staff-bio"]')).toBeVisible()
+  expect(within(card).getByRole('button')).toHaveAttribute('aria-expanded', 'true')
+})
+
+test('clicking the toggle a second time collapses the bio again', () => {
+  renderAbout()
+  const card = staffCards()[0]
+  const toggle = within(card).getByRole('button')
+  fireEvent.click(toggle)
+  fireEvent.click(toggle)
+  expect(card.querySelector('[data-testid="staff-bio"]')).not.toBeVisible()
+  expect(toggle).toHaveAttribute('aria-expanded', 'false')
+})
+
+test('expanding one instructor leaves the others collapsed', () => {
+  // Each card owns its own state. A single shared "which one is open" would collapse a
+  // bio the visitor is still reading the moment they open another.
+  renderAbout()
+  const cards = staffCards()
+  fireEvent.click(within(cards[0]).getByRole('button'))
+  expect(cards[0].querySelector('[data-testid="staff-bio"]')).toBeVisible()
+  for (const other of cards.slice(1)) {
+    expect(other.querySelector('[data-testid="staff-bio"]')).not.toBeVisible()
   }
 })
 

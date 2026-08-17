@@ -39,6 +39,21 @@ export const ADULT_PRICING = {
   dropIn: 25,
 }
 
+// Dance Company, the studio's own figures (2026-08-17). Outside the by-length table for
+// the same reason as the adult offers: it is a flat monthly programme fee, not a class
+// rate. It buys rehearsal time plus an allowance of studio classes, so no start/end time
+// can derive it. Both /dance-company and /tuition read these — neither types the number,
+// which is the whole point of this file.
+//
+// `includedClasses` are recommended, NOT required (studio, 2026-08-17): the allowance is
+// part of the fee whether the dancer uses it or not. Anything beyond the allowance is
+// charged at the normal by-length rate above.
+export const COMPANY_PRICING = {
+  monthly: 150,
+  practiceHoursPerWeek: 3,
+  includedClasses: 3,
+}
+
 // '$85' → 85. The by-length table stores display strings because that is what every page
 // renders; anything comparing two prices needs the number behind one.
 export function priceToNumber(price) {

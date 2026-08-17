@@ -32,7 +32,9 @@ const NOTICE_ACCENT = ACCENTS.gold
 const CLASSES = [
   {
     name: 'Baby & Me',
-    ages: '0–12 months',
+    // Widened from 0–12 months 2026-08-17 so the morning hands off at 18 months: this
+    // class ends where every class after it begins.
+    ages: '0–18 months',
     description: 'Gentle movement, music, sensory exploration, and bonding.',
   },
   {
@@ -42,7 +44,9 @@ const CLASSES = [
   },
   {
     name: "Moovin' & Groovin'",
-    ages: '2–5 years',
+    // 18 months–5 years, as for every class in the second and third slots — widened from
+    // 2–5 on 2026-08-17 to meet Baby & Me at 18 months with no gap.
+    ages: '18 months–5 years',
     // The partnership is credited here rather than in the schedule table, which the
     // studio asked to keep to class name and age range only.
     partner: 'Our signature class, in partnership with Ms. Ryan',
@@ -50,17 +54,17 @@ const CLASSES = [
   },
   {
     name: 'Tiny Tumblers',
-    ages: '2–5 years',
+    ages: '18 months–5 years',
     description: 'Beginner tumbling, balance, flexibility, and coordination.',
   },
   {
     name: 'Sensory Steps',
-    ages: '2–5 years',
+    ages: '18 months–5 years',
     description: 'Movement-based sensory exploration with props, music, and imaginative play.',
   },
   {
     name: 'Little Movers Free Play Lab',
-    ages: '1–5 years',
+    ages: '18 months–5 years',
     description: 'Supervised obstacle courses, climbing, balance stations, and active play.',
   },
 ]
@@ -83,32 +87,57 @@ const BENEFITS = [
 
 // Every class runs 45 minutes, in three morning slots. Values are class names that
 // index into CLASSES above.
-const TIME_SLOTS = ['9:30 – 10:15 AM', '10:15 – 11:00 AM', '11:00 – 11:45 AM']
-const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+//
+// Regapped 2026-08-17 at the studio's request: 45 minutes of class with 15 minutes
+// between, first bell 9:30. The flyer's original grid (9:30 / 10:15 / 11:00) ran them back
+// to back, which left no changeover time. The third slot is the only one that crosses
+// noon, hence its two explicit meridiems — the other two share a single trailing AM.
+const TIME_SLOTS = ['9:30 – 10:15 AM', '10:30 – 11:15 AM', '11:30 AM – 12:15 PM']
+// Monday / Wednesday / Friday only, as of 2026-08-17. Every day opens the same way —
+// Baby & Me then Moovin' & Groovin' — and the last slot is what makes a day worth
+// choosing: Tiny Tumblers Monday, Sensory Steps Wednesday, Free Play Lab Friday.
+const DAYS = ['Monday', 'Wednesday', 'Friday']
 
-// SCHEDULE[slotIndex][day] — one class per day per slot, 15 slots in all.
+// SCHEDULE[slotIndex][day] — one class per day per slot, 9 in all.
 const SCHEDULE = [
   {
     Monday: { name: 'Baby & Me' },
-    Tuesday: { name: 'Sensory Steps' },
-    Wednesday: { name: "Moovin' & Groovin'" },
-    Thursday: { name: 'Little Movers Free Play Lab' },
-    Friday: { name: 'Tiny Tumblers' },
-  },
-  {
-    Monday: { name: "Moovin' & Groovin'" },
-    Tuesday: { name: 'Little Movers Free Play Lab' },
-    Wednesday: { name: 'Tiny Tumblers' },
-    Thursday: { name: 'Parent & Me Dance' },
+    Wednesday: { name: 'Baby & Me' },
     Friday: { name: 'Baby & Me' },
   },
   {
-    Monday: { name: 'Tiny Tumblers' },
-    Tuesday: { name: 'Parent & Me Dance' },
-    Wednesday: { name: 'Baby & Me' },
-    Thursday: { name: 'Sensory Steps' },
+    Monday: { name: "Moovin' & Groovin'" },
+    Wednesday: { name: "Moovin' & Groovin'" },
     Friday: { name: "Moovin' & Groovin'" },
   },
+  {
+    Monday: { name: 'Tiny Tumblers' },
+    Wednesday: { name: 'Sensory Steps' },
+    Friday: { name: 'Little Movers Free Play Lab' },
+  },
+]
+
+// DORMANT — Tuesday and Thursday were taken off the published schedule 2026-08-17 and
+// their line-ups are parked here rather than deleted, so the studio can switch the two
+// days back on without rebuilding the grid: merge these into DAYS and SCHEDULE above.
+// Nothing renders from this; it is a record, and it lints clean because no-unused-vars
+// here exempts SCREAMING_CASE names.
+//
+// NOTE: 'Parent & Me Dance' appeared ONLY on Tuesday and Thursday, so it is currently on
+// no published day even though it is still one of the six classes listed on the page.
+// Which classes actually appear on the published grid. Derived from SCHEDULE rather than
+// listed by hand so it cannot fall out of step: take a class off a day and its card is
+// badged "Coming soon" automatically, put it back and the badge goes. This is what keeps
+// the classes section honest — six are described, and today only five can be attended.
+const SCHEDULED_CLASS_NAMES = new Set(
+  SCHEDULE.flatMap((slot) => Object.values(slot).map(({ name }) => name))
+)
+
+const DORMANT_DAYS = ['Tuesday', 'Thursday']
+const DORMANT_SCHEDULE = [
+  { Tuesday: { name: 'Sensory Steps' }, Thursday: { name: 'Little Movers Free Play Lab' } },
+  { Tuesday: { name: 'Little Movers Free Play Lab' }, Thursday: { name: 'Parent & Me Dance' } },
+  { Tuesday: { name: 'Parent & Me Dance' }, Thursday: { name: 'Sensory Steps' } },
 ]
 
 // Three ways to join, framed by how often a family expects to come rather than by
@@ -120,9 +149,16 @@ const PRICING = [
     question: 'Just want to try it?',
     label: 'Drop-In',
     headline: '$10',
-    unit: 'per class',
+    // The $10 covers one child; each additional child in the same family is $3, added
+    // 2026-08-17. Stated in the unit as well as the bullet so the headline price can never
+    // be read as a per-family total.
+    unit: 'first child, per class',
     blurb: 'Pay as you go. Come to any single class, any morning, with nothing to sign up for.',
-    lines: ['Good for any Little Movers class', 'No membership or commitment'],
+    lines: [
+      '$3 for each additional child',
+      'Good for any Little Movers class',
+      'No membership or commitment',
+    ],
   },
   {
     question: 'Come when you can',
@@ -139,8 +175,14 @@ const PRICING = [
     unit: 'per month',
     badge: 'Best value',
     blurb: 'Attend as many Little Movers classes as you would like. Worth it from about nine classes a month, and a bargain for families coming three mornings a week.',
+    // The Tiny Core class and the top-up were added 2026-08-17. The $24 is derived, not a
+    // new price: a Tiny Core class is 30 minutes, which src/lib/tuition.js prices at $65 a
+    // month, and $89 − $65 = $24. If either number moves, this line has to move with it —
+    // Tuition.jsx and ClassLevels.jsx state the same $24 and are tested against it.
     lines: [
       'Unlimited Little Movers classes',
+      'One Tiny Core class included (ages 2–5, your choice of day)',
+      'Already in a Tiny Core class? Just $24 more a month',
       'Priority registration for camps',
       'One free guest pass each month',
       '10% off birthday parties',
@@ -178,7 +220,7 @@ export default function LittleMovers() {
     <div className="min-h-screen flex flex-col bg-ink-base">
       <SEO
         title="Little Movers | Toddler &amp; Preschool Movement Classes in Midlothian, VA — Capital Core Dance"
-        description="Coming soon — Little Movers at Capital Core Dance in Midlothian, VA. A movement-based enrichment program for infants, toddlers, and preschoolers combining dance, music, sensory play, tumbling, and active exploration. Weekday mornings, 45-minute classes, drop-in $10. Contact us to be notified when registration opens."
+        description="Coming soon — Little Movers at Capital Core Dance in Midlothian, VA. A movement-based enrichment program for infants, toddlers, and preschoolers combining dance, music, sensory play, tumbling, and active exploration. Monday, Wednesday and Friday mornings, 45-minute classes, drop-in $10 for the first child and $3 for each additional child. Contact us to be notified when registration opens."
         canonical="/little-movers"
         jsonLd={LITTLE_MOVERS_JSON_LD}
       />
@@ -188,7 +230,7 @@ export default function LittleMovers() {
         eyebrow="Ages 0 – 5 years"
         title={['Little', [{ text: 'Movers', accent: ACCENT }]]}
         tagline="Movement. Play. Learn. Grow."
-        body="A first dance experience for infants, toddlers and preschoolers — 45-minute weekday-morning classes built on music, sensory play and active exploration."
+        body="A first dance experience for infants, toddlers and preschoolers — 45-minute morning classes on Mondays, Wednesdays and Fridays, built on music, sensory play and active exploration."
         photoCaption="Toddlers in class"
         photoSrc="/little-movers-hero.jpg"
         photoAlt="Five toddlers in pastel leotards and tutus standing at the barre in a Little Movers class"
@@ -227,11 +269,13 @@ export default function LittleMovers() {
         </div>
       </section>
 
-      {/* Six classes — the mockup's tier cards, filled with the studio's own classes */}
+      {/* The classes — the mockup's tier cards, filled with the studio's own classes. The
+          heading deliberately carries no count: it said "Six ways to move" while only five
+          were on the grid, and a hardcoded number goes stale every time a class moves. */}
       <section className="bg-ink-deep px-6 lg:px-24 py-16 lg:py-20">
         <div className="max-w-[1440px] mx-auto">
           <Kicker accent={ACCENT}>The classes</Kicker>
-          <SectionHeading className="text-white mb-10">Six ways to move</SectionHeading>
+          <SectionHeading className="text-white mb-10">Ways to move</SectionHeading>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[26px]">
             {CLASSES.map(({ name, ages, description, partner }) => (
               <div
@@ -242,11 +286,25 @@ export default function LittleMovers() {
                 <div className="font-display text-[38px] leading-none" style={{ color: ACCENT }}>
                   {ages}
                 </div>
-                <div
-                  data-testid="class-name"
-                  className="font-display uppercase text-white text-[26px] leading-none mt-3 mb-3"
-                >
-                  {name}
+                <div className="flex items-start justify-between gap-3 mt-3 mb-3">
+                  <div
+                    data-testid="class-name"
+                    className="font-display uppercase text-white text-[26px] leading-none"
+                  >
+                    {name}
+                  </div>
+                  {/* Gold, matching the page's coming-soon banner rather than the teal
+                      accent — the same reason that banner breaks the accent: it reads as a
+                      status, not as part of the Little Movers identity. */}
+                  {!SCHEDULED_CLASS_NAMES.has(name) && (
+                    <span
+                      data-testid="class-coming-soon"
+                      className="font-body text-[10px] font-bold uppercase tracking-[0.14em] px-2 py-1 flex-shrink-0"
+                      style={{ background: NOTICE_ACCENT, color: onAccent(NOTICE_ACCENT) }}
+                    >
+                      Coming soon
+                    </span>
+                  )}
                 </div>
                 <p className="font-body text-[14.5px] leading-[1.6] text-mist-400 mb-4 m-0">
                   {description}
@@ -322,10 +380,12 @@ export default function LittleMovers() {
       <section id="schedule" className="px-6 lg:px-24 py-16 lg:py-20 scroll-mt-24">
         <div className="max-w-[1440px] mx-auto">
           <Kicker accent={ACCENT}>Weekly schedule</Kicker>
-          <SectionHeading className="text-white mb-3">Monday – Friday mornings</SectionHeading>
+          <SectionHeading className="text-white mb-3">
+            Monday, Wednesday &amp; Friday mornings
+          </SectionHeading>
           <p className="font-body text-mist-400 text-sm mb-10 max-w-2xl">
-            Every class runs 45 minutes. Little Movers is a drop-off program. This is our planned
-            weekly schedule — start dates are coming soon.
+            Every class runs 45 minutes, with 15 minutes between classes. Little Movers is a
+            drop-off program. This is our planned weekly schedule — start dates are coming soon.
           </p>
 
           {/* Table at md and up */}

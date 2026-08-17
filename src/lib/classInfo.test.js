@@ -113,13 +113,17 @@ test('the studio photo rules resolve to exactly this assignment across the Fall 
 
   expect(assignment).toEqual({
     'Adult Contemporary': '/class-contemporary.jpg',
-    'Adult Femme/Flair': null,
-    'Adult Pom': '/class-pom.jpg',
+    'Adult Femme/Flair': '/class-femme-flair.jpg',
+    // Its own photograph as of 2026-08-17, no longer the shared pom one: this is a 16+
+    // class and the pom photo is of three teenagers. 'Pom Cheer' keeps that photo.
+    'Adult Pom': '/class-adult-pom.jpg',
     'Core Acro & Jazz': '/class-acro.jpg',
     'Core Ballet & Hip Hop': '/class-hip-hop.jpg',
     'Core Ballet & Jazz': '/class-jazz.jpg',
-    'Core Ballet & Modern': null,
-    'Core Ballet & Tap': null,
+    // The two classes the new `ballet` rule picks up — it sits last, so it only catches
+    // ballet classes no more specific rule has already claimed.
+    'Core Ballet & Modern': '/class-ballet.jpg',
+    'Core Ballet & Tap': '/class-ballet.jpg',
     // Jazz, not contemporary: the studio's jazz rule names every class with "jazz" in
     // it, and reordering the rules would flip this one silently.
     'Core Contemporary & Jazz': '/class-jazz.jpg',
@@ -128,7 +132,9 @@ test('the studio photo rules resolve to exactly this assignment across the Fall 
     'Core Plus Ballet & Contemporary': '/class-contemporary.jpg',
     // Lyrical, not contemporary: it takes the style its own name leads with.
     'Core Plus Lyrical & Contemporary': '/class-lyrical.jpg',
-    'Musical Theatre': null,
+    'Musical Theatre': '/class-musical-theatre.jpg',
+    // Unchanged, and the point of giving Adult Pom its own rule: the shared pom
+    // photograph is of teenagers, which suits this class and not a 16+ one.
     'Pom Cheer': '/class-pom.jpg',
     // All three take the tiny photograph, including the hip hop and tumble ones — the
     // tiny rule matches first precisely so neither teenage photo can land on a class of
@@ -151,28 +157,58 @@ test('overlapping classes go to the more specific rule, not the broad one', () =
   // ages up by a decade.
   expect(photoForClass('Tiny Core Ballet & Hip Hop').photo).toBe('/class-tiny-ballet.jpg')
   expect(photoForClass('Tiny Core Ballet & Tumble').photo).toBe('/class-tiny-ballet.jpg')
+  // 'adult-pom' must stay above 'pom' or Adult Pom silently reverts to the teenagers'
+  // photograph, and 'ballet' must stay last or it steals Core Ballet & Jazz, Core Ballet
+  // & Hip Hop, Core Plus Ballet & Contemporary and all three Tiny Core classes.
   expect(CLASS_PHOTO_RULE_IDS).toEqual([
     'acro',
     'tiny',
+    'adult-pom',
     'hip-hop',
     'jazz',
     'pom',
+    'femme-flair',
+    'musical-theatre',
     'lyrical',
     'contemporary',
     'tumble',
+    'ballet',
   ])
 })
 
+test('the broad ballet rule only claims ballet classes no other rule already covers', () => {
+  // The `ballet` rule is deliberately broad (/ballet/i) and deliberately last. Stated as
+  // its own test because moving it up the list would reassign six classes at once, and
+  // the manifest test above would report that as six unrelated failures.
+  expect(photoForClass('Core Ballet & Tap').photo).toBe('/class-ballet.jpg')
+  expect(photoForClass('Core Ballet & Modern').photo).toBe('/class-ballet.jpg')
+  expect(photoForClass('Core Ballet & Jazz').photo).toBe('/class-jazz.jpg')
+  expect(photoForClass('Core Ballet & Hip Hop').photo).toBe('/class-hip-hop.jpg')
+  expect(photoForClass('Core Plus Ballet & Contemporary').photo).toBe('/class-contemporary.jpg')
+  expect(photoForClass('Tiny Core Ballet & Tap').photo).toBe('/class-tiny-ballet.jpg')
+})
+
+test('Adult Pom takes the adult photograph, Pom Cheer keeps the teenagers', () => {
+  // Both match /pom/i, so this pair is decided purely by rule order.
+  expect(photoForClass('Adult Pom').photo).toBe('/class-adult-pom.jpg')
+  expect(photoForClass('Pom Cheer').photo).toBe('/class-pom.jpg')
+})
+
 test('every photo a rule points at is a real file under public/', () => {
+  // One class per rule, in rule order.
   const named = [
     'Core Acro & Jazz',
+    'Tiny Core Ballet & Tumble',
+    'Adult Pom',
     'Core Ballet & Hip Hop',
     'Core Ballet & Jazz',
-    'Tiny Core Ballet & Tumble',
     'Pom Cheer',
+    'Adult Femme/Flair',
+    'Musical Theatre',
     'Core Plus Acro & Lyrical',
     'Adult Contemporary',
     'Tumble Tech',
+    'Core Ballet & Tap',
   ]
   // One class per rule, so no rule can ship pointing at a file that is not there.
   expect(new Set(named.map((n) => photoForClass(n).photo)).size).toBe(CLASS_PHOTO_RULE_IDS.length)

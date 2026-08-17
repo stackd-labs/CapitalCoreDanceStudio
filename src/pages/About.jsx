@@ -2,7 +2,7 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
 import Hero from '../components/Hero'
-import PhotoSlot from '../components/PhotoSlot'
+import StaffCard from '../components/StaffCard'
 import { INSTRUCTORS } from '../lib/instructors'
 import {
   Kicker,
@@ -96,7 +96,10 @@ export default function About() {
 
       {/* Our story */}
       <section className="bg-ink-deep px-6 lg:px-24 py-16 lg:py-[84px]">
-        <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_1.05fr] gap-10 lg:gap-16 items-center">
+        {/* The prose now takes the larger share. The old 1fr/1.05fr gave the right-hand
+            column the edge, which suited a 380px photograph but makes a three-word quote
+            float in dead space. */}
+        <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-10 lg:gap-16 items-center">
           <div>
             <Kicker accent={ACCENT}>Our story</Kicker>
             <SectionHeading className="text-white mb-5">
@@ -116,9 +119,32 @@ export default function About() {
               programs are designed to support growth at every level.
             </p>
           </div>
-          <div className="h-[300px] lg:h-[380px] border border-white/[0.12]">
-            <PhotoSlot caption="Founders portrait" className="w-full h-full" />
-          </div>
+          {/* Replaced the "Founders portrait" well 2026-08-17. The studio never supplied a
+              founders photograph, and a hatched placeholder that has shipped for six days
+              reads as a broken page rather than as a reserved slot.
+              The line is the hero's tagline, deliberately, rather than copy written for
+              this space: everything on this page is the studio's own words and a pull-quote
+              is not the place to start inventing some. It could not be drawn from the
+              paragraphs beside it either — a pull-quote that repeats the body text it sits
+              next to, or this section's own heading, is noise. */}
+          <figure
+            data-testid="story-pullquote"
+            className="border-l-[3px] pl-7 lg:pl-10 py-1 m-0"
+            style={{ borderColor: ACCENT }}
+          >
+            {/* The {' '} is load-bearing, as on the headings above: JSX trims the
+                whitespace at a line end, so without it the <br/> yields the text content
+                "Family first,always" — which looks correct on screen and is exactly what a
+                screen reader announces. */}
+            <blockquote className="font-display uppercase text-white text-[38px] lg:text-[52px] leading-[0.95] m-0">
+              Family first,{' '}
+              <br />
+              always
+            </blockquote>
+            <figcaption className="font-body text-[11.5px] font-semibold tracking-[0.16em] uppercase text-mist-500 mt-6">
+              The belief the studio was built on
+            </figcaption>
+          </figure>
         </div>
       </section>
 
@@ -226,54 +252,18 @@ export default function About() {
             The people your dancer will actually see every week. More profiles are on the way —
             this is not yet the whole faculty.
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[26px]">
-            {INSTRUCTORS.map(({ slug, firstName, role, specialties, bio, photo, photoAlt }) => (
-              <div
-                key={slug}
-                data-testid="staff-card"
-                className="border border-white/[0.12] bg-ink-base flex flex-col"
-              >
-                {/* 3:2 rather than the square the headshots are cropped to, at the
-                    studio's request 2026-08-13 — a square photo on a 460px card is most
-                    of what you see before the words. Faces sit near the middle of every
-                    crop, so taking a third off the height is a band that still holds
-                    them. */}
-                <div className="aspect-[3/2]">
-                  {/* Biased upward, not centred. A 3:2 window over a square headshot drops
-                      a sixth off the top and bottom, and centring it took the crown of
-                      every head with it — the expendable third of a portrait is the torso
-                      below the chin, not the head above the eyes. */}
-                  <PhotoSlot
-                    src={photo}
-                    alt={photoAlt}
-                    caption="Headshot"
-                    objectPosition="center 20%"
-                    className="w-full h-full"
-                  />
-                </div>
-                <div className="px-6 pt-6 pb-7 flex flex-col flex-1">
-                  <div
-                    data-testid="staff-name"
-                    className="font-display uppercase text-white text-[26px] leading-none mb-2"
-                  >
-                    {firstName}
-                  </div>
-                  <div
-                    data-testid="staff-role"
-                    className="font-body text-[11.5px] font-semibold tracking-[0.16em] uppercase mb-1"
-                    style={{ color: ACCENT }}
-                  >
-                    {role}
-                  </div>
-                  <div className="font-body text-mist-500 text-[12.5px] mb-4">{specialties}</div>
-                  <p
-                    data-testid="staff-bio"
-                    className="font-body text-[14.5px] leading-[1.6] text-mist-400 m-0"
-                  >
-                    {bio}
-                  </p>
-                </div>
-              </div>
+          {/* Four across, at the studio's request 2026-08-17. Three columns put each
+              headshot on a ~436px card, which made the faces the loudest thing on the
+              page; four takes the photo to ~330px square, a 43% cut in area. It stops at
+              four rather than five because five leaves the sixth instructor alone on a
+              row of five empties, and because the roster is still growing — six of nine
+              have flyers, so 4+2 fills in rather than getting more lopsided. */}
+          {/* items-start so an expanded bio grows only its own card. The grid default
+              (stretch) made every card in the row as tall as the open one, which left the
+              other three with a block of empty navy under the specialties. */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[26px] items-start">
+            {INSTRUCTORS.map((person) => (
+              <StaffCard key={person.slug} person={person} accent={ACCENT} />
             ))}
           </div>
         </div>

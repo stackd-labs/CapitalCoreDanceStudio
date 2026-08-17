@@ -23,8 +23,11 @@ import { onAccent } from '../lib/accentContrast'
 // not a step in the youth-classes journey. Softened from purple to lavender 2026-08-13.
 const ACCENT = ACCENTS.lavender
 
-// Same portal registration link as the Classes and Class Levels pages.
-const PORTAL_REGISTER_URL = 'https://studio.capitalcoredance.com/register/classes'
+// The portal's dedicated adult form, NOT the /register/classes one the Classes and Class
+// Levels pages use — repointed 2026-08-17, when the studio confirmed the adult form is
+// live. The general form is built around a parent registering dancers: it asks for a
+// parent/guardian first and its own copy tells adult dancers to use this form instead.
+const PORTAL_REGISTER_URL = 'https://studio.capitalcoredance.com/register/adult-classes'
 
 // Display order for the three adult classes. Day and time are derived from SCHEDULE
 // below (matched on infoKey) rather than duplicated here, so this page can never

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
@@ -5,6 +6,7 @@ import Hero from '../components/Hero'
 import { PrimaryAction, GhostAction } from '../components/blocks'
 import { simpleBreadcrumb } from '../lib/schema'
 import { ACCENTS } from '../lib/pageAccents'
+import { COMPANY_PRICING } from '../lib/tuition'
 
 // Capital Core Dance Company — the studio's youth performance & competition
 // program. Bold navy / white / red identity: powerful, high-energy, "we belong"
@@ -12,8 +14,12 @@ import { ACCENTS } from '../lib/pageAccents'
 
 const RED = '#e01515'
 
-// Portal-hosted competition-clinic registration (public route — see proxy.ts).
-const REGISTER_URL = 'https://studio.capitalcoredance.com/register/competition-clinic'
+// The founding-season Team Building Clinic ran August 10–13 2026 and its portal
+// registration form (/register/competition-clinic) is no longer a live destination, so
+// every action here goes to Contact — an interim, at the studio's request 2026-08-17,
+// until they build a dedicated "join the company" form. Swap this one constant when it
+// exists; nothing else on the page hardcodes a destination.
+const JOIN_PATH = '/contact'
 
 const MARQUEE = ['Train', 'Grow', 'Belong', 'Shine', 'Perform', 'Rise']
 
@@ -58,32 +64,34 @@ const WHY = [
   'Inclusive, encouraging atmosphere', 'Lasting friendships and memories',
 ]
 
-const CLINIC = [
-  { label: 'Dates', value: 'August 10–13 · Mon–Thu' },
-  { label: 'Time', value: '5:30 – 7:30 PM' },
-  { label: 'Ages', value: '6 and up' },
-  { label: 'Cost', value: '$80 per dancer' },
-]
+// The CLINIC facts table (dates / time / ages / cost) and the AUDITION_STEPS list were
+// removed 2026-08-17 along with the clinic itself. Both were entirely clinic-specific —
+// the steps were "register for it", "attend it August 10–13", "bring a parent to its
+// Wednesday session" — and past dates presented as upcoming are worse than no dates at
+// all. They were deleted rather than reworded generically because the studio has never
+// published what happens after auditions, and inventing a process is the one thing this
+// page must not do. Both are recoverable from git history if the clinic runs again.
 
-// Every step below restates a fact already on this page — the registration link and
-// cost, the clinic dates and times, and the parent session. The mockup shows a fourth
-// step (what happens after auditions); the studio has not said, so it is omitted rather
-// than guessed. Add it here when placement and notification are confirmed.
-const AUDITION_STEPS = [
+// What the monthly fee covers, at the studio's direction 2026-08-17. Counts come from
+// COMPANY_PRICING so the prose and the price cannot disagree.
+//
+// The "recommended, not required" wording is load-bearing: the studio's brief said
+// "(recommended only)", which reads either as *which* classes are allowed or as whether
+// taking them is compulsory. They confirmed the latter — the allowance is part of the fee
+// whether the dancer uses it or not. Do not shorten it back to "recommended".
+const COMPANY_INCLUDES = [
   {
-    n: '01',
-    name: 'Register online',
-    blurb: '$80 per dancer, ages 6 and up. No competition experience needed — beginners are encouraged to audition.',
+    headline: `${COMPANY_PRICING.practiceHoursPerWeek} hours of company practice a week`,
+    detail: 'Rehearsal and choreography with the company, every week of the season.',
   },
   {
-    n: '02',
-    name: 'Attend the clinic',
-    blurb: 'Monday to Thursday, August 10–13, 5:30 – 7:30 PM. Four evenings of training with director Yul Tyler Jr.',
+    headline: `Up to ${COMPANY_PRICING.includedClasses} Capital Core dance classes`,
+    detail:
+      'Included in the monthly fee — recommended, not required. Take them to build technique alongside company work, or stick to rehearsals.',
   },
   {
-    n: '03',
-    name: 'Bring a grown-up on Wednesday',
-    blurb: 'A parent information session runs Wednesday, August 12 during the clinic — program overview, time commitments, costs, and Q&A.',
+    headline: 'Extra classes at the standard rate',
+    detail: `Anything beyond the ${COMPANY_PRICING.includedClasses} included classes is charged as an additional fee, at the normal monthly rate for that class length.`,
   },
 ]
 
@@ -129,7 +137,9 @@ export default function DanceCompany() {
     <div className="min-h-screen flex flex-col bg-ink-base">
       <SEO
         title="Capital Core Dance Company | Competition &amp; Performance Team – Midlothian, VA"
-        description="The Capital Core Dance Company is the youth performance and competition program at Capital Core Dance Studio in Midlothian, VA. Bold, beginner-friendly, family-first, ages 6+. Join our founding 2026/2027 season — auditions clinic August 10–13. Led by director Yul Tyler Jr."
+        /* The August 10–13 clinic was named here until 2026-08-17. A search result
+           advertising a finished event is the same defect as the on-page dates. */
+        description="The Capital Core Dance Company is the youth performance and competition program at Capital Core Dance Studio in Midlothian, VA. Bold, beginner-friendly, family-first, ages 6+. Join our founding 2026/2027 season, led by director Yul Tyler Jr."
         canonical="/dance-company"
         jsonLd={[simpleBreadcrumb('Dance Company', '/dance-company')]}
       />
@@ -146,8 +156,8 @@ export default function DanceCompany() {
         clipStart={22}
         actions={
           <>
-            <PrimaryAction href={REGISTER_URL}>Register for auditions</PrimaryAction>
-            <GhostAction href="#founding-clinic">See the founding clinic</GhostAction>
+            <PrimaryAction to={JOIN_PATH}>Join the company</PrimaryAction>
+            <GhostAction href="#founding-clinic">Missed the clinic?</GhostAction>
           </>
         }
       />
@@ -310,38 +320,50 @@ export default function DanceCompany() {
           </div>
         </section>
 
-        {/* ── How auditions work ─────────────────────────────────────── */}
-        <section className="bg-ink-base px-6 lg:px-24 py-16 lg:py-20">
-          <div className="max-w-5xl mx-auto">
-            <h2 className="font-display uppercase text-4xl sm:text-5xl leading-[0.92] text-white m-0 mb-10">
-              How auditions work
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              {AUDITION_STEPS.map(({ n, name, blurb }) => (
-                <div
-                  key={n}
-                  data-testid="audition-step"
-                  className="border-t-[3px] pt-[18px]"
-                  style={{ borderColor: RED }}
-                >
-                  <div
-                    className="font-body text-[11px] font-semibold tracking-[0.2em] uppercase mb-2.5"
-                    style={{ color: RED }}
-                  >
-                    {n}
-                  </div>
-                  <div className="font-body font-bold text-[18px] leading-[1.3] text-white mb-2">
-                    {name}
-                  </div>
-                  <div className="font-body text-[14px] leading-[1.6] text-mist-400">{blurb}</div>
-                </div>
-              ))}
+        {/* ── Company tuition (navy · split) ──────────────────────────── */}
+        <section className="bg-ink-deep px-6 lg:px-24 py-16 lg:py-20">
+          <div
+            data-testid="company-tuition"
+            className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 items-start"
+          >
+            <div>
+              <Kicker>Company Tuition</Kicker>
+              <h2 className="font-display uppercase text-4xl sm:text-5xl leading-[0.92] text-balance text-white">
+                ${COMPANY_PRICING.monthly}
+                <span className="text-mist-400 text-3xl sm:text-4xl"> a month</span>
+              </h2>
+              <p className="text-mist-300 text-base leading-relaxed mt-4">
+                One flat monthly fee for the whole programme — rehearsal time and studio classes
+                together, billed like any other tuition.
+              </p>
             </div>
+            <ul className="flex flex-col gap-3.5">
+              {COMPANY_INCLUDES.map(({ headline, detail }) => (
+                <li key={headline} className="border-b border-white/[0.12] pb-3.5">
+                  <div className="flex items-start gap-3">
+                    <span className="font-bold mt-0.5 flex-shrink-0" style={{ color: RED }}>
+                      ✔
+                    </span>
+                    <div>
+                      <div className="font-display uppercase text-white text-lg leading-tight">
+                        {headline}
+                      </div>
+                      <div className="font-body text-mist-400 text-sm leading-relaxed mt-1">
+                        {detail}
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 
-        {/* ── Founding clinic (white · split) ─────────────────────────── */}
-        <section id="founding-clinic" className="bg-ink-deep px-6 lg:px-24 py-16 lg:py-20 scroll-mt-24">
+        {/* ── Missed the clinic (split · flyer kept) ──────────────────── */}
+        {/* Flipped from bg-ink-deep to bg-ink-base when the tuition section was inserted
+            above it, so the page keeps alternating bands rather than running two
+            near-identical navies together. */}
+        <section id="founding-clinic" className="bg-ink-base px-6 lg:px-24 py-16 lg:py-20 scroll-mt-24">
           <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
             <img
               src="/flyer-comp-team.png"
@@ -349,26 +371,28 @@ export default function DanceCompany() {
               className="w-full shadow-2xl border border-white/20"
             />
             <div>
-              <Kicker>Founding Season Auditions</Kicker>
+              <Kicker>Founding Season</Kicker>
               <h2 className="font-display uppercase text-4xl sm:text-5xl leading-[0.95] mb-4 text-balance text-white">
-                Team Building Clinic
+                Missed the clinic?
               </h2>
-              <p className="text-mist-300 text-base leading-relaxed mb-6">
-                No competition experience? No problem — beginners are encouraged to audition. A
-                <span className="font-bold"> parent information session</span> runs Wednesday, August 12 during
-                the clinic (program overview, time commitments, expectations, costs, and Q&amp;A).
+              {/* Deliberately promises no second clinic, no waitlist and no placement
+                  decision — none of that has been published. It says the only thing that
+                  is true: get in touch and the studio picks it up from there. */}
+              <p className="text-mist-300 text-base leading-relaxed mb-8">
+                The founding-season Team Building Clinic has wrapped. If your dancer still wants to
+                be part of the Capital Core Dance Company, send us a message and we will get back to
+                you about joining. No competition experience needed — beginners are welcome.
               </p>
-              <dl className="flex flex-col gap-2.5 mb-8">
-                {CLINIC.map(({ label, value }) => (
-                  <div key={label} className="flex gap-4 border-b border-white/[0.12] pb-2">
-                    <dt className="font-display uppercase text-xs tracking-widest w-16 flex-shrink-0 pt-1" style={{ color: RED }}>{label}</dt>
-                    <dd className="text-white text-base font-semibold">{value}</dd>
-                  </div>
-                ))}
-              </dl>
-              <a href={REGISTER_URL} target="_blank" rel="noopener noreferrer" className="block w-full text-white text-center font-bold py-3.5 rounded-sm transition-transform hover:-translate-y-0.5" style={{ background: RED }}>
-                Register for the clinic
-              </a>
+              {/* A router Link, not an <a>: /contact is an internal route and a plain
+                  anchor would trigger a full page reload out of the SPA. */}
+              <Link
+                to={JOIN_PATH}
+                data-testid="missed-clinic-cta"
+                className="block w-full text-white text-center font-bold py-3.5 rounded-sm transition-transform hover:-translate-y-0.5"
+                style={{ background: RED }}
+              >
+                Get in touch
+              </Link>
             </div>
           </div>
         </section>
@@ -385,9 +409,9 @@ export default function DanceCompany() {
               If your dancer is ready to grow, perform, and be part of a team that values excellence,
               confidence, and character — we'd love to welcome you to the Capital Core Dance Company.
             </p>
-            <a href={REGISTER_URL} target="_blank" rel="noopener noreferrer" className="inline-block text-white font-bold px-10 py-4 rounded-sm text-lg transition-transform hover:-translate-y-0.5" style={{ background: RED }}>
+            <Link to={JOIN_PATH} className="inline-block text-white font-bold px-10 py-4 rounded-sm text-lg transition-transform hover:-translate-y-0.5" style={{ background: RED }}>
               Become a founding member
-            </a>
+            </Link>
           </div>
         </section>
       </main>

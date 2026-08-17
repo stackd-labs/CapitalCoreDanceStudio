@@ -2,8 +2,12 @@ import { render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import DanceCompany from './DanceCompany'
 import { ACCENTS } from '../lib/pageAccents'
+import { COMPANY_PRICING } from '../lib/tuition'
 
-const REGISTER_URL = 'https://studio.capitalcoredance.com/register/competition-clinic'
+// The August 10–13 2026 clinic has been and gone. Its portal registration form is no
+// longer a live destination, so every action on this page routes to Contact until the
+// studio builds the replacement form.
+const CONTACT_PATH = '/contact'
 
 function renderPage() {
   return render(
@@ -19,35 +23,55 @@ test('renders the hero on the shared red wedge', () => {
   expect(screen.getByTestId('hero-panel')).toHaveStyle({ background: ACCENTS.red })
 })
 
-test('every registration action points at the competition-clinic route', () => {
-  // This page has its own portal route, separate from class registration. Sending an
-  // auditioning family to /register/classes would put them in the wrong flow.
+test('nothing still points at the retired competition-clinic form', () => {
+  // The clinic form was this page's only portal destination. With the clinic over it is a
+  // dead end, so no link on the page should reach the portal at all.
   renderPage()
-  const links = [...document.querySelectorAll('a[href*="studio.capitalcoredance.com"]')]
-  expect(links.length).toBeGreaterThan(0)
-  for (const link of links) {
-    expect(link.getAttribute('href')).toBe(REGISTER_URL)
-  }
+  expect(document.querySelectorAll('a[href*="register/competition-clinic"]')).toHaveLength(0)
+  expect(document.querySelectorAll('a[href*="studio.capitalcoredance.com"]')).toHaveLength(0)
 })
 
-test('states the clinic facts families need to decide', () => {
+test('the past clinic dates, times and cost are gone from the page', () => {
+  // These read as an upcoming event. Leaving them up tells a family to show up on a date
+  // four days in the past and to bring $80 for it.
   renderPage()
-  expect(screen.getByText('August 10–13 · Mon–Thu')).toBeInTheDocument()
-  expect(screen.getByText('5:30 – 7:30 PM')).toBeInTheDocument()
-  expect(screen.getByText('6 and up')).toBeInTheDocument()
-  expect(screen.getByText('$80 per dancer')).toBeInTheDocument()
+  expect(screen.queryByText('August 10–13 · Mon–Thu')).not.toBeInTheDocument()
+  expect(screen.queryByText('5:30 – 7:30 PM')).not.toBeInTheDocument()
+  expect(screen.queryByText('$80 per dancer')).not.toBeInTheDocument()
+  expect(document.body.textContent).not.toMatch(/August 1[0-3]/)
+  expect(document.body.textContent).not.toMatch(/\$80/)
 })
 
-test('the audition steps only restate facts published elsewhere on the page', () => {
-  // Three steps, not the mockup's four: what happens after the clinic has never been
-  // published, so it is omitted rather than invented. If a fourth appears, it needs a
-  // real source.
+test('the clinic-dated audition steps are gone with it', () => {
+  // All three steps were the clinic: register for it, attend it, bring a parent to its
+  // Wednesday session. Rewriting them generically would mean inventing an audition
+  // process the studio has never published, so the section goes rather than being faked.
   renderPage()
-  const steps = screen.getAllByTestId('audition-step')
-  expect(steps).toHaveLength(3)
-  expect(steps[0]).toHaveTextContent('$80 per dancer')
-  expect(steps[1]).toHaveTextContent('August 10–13')
-  expect(steps[2]).toHaveTextContent(/Wednesday, August 12/)
+  expect(screen.queryAllByTestId('audition-step')).toHaveLength(0)
+  expect(screen.queryByRole('heading', { name: /How auditions work/i })).not.toBeInTheDocument()
+})
+
+test('states the company tuition and exactly what the fee covers', () => {
+  // Added 2026-08-17. Read from COMPANY_PRICING rather than typed, so this page and
+  // /tuition cannot end up quoting different figures — the defect src/lib/tuition.js was
+  // created to prevent.
+  renderPage()
+  const block = screen.getByTestId('company-tuition')
+  expect(block.textContent).toContain(`$${COMPANY_PRICING.monthly}`)
+  expect(block.textContent).toMatch(/3 hours of company practice/i)
+  expect(block.textContent).toMatch(/up to 3 Capital Core dance classes/i)
+  // The allowance is part of the fee whether it is used or not. "Recommended only" was
+  // ambiguous in the brief and the studio confirmed this reading on 2026-08-17 — without
+  // it a parent could read the classes as compulsory.
+  expect(block.textContent).toMatch(/recommended, not required/i)
+  // And the limit has to be stated, or "up to 3" implies the fourth is free too.
+  expect(block.textContent).toMatch(/additional/i)
+})
+
+test('offers families who missed the clinic a way in', () => {
+  renderPage()
+  expect(screen.getByRole('heading', { name: /Missed the clinic/i })).toBeInTheDocument()
+  expect(screen.getByTestId('missed-clinic-cta')).toHaveAttribute('href', CONTACT_PATH)
 })
 
 test('credits the director and keeps the founding-clinic flyer', () => {
@@ -74,7 +98,7 @@ test('closes on the founding-season call to action', () => {
   expect(closing).toBeInTheDocument()
   expect(screen.getByRole('link', { name: 'Become a founding member' })).toHaveAttribute(
     'href',
-    REGISTER_URL
+    CONTACT_PATH
   )
 })
 

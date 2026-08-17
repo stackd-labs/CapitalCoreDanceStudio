@@ -11,7 +11,10 @@ import {
 } from '../lib/tuition'
 import { ACCENTS } from '../lib/pageAccents'
 
-const PORTAL_REGISTER_URL = 'https://studio.capitalcoredance.com/register/classes'
+// The dedicated adult form, not the general one. Pinned as its own constant because
+// sending a 16+ dancer to /register/classes puts them in the youth flow — that form asks
+// for a parent/guardian and tells adults to use this one instead.
+const PORTAL_REGISTER_URL = 'https://studio.capitalcoredance.com/register/adult-classes'
 
 // Day and time are derived from SCHEDULE (the single source of truth), not
 // hard-coded here — a hard-coded copy is exactly the defect this page's day/time

@@ -31,7 +31,14 @@ const CORE_LETTERS = [
   { text: 'E', accent: ACCENTS.teal },
 ]
 
-const PROGRAMS = [
+// The landing grid. Renamed from PROGRAMS on 2026-08-17 when Birthdays, Adult Classes and
+// Contact Us were added: Contact is not a programme, and calling the array PROGRAMS would
+// have made the next reader wonder why it was in there. Six entries fill two clean rows of
+// the three-column grid.
+//
+// Every entry needs real art — see the test that forbids a placeholder well here. This
+// grid is the first thing on the page after the hero.
+const HOME_CARDS = [
   {
     to: '/classes',
     name: 'Recreational',
@@ -63,6 +70,39 @@ const PROGRAMS = [
     // same reason as the Dance Company card above.
     photoSrc: '/card-little-movers.jpg',
     photoAlt: 'Toddlers in pastel leotards and tutus at the barre in a Little Movers class',
+  },
+  {
+    to: '/birthdays',
+    name: 'Birthdays',
+    blurb:
+      'A private studio, an instructor-led dance party, and no cleanup. From $199 for 90 minutes and up to 10 children.',
+    photoCaption: 'Birthday party · photo',
+    photoSrc: '/card-birthdays.jpg',
+    photoAlt: 'Children celebrating at a dance birthday party at Capital Core Dance Studio',
+  },
+  {
+    to: '/adult-classes',
+    name: 'Adult Classes',
+    blurb:
+      'Evening classes for dancers 16 and up — Femme Flair, Pom and Contemporary. Beginner-friendly, and your first class is free.',
+    photoCaption: 'Adult class · photo',
+    photoSrc: '/card-adult-dance.jpg',
+    photoAlt: 'Adult dancers in an evening class at Capital Core Dance Studio',
+  },
+  {
+    to: '/contact',
+    name: 'Contact Us',
+    blurb:
+      'Questions about a class, a studio tour, or booking a free trial — tell us what you need and we will get back to you.',
+    photoCaption: 'Studio crest',
+    // The crest rather than a photograph, and `contain` rather than `cover`, for the same
+    // reason the About hero does it: this block is not a class, and there is no
+    // "contact us" photograph to use. /logo.png is the transparent PNG — card-contact.png
+    // is the same crest on an opaque white square, which would punch a white hole in a row
+    // of navy cards and be cropped through the shield by a 2.3:1 well.
+    photoSrc: '/logo.png',
+    photoFit: 'contain',
+    photoAlt: 'Capital Core Dance Studio crest',
   },
 ]
 
@@ -122,13 +162,14 @@ export default function Home() {
         }
       />
 
-      {/* Programs */}
+      {/* Link blocks — programmes plus Birthdays / Adult Classes / Contact */}
       <section className="bg-ink-deep px-6 lg:px-24 py-16 lg:py-20">
         <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-7">
-          {PROGRAMS.map((p) => (
+          {HOME_CARDS.map((p) => (
             <Link
               key={p.to}
               to={p.to}
+              data-testid="home-card"
               className="flex flex-col border border-white/[0.12] hover:border-white/40 transition-colors group"
             >
               <div className="h-[190px] overflow-hidden">
@@ -136,6 +177,7 @@ export default function Home() {
                   src={p.photoSrc}
                   alt={p.photoAlt}
                   caption={p.photoCaption}
+                  fit={p.photoFit}
                   className="w-full h-full"
                 />
               </div>
@@ -154,7 +196,19 @@ export default function Home() {
       <section className="bg-ink-base px-6 lg:px-24 py-16 lg:py-[86px]">
         <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-[70px] items-center">
           <div className="h-[300px] lg:h-[400px] border border-white/[0.12]">
-            <PhotoSlot caption="Studio interior · wide" className="w-full h-full" />
+            {/* A group portrait shot in the room rather than an empty wide shot: the
+                section's claim is about the room's effect on dancers, and the barre,
+                window and studio banner still read behind them. The well is wider than
+                the photograph (1.65:1 against 1.25:1), so object-cover crops top and
+                bottom — the 35% vertical position keeps the faces clear of the top edge
+                at both the 400px desktop and 300px mobile heights. */}
+            <PhotoSlot
+              src="/home-studio-dancers.jpg"
+              alt="Five Capital Core dancers in leotards standing together at the barre in the Midlothian studio"
+              caption="Studio interior · wide"
+              objectPosition="center 35%"
+              className="w-full h-full"
+            />
           </div>
           <div>
             <Kicker>The studio</Kicker>

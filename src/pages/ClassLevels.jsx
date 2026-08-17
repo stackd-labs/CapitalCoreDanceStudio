@@ -79,6 +79,10 @@ const CLASS_GROUPS = [
     // already full phrases and must not become "Ages All Levels".
     const derivedAges = /^\d/.test(tier.ages) ? `Ages ${tier.ages}` : tier.ages
     return {
+      // Carried through so the render can key tier-specific content off it — the Tiny
+      // Core membership note needs to know which tier it is in. Without this the field is
+      // silently undefined at the call site and the note never renders.
+      program,
       title: tier.label,
       level: tier.level,
       ages: ages || derivedAges,
@@ -150,7 +154,7 @@ export default function ClassLevels() {
         }
       />
 
-      {CLASS_GROUPS.map(({ title, ages, level, intro, infoKeys }, groupIndex) => (
+      {CLASS_GROUPS.map(({ program, title, ages, level, intro, infoKeys }, groupIndex) => (
         <section
           key={title}
           data-testid="class-group"
@@ -181,6 +185,30 @@ export default function ClassLevels() {
                 return <ClassCard key={key} name={key} description={info?.description} />
               })}
             </div>
+
+            {/* Tiny Core only. A parent choosing a 2–5 class is the one person for whom
+                the Little Movers membership is a straight upgrade rather than a second
+                purchase, so the note lives inside this tier instead of on the page as a
+                whole. The $24 is $89 − the $65 that /tuition publishes for a 30-minute
+                class; the same figure appears there and on /little-movers. */}
+            {program === 'tiny-core' && (
+              <p
+                data-testid="tiny-core-membership-note"
+                className="font-body text-[14.5px] leading-[1.6] text-mist-400 mt-8 max-w-3xl"
+              >
+                <span className="font-semibold text-white">Already booking a Tiny Core class?</span>{' '}
+                For $24 more a month you can take the{' '}
+                <Link
+                  to="/little-movers"
+                  className="font-semibold underline underline-offset-2"
+                  style={{ color: ACCENT }}
+                >
+                  Little Movers membership
+                </Link>{' '}
+                instead — it includes one Tiny Core class plus unlimited Little Movers morning
+                classes for ages 2–5.
+              </p>
+            )}
           </div>
         </section>
       ))}

@@ -10,6 +10,7 @@ import {
   ADULT_PRICING,
   CLASS_PRICES,
   COMPANY_PRICING,
+  REGISTRATION,
   classLengthMinutes,
   money,
   monthlyPriceForMinutes,
@@ -96,8 +97,9 @@ const DISCOUNTS = [
 // The mockup's "fees at a glance" list. Label on the left, the studio's figure on the
 // right — every value below appears verbatim elsewhere on this page.
 const FEES = [
-  { label: 'Registration — per dancer, per semester', value: '$65' },
-  { label: 'Registration — full year (both semesters)', value: '$120' },
+  // From REGISTRATION, not typed: this row said $65 while the portal charged $60.
+  { label: 'Registration — per dancer, per semester', value: money(REGISTRATION.perSemester) },
+  { label: 'Registration — full year (both semesters)', value: money(REGISTRATION.fullYear) },
   { label: 'Returning student discount', value: '$5 – $10 per semester' },
   { label: 'Multi-class discount', value: 'Available' },
   { label: 'Multi-student & sibling discounts', value: 'Available' },

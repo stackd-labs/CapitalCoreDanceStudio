@@ -2,6 +2,7 @@ import { render, screen, fireEvent, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import FAQ from './FAQ'
 import { FAQS } from '../lib/faqs'
+import { REGISTRATION } from '../lib/tuition'
 
 const CATEGORIES = FAQS.map(({ category }) => category)
 const QUESTION_COUNT = FAQS.reduce((n, { items }) => n + items.length, 0)
@@ -64,6 +65,14 @@ test('no longer answers questions about the finished summer programmes', () => {
   expect(page).not.toMatch(/Summer Flex Pass/i)
   expect(page).not.toMatch(/Tik Tok Hip Hop/i)
   expect(page).not.toMatch(/June 2[39]/)
+})
+
+test('quotes the same registration fee the portal charges', () => {
+  const answer = FAQS.flatMap(({ items }) => items).find(({ q }) =>
+    /registration fee/i.test(q)
+  ).a
+  expect(answer).toContain(`$${REGISTRATION.perSemester}`)
+  expect(answer).not.toMatch(/\$65/)
 })
 
 test('states no class length the Fall schedule does not actually run', () => {

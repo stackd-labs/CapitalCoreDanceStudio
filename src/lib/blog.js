@@ -447,7 +447,9 @@ export const POSTS = [
     excerpt:
       'How much does dance cost per month? Here’s a transparent breakdown of tuition by class length, registration fees, and the discounts that can lower your total.',
     tldr:
-      'At Capital Core Dance Studio, monthly tuition is based on class length: $65 (30 min), $85 (45 min), $105 (60 min), $125 (75 min), and $150 (90 min). Registration is $65 per dancer per semester or $120 for the full year, and multi-class, multi-student, and sibling discounts are available.',
+      // Registration corrected $65 -> $60 on 2026-08-17 to match the portal form. The
+      // leading $65 is the 30-minute class rate and is unchanged — do not "fix" both.
+      'At Capital Core Dance Studio, monthly tuition is based on class length: $65 (30 min), $85 (45 min), $105 (60 min), $125 (75 min), and $150 (90 min). Registration is $60 per dancer per semester or $120 for the full year, and multi-class, multi-student, and sibling discounts are available.',
     related: [
       { to: '/tuition', label: 'View Full Tuition Details' },
       { to: '/faq', label: 'Enrollment FAQ' },
@@ -467,7 +469,7 @@ export const POSTS = [
       {
         heading: 'What about registration fees and semesters?',
         body: [
-          'There’s a $65 registration fee per dancer per semester, or $120 for the full year covering both semesters. We run two semesters annually: Fall (August–December) and Spring (January–June). Once registered, dancers are locked into their classes and pricing for the semester.',
+          'There’s a $60 registration fee per dancer per semester, or $120 for the full year covering both semesters. We run two semesters annually: Fall (August–December) and Spring (January–May). Once registered, dancers are locked into their classes and pricing for the semester.',
           'Full-semester tuition rates are also available if you’d prefer to pay by semester rather than monthly.',
         ],
       },
@@ -486,7 +488,7 @@ export const POSTS = [
       },
       {
         q: 'What is the registration fee?',
-        a: 'It is $65 per dancer per semester, or $120 for the full year covering both semesters. Sibling discounts and family fee caps apply for families with multiple dancers.',
+        a: 'It is $60 per dancer per semester, or $120 for the full year covering both semesters. Returning dancers get a discount, and sibling discounts and family fee caps apply for families with multiple dancers.',
       },
       {
         q: 'When are the semesters?',

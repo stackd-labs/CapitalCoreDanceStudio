@@ -9,6 +9,8 @@
 // AdultClasses.jsx, DanceCompany.jsx, Tuition.jsx, src/lib/tuition.js) rather than written
 // fresh, so a price or a date has one home and cannot end up with two versions.
 
+import { REGISTRATION } from './tuition'
+
 
 // Exported so the test can derive the category and question counts instead of hardcoding
 // them. They were hardcoded as "seven categories and thirty-two questions", which meant
@@ -67,7 +69,9 @@ export const FAQS = [
       },
       {
         q: 'What is the registration fee?',
-        a: 'There is a $65 registration fee per dancer per semester, or $120 for the full year (both semesters). Sibling discounts and family fee caps are available for families with multiple dancers enrolled.',
+        // Interpolated from REGISTRATION, not typed: this answer said $65 while the portal
+        // charged $60.
+        a: `There is a $${REGISTRATION.perSemester} registration fee per dancer per semester, or $${REGISTRATION.fullYear} for the full year (both semesters). Returning dancers get a discount, and sibling discounts and family fee caps are available for families with multiple dancers enrolled.`,
       },
       {
         q: 'When are your semesters?',

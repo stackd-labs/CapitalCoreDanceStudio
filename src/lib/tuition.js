@@ -39,6 +39,19 @@ export const ADULT_PRICING = {
   dropIn: 25,
 }
 
+// Registration, per dancer. Corrected from $65 to $60 on 2026-08-17: the portal's own
+// class-registration form charges $60 for one semester (with $10 off for returning
+// dancers) while the website had been publishing $65, so a family read one number and was
+// charged another. Single-sourced here so the two cannot drift apart again — the figure
+// was typed in four separate places when this was found.
+//
+// The portal is the system that takes the money, so it is the source of truth. If the
+// studio raises the fee, change it in the portal first and then here.
+export const REGISTRATION = {
+  perSemester: 60,
+  fullYear: 120,
+}
+
 // Dance Company, the studio's own figures (2026-08-17). Outside the by-length table for
 // the same reason as the adult offers: it is a flat monthly programme fee, not a class
 // rate. It buys rehearsal time plus an allowance of studio classes, so no start/end time

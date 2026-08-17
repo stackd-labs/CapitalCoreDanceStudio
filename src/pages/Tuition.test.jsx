@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import Tuition from './Tuition'
-import { ADULT_PRICING, COMPANY_PRICING } from '../lib/tuition'
+import { ADULT_PRICING, COMPANY_PRICING, REGISTRATION } from '../lib/tuition'
 
 function renderTuition() {
   return render(<MemoryRouter initialEntries={['/tuition']}><Tuition /></MemoryRouter>)
@@ -67,13 +67,25 @@ test('the hero carries the studio crest, uncropped, and no placeholder well', ()
 
 test('renders the monthly class prices', () => {
   renderTuition()
-  // Scoped to the price card: $65 is also the per-semester registration fee, so a
+  // Scoped to the price card. $65 used to be the registration fee as well, which is no
   // bare getByText('$65') matches two different things on this page.
   const card = (label) => screen.getByText(label).closest('[data-testid="price-card"]')
   expect(card('30 Min Classes').textContent).toContain('$65')
   expect(card('90 Min Classes').textContent).toContain('$150')
   expect(card('30 Min Classes').textContent).toMatch(/per month/i)
   expect(screen.getAllByTestId('price-card')).toHaveLength(5)
+})
+
+test('publishes the registration fee the portal actually charges', () => {
+  // The site said $65 a semester while the portal's own class-registration form charged
+  // $60, so a family read one figure and paid another. Read from REGISTRATION rather than
+  // typed, which is what let the two drift in the first place.
+  renderTuition()
+  const row = [...screen.getAllByTestId('fee-row')].find((r) =>
+    /per dancer, per semester/i.test(r.textContent)
+  )
+  expect(row.textContent).toContain(`$${REGISTRATION.perSemester}`)
+  expect(row.textContent).not.toContain('$65')
 })
 
 test('links to every programme that is priced outside the by-length table', () => {

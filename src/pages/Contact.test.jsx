@@ -189,3 +189,61 @@ test('lists the studio address, phone and email as real links', () => {
     'mailto:info@capitalcoredance.com'
   )
 })
+
+test('the interest dropdown covers every programme the site offers', () => {
+  renderContact()
+  const select = screen.getByLabelText(/interested in/i)
+  // The value is what reaches the studio's inbox and what ?interest= links target, so
+  // these are asserted rather than the labels, which the studio may reword.
+  const values = [...select.querySelectorAll('option')].map((o) => o.value)
+  expect(values).toEqual([
+    '',
+    'trial',
+    'classes',
+    'class-levels',
+    'little-movers',
+    'adult-classes',
+    'dance-company',
+    'summer-classes',
+    'camps',
+    'adult-series',
+    'tour',
+    'tuition',
+    'registration-help',
+    'birthdays',
+    'newsletter',
+    'employment',
+    'partnership',
+    'general',
+  ])
+})
+
+test('the interest options are grouped', () => {
+  renderContact()
+  const groups = [...screen.getByLabelText(/interested in/i).querySelectorAll('optgroup')]
+  expect(groups.map((g) => g.label)).toEqual([
+    'Classes & programs',
+    'Visiting & enrolling',
+    'Events & everything else',
+  ])
+})
+
+test('a non-trial ?interest= link preselects that option without the trial extras', () => {
+  render(
+    <MemoryRouter initialEntries={['/contact?interest=birthdays']}>
+      <Contact />
+    </MemoryRouter>
+  )
+  expect(screen.getByLabelText(/interested in/i)).toHaveValue('birthdays')
+  expect(screen.queryByText(/set up your free trial/i)).not.toBeInTheDocument()
+  expect(screen.queryByLabelText(/Dancer.s Name/i)).not.toBeInTheDocument()
+})
+
+test('an unrecognised ?interest= value leaves the dropdown unselected', () => {
+  render(
+    <MemoryRouter initialEntries={['/contact?interest=not-a-real-option']}>
+      <Contact />
+    </MemoryRouter>
+  )
+  expect(screen.getByLabelText(/interested in/i)).toHaveValue('')
+})

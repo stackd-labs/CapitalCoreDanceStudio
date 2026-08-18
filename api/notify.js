@@ -11,8 +11,33 @@ function escapeHtml(str) {
     .replace(/'/g, '&#39;')
 }
 
+// Mirrors INTEREST_GROUPS in src/pages/Contact.jsx. The form posts the option's value,
+// which is a slug, and "little-movers" in the studio's inbox reads worse than the label
+// the parent actually picked. Unknown values fall through to the raw string rather than
+// to "Not specified", so an option added to the form without a line here still arrives.
+const INTEREST_LABELS = {
+  trial: 'Free Trial',
+  classes: 'Year-Round Classes',
+  'class-levels': 'Class Levels & Placement',
+  'little-movers': 'Little Movers (ages 0-5)',
+  'adult-classes': 'Adult Classes',
+  'dance-company': 'Dance Company / Competition Team',
+  'summer-classes': 'Summer Classes',
+  camps: 'Summer Camps',
+  'adult-series': 'Adult Summer Series',
+  tour: 'Studio Tour',
+  tuition: 'Tuition, Fees & Discounts',
+  'registration-help': 'Help With Registration or Payment',
+  birthdays: 'Birthdays / Parties',
+  newsletter: 'Studio News & Updates',
+  employment: 'Teaching or Working at the Studio',
+  partnership: 'Affiliate or Partnership',
+  general: 'General Inquiry',
+}
+
 function buildContactEmail({ firstName, lastName, email, phone, interest, dancerName, dancerAge, message }) {
   const isTrial = interest === 'trial'
+  const interestLabel = INTEREST_LABELS[interest] || interest
   const trialBlock = isTrial
     ? `<p><strong>Free Trial · Dancer:</strong> ${escapeHtml(dancerName) || 'Not provided'}${dancerAge ? ` (age ${escapeHtml(dancerAge)})` : ''}</p>`
     : ''
@@ -21,7 +46,7 @@ function buildContactEmail({ firstName, lastName, email, phone, interest, dancer
     <p><strong>Name:</strong> ${escapeHtml(firstName)} ${escapeHtml(lastName)}</p>
     <p><strong>Email:</strong> ${escapeHtml(email)}</p>
     <p><strong>Phone:</strong> ${escapeHtml(phone) || 'Not provided'}</p>
-    <p><strong>Interest:</strong> ${escapeHtml(interest) || 'Not specified'}</p>
+    <p><strong>Interest:</strong> ${escapeHtml(interestLabel) || 'Not specified'}</p>
     ${trialBlock}
     <p><strong>Message:</strong></p>
     <p>${escapeHtml(message)}</p>

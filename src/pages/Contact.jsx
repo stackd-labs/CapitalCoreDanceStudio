@@ -31,6 +31,62 @@ const HELLO = [
 
 const MAP_URL = 'https://maps.google.com/?q=13110+Midlothian+Turnpike+Midlothian+VA+23113'
 
+// Every reason a visitor writes in, mapped to what the site actually offers today. It is
+// grouped because a flat list of fourteen is a wall; the groups are the site's own shape
+// (programs, then enrolling, then everything else), so a parent finds their line by
+// scanning three headings rather than fourteen options.
+//
+// The value, not the label, is what reaches the studio's inbox, so this list is also the
+// vocabulary api/notify.js labels a submission with — add an option here and add its
+// label there. Values double as ?interest= deep-link targets.
+//
+// 'trial' is load-bearing three ways: the banner above the form, the dancer name/age
+// fields below, and the "New Free Trial Request" subject line in api/notify.js. Renaming
+// it silently breaks all three.
+//
+// The three summer entries stay listed year-round at the studio's request (2026-08-18),
+// even though their pages are commented out of App.jsx while summer registration is
+// closed. A dropdown option is a topic, not a link, and families ask about next summer
+// long before the pages come back — so nothing here depends on those routes being live.
+const INTEREST_GROUPS = [
+  {
+    label: 'Classes & programs',
+    options: [
+      { value: 'trial', label: 'Register for a Free Trial' },
+      { value: 'classes', label: 'Year-Round Classes' },
+      { value: 'class-levels', label: 'Class Levels & Placement' },
+      { value: 'little-movers', label: 'Little Movers (ages 0–5)' },
+      { value: 'adult-classes', label: 'Adult Classes' },
+      { value: 'dance-company', label: 'Dance Company / Competition Team' },
+      { value: 'summer-classes', label: 'Summer Classes' },
+      { value: 'camps', label: 'Summer Camps' },
+      { value: 'adult-series', label: 'Adult Summer Series' },
+    ],
+  },
+  {
+    label: 'Visiting & enrolling',
+    options: [
+      { value: 'tour', label: 'Schedule a Studio Tour' },
+      { value: 'tuition', label: 'Tuition, Fees & Discounts' },
+      { value: 'registration-help', label: 'Help With Registration or Payment' },
+    ],
+  },
+  {
+    label: 'Events & everything else',
+    options: [
+      { value: 'birthdays', label: 'Birthdays / Parties' },
+      { value: 'newsletter', label: 'Studio News & Updates' },
+      { value: 'employment', label: 'Teaching or Working at the Studio' },
+      { value: 'partnership', label: 'Affiliate or Partnership' },
+      { value: 'general', label: 'General Inquiry' },
+    ],
+  },
+]
+
+const INTEREST_VALUES = new Set(
+  INTEREST_GROUPS.flatMap((group) => group.options.map((option) => option.value))
+)
+
 const INITIAL_FORM = {
   firstName: '',
   lastName: '',
@@ -49,12 +105,15 @@ export default function Contact() {
   const [errorMsg, setErrorMsg] = useState('')
   const [trialFromLink, setTrialFromLink] = useState(false)
 
-  // Pre-select "trial" interest when arriving from a /contact?interest=trial link.
+  // Pre-select the interest when arriving from a /contact?interest=<value> link. Any value
+  // in INTEREST_GROUPS works, so a page can send a visitor here with their topic already
+  // chosen; an unrecognised value is ignored rather than selecting a blank option. Only
+  // the trial opens the extra banner and the dancer fields.
   useEffect(() => {
-    if (searchParams.get('interest') === 'trial') {
-      setForm((prev) => ({ ...prev, interest: 'trial' }))
-      setTrialFromLink(true)
-    }
+    const interest = searchParams.get('interest')
+    if (!interest || !INTEREST_VALUES.has(interest)) return
+    setForm((prev) => ({ ...prev, interest }))
+    if (interest === 'trial') setTrialFromLink(true)
   }, [searchParams])
 
   function handleChange(e) {
@@ -245,14 +304,19 @@ export default function Contact() {
                     onChange={handleChange}
                     className={`${inputClass} cursor-pointer`}
                   >
+                    {/* bg-ink-panel on every option and group: the select is a translucent
+                        white pane, but the open dropdown is painted by the OS and would
+                        otherwise fall back to near-white text on near-white. */}
                     <option value="" className="bg-ink-panel">Select an option</option>
-                    <option value="trial" className="bg-ink-panel">Register for a Free Trial</option>
-                    <option value="classes" className="bg-ink-panel">Year-Round Classes</option>
-                    <option value="summer-classes" className="bg-ink-panel">Summer Classes</option>
-                    <option value="camps" className="bg-ink-panel">Summer Camps</option>
-                    <option value="adult-series" className="bg-ink-panel">Adult Summer Series</option>
-                    <option value="birthdays" className="bg-ink-panel">Birthdays / Parties</option>
-                    <option value="general" className="bg-ink-panel">General Inquiry</option>
+                    {INTEREST_GROUPS.map((group) => (
+                      <optgroup key={group.label} label={group.label} className="bg-ink-panel">
+                        {group.options.map((option) => (
+                          <option key={option.value} value={option.value} className="bg-ink-panel">
+                            {option.label}
+                          </option>
+                        ))}
+                      </optgroup>
+                    ))}
                   </select>
                 </div>
 

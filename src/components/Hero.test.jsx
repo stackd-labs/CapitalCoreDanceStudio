@@ -73,6 +73,27 @@ test('the mobile art is hidden from screen readers so the hero image is announce
   expect(screen.getAllByRole('img', { name: /Capital Core Dance Studio crest/i })).toHaveLength(1)
 })
 
+test('a striped hero insets its mobile art so the accents still show around it', () => {
+  // Home passes a `cover` collage, which filled the band edge to edge and hid the stripes
+  // entirely — its mobile hero had no colour in it at all, while Contact (same stripe
+  // variant, but a `contain` crest) showed them. The studio preferred Contact's, so the
+  // stripe panel is now always inset: the whole point of that variant is that no single
+  // accent dominates, which needs the stripes to be visible. It also mirrors the desktop
+  // hero, where the photo well floats over the panel with stripes showing around it.
+  renderHero({ variant: 'stripe', photoSrc: '/home-hero-collage.jpg', photoAlt: 'Collage' })
+  const art = screen.getByTestId('hero-mobile-band').querySelector('img').parentElement
+  expect(art.className).toMatch(/inset-5/)
+  expect(art.className).not.toMatch(/inset-0/)
+})
+
+test('a solid-accent hero still runs its photograph edge to edge', () => {
+  // Unchanged deliberately: only the stripe variant was in scope. Dance Company and Little
+  // Movers therefore still show no accent behind their mobile photo.
+  renderHero({ photoSrc: '/dance-company-hero.jpg', photoAlt: 'Company' })
+  const art = screen.getByTestId('hero-mobile-band').querySelector('img').parentElement
+  expect(art.className).toMatch(/inset-0/)
+})
+
 test("Home's striped hero gets a striped mobile band, not a single accent", () => {
   // Home is the only stripe hero: no single accent may dominate it, on any screen.
   renderHero({ variant: 'stripe' })

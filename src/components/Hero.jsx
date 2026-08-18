@@ -182,9 +182,18 @@ export default function Hero({
           // aria-hidden because the desktop well renders the same photograph with the same
           // alt text, and both are in the DOM at once. Without this a screen reader
           // announces the hero image twice on every page. The desktop one keeps the label.
+          // Inset — so the field behind stays visible — for contained artwork, which has
+          // its own silhouette, and for every striped hero. Home is the reason for the
+          // second case: it passes a `cover` collage, which filled the band edge to edge
+          // and hid the stripes, leaving its mobile hero with no colour in it while
+          // Contact's (same variant, a `contain` crest) kept them. The stripe variant
+          // exists precisely so no single accent dominates, which requires the stripes to
+          // be seen; it also matches desktop, where the well floats over the panel with
+          // stripes showing around it. A solid accent with a photograph still runs full
+          // bleed.
           <div
             aria-hidden="true"
-            className={`absolute ${photoFit === 'contain' ? 'inset-5' : 'inset-0'}`}
+            className={`absolute ${photoFit === 'contain' || isStripe ? 'inset-5' : 'inset-0'}`}
           >
             <PhotoSlot
               src={photoSrc}

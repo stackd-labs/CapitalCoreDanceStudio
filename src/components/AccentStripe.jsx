@@ -23,6 +23,23 @@ export default function AccentStripe({ variant = 'bar', className = '' }) {
     )
   }
 
+  // The five accents as a horizontal band filling its parent, added 2026-08-17 for the
+  // stacked mobile hero. It takes its height from the parent rather than setting one, so
+  // Hero owns the band's size — and unlike `bar` it has no `h-[5px]` of its own to fight.
+  if (variant === 'band') {
+    return (
+      <div
+        aria-hidden="true"
+        data-testid="accent-band"
+        className={`flex h-full w-full ${className}`}
+      >
+        {STRIPE.map((c) => (
+          <div key={c} className="flex-1" style={{ background: c }} />
+        ))}
+      </div>
+    )
+  }
+
   if (variant === 'rule') {
     return (
       <span

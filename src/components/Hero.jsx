@@ -51,14 +51,29 @@ export default function Hero({
     .trim()
 
   return (
-    <section className="relative bg-ink-base text-white overflow-hidden min-h-[520px] lg:h-[640px] flex items-center">
+    // Stacked below lg, side-by-side from lg up. `items-center` is scoped to lg because on
+    // the column axis it would centre the copy horizontally and shrink it to its content.
+    <section className="relative bg-ink-base text-white overflow-hidden flex flex-col min-h-[520px] lg:h-[640px] lg:flex-row lg:items-center">
+      {/* The desktop wedge, hidden on mobile as of 2026-08-17. It was unconditionally
+          `left-[58%]`, so on a 390px phone it started at x=218 while the copy ran to x=351:
+          133px of overlap across 41% of the headline, and — because each hero tints one word
+          in the very colour of its own wedge — "MADE CLEAR" was green on green, "COMPANY"
+          red on red, "MOVERS" teal on teal. The wedge only exists to back the photo well,
+          which is itself `hidden lg:block`, so on a phone it was pure cost. The mobile band
+          at the bottom of this component replaces it. */}
       {isStripe ? (
-        <AccentStripe variant="panel" />
+        // Wrapped rather than given `hidden lg:flex` directly: AccentStripe's panel variant
+        // already sets `flex`, and two display utilities on one element resolve by CSS
+        // order, not by the order they are written — a coin flip. The wrapper is static, so
+        // the panel inside still positions against this section.
+        <div className="hidden lg:block">
+          <AccentStripe variant="panel" />
+        </div>
       ) : (
         <div
           aria-hidden="true"
           data-testid="hero-panel"
-          className="absolute inset-y-0 right-0 left-[58%] pointer-events-none"
+          className="hidden lg:block absolute inset-y-0 right-0 left-[58%] pointer-events-none"
           style={{ background: color, clipPath: `polygon(${clipStart}% 0, 100% 0, 100% 100%, 0 100%)` }}
         />
       )}
@@ -143,6 +158,44 @@ export default function Hero({
 
           {actions && <div className="flex flex-wrap gap-4">{actions}</div>}
         </div>
+      </div>
+
+      {/* Mobile hero art — the accent as a full-width band under the copy instead of a
+          wedge behind it. Two things this fixes: the headline gets the whole screen back,
+          and the hero photograph reaches a phone at all, which it never did before (the
+          desktop well is `hidden lg:block`, so every page was imageless on mobile).
+          The diagonal top edge echoes the desktop wedge's slant rather than inventing a
+          second visual language. */}
+      <div
+        data-testid="hero-mobile-band"
+        className="lg:hidden relative w-full h-[190px] mt-auto overflow-hidden"
+        style={{
+          ...(isStripe ? null : { background: color }),
+          clipPath: 'polygon(0 16px, 100% 0, 100% 100%, 0 100%)',
+        }}
+      >
+        {isStripe && <AccentStripe variant="band" />}
+        {/* Only when there is real art. A PhotoSlot with no `src` renders the hatched
+            placeholder, and this band sits above the fold on a phone — the last place a
+            page should look unfinished. */}
+        {photoSrc && (
+          // aria-hidden because the desktop well renders the same photograph with the same
+          // alt text, and both are in the DOM at once. Without this a screen reader
+          // announces the hero image twice on every page. The desktop one keeps the label.
+          <div
+            aria-hidden="true"
+            className={`absolute ${photoFit === 'contain' ? 'inset-5' : 'inset-0'}`}
+          >
+            <PhotoSlot
+              src={photoSrc}
+              alt=""
+              caption={photoCaption}
+              objectPosition={photoObjectPosition}
+              fit={photoFit}
+              className="w-full h-full"
+            />
+          </div>
+        )}
       </div>
     </section>
   )

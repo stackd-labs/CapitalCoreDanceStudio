@@ -41,3 +41,10 @@ test('renders copyright', () => {
   renderFooter()
   expect(screen.getByText(/© 2026 Capital Core Dance Studio/)).toBeInTheDocument()
 })
+
+test('Careers is reachable from the footer, which is the only place it is linked', () => {
+  // The page is deliberately absent from the navbar, so this link and the home page's
+  // hiring strip are the entire way in. Losing it would strand the page.
+  renderFooter()
+  expect(screen.getByRole('link', { name: 'Careers' })).toHaveAttribute('href', '/careers')
+})

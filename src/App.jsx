@@ -32,6 +32,7 @@ import Birthdays from './pages/Birthdays'
 // import BirthdayPayment from './pages/BirthdayPayment'
 // import BirthdayThankYou from './pages/BirthdayThankYou'
 import Contact from './pages/Contact'
+import Careers from './pages/Careers'
 // Recital pages removed from the public site after the June 2026 recital wrapped.
 // Page files are preserved — re-import and re-add the routes below to restore.
 // import Recital from './pages/Recital'
@@ -99,6 +100,7 @@ export default function App() {
         <Route path="/birthday-thankyou" element={<BirthdayThankYou />} />
         */}
         <Route path="/contact" element={<Contact />} />
+        <Route path="/careers" element={<Careers />} />
         {/* Recital routes removed after the June 2026 recital. Restore by
             uncommenting these and the imports above.
         <Route path="/recital" element={<Recital />} />

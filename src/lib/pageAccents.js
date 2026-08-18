@@ -28,6 +28,12 @@ export const ACCENTS = {
   green: '#3ad46f',
   lavender: '#c38bf6',
   mint: '#89e5a9',
+  // Added 2026-08-18 for the Careers page, straight from its mockup (page 1m, labelled
+  // "accent blue"). It is the first accent that is not a brand colour or a tint of one:
+  // Careers speaks to teachers rather than to families, and every family-facing hue was
+  // already spoken for. Note that onAccent() puts NAVY on it, not the white the mockup
+  // draws: white on #3d8bf0 is 3.4:1, under the 4.5:1 a 15px button needs.
+  blue: '#3d8bf0',
 }
 
 // Order matters — this is the left-to-right sequence everywhere the stripe appears.
@@ -69,6 +75,11 @@ const ACCENT_BY_PATH = {
   '/privacy': ACCENTS.pink,
 
   '/about': ACCENTS.gold,
+  // Careers is reached from the footer and the home page's hiring strip, never the
+  // navbar, so this accent is doing less navigational work than the others. It still
+  // needs to be here: without it the page would inherit the red default and look like
+  // part of Home.
+  '/careers': ACCENTS.blue,
   // Contact wears the full five-accent stripe hero like Home, so no single accent owns
   // the page. Red is its action colour — the mockup draws every Contact button red and
   // reserves gold for the rules above the address/phone columns.

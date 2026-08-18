@@ -19,6 +19,7 @@ export default {
           pink: '#ff54a8',
           purple: '#9b3df0',
           green: '#3ad46f',
+          blue: '#3d8bf0', // Careers only, added 2026-08-18
         },
         ink: {
           base: '#0d1b34', // page field

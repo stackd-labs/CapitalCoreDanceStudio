@@ -1,5 +1,5 @@
 import { ACCENTS, STRIPE, DEFAULT_ACCENT, accentForPath } from './pageAccents'
-import { onAccent, ON_LIGHT } from './accentContrast'
+import { onAccent, contrastRatio, ON_LIGHT } from './accentContrast'
 
 test('each section resolves to the accent its mockup specifies', () => {
   expect(accentForPath('/')).toBe(ACCENTS.red)
@@ -11,6 +11,7 @@ test('each section resolves to the accent its mockup specifies', () => {
   expect(accentForPath('/tuition')).toBe(ACCENTS.mint)
   expect(accentForPath('/faq')).toBe(ACCENTS.green)
   expect(accentForPath('/adult-classes')).toBe(ACCENTS.lavender)
+  expect(accentForPath('/careers')).toBe(ACCENTS.blue)
 })
 
 test('schedule and levels share one colour; Adults has its own', () => {
@@ -58,15 +59,15 @@ test('the signature stripe is the five brand accents, in order', () => {
   // the stripe would make it read as a paint box rather than a brand mark — and the
   // palette grew on 2026-08-13, which is exactly when that could slip.
   expect(STRIPE).toEqual([ACCENTS.red, ACCENTS.orange, ACCENTS.gold, ACCENTS.teal, ACCENTS.pink])
-  for (const pageOnly of ['purple', 'green', 'lavender', 'mint']) {
+  for (const pageOnly of ['purple', 'green', 'lavender', 'mint', 'blue']) {
     expect(STRIPE, `${pageOnly} must stay out of the stripe`).not.toContain(ACCENTS[pageOnly])
   }
 })
 
 test('every accent is a valid hex and no two are the same colour', () => {
   const values = Object.values(ACCENTS)
-  expect(values).toHaveLength(9)
-  expect(new Set(values).size).toBe(9)
+  expect(values).toHaveLength(10)
+  expect(new Set(values).size).toBe(10)
   for (const hex of values) {
     expect(hex, `${hex} is not a 6-digit hex`).toMatch(/^#[0-9a-f]{6}$/)
   }
@@ -77,7 +78,7 @@ test('no two pages share an accent unless they are one journey', () => {
   // two unrelated pages are the same place. Schedule and Class Levels are the single
   // deliberate exception — they are one journey and must not change colour between them.
   const pages = ['/', '/dance-company', '/classes', '/class-levels', '/adult-classes',
-                 '/little-movers', '/birthdays', '/about', '/tuition', '/faq']
+                 '/little-movers', '/birthdays', '/about', '/tuition', '/faq', '/careers']
   const byAccent = {}
   for (const path of pages) {
     const accent = accentForPath(path)
@@ -98,4 +99,13 @@ test('the two new tints are light enough to take navy text, like their neighbour
     expect(onAccent(ACCENTS[tint]), `${tint} text colour`).toBe(ON_LIGHT)
   }
   expect(onAccent(ACCENTS.purple), 'purple is the dark original').toBe('#ffffff')
+})
+
+test('Careers blue takes navy text, not the white its mockup draws', () => {
+  // White on #3d8bf0 is 3.4:1, under the 4.5:1 a 15px button needs, so onAccent() must
+  // pick navy. The mockup draws white here; the code diverges on purpose, the same way
+  // it already does for orange and pink. Pinned because a future tweak to the blue could
+  // silently cross the threshold.
+  expect(onAccent(ACCENTS.blue)).toBe(ON_LIGHT)
+  expect(contrastRatio(ACCENTS.blue, ON_LIGHT)).toBeGreaterThanOrEqual(4.5)
 })

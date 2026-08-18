@@ -231,6 +231,38 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Hiring strip. Deliberately slim and in the Careers accent rather than Home's
+          red: it points off this page, and it must not compete with the registration
+          band directly below it. Careers has no navbar entry, so this and the footer
+          link are the only two ways in. */}
+      <Link
+        to="/careers"
+        data-testid="hiring-strip"
+        className="group block bg-ink-deep border-t-[3px] px-6 lg:px-24 py-7 lg:py-8 transition-colors hover:bg-ink-panel focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-inset"
+        style={{ borderColor: ACCENTS.blue }}
+      >
+        <div className="max-w-[1440px] mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div
+              className="font-body font-semibold text-[11px] tracking-[0.3em] uppercase mb-2"
+              style={{ color: ACCENTS.blue }}
+            >
+              We are hiring
+            </div>
+            <p className="font-body text-[16.5px] leading-[1.5] text-white m-0">
+              Preschool and Irish dance instructors for the 2026 – 2027 season, plus studio
+              affiliates and community partners.
+            </p>
+          </div>
+          <span
+            className="font-body font-bold text-[15px] whitespace-nowrap group-hover:underline"
+            style={{ color: ACCENTS.blue }}
+          >
+            See open roles &rarr;
+          </span>
+        </div>
+      </Link>
+
       <CtaBand
         headline="Registration is open"
         action={<InverseAction to="/classes">Browse the schedule</InverseAction>}

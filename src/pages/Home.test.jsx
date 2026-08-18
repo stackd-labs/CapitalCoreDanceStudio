@@ -137,3 +137,12 @@ test('the hero free-trial offer links to Contact', () => {
   expect(link).toHaveAttribute('href', '/contact')
   expect(link).toHaveTextContent('Your first class is always free')
 })
+
+test('points prospective staff at the careers page', () => {
+  // Careers has no navbar entry, so this strip is one of only two doors to it.
+  renderHome()
+  const strip = screen.getByTestId('hiring-strip')
+  expect(strip).toHaveAttribute('href', '/careers')
+  expect(within(strip).getByText('We are hiring')).toBeInTheDocument()
+  expect(within(strip).getByText(/Preschool and Irish dance instructors/)).toBeInTheDocument()
+})

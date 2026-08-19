@@ -4,6 +4,7 @@ import Footer from '../components/Footer'
 import SEO from '../components/SEO'
 import Hero from '../components/Hero'
 import PhotoSlot from '../components/PhotoSlot'
+import InstagramFeed from '../components/InstagramFeed'
 import {
   Kicker,
   SectionHeading,
@@ -249,6 +250,11 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* The studio's Instagram, read live from Behold. Sits here rather than in the
+          footer because it is the freshest thing on the page: the photographs above are
+          months old by design and this row is whatever happened in class last week. */}
+      <InstagramFeed />
 
       {/* Hiring strip. Deliberately slim and in the Careers accent rather than Home's
           red: it points off this page, and it must not compete with the registration

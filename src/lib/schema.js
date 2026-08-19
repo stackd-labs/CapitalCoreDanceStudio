@@ -28,13 +28,16 @@ const SOCIAL = [
   'https://www.facebook.com/p/Capital-Core-Dance-Challenge-61566002721661/',
 ]
 
-// NEEDS THE STUDIO'S CONFIRMATION. Weekday closing moved from 20:00 to 21:00 on
-// 2026-08-19 because the published hours ended before the classes did: Monday's
-// Adult Femme/Flair runs to 8:45 PM and Wednesday's Adult Pom to 8:15 PM, so the
-// studio was telling Google it shut 45 minutes before a class let out. 21:00 is the
-// smallest change that removes the contradiction, not a figure the studio gave.
-// The same hours appear in src/lib/faqs.js and public/llms.txt — all three move
-// together.
+// SETTLED by the studio 2026-08-19: the published closing time is 8:00 PM.
+//
+// This deliberately does not match the last class of the week. Monday's Adult
+// Femme/Flair runs to 8:45 PM and Wednesday's Adult Pom to 8:15 PM, so a dancer can be
+// in the room after the posted hours. That is the studio's call — these are front-desk
+// hours, not the last time the lights go off — and the Classes page is where a family
+// reads the actual class times. It was briefly changed to 21:00 during the 2026-08-19
+// audit and put back.
+//
+// The same hours appear in src/lib/faqs.js and public/llms.txt. All three move together.
 //
 // Saturday is kept: nothing on the fall class schedule runs then, but the Birthdays
 // page sells weekend parties, so the door is open even though no class meets.
@@ -43,7 +46,7 @@ const HOURS = [
     '@type': 'OpeningHoursSpecification',
     dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
     opens: '15:00',
-    closes: '21:00',
+    closes: '20:00',
   },
   {
     '@type': 'OpeningHoursSpecification',

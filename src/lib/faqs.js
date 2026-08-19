@@ -107,12 +107,12 @@ export const FAQS = [
       {
         q: 'What is Little Movers?',
         // This answer used to end "It is a drop-off programme", which the programme's
-        // own class list contradicts: Baby & Me is 0–18 months and describes bonding,
-        // and Parent & Me Dance is built for toddlers and caregivers. The claim came
-        // out on 2026-08-19 rather than being replaced with a policy nobody has
-        // stated — whether the 18-month-and-up classes are drop-off is still an open
-        // question for the studio. The same sentence was on the Little Movers page.
-        a: 'Little Movers is our movement-based enrichment programme for infants, toddlers and preschoolers — dance, music, sensory play, tumbling and active exploration. Baby & Me runs 0–18 months, and every class after it takes 18 months to 5 years. Baby & Me and Parent & Me Dance are taken together with a caregiver.',
+        // own class list contradicted: Baby & Me is 0–18 months and describes bonding,
+        // and Parent & Me Dance is built for toddlers and caregivers. The studio
+        // settled it on 2026-08-19 — NO Little Movers class is drop-off, and a
+        // caregiver may stay in the room or wait in the studio. The Little Movers page
+        // says the same thing above its schedule grid.
+        a: 'Little Movers is our movement-based enrichment programme for infants, toddlers and preschoolers — dance, music, sensory play, tumbling and active exploration. Baby & Me runs 0–18 months, and every class after it takes 18 months to 5 years. No class is drop-off: a parent or caregiver stays with you, either in the class or in the studio.',
       },
       {
         q: 'When do Little Movers classes meet?',
@@ -196,11 +196,10 @@ export const FAQS = [
       },
       {
         q: 'What are your studio hours?',
-        // NEEDS THE STUDIO'S CONFIRMATION. Weekday closing moved 8:00 PM -> 9:00 PM on
-        // 2026-08-19: Monday's Adult Femme/Flair runs to 8:45 PM and Wednesday's Adult
-        // Pom to 8:15 PM, so the published hours had the studio shutting before a class
-        // let out. The same hours are in src/lib/schema.js and public/llms.txt.
-        a: 'Our general studio hours are Monday through Friday 3:00 PM – 9:00 PM and Saturday 9:00 AM – 2:00 PM. Specific class times vary — check the Classes page for the full schedule.',
+        // 8:00 PM is the studio's own figure, settled 2026-08-19. It is front-desk
+        // hours, not the last class: Monday runs to 8:45 PM. The answer points at the
+        // Classes page for that reason. See the note in src/lib/schema.js.
+        a: 'Our general studio hours are Monday through Friday 3:00 PM – 8:00 PM and Saturday 9:00 AM – 2:00 PM. Some evening classes run a little later — check the Classes page for exact class times.',
       },
       {
         q: 'How can I contact you?',

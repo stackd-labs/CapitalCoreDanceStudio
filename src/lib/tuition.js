@@ -50,11 +50,11 @@ export const ADULT_PRICING = {
 export const REGISTRATION = {
   perSemester: 60,
   fullYear: 120,
-  // NEEDS THE STUDIO'S CONFIRMATION. The Tuition page published this as a range of
-  // "$5 to $10 per semester" while two other places recorded a flat $10: the note
+  // CONFIRMED by the studio 2026-08-19. The Tuition page had published this as a range
+  // of "$5 to $10 per semester" while two other places recorded a flat $10: the note
   // above about the portal form, and the registration comment in Classes.jsx
-  // ($60 new dancer, $50 returning). Set to 10 on 2026-08-19 so the site states one
-  // figure, and kept here rather than typed on the page so it cannot drift again.
+  // ($60 new dancer, $50 returning). Ten is right. Kept here rather than typed on the
+  // page so the two cannot drift apart again.
   returningDiscount: 10,
 }
 

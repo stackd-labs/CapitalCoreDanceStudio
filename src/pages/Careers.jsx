@@ -167,88 +167,72 @@ const ROLES = [
     slug: 'irish-dance-instructor',
     title: 'Irish Dance Instructor',
     tag: 'Part time',
-    styles: 'Irish dance · Soft shoe and hard shoe',
-    schedule: 'Weekday evenings and Saturdays, built with you',
+    styles: 'Irish dance',
+    schedule: 'Days and times set with the studio',
     pay: 'From $30 / hour',
+    // Rewritten 2026-08-19 at the studio's request: "keep it very simple, we need an
+    // instructor for classes and recitals, keep the pay, remove any fluff that makes
+    // promises."
+    //
+    // What came out, and why it should stay out unless the studio puts it back: the
+    // pitch about the instructor shaping the levels, curriculum and class times; an
+    // invented class list with an age-6 floor; feiseanna and competition preparation,
+    // and the question about taking the programme competitive; TCRG/ADCRG
+    // certification; extra pay for choreography and performance direction; and the
+    // claim that Irish dance had been on the studio's list since it opened. Every one
+    // of those was drafted from a one-line brief and none had been agreed.
+    //
+    // What is left is the job: teach the classes, prepare dancers for the recital, and
+    // the parts of the Preschool Instructor posting that apply to any instructor here.
     intro: [
-      'Capital Core Dance Studio is hiring an experienced Irish Dance Instructor to lead Irish dance at our Midlothian studio.',
-      'This is a build-it-with-us role. Irish dance is new to our schedule, so the instructor who takes it shapes the levels, the curriculum and the class times from the first dancer on, with the studio handling registration, payments and promotion.',
-      'If you have wanted to run your own Irish dance program without also running a business, this is that job.',
+      'Capital Core Dance Studio is hiring an Irish dance instructor to teach Irish dance classes and prepare dancers for our recitals.',
+      'Irish dance is new to our schedule, so class days and times will be set together once we know your availability.',
     ],
     sections: [
       {
         heading: "What you'll do",
         items: [
-          'Teach soft shoe and hard shoe technique to dancers from first-timers through advanced.',
-          'Build an age-appropriate and level-appropriate curriculum, and adjust it as the program grows.',
-          'Choreograph for studio showcases, community performances and holiday events.',
-          'Prepare interested dancers for feiseanna and performance opportunities, at whatever level the group is ready for.',
-          'Advise families on shoes, attire and what to expect as a dancer progresses.',
-          'Keep attendance and follow studio procedures for a safe, organized class.',
-          'Help grow the program through trial classes, open houses and demonstrations.',
-        ],
-      },
-      {
-        heading: 'Classes may include',
-        items: [
-          'Beginner Irish Dance, ages 6 and up',
-          'Youth Irish Dance, continuing levels',
-          'Teen and Adult Irish Dance',
-          'Performance and competition preparation',
-          'Workshops and community performances',
+          'Teach Irish dance classes.',
+          'Prepare and rehearse dancers for studio recitals and performances.',
+          'Create a safe, positive, organized and engaging environment.',
+          'Welcome and communicate professionally with parents and caregivers.',
+          'Assist with class setup, cleanup, attendance and transitions.',
+          'Follow studio procedures.',
         ],
       },
       {
         heading: "We're looking for someone who",
         items: [
-          'Has genuine training in Irish dance, in both soft shoe and hard shoe.',
-          'Can teach a complete beginner patiently and still push an advanced dancer.',
-          'Is comfortable starting a program from nothing and growing it class by class.',
-          'Communicates clearly with parents about progress, costs and expectations.',
-          'Is reliable, organized and happy working as part of a faculty rather than alone.',
+          'Has training and experience in Irish dance.',
+          'Enjoys teaching children and is comfortable starting dancers from the beginning.',
+          'Is energetic, patient, warm and dependable.',
+          'Communicates well with parents and coworkers.',
           'Can maintain appropriate boundaries and safety standards when working with children.',
         ],
       },
       {
-        heading: 'Preferred experience',
-        body: ['Experience in one or more of the following is strongly preferred:'],
-        items: [
-          'Competitive Irish dance, including feis experience',
-          'Teaching Irish dance at any level',
-          'TCRG or ADCRG certification',
-          'Choreography and performance direction',
-          'Youth programming or classroom teaching',
-        ],
-        note: 'Certification is a plus, not a requirement. A strong dancer who teaches well is the priority.',
-      },
-      {
         heading: 'Schedule',
         body: [
-          'Part-time. Irish dance classes are not on the schedule yet, so class times will be built around your availability, most likely weekday evenings and Saturdays.',
-          'Please include the evenings and weekend hours you could teach when applying.',
+          'Part-time. Class days and times are set with the studio. Please include your availability when applying.',
         ],
       },
       {
         heading: 'Compensation',
-        body: [
-          'Starting at $30.00 per hour, with room above that for experience and certification.',
-          'Additional pay for choreography, performance direction and competition preparation as the program grows.',
-        ],
+        body: ['Starting at $30.00 per hour, based on experience.'],
       },
       {
         heading: 'To apply',
-        body: ['Send your resume or dance history along with a brief introduction telling us:'],
+        body: ['Send your resume or dance background along with a brief introduction telling us:'],
         items: [
-          'Your Irish dance training and performance or competition background.',
-          'Any teaching experience, and the levels you are comfortable teaching.',
-          'Your weekday evening and weekend availability.',
-          'Whether you would want to take the program in a competitive direction eventually.',
+          'Your Irish dance training and experience.',
+          'Any teaching experience, and the ages you are comfortable teaching.',
+          'Your availability.',
         ],
       },
     ],
-    facts: ['Job type: Part-time', 'Schedule: Evenings and weekends', 'Location: In person, Midlothian, VA'],
+    facts: ['Job type: Part-time', 'Schedule: Set with the studio', 'Location: In person, Midlothian, VA'],
     closing:
-      'Irish dance has been on our list since we opened. We are looking for the right teacher to finally put it on the schedule.',
+      'We are looking for an instructor who will help our dancers build strong technique and enjoy every class.',
   },
 ]
 

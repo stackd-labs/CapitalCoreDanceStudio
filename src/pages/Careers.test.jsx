@@ -70,7 +70,32 @@ test('the Irish dance posting states its starting rate and that the schedule is 
   renderCareers()
   fireEvent.click(toggleFor('Irish Dance Instructor'))
   expect(screen.getByText(/Starting at \$30\.00 per hour/)).toBeInTheDocument()
-  expect(screen.getByText(/class times will be built around your availability/)).toBeInTheDocument()
+  expect(screen.getByText(/Class days and times are set with the studio/)).toBeInTheDocument()
+})
+
+test('the Irish dance posting promises nothing the studio has not agreed to', () => {
+  // The first draft was written from a one-line brief and invented a good deal: an
+  // age-6 class list, feiseanna and competition preparation, TCRG/ADCRG certification,
+  // extra pay for choreography, the instructor owning the curriculum, and a claim that
+  // Irish dance had been on the studio's list since it opened. The studio asked for it
+  // stripped back on 2026-08-19 to teaching classes and preparing dancers for the
+  // recital. This fails if any of it creeps back in.
+  renderCareers()
+  fireEvent.click(toggleFor('Irish Dance Instructor'))
+
+  for (const claim of [
+    /feis/i,
+    /TCRG|ADCRG/,
+    /competiti/i,
+    /ages 6 and up/i,
+    /since we opened/i,
+    /room above that/i,
+  ]) {
+    expect(screen.queryByText(claim)).not.toBeInTheDocument()
+  }
+
+  // What it must still say.
+  expect(screen.getByText(/prepare dancers for our recitals/i)).toBeInTheDocument()
 })
 
 test('a posting collapses again on a second click', () => {

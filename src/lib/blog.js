@@ -25,9 +25,14 @@ export const POSTS = [
       'From Rainbow Remix to Princess and Heroes, here is every one of our eight themed summer camp weeks for 2026 — with dates, who they’re for, and how to register.',
     tldr:
       'Capital Core Dance Studio runs 8 themed summer dance camp weeks for kids ages 4–13, Monday–Friday from 9:30 AM to 3:30 PM, June 15 through August 7, 2026. Each week has its own creative theme, and you can register for one week or several.',
+    // Seasonal post, kept live because deleting it 404s an indexed URL. The notice
+    // says so at the top of the article and the CTAs point at pages that exist —
+    // both /camps and /summer-classes were retired 2026-07-23.
+    notice:
+      'Summer 2026 camps have wrapped. This guide is kept for reference. Next summer’s camp weeks are announced in the spring.',
     related: [
-      { to: '/camps', label: 'See All 8 Camp Weeks & Register' },
-      { to: '/summer-classes', label: 'Prefer evening classes? Summer Classes' },
+      { to: '/contact?interest=camps', label: 'Ask about next summer’s camps' },
+      { to: '/classes', label: 'See this season’s class schedule' },
     ],
     sections: [
       {
@@ -93,9 +98,11 @@ export const POSTS = [
       'Our 6-week summer session keeps dancers moving all summer. Here’s the class lineup, three flexible pricing options, and how the deposit works.',
     tldr:
       'Capital Core’s summer dance classes run for 6 weeks, June 23 to July 30, 2026, on Tuesday and Wednesday evenings. There are classes for ages 2 through teen, and you can pay per class, buy a Summer Flex Pass ($329 unlimited), or drop in ($25/class).',
+    notice:
+      'The 2026 summer session has ended. Year-round classes are running now, and the current schedule is on the Classes page.',
     related: [
-      { to: '/summer-classes', label: 'View Classes & Sign Up' },
-      { to: '/camps', label: 'Looking for daytime camps instead?' },
+      { to: '/classes', label: 'See this season’s class schedule' },
+      { to: '/contact?interest=camps', label: 'Ask about next summer’s camps' },
     ],
     sections: [
       {
@@ -157,8 +164,10 @@ export const POSTS = [
       'A 90-minute movement experience made for women — no experience needed. Here’s what every class includes, when it meets, and how to register.',
     tldr:
       'The Adult Summer Series is a beginner-friendly, 90-minute movement experience for women at Capital Core Dance Studio in Midlothian, VA. Every Monday class (6:00–7:30 PM, six weeks from June 29, 2026) blends 45 minutes of Throwback Energy, 30 minutes of Femme Flow, and 15 minutes of Calm Confidence. It’s $25 per drop-in or $120 for the Summer Series Pass (all six classes). Registration is open.',
+    notice:
+      'The 2026 Adult Summer Series has finished. Adult evening classes run year-round, first class free.',
     related: [
-      { to: '/adult-summer-series', label: 'Register for the Series' },
+      { to: '/adult-classes', label: 'See our adult evening classes' },
       { to: '/contact', label: 'Questions? Contact the Studio' },
     ],
     sections: [
@@ -298,7 +307,7 @@ export const POSTS = [
         heading: 'Is the first class really free?',
         body: [
           'Yes — your first class is always free, with no commitment required. It’s the easiest, lowest-pressure way to see whether a style and the studio are the right fit before you enroll.',
-          'We welcome dancers from age 2 through adults, and most of our classes are open to beginners. Our instructors never assume prior experience, so a free trial is a comfortable place to start.',
+          'We welcome dancers from babies through adults, and most of our classes are open to beginners. Our instructors never assume prior experience, so a free trial is a comfortable place to start.',
         ],
       },
       {
@@ -316,7 +325,7 @@ export const POSTS = [
       },
       {
         q: 'What ages can take a free trial?',
-        a: 'Dancers from age 2 through adults are welcome. Most classes are open to beginners with no prior experience required.',
+        a: 'Dancers from babies through adults are welcome. Most classes are open to beginners with no prior experience required.',
       },
       {
         q: 'Is there any commitment with the trial?',
@@ -339,8 +348,10 @@ export const POSTS = [
       'The Mini Series packs two dance styles into a single session — a low-commitment way to explore something new. Here’s how it works.',
     tldr:
       'The Mini Series is a short-term Capital Core Dance Studio program where each class combines two dance styles into one fun session. It’s a low-commitment way for dancers to try something new and is typically offered in spring and fall.',
+    notice:
+      'The Mini Series is not running this season. Year-round classes are open, and each one is described on the Class Levels page.',
     related: [
-      { to: '/mini-series', label: 'Explore the Mini Series' },
+      { to: '/class-levels', label: 'See how our classes are grouped' },
       { to: '/classes', label: 'See All Year-Round Classes' },
     ],
     sections: [
@@ -386,8 +397,15 @@ export const POSTS = [
       'Ballet, jazz, hip hop, tap, acro, contemporary, and more — a parent’s guide to the dance styles taught at Capital Core Dance Studio in Midlothian, VA, and how to choose the right class for your child.',
     excerpt:
       'Ballet or hip hop? Tap or acro? Here’s a plain-English guide to the styles we teach and how to pick the right starting point for your dancer.',
+    // Irish dance came out of the style lists in this post on 2026-08-19. There is no
+    // Irish class on the fall schedule; the FAQ dropped it for that reason and the
+    // careers page is hiring an instructor to start it, so claiming it here sent a
+    // parent to the phone to ask about a class that does not exist. Put it back the
+    // week it appears in src/lib/schedule.js.
+    // The age floor moved with it: Little Movers takes dancers from birth, so "from
+    // age 2" understates the studio by two years.
     tldr:
-      'Capital Core Dance Studio teaches ballet, jazz, hip hop, contemporary, tap, acro, tumbling, lyrical, musical theatre, Irish dance, and pom/cheer, plus preschool creative movement (ages 2–5) and adult classes. New dancers can start with almost any style — most classes are open to beginners.',
+      'Capital Core Dance Studio teaches ballet, jazz, hip hop, contemporary, tap, acro, tumbling, lyrical, modern, breakdancing, musical theatre, and pom/cheer, plus Little Movers for babies and preschoolers, preschool creative movement (ages 2–5) and adult classes. New dancers can start with almost any style — most classes are open to beginners.',
     related: [
       { to: '/classes', label: 'Browse Classes & Schedule' },
       { to: '/faq', label: 'More Questions? Read the FAQ' },
@@ -396,7 +414,7 @@ export const POSTS = [
       {
         heading: 'What dance styles does Capital Core teach?',
         body: [
-          'We offer a wide range of styles for dancers of every age and level: ballet, jazz, hip hop, contemporary, tap, acro, tumbling, lyrical, musical theatre, Irish dance, and pom/cheer. Our youngest dancers (ages 2–5) start with preschool creative movement, and we also offer adult fitness classes.',
+          'We offer a wide range of styles for dancers of every age and level: ballet, jazz, hip hop, contemporary, tap, acro, tumbling, lyrical, modern, breakdancing, musical theatre, and pom/cheer. Our littlest movers start at birth in the Little Movers programme, dancers aged 2 to 5 start with preschool creative movement, and we also offer adult evening classes.',
         ],
       },
       {
@@ -409,7 +427,7 @@ export const POSTS = [
       {
         heading: 'How long are classes and what ages do you teach?',
         body: [
-          'We teach dancers from age 2 through adults. Class lengths range from 30 minutes for preschool and tiny classes up to 90 minutes for older, more advanced levels, depending on the style and age group.',
+          'We teach dancers from babies through adults: Little Movers starts at birth, studio classes start at age 2, and adult classes are for 16 and up. Class lengths range from 30 minutes for preschool and tiny classes up to 90 minutes for older, more advanced levels, depending on the style and age group.',
           'The full weekly schedule is on the Classes page. If you’re still deciding, remember your first class is always free — a no-pressure way to find the right fit.',
         ],
       },
@@ -417,15 +435,15 @@ export const POSTS = [
     faqs: [
       {
         q: 'What dance styles do you offer?',
-        a: 'Ballet, jazz, hip hop, contemporary, tap, acro, tumbling, lyrical, musical theatre, Irish dance, and pom/cheer, plus preschool creative movement for ages 2–5 and adult classes.',
+        a: 'Ballet, jazz, hip hop, contemporary, tap, acro, tumbling, lyrical, modern, breakdancing, musical theatre, and pom/cheer, plus Little Movers for babies and preschoolers, preschool creative movement for ages 2–5, and adult classes.',
       },
       {
         q: 'What is the best first dance style for a young child?',
-        a: 'For ages 2–5, preschool creative movement is ideal. For older beginners, ballet builds foundational technique, while hip hop and jazz are great high-energy starting points. Most classes are open to beginners.',
+        a: 'Under 2, Little Movers is where to start. For ages 2–5, preschool creative movement is ideal. For older beginners, ballet builds foundational technique, while hip hop and jazz are great high-energy starting points. Most classes are open to beginners.',
       },
       {
         q: 'What ages do you teach?',
-        a: 'We welcome dancers from age 2 through adults, with progressive levels from beginner to advanced.',
+        a: 'We welcome dancers from babies through adults, with progressive levels from beginner to advanced.',
       },
       {
         q: 'How long is each class?',
@@ -492,7 +510,9 @@ export const POSTS = [
       },
       {
         q: 'When are the semesters?',
-        a: 'There are two semesters per year: Fall (August–December) and Spring (January–June).',
+        // Was 'January–June', which contradicted this post's own body copy 23 lines
+        // above and the Tuition page's May 21 end date. The body is right.
+        a: 'There are two semesters per year: Fall (August–December) and Spring (January–May).',
       },
       {
         q: 'What discounts are available?',

@@ -33,7 +33,8 @@ export default function Blog() {
     <div className="min-h-screen flex flex-col bg-ink-base">
       <SEO
         title="Dance Studio Blog — Classes, Camps & Events | Capital Core Dance Studio"
-        description="News, guides, and tips on dance classes, summer camps, the annual recital, birthday parties, and studio events at Capital Core Dance Studio in Midlothian, VA. Serving Chesterfield County and Richmond."
+        /* Summer camps and the annual recital came out 2026-08-19 — both retired. */
+        description="News, guides, and tips on dance classes, Little Movers, adult classes, the Dance Company, birthday parties, and studio events at Capital Core Dance Studio in Midlothian, VA. Serving Chesterfield County and Richmond."
         canonical="/blog"
         jsonLd={[blogListSchema(POSTS), simpleBreadcrumb('Blog', '/blog')]}
       />

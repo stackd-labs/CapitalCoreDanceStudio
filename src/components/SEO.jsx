@@ -1,6 +1,11 @@
 import { Helmet } from 'react-helmet-async'
 
-const SITE_URL = 'https://capitalcoredance.com'
+// The www host, not the bare domain. Production 308s capitalcoredance.com to
+// www.capitalcoredance.com, so a canonical on the bare domain pointed every page at
+// a URL that immediately redirects to the one the reader is already on. Corrected
+// 2026-08-19. If the domain config is ever flipped to serve the bare domain, change
+// this and the matching constant in src/lib/schema.js together.
+const SITE_URL = 'https://www.capitalcoredance.com'
 const DEFAULT_OG_IMAGE = '/og-image.jpg'
 
 export default function SEO({

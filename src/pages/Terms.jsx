@@ -24,7 +24,7 @@ const SECTIONS = [
   {
     title: 'Tuition, Fees & Payment',
     body: [
-      'Tuition is billed monthly or per semester depending on the program. A semester registration fee applies. All payments are processed securely through our online student portal (for tuition) or PayPal (for tickets, merchandise, and birthday deposits).',
+      'Tuition is billed monthly or per semester depending on the program. A semester registration fee applies. All payments are processed securely through our online student portal.',
       'Tuition is due on the first of each month. Late or missed payments may result in suspension of class access until the balance is brought current.',
     ],
   },

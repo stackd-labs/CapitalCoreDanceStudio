@@ -22,6 +22,11 @@ import { onAccent } from '../lib/accentContrast'
 // the section accent, so the field was removed from blog.js rather than left dangling.
 const ACCENT = ACCENTS.orange
 
+// Seasonal notices break the blog accent on purpose, the same way the coming-soon
+// strip does on Little Movers: gold reads as a status note rather than as more of
+// the article. Only posts about retired programmes carry one.
+const NOTICE_ACCENT = ACCENTS.gold
+
 const formatDate = (iso) =>
   new Date(iso + 'T00:00:00').toLocaleDateString('en-US', {
     year: 'numeric',
@@ -109,6 +114,27 @@ export default function BlogPost() {
 
       <article className="bg-ink-deep flex-1 px-6 lg:px-24 py-14 lg:py-16">
         <div className="max-w-[760px]">
+          {/* Seasonal notice. These posts are kept live because deleting them 404s an
+              indexed URL, so the article has to say for itself that its programme has
+              finished — otherwise a parent reads a dated guide as current. */}
+          {post.notice && (
+            <div
+              data-testid="post-notice"
+              className="border-l-4 px-6 py-4 mb-8"
+              style={{ borderColor: NOTICE_ACCENT, background: 'rgba(245, 197, 24, 0.08)' }}
+            >
+              <p
+                className="font-body text-[10px] font-bold uppercase tracking-[0.25em] mb-1.5"
+                style={{ color: NOTICE_ACCENT }}
+              >
+                Season ended
+              </p>
+              <p className="font-body text-[15.5px] leading-[1.65] text-mist-200 m-0">
+                {post.notice}
+              </p>
+            </div>
+          )}
+
           {/* Quick answer (AEO) — the plain-language summary answer engines lift. */}
           <div
             className="border-l-4 bg-white/[0.04] px-6 py-5 mb-10"

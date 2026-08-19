@@ -174,7 +174,11 @@ export default function Contact() {
 
       <Hero
         variant="stripe"
-        eyebrow="We answer within a day"
+        /* Was "We answer within a day" while four other lines on this page, the
+           form's own confirmation among them, promise one to two business days. The
+           longer promise is the one the studio can keep, so the hero moved to match
+           it rather than the other way round. */
+        eyebrow="We answer within 1–2 business days"
         title={['Come say', HELLO]}
         tagline="Tours · trials · registration help"
         body="Questions about enrollment, schedules, or parties? Send a message and we'll get back to you within 1–2 business days — or just call the studio."

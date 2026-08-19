@@ -14,6 +14,7 @@ import {
   StatRow,
 } from '../components/blocks'
 import { localBusinessSchema } from '../lib/schema'
+import { SCHEDULE } from '../lib/schedule'
 import { ACCENTS } from '../lib/pageAccents'
 
 // Rebuilt 2026-08-11 to the studio's "Capital Core Site" mockup (page 1a, accent red).
@@ -106,12 +107,18 @@ const HOME_CARDS = [
   },
 ]
 
-// PLACEHOLDER — the mockup ships three invented figures. Confirm with the studio before
-// these go live; a wrong dancer-to-teacher ratio is a claim, not decoration.
+// Two of the mockup's three invented figures came out on 2026-08-19. "6:1 dancer
+// ratio" and "2 studios" appeared nowhere else on the site and nobody had confirmed
+// them, and a ratio is a promise a parent can hold the studio to. The class count is
+// counted from the schedule rather than typed, so it cannot go stale when a class is
+// added or dropped; the style count matches the list in the FAQ answer, which is
+// itself taken from the schedule. Give us real figures and they can go back in.
+const CLASS_COUNT = SCHEDULE.reduce((total, day) => total + day.classes.length, 0)
+
 const STATS = [
+  { value: String(CLASS_COUNT), label: 'Classes a week' },
   { value: '12', label: 'Class styles' },
-  { value: '6:1', label: 'Dancer ratio' },
-  { value: '2', label: 'Studios' },
+  { value: 'Free', label: 'First class' },
 ]
 
 export default function Home() {
@@ -119,7 +126,12 @@ export default function Home() {
     <div className="min-h-screen flex flex-col bg-ink-base">
       <SEO
         title="Capital Core Dance Studio | Dance Classes in Midlothian, VA"
-        description="Capital Core Dance Studio offers ballet, hip hop, jazz, contemporary, and tap classes for kids and adults in Midlothian, VA. Year-round programs, Fall 2026 classes, birthday parties, and an annual recital. Serving Chesterfield County and Richmond."
+        /* The annual recital came out of this on 2026-08-19. It was removed from the
+           site after the June 2026 show and taken out of the FAQ on purpose; this
+           string and the one on Blog.jsx were the two places still promising it.
+           Little Movers and the Dance Company take its place — they are what the
+           studio is actually selling. */
+        description="Capital Core Dance Studio offers ballet, hip hop, jazz, contemporary, and tap classes for babies through adults in Midlothian, VA. Year-round programs, Fall 2026 classes, Little Movers, adult evening classes, the Dance Company, and birthday parties. Serving Chesterfield County and Richmond."
         canonical="/"
         jsonLd={localBusinessSchema}
       />
@@ -139,8 +151,12 @@ export default function Home() {
            registration portal. */
         body={
           <>
-            Classes for every age from two through adult, taught by a faculty who know every
-            dancer by name.{' '}
+            {/* "from two through adult" stopped being true when Little Movers opened
+                with a class for 0 to 18 months. The FAQ was updated at the time and
+                this was not, which left the whole under-two programme invisible in
+                the studio's headline claim. */}
+            Classes for every age from babies through adults, taught by a faculty who know
+            every dancer by name.{' '}
             <Link
               to="/contact"
               data-testid="free-trial-link"
@@ -220,9 +236,12 @@ export default function Home() {
               <br />
               raises the floor
             </SectionHeading>
-            {/* PLACEHOLDER — mockup filler. */}
+            {/* PLACEHOLDER — mockup filler, still needs the studio's own words. The
+                opening claim used to be "Two studios on Midlothian Turnpike", which is
+                the same unconfirmed figure that was in the stat row above; it came out
+                on 2026-08-19. Everything left here is true of the studio. */}
             <p className="font-body text-[16.5px] leading-[1.65] text-mist-300 max-w-[460px] m-0 mb-7">
-              Two studios on Midlothian Turnpike, small classes, and a faculty who teach every
+              A room on Midlothian Turnpike, small classes, and a faculty who teach every
               level from a first plié to competition choreography. Come by for a tour or take a
               free trial class.
             </p>

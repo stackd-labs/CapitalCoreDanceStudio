@@ -384,8 +384,9 @@ export default function LittleMovers() {
             Monday, Wednesday &amp; Friday mornings
           </SectionHeading>
           <p className="font-body text-mist-400 text-sm mb-10 max-w-2xl">
-            Every class runs 45 minutes, with 15 minutes between classes. Little Movers is a
-            drop-off program. This is our planned weekly schedule — start dates are coming soon.
+            Every class runs 45 minutes, with 15 minutes between classes. Baby &amp; Me and
+            Parent &amp; Me Dance are taken together with a caregiver. This is our planned
+            weekly schedule, and start dates are coming soon.
           </p>
 
           {/* Table at md and up */}

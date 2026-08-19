@@ -1,6 +1,7 @@
 import { render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import Home from './Home'
+import { SCHEDULE } from '../lib/schedule'
 
 function renderHome() {
   return render(
@@ -89,8 +90,28 @@ test('renders the studio section with its stats', () => {
   expect(screen.getByRole('heading', { name: /A room that raises the floor/i })).toBeInTheDocument()
   const stats = screen.getByTestId('stat-row')
   expect(within(stats).getByText('12')).toBeInTheDocument()
-  expect(within(stats).getByText('6:1')).toBeInTheDocument()
-  expect(within(stats).getByText('Dancer ratio')).toBeInTheDocument()
+  expect(within(stats).getByText('Class styles')).toBeInTheDocument()
+  expect(within(stats).getByText('Free')).toBeInTheDocument()
+})
+
+test('the class count in the stat row is counted from the schedule, not typed', () => {
+  // The stat row shipped with three of the mockup's invented figures. Two of them —
+  // a 6:1 dancer ratio and two studios — were claims a parent could hold the studio
+  // to and nobody had confirmed either, so they came out on 2026-08-19. The one that
+  // replaced the ratio is derived, which is the point: add or drop a class and the
+  // home page follows without anyone remembering to edit it.
+  renderHome()
+  const expected = SCHEDULE.reduce((total, day) => total + day.classes.length, 0)
+  const stats = screen.getByTestId('stat-row')
+  expect(within(stats).getByText(String(expected))).toBeInTheDocument()
+  expect(within(stats).getByText('Classes a week')).toBeInTheDocument()
+})
+
+test('no unconfirmed studio-count or dancer-ratio claim survives on the page', () => {
+  renderHome()
+  expect(screen.queryByText('6:1')).not.toBeInTheDocument()
+  expect(screen.queryByText(/Dancer ratio/i)).not.toBeInTheDocument()
+  expect(screen.queryByText(/Two studios/i)).not.toBeInTheDocument()
 })
 
 test('renders the closing call to action', () => {

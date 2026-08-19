@@ -1,4 +1,20 @@
 {
+  "redirects": [
+    { "source": "/camps", "destination": "/classes", "permanent": true },
+    { "source": "/camp-registration", "destination": "/classes", "permanent": true },
+    { "source": "/camp-payment", "destination": "/classes", "permanent": true },
+    { "source": "/camp-thankyou", "destination": "/classes", "permanent": true },
+    { "source": "/pay/camp/:path*", "destination": "/classes", "permanent": true },
+    { "source": "/mini-series", "destination": "/classes", "permanent": true },
+    { "source": "/summer-classes", "destination": "/classes", "permanent": true },
+    { "source": "/summer-classes/:path*", "destination": "/classes", "permanent": true },
+    { "source": "/adult-summer-series", "destination": "/adult-classes", "permanent": true },
+    { "source": "/adult-summer-series/:path*", "destination": "/adult-classes", "permanent": true },
+    { "source": "/recital", "destination": "/", "permanent": true },
+    { "source": "/recital/:path*", "destination": "/", "permanent": true },
+    { "source": "/recitalshop", "destination": "/", "permanent": true },
+    { "source": "/recitalshop/:path*", "destination": "/", "permanent": true }
+  ],
   "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }],
   "headers": [
     {

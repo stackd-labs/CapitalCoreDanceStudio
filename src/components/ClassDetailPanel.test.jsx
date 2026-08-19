@@ -112,6 +112,7 @@ test('shows the program tier as a badge', () => {
 test('omits the badge for a row with no program tier', () => {
   // Guards the optional render: a schedule row added without `program` should still
   // open a usable panel rather than showing an empty badge chip.
+  // eslint-disable-next-line no-unused-vars -- destructured only to omit it from the rest
   const { program, ...rowWithoutProgram } = ROW
   render(<ClassDetailPanel classInfo={rowWithoutProgram} onClose={() => {}} />)
   expect(screen.queryByTestId('program-badge')).not.toBeInTheDocument()

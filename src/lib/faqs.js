@@ -23,9 +23,11 @@ export const FAQS = [
         q: 'What dance styles do you offer?',
         // Rewritten from the Fall schedule, which is what a visitor can actually book. The
         // old answer also listed Irish dance; there is no Irish class on the Fall schedule,
-        // so it was dropped here. NOTE: Irish dance is still claimed in src/lib/blog.js and
-        // src/lib/schema.js — the studio should confirm whether it is offered at all before
-        // those are changed, since removing a real offering is as wrong as inventing one.
+        // so it was dropped here. src/lib/blog.js, src/lib/schema.js and public/llms.txt
+        // still claimed it until 2026-08-19 and now match this answer, so the site says
+        // one thing. The careers page is hiring an Irish instructor and says plainly that
+        // the class is not on the schedule yet; when it lands, add it to
+        // src/lib/schedule.js first and let the rest follow from there.
         a: 'On the Fall schedule: ballet, tap, jazz, hip hop, contemporary, lyrical, modern, acro, tumbling, breakdancing, musical theatre and pom/cheer — mostly taught as two-style combination classes. On top of that we run Little Movers for ages 0–5, adult evening classes for 16 and up, and the Dance Company for our competition dancers.',
       },
       {
@@ -104,7 +106,13 @@ export const FAQS = [
     items: [
       {
         q: 'What is Little Movers?',
-        a: 'Little Movers is our movement-based enrichment programme for infants, toddlers and preschoolers — dance, music, sensory play, tumbling and active exploration. Baby & Me runs 0–18 months, and every class after it takes 18 months to 5 years. It is a drop-off programme.',
+        // This answer used to end "It is a drop-off programme", which the programme's
+        // own class list contradicts: Baby & Me is 0–18 months and describes bonding,
+        // and Parent & Me Dance is built for toddlers and caregivers. The claim came
+        // out on 2026-08-19 rather than being replaced with a policy nobody has
+        // stated — whether the 18-month-and-up classes are drop-off is still an open
+        // question for the studio. The same sentence was on the Little Movers page.
+        a: 'Little Movers is our movement-based enrichment programme for infants, toddlers and preschoolers — dance, music, sensory play, tumbling and active exploration. Baby & Me runs 0–18 months, and every class after it takes 18 months to 5 years. Baby & Me and Parent & Me Dance are taken together with a caregiver.',
       },
       {
         q: 'When do Little Movers classes meet?',
@@ -188,7 +196,11 @@ export const FAQS = [
       },
       {
         q: 'What are your studio hours?',
-        a: 'Our general studio hours are Monday through Friday 3:00 PM – 8:00 PM and Saturday 9:00 AM – 2:00 PM. Specific class times vary — check the Classes page for the full schedule.',
+        // NEEDS THE STUDIO'S CONFIRMATION. Weekday closing moved 8:00 PM -> 9:00 PM on
+        // 2026-08-19: Monday's Adult Femme/Flair runs to 8:45 PM and Wednesday's Adult
+        // Pom to 8:15 PM, so the published hours had the studio shutting before a class
+        // let out. The same hours are in src/lib/schema.js and public/llms.txt.
+        a: 'Our general studio hours are Monday through Friday 3:00 PM – 9:00 PM and Saturday 9:00 AM – 2:00 PM. Specific class times vary — check the Classes page for the full schedule.',
       },
       {
         q: 'How can I contact you?',

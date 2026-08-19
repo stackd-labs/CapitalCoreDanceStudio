@@ -43,10 +43,13 @@ export const DEFAULT_ACCENT = ACCENTS.red
 
 // Longest match wins, so '/summer-classes/signup' resolves without its own entry.
 //
-// Some entries are DORMANT: as of 2026-08-11 the camps, summer-classes, mini-series and
-// adult-summer-series routes are commented out in App.jsx, so those URLs render a blank
-// page (the app has no catch-all). Their accents are kept so switching a seasonal page
-// back on needs no edit here.
+// Some entries are DORMANT: the camps, summer-classes, mini-series and
+// adult-summer-series routes are commented out in App.jsx. Their accents are kept so
+// switching a seasonal page back on needs no edit here.
+//
+// Those URLs used to render a blank page. As of 2026-08-19 they 308 to their closest
+// live page from vercel.json, and anything else unmatched reaches the catch-all route
+// and the NotFound page — which takes DEFAULT_ACCENT, so it needs no entry below.
 const ACCENT_BY_PATH = {
   '/': ACCENTS.red,
 

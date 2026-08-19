@@ -43,13 +43,17 @@ const PILLARS = [
   },
 ]
 
+// Updated 2026-08-19. This list still advertised summer camps, retired in July, and
+// omitted Little Movers and the Dance Company — the two programmes the studio is
+// actively building, and the only two with their own top-level navbar entries.
 const PROGRAMS = [
+  'Little Movers for Babies, Toddlers and Preschoolers',
   'Preschool Creative Movement',
   'Ballet, Jazz, Tap, and Hip Hop',
   'Acro and Tumbling',
   'Musical Theatre and Performance Classes',
+  'The Capital Core Dance Company',
   'Adult Dance and Fitness Classes',
-  'Summer Camps and Seasonal Programs',
   'Birthday Parties and Special Events',
 ]
 

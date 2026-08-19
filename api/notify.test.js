@@ -92,39 +92,34 @@ describe('notify handler', () => {
     expect(html).toContain('Hello there')
   })
 
-  it('sends birthday email with correct subject', async () => {
-    mockSend.mockResolvedValue({ id: 'email-456' })
-    const req = {
-      method: 'POST',
-      body: {
-        formType: 'birthday',
-        parentName: 'Sarah Smith',
-        email: 'sarah@example.com',
-        phone: '(804) 555-1111',
-        birthdayName: 'Emma',
-        birthdayAge: '7',
-        enrolled: 'Yes',
-        dateFirst: '2026-05-10',
-        dateSecond: '2026-05-17',
-        timeSlot: 'Saturday 9:00 – 10:30 AM',
-        guestCount: '12',
-        theme: 'Princess & Fairytale Dance',
-        customTheme: '',
-        upgrades: ['Glow Dance Party – $40'],
-        bringingFood: 'Yes',
-        allergies: 'None',
-        referral: 'Social Media',
-        promoCode: '',
-        notes: '',
-      },
+  it('rejects the form types whose pages were retired, rather than emailing on them', async () => {
+    // Fourteen form types were trimmed to one on 2026-08-19 when the camp, summer,
+    // recital and birthday-booking pages were deleted. Nothing posts these any more,
+    // and a rebuilt form should get its own builder rather than reviving an old one —
+    // so each has to 400 rather than fall through to the contact email.
+    const retired = [
+      'birthday',
+      'birthday_deposit',
+      'camp_registration',
+      'camp_deposit',
+      'summer_class_registration',
+      'summer_class_deposit',
+      'adult_series_interest',
+      'adult_series_registration',
+      'adult_series_payment',
+      'spirit_week_idea',
+      'recital_order',
+      'recital_ticket',
+      'recital_program',
+      'recital_combined',
+    ]
+    for (const formType of retired) {
+      mockSend.mockClear()
+      const res = makeRes()
+      await handler({ method: 'POST', body: { formType } }, res)
+      expect(res.status).toHaveBeenCalledWith(400)
+      expect(mockSend).not.toHaveBeenCalled()
     }
-    const res = makeRes()
-    await handler(req, res)
-    expect(mockSend).toHaveBeenCalledWith(expect.objectContaining({
-      subject: 'New Birthday Party Booking Request',
-      to: 'admin@example.com',
-    }))
-    expect(res.status).toHaveBeenCalledWith(200)
   })
 
   it('returns 500 and logs error when Resend throws', async () => {

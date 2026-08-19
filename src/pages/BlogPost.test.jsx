@@ -97,3 +97,57 @@ test('breadcrumb links back through Blog to Home', () => {
   expect(crumb.getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/')
   expect(crumb.getByRole('link', { name: 'Blog' })).toHaveAttribute('href', '/blog')
 })
+
+// The live routes in src/App.jsx. Any CTA in a post that is not one of these renders a
+// blank page — which is exactly what happened between July and 2026-08-19, when six
+// buttons across four posts still pointed at the retired summer programmes.
+const LIVE_PATHS = [
+  '/',
+  '/about',
+  '/tuition',
+  '/classes',
+  '/class-levels',
+  '/adult-classes',
+  '/little-movers',
+  '/dance-company',
+  '/competition-team',
+  '/birthdays',
+  '/contact',
+  '/careers',
+  '/faq',
+  '/blog',
+]
+
+test('every article CTA points at a route that still exists', () => {
+  for (const p of POSTS) {
+    for (const link of p.related) {
+      const [routePath] = link.to.split('?')
+      expect(
+        LIVE_PATHS.includes(routePath) || routePath.startsWith('/blog/'),
+        `${p.slug} links to ${link.to}, which is not a live route`
+      ).toBe(true)
+    }
+  }
+})
+
+test('posts about finished programmes say so at the top of the article', () => {
+  // Four posts describe the 2026 summer season. They stay live because deleting them
+  // 404s an indexed URL, so each has to tell the reader its programme has ended rather
+  // than reading as current.
+  const seasonal = POSTS.filter((p) => p.notice)
+  expect(seasonal.length).toBe(4)
+
+  for (const p of seasonal) {
+    const { unmount } = renderPost(p.slug)
+    const notice = screen.getByTestId('post-notice')
+    expect(notice).toHaveTextContent(p.notice)
+    expect(notice).toHaveTextContent(/Season ended/i)
+    unmount()
+  }
+})
+
+test('a current post carries no season-ended notice', () => {
+  const current = POSTS.find((p) => !p.notice)
+  renderPost(current.slug)
+  expect(screen.queryByTestId('post-notice')).not.toBeInTheDocument()
+})

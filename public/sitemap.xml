@@ -1,163 +1,154 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Rebuilt 2026-08-19.
+
+  Two things were wrong. It listed five URLs retired in July (/summer-classes,
+  /summer-classes/signup, /adult-summer-series, /camps, /mini-series), all of which
+  rendered a blank page, so Google was being asked to re-crawl dead pages weekly.
+  And it omitted /dance-company entirely. Both fixed below.
+
+  The host is www. Production 308s the bare domain to www, and a sitemap should
+  list the URL that actually serves. Must match SITE_URL in src/components/SEO.jsx
+  and src/lib/schema.js.
+
+  /competition-team is deliberately absent: it is an alias route that canonicals to
+  /dance-company. /orders is absent because it is noindex.
+-->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://capitalcoredance.com/</loc>
-    <lastmod>2026-05-01</lastmod>
+    <loc>https://www.capitalcoredance.com/</loc>
+    <lastmod>2026-08-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://capitalcoredance.com/classes</loc>
-    <lastmod>2026-05-01</lastmod>
+    <loc>https://www.capitalcoredance.com/classes</loc>
+    <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://capitalcoredance.com/class-levels</loc>
-    <lastmod>2026-08-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://capitalcoredance.com/adult-classes</loc>
-    <lastmod>2026-08-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://capitalcoredance.com/little-movers</loc>
-    <lastmod>2026-08-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://capitalcoredance.com/summer-classes</loc>
-    <lastmod>2026-05-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://capitalcoredance.com/summer-classes/signup</loc>
-    <lastmod>2026-05-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://capitalcoredance.com/adult-summer-series</loc>
-    <lastmod>2026-05-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://capitalcoredance.com/about</loc>
-    <lastmod>2026-05-01</lastmod>
+    <loc>https://www.capitalcoredance.com/class-levels</loc>
+    <lastmod>2026-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://capitalcoredance.com/camps</loc>
-    <lastmod>2026-05-01</lastmod>
+    <loc>https://www.capitalcoredance.com/little-movers</loc>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://capitalcoredance.com/mini-series</loc>
-    <lastmod>2026-05-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://capitalcoredance.com/birthdays</loc>
-    <lastmod>2026-05-01</lastmod>
+    <loc>https://www.capitalcoredance.com/adult-classes</loc>
+    <lastmod>2026-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://capitalcoredance.com/tuition</loc>
-    <lastmod>2026-05-01</lastmod>
+    <loc>https://www.capitalcoredance.com/dance-company</loc>
+    <lastmod>2026-08-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.capitalcoredance.com/birthdays</loc>
+    <lastmod>2026-08-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.capitalcoredance.com/tuition</loc>
+    <lastmod>2026-08-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://capitalcoredance.com/contact</loc>
-    <lastmod>2026-05-01</lastmod>
+    <loc>https://www.capitalcoredance.com/about</loc>
+    <lastmod>2026-08-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://capitalcoredance.com/careers</loc>
+    <loc>https://www.capitalcoredance.com/contact</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.capitalcoredance.com/careers</loc>
     <lastmod>2026-08-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://capitalcoredance.com/faq</loc>
-    <lastmod>2026-05-01</lastmod>
+    <loc>https://www.capitalcoredance.com/faq</loc>
+    <lastmod>2026-08-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://capitalcoredance.com/blog</loc>
-    <lastmod>2026-05-24</lastmod>
+    <loc>https://www.capitalcoredance.com/blog</loc>
+    <lastmod>2026-08-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://capitalcoredance.com/blog/summer-dance-camps-2026-themed-weeks</loc>
-    <lastmod>2026-05-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://capitalcoredance.com/blog/summer-dance-classes-2026-guide</loc>
-    <lastmod>2026-05-18</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://capitalcoredance.com/blog/adult-summer-series-movement-for-women</loc>
-    <lastmod>2026-05-16</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://capitalcoredance.com/blog/dance-birthday-party-guide-midlothian</loc>
-    <lastmod>2026-05-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://capitalcoredance.com/blog/free-trial-dance-class-first-time</loc>
-    <lastmod>2026-05-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://capitalcoredance.com/blog/what-is-the-mini-series</loc>
-    <lastmod>2026-05-06</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://capitalcoredance.com/blog/dance-styles-parents-guide</loc>
+    <loc>https://www.capitalcoredance.com/blog/dance-styles-parents-guide</loc>
     <lastmod>2026-05-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://capitalcoredance.com/blog/dance-tuition-fees-discounts-2026</loc>
-    <lastmod>2026-05-02</lastmod>
+    <loc>https://www.capitalcoredance.com/blog/dance-tuition-fees-discounts-2026</loc>
+    <lastmod>2026-08-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://capitalcoredance.com/privacy</loc>
+    <loc>https://www.capitalcoredance.com/blog/free-trial-dance-class-first-time</loc>
+    <lastmod>2026-05-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.capitalcoredance.com/blog/dance-birthday-party-guide-midlothian</loc>
+    <lastmod>2026-05-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.capitalcoredance.com/blog/summer-dance-camps-2026-themed-weeks</loc>
+    <lastmod>2026-08-19</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://www.capitalcoredance.com/blog/summer-dance-classes-2026-guide</loc>
+    <lastmod>2026-08-19</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://www.capitalcoredance.com/blog/adult-summer-series-movement-for-women</loc>
+    <lastmod>2026-08-19</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://www.capitalcoredance.com/blog/what-is-the-mini-series</loc>
+    <lastmod>2026-08-19</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://www.capitalcoredance.com/privacy</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://capitalcoredance.com/terms</loc>
+    <loc>https://www.capitalcoredance.com/terms</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>

@@ -28,8 +28,6 @@ const LINK_COLUMNS = [
       // Careers lives here and nowhere else in the chrome: the navbar is a parent's map
       // of the studio, and the people looking for this page are looking for the footer.
       { to: '/careers', label: 'Careers' },
-      // Internal recital orders viewer stays out of the public footer. The /orders
-      // route still works directly (passcode-gated); this only controls the link.
     ],
   },
   {

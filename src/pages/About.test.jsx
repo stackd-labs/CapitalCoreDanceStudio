@@ -33,11 +33,22 @@ test('carries the studio prose: story, approach, vision', () => {
   expect(screen.getByText(/build confidence, friendships, discipline, and joy/i)).toBeInTheDocument()
 })
 
-test('renders the four pillars and all seven programs', () => {
+test('renders the four pillars and every programme the studio runs', () => {
   renderAbout()
   expect(screen.getAllByTestId('pillar')).toHaveLength(4)
-  expect(screen.getAllByTestId('program')).toHaveLength(7)
+  expect(screen.getAllByTestId('program')).toHaveLength(8)
   expect(screen.getByText('We focus on more than choreography')).toBeInTheDocument()
+})
+
+test('the programme list names the two newest programmes and not the retired one', () => {
+  // The list carried "Summer Camps and Seasonal Programs" for a month after camps were
+  // retired, while Little Movers and the Dance Company — both with their own navbar
+  // entries — were missing from it. This is the assertion that catches that drift.
+  renderAbout()
+  const programs = screen.getAllByTestId('program').map((el) => el.textContent)
+  expect(programs.join(' ')).toMatch(/Little Movers/)
+  expect(programs.join(' ')).toMatch(/Dance Company/)
+  expect(programs.join(' ')).not.toMatch(/Summer Camp/i)
 })
 
 test('the staff grid renders one card per real instructor, none of them empty', () => {

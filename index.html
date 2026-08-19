@@ -3,7 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0d1b36" />
+    <!-- Matches ink.base in tailwind.config.js. Was #0d1b36 (the retired navy-dark),
+         two digits off the page it sits above, which showed as a hairline seam under
+         the address bar on mobile Chrome. -->
+    <meta name="theme-color" content="#0d1b34" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/favicon.png" />
@@ -11,8 +14,11 @@
 
     <!-- Default SEO (overridden per-page by react-helmet-async) -->
     <title>Capital Core Dance Studio | Dance Classes in Midlothian, VA</title>
-    <meta name="description" content="Capital Core Dance Studio offers ballet, hip hop, jazz, contemporary, tap, and more for kids and adults in Midlothian, VA. Year-round classes, summer camps, birthday parties, and an annual recital. Serving Chesterfield County and the Richmond area." />
-    <meta name="keywords" content="dance studio Midlothian VA, dance classes Richmond VA, ballet classes Chesterfield County, hip hop classes for kids Virginia, kids dance classes Midlothian, summer dance camp Richmond, dance birthday parties Midlothian" />
+    <!-- Summer camps and the annual recital came out of this on 2026-08-19: both were
+         retired from the site and this string is what shows in a search result or a
+         link preview before any JavaScript runs. -->
+    <meta name="description" content="Capital Core Dance Studio offers ballet, hip hop, jazz, contemporary, tap, and more for babies through adults in Midlothian, VA. Year-round classes, Little Movers, adult evening classes, the Dance Company, and birthday parties. Serving Chesterfield County and the Richmond area." />
+    <meta name="keywords" content="dance studio Midlothian VA, dance classes Richmond VA, ballet classes Chesterfield County, hip hop classes for kids Virginia, kids dance classes Midlothian, toddler dance classes Midlothian, adult dance classes Richmond, dance birthday parties Midlothian" />
     <meta name="robots" content="index, follow" />
     <meta name="author" content="Capital Core Dance Studio" />
     <meta name="geo.region" content="US-VA" />
@@ -20,19 +26,38 @@
     <meta name="geo.position" content="37.50376;-77.64043" />
     <meta name="ICBM" content="37.50376, -77.64043" />
 
-    <!-- Default OG -->
+    <!-- Default Open Graph.
+         SEO.jsx writes a per-page set of these with react-helmet-async, but Helmet runs
+         in the browser and Facebook, Instagram, iMessage, WhatsApp and LinkedIn do not
+         execute JavaScript — they read this file. Until 2026-08-19 it carried no
+         og:image, og:title or og:url at all, so every link the studio shared rendered
+         as a bare grey card with no picture. These static defaults are what those
+         scrapers get; Helmet still overrides them per page for anything that does run
+         JavaScript, and Google renders the page so it sees the per-page set. -->
     <meta property="og:site_name" content="Capital Core Dance Studio" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:type" content="website" />
+    <meta property="og:title" content="Capital Core Dance Studio | Dance Classes in Midlothian, VA" />
+    <meta property="og:description" content="Ballet, hip hop, jazz, contemporary and tap for babies through adults in Midlothian, VA. Your first class is always free." />
+    <meta property="og:url" content="https://www.capitalcoredance.com/" />
+    <meta property="og:image" content="https://www.capitalcoredance.com/og-image.jpg" />
+    <meta property="og:image:alt" content="Capital Core Dance Studio, Midlothian, Virginia" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Capital Core Dance Studio | Dance Classes in Midlothian, VA" />
+    <meta name="twitter:description" content="Ballet, hip hop, jazz, contemporary and tap for babies through adults in Midlothian, VA. Your first class is always free." />
+    <meta name="twitter:image" content="https://www.capitalcoredance.com/og-image.jpg" />
+    <link rel="canonical" href="https://www.capitalcoredance.com/" />
 
-    <!-- Fonts: preconnect + preload Playfair Display, Cormorant Garamond, and
-         Allura (used across home, recital, recital-shop, adult series, and
-         thank-you pages) -->
+    <!-- Fonts. Anton is the display face, Barlow the body face, Barlow Condensed the
+         utility face — the three the 2026-08-11 redesign uses.
+         Playfair Display, Cormorant Garamond and Allura were dropped on 2026-08-19:
+         they belonged to the recital, recital-shop and adult-series pages, all of
+         which are retired, and no routed page references font-serif or font-script.
+         Restore them here if any of those pages come back. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Allura&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
   </head>

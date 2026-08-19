@@ -11,7 +11,8 @@ const SECTIONS = [
   {
     title: 'Information We Collect',
     body: [
-      'We collect information you provide directly when you enroll in classes, register for camps or recital activities, book a birthday party, contact us through our forms, or purchase merchandise and tickets. This typically includes your name, email address, phone number, billing information, and details about your dancer (name, age, emergency contact, allergies, and similar enrollment information).',
+      'We collect information you provide directly when you contact us through the form on this website, ask about a class or a free trial, or request a birthday party. This typically includes your name, email address, phone number, and details about your dancer (name, age, and anything else you choose to tell us).',
+      'Enrollment, tuition payments and party bookings are handled on our studio portal at studio.capitalcoredance.com, which is a separate system with its own sign-in. Information you enter there, including billing details and emergency contacts, is collected by that system rather than by this website.',
       'We may also collect basic technical information automatically when you visit our website — such as browser type, device type, and pages visited — to help us improve the site experience.',
     ],
   },
@@ -28,9 +29,7 @@ const SECTIONS = [
       'To run the studio and this website, we rely on a small set of trusted services that handle data on our behalf:',
     ],
     list: [
-      'PayPal — recital ticket, merchandise, and birthday deposit payments',
-      'Supabase — secure storage for form submissions and orders',
-      'Resend — email delivery for booking confirmations and notifications',
+      'Resend — email delivery, which is how a message you send through this site reaches the studio',
       'Vercel — website hosting',
     ],
     after: 'Each of these services has their own privacy practices, and we share only the information needed for them to perform their function.',
@@ -51,7 +50,7 @@ const SECTIONS = [
   {
     title: 'Data Security',
     body: [
-      'We take reasonable steps to protect the information we collect. Payments are processed through PayPal, which uses industry-standard encryption. We never store full credit card numbers on our website or servers.',
+      'We take reasonable steps to protect the information we collect. This website does not take payments and never asks for card details: tuition, registration and party balances are all handled on the studio portal, which uses industry-standard encryption. We never store full credit card numbers on this website or its servers.',
     ],
   },
   {

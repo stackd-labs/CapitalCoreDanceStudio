@@ -55,7 +55,11 @@ const ROLES = [
     title: 'Preschool Instructor',
     tag: 'Part time',
     styles: 'Creative movement · Infants to preschool',
-    schedule: 'Weekday mornings, about 9:00 AM to 12:00 PM',
+    // Must match the grid on the Little Movers page: Monday, Wednesday and Friday,
+    // three 45-minute classes at 9:30, 10:30 and 11:30. This said "weekday mornings,
+    // about 9:00 AM to 12:00 PM", which asked candidates to be free on two mornings
+    // the programme does not run.
+    schedule: 'Mon, Wed & Fri mornings, 9:30 AM to 12:15 PM',
     pay: '$15 to $25 / hour',
     intro: [
       'Capital Core Dance Studio is hiring an energetic, dependable and nurturing Preschool Movement and Enrichment Instructor to join our new Little Movers early childhood program.',
@@ -82,12 +86,16 @@ const ROLES = [
         heading: 'Classes may include',
         items: [
           'Baby & Me',
-          'Parent & Me Dance',
           "Moovin' & Groovin'",
           'Tiny Tumblers',
           'Sensory Steps',
           'Little Movers Free Play Lab',
+          'Parent & Me Dance, once it returns to the schedule',
         ],
+        // Parent & Me Dance came off the published grid on 2026-08-17 when Tuesday and
+        // Thursday were withdrawn, so it currently runs on no day. The Little Movers
+        // page badges it "Coming soon"; this list had no such qualifier, which offered
+        // an applicant a class nobody can be assigned to. Moved to the end and marked.
       },
       {
         heading: "We're looking for someone who",
@@ -121,9 +129,12 @@ const ROLES = [
       },
       {
         heading: 'Schedule',
+        // "currently takes place" was wrong twice over: the days were wrong, and the
+        // programme has not started — the Little Movers page carries a coming-soon
+        // banner and is not open for registration. Corrected 2026-08-19.
         body: [
-          'Part-time weekday mornings. Little Movers programming currently takes place Monday through Friday mornings, with classes generally scheduled between approximately 9:00 AM and 12:00 PM.',
-          'Applicants do not necessarily need to be available every weekday. Please include your weekday morning availability when applying.',
+          'Part-time mornings. Little Movers is planned for Monday, Wednesday and Friday mornings, in three 45-minute classes at 9:30, 10:30 and 11:30. Start dates are still being confirmed, so the first weeks will be built with whoever takes the role.',
+          'Applicants do not need to be available all three mornings. Please include your Monday, Wednesday and Friday morning availability when applying.',
         ],
       },
       {
@@ -138,13 +149,17 @@ const ROLES = [
         body: ['Send your resume along with a brief introduction telling us:'],
         items: [
           'Your experience working with young children.',
-          'Your weekday morning availability.',
+          'Your Monday, Wednesday and Friday morning availability.',
           'Any experience with dance, movement, tumbling, sensory play, early childhood education or similar programming.',
           "Why you're interested in joining the Little Movers team.",
         ],
       },
     ],
-    facts: ['Job type: Part-time', 'Schedule: Weekday mornings', 'Location: In person, Midlothian, VA'],
+    facts: [
+      'Job type: Part-time',
+      'Schedule: Monday, Wednesday and Friday mornings',
+      'Location: In person, Midlothian, VA',
+    ],
     closing:
       'We are looking for team members who want to help create an environment where little ones can build confidence, explore movement, and have fun while learning.',
   },

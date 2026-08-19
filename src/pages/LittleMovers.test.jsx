@@ -220,10 +220,15 @@ test('every slot is 45 minutes, gapped by 15, starting at 9:30', () => {
   }
 })
 
-test('states that every class is 45 minutes and drop-off', () => {
+test('states the class length and who stays for the caregiver classes', () => {
+  // The page used to call the whole programme drop-off, which its own class list
+  // contradicts: Baby & Me is 0–18 months and Parent & Me Dance is built for toddlers
+  // and caregivers. The blanket claim came out on 2026-08-19. If it comes back, this
+  // fails.
   renderLittleMovers()
   expect(screen.getByText(/Every class runs 45 minutes/)).toBeInTheDocument()
-  expect(screen.getByText(/drop-off program/i)).toBeInTheDocument()
+  expect(screen.getByText(/taken together with a caregiver/i)).toBeInTheDocument()
+  expect(screen.queryByText(/drop-off program/i)).not.toBeInTheDocument()
 })
 
 test('renders the three ways to join, each framed by how often a family comes', () => {

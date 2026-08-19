@@ -1,7 +1,9 @@
 // Shared JSON-LD schema helpers for SEO + AI-search structured data.
 // Schema.org reference: https://schema.org/
 
-const SITE_URL = 'https://capitalcoredance.com'
+// Must match SITE_URL in src/components/SEO.jsx — see the note there for why this is
+// the www host and not the bare domain.
+const SITE_URL = 'https://www.capitalcoredance.com'
 const PHONE = '+1-804-234-4014'
 const EMAIL = 'info@capitalcoredance.com'
 
@@ -26,12 +28,22 @@ const SOCIAL = [
   'https://www.facebook.com/p/Capital-Core-Dance-Challenge-61566002721661/',
 ]
 
+// NEEDS THE STUDIO'S CONFIRMATION. Weekday closing moved from 20:00 to 21:00 on
+// 2026-08-19 because the published hours ended before the classes did: Monday's
+// Adult Femme/Flair runs to 8:45 PM and Wednesday's Adult Pom to 8:15 PM, so the
+// studio was telling Google it shut 45 minutes before a class let out. 21:00 is the
+// smallest change that removes the contradiction, not a figure the studio gave.
+// The same hours appear in src/lib/faqs.js and public/llms.txt — all three move
+// together.
+//
+// Saturday is kept: nothing on the fall class schedule runs then, but the Birthdays
+// page sells weekend parties, so the door is open even though no class meets.
 const HOURS = [
   {
     '@type': 'OpeningHoursSpecification',
     dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
     opens: '15:00',
-    closes: '20:00',
+    closes: '21:00',
   },
   {
     '@type': 'OpeningHoursSpecification',
@@ -63,18 +75,27 @@ export const localBusinessSchema = {
   geo: GEO,
   openingHoursSpecification: HOURS,
   priceRange: '$$',
+  // Rewritten 2026-08-19. This object is the JSON-LD on the home page, so it is the
+  // studio describing itself to Google. It had been advertising summer camps and an
+  // annual recital, both retired, and Irish dance, which is not on the schedule —
+  // the FAQ dropped Irish for that reason and the careers page is still hiring
+  // someone to start it. The styles below match the fall schedule and the answer in
+  // src/lib/faqs.js. Keep the three in step.
   description:
-    'Capital Core Dance Studio offers dance classes, summer camps, birthday parties, and an annual recital for kids and adults in Midlothian, VA. Styles include ballet, jazz, hip hop, contemporary, tap, acro, tumbling, lyrical, musical theatre, Irish, and pom/cheer.',
+    'Capital Core Dance Studio offers year-round dance classes, Little Movers movement classes for babies and preschoolers, adult evening classes, a youth performance and competition company, and birthday parties in Midlothian, VA. Styles include ballet, jazz, hip hop, contemporary, tap, acro, tumbling, lyrical, modern, breakdancing, musical theatre, and pom/cheer.',
   areaServed: AREA_SERVED,
   hasOfferCatalog: {
     '@type': 'OfferCatalog',
     name: 'Capital Core Dance Studio Programs',
+    // Four of the six offers here pointed at routes retired in July, so the home
+    // page handed Google a catalogue of dead URLs while omitting the three
+    // programmes actually being sold. Replaced 2026-08-19. Every URL below must be
+    // a live route in App.jsx — check before adding one back.
     itemListElement: [
       { '@type': 'Offer', name: 'Year-Round Dance Classes', url: `${SITE_URL}/classes` },
-      { '@type': 'Offer', name: 'Summer Dance Classes', url: `${SITE_URL}/summer-classes` },
-      { '@type': 'Offer', name: 'Summer Dance Camps', url: `${SITE_URL}/camps` },
-      { '@type': 'Offer', name: 'Adult Summer Series', url: `${SITE_URL}/adult-summer-series` },
-      { '@type': 'Offer', name: 'Mini Series Spring Classes', url: `${SITE_URL}/mini-series` },
+      { '@type': 'Offer', name: 'Little Movers (Babies to Age 5)', url: `${SITE_URL}/little-movers` },
+      { '@type': 'Offer', name: 'Adult Dance Classes', url: `${SITE_URL}/adult-classes` },
+      { '@type': 'Offer', name: 'Capital Core Dance Company', url: `${SITE_URL}/dance-company` },
       { '@type': 'Offer', name: 'Birthday Party Packages', url: `${SITE_URL}/birthdays` },
     ],
   },

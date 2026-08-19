@@ -88,7 +88,9 @@ function examplesFor(minutes) {
 }
 
 const DISCOUNTS = [
-  'Returning students receive a $5–$10 discount per semester',
+  // Read from REGISTRATION, not typed. This line said "$5–$10" while the portal
+  // charged a flat $10 — see the note on returningDiscount in src/lib/tuition.js.
+  `Returning students receive a ${money(REGISTRATION.returningDiscount)} discount per semester`,
   'Multi-class discount for dancers enrolled in more than one class',
   'Multi-student discounts for families with multiple dancers',
   'Sibling discounts and family fee caps on registration fees',
@@ -100,7 +102,10 @@ const FEES = [
   // From REGISTRATION, not typed: this row said $65 while the portal charged $60.
   { label: 'Registration — per dancer, per semester', value: money(REGISTRATION.perSemester) },
   { label: 'Registration — full year (both semesters)', value: money(REGISTRATION.fullYear) },
-  { label: 'Returning student discount', value: '$5 – $10 per semester' },
+  {
+    label: 'Returning student discount',
+    value: `${money(REGISTRATION.returningDiscount)} per semester`,
+  },
   { label: 'Multi-class discount', value: 'Available' },
   { label: 'Multi-student & sibling discounts', value: 'Available' },
   { label: 'Payment methods', value: 'Card, ACH, or check' },

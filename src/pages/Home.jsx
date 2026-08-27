@@ -256,6 +256,54 @@ export default function Home() {
           months old by design and this row is whatever happened in class last week. */}
       <InstagramFeed />
 
+      {/* Dancewear shop, hosted by Nimbly.
+
+          In purple rather than Home's red, following the same rule as the hiring strip
+          below: a destination that leaves capitalcoredance.com does not wear the page's
+          own accent. Purple was the one brand colour nothing referenced any more (Adults
+          moved to lavender, Tuition to mint), so the shop claims it, and the page's three
+          outbound destinations now read apart - purple shop, blue careers, red
+          registration.
+
+          Sits ABOVE the hiring strip so the closing sequence into the registration band
+          is left intact. Registration is the page's job; this is not allowed to outrank
+          it.
+
+          `PrimaryAction href=` is correct for an off-site link: Action detects an
+          absolute URL and adds target="_blank" rel="noopener noreferrer" itself, so
+          there is nothing to remember here.
+
+          ⚠ The `lid` and `sid` query parameters in the URL are what tie the shop to
+          Capital Core. Do not tidy them out of the link. */}
+      <section
+        className="bg-ink-base px-6 lg:px-24 py-16 lg:py-20"
+        aria-label="Dancewear shop"
+      >
+        <div className="max-w-[1440px] mx-auto">
+          <Kicker accent={ACCENTS.purple}>Dancewear</Kicker>
+          <SectionHeading className="text-white mb-5">
+            Shoes and dancewear,{' '}
+            <br />
+            in one place
+          </SectionHeading>
+          {/* PLACEHOLDER — needs the studio's own words. Written deliberately narrow:
+              it says only what is verifiable from the link itself, that the shop is
+              the studio's and that it is organised by class. Anything about shipping,
+              returns, pricing or required items is the studio's to state. */}
+          <p className="font-body text-[16.5px] leading-[1.65] text-mist-300 max-w-[460px] m-0 mb-7">
+            Our shop is hosted by Nimbly and laid out by class, so you can find what your
+            dancer needs without guessing at a style or a colour.
+          </p>
+          <PrimaryAction
+            accent={ACCENTS.purple}
+            href="https://www.shopnimbly.com/dancerclasslist?lid=a0eQp00000Er2A5IAJ&sid=001Qp00000hOQQRIA4"
+            data-testid="nimbly-shop-link"
+          >
+            Shop dancewear
+          </PrimaryAction>
+        </div>
+      </section>
+
       {/* Hiring strip. Deliberately slim and in the Careers accent rather than Home's
           red: it points off this page, and it must not compete with the registration
           band directly below it. Careers has no navbar entry, so this and the footer

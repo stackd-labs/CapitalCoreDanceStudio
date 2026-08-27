@@ -167,3 +167,28 @@ test('points prospective staff at the careers page', () => {
   expect(within(strip).getByText('We are hiring')).toBeInTheDocument()
   expect(within(strip).getByText(/Preschool and Irish dance instructors/)).toBeInTheDocument()
 })
+
+test('the dancewear shop link points at Nimbly and opens safely off-site', () => {
+  renderHome()
+  const link = screen.getByTestId('nimbly-shop-link')
+
+  // The lid and sid parameters are what tie the shop to Capital Core. A refactor that
+  // "tidies" the query string would leave a working link to the wrong storefront, which
+  // is the failure this pins.
+  expect(link).toHaveAttribute(
+    'href',
+    'https://www.shopnimbly.com/dancerclasslist?lid=a0eQp00000Er2A5IAJ&sid=001Qp00000hOQQRIA4'
+  )
+  expect(link).toHaveAttribute('target', '_blank')
+  expect(link).toHaveAttribute('rel', expect.stringContaining('noopener'))
+})
+
+test('the shop section does not wear the home page accent', () => {
+  // Outbound destinations are told apart by colour on this page: purple shop, blue
+  // careers, red registration. If the shop drifts to Home's red it starts reading as
+  // part of the registration path.
+  renderHome()
+  const link = screen.getByTestId('nimbly-shop-link')
+  expect(link.style.background).not.toBe('rgb(224, 27, 34)')
+  expect(link.style.background).toBe('rgb(155, 61, 240)')
+})

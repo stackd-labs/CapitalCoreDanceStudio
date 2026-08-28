@@ -74,7 +74,9 @@ test('every party action reaches the portal party-request page', () => {
 })
 
 test('button text on pink is navy, which the mockup gets wrong', () => {
-  // The mockup draws white on #ff54a8 — 2.96:1, below AA. Navy is 5.79:1.
+  // The mockup draws white on the pink. That was 2.96:1 on the original #ff54a8 and is
+  // 2.47:1 on the lightened #f77ea8 — further below AA, not closer, because lightening an
+  // accent moves it away from white and towards navy. Navy on it is 6.95:1.
   renderBirthdays()
   expect(screen.getByRole('link', { name: 'Request Your Party →' })).toHaveStyle({
     color: '#0d1b34',

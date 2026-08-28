@@ -16,7 +16,7 @@ export default {
           orange: '#ff8c2b',
           gold: '#f5c518',
           teal: '#2ed3c8',
-          pink: '#ff54a8',
+          pink: '#f77ea8', // lightened 2026-08-28, see src/lib/pageAccents.js — keep in sync
           purple: '#9b3df0',
           green: '#3ad46f',
           blue: '#3d8bf0', // Careers only, added 2026-08-18

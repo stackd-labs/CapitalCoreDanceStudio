@@ -23,7 +23,20 @@ export const ACCENTS = {
   orange: '#ff8c2b',
   gold: '#f5c518',
   teal: '#2ed3c8',
-  pink: '#ff54a8',
+  // Lightened 2026-08-28 at the studio's request: the birthday page read as neon. The old
+  // #ff54a8 was hsl(330, 100%, 66%), and 100% saturation in the magenta band is exactly
+  // what makes a colour look fluorescent rather than rich. This is hsl(339, 88%, 73%) —
+  // lighter, a little less saturated, and warmer, which is the part that actually takes the
+  // glare off: 330 leans magenta, 339 is a true rose.
+  //
+  // Tuned in place rather than added as a new tint. Lavender and mint were added on
+  // 2026-08-13 because purple stayed in use elsewhere, but there is no second pink here to
+  // keep — two pinks nine degrees apart would read as a mistake, not a system. Note that
+  // this is a STRIPE colour, so the signature bar under the navbar moves with it.
+  //
+  // Navy on this is 6.95:1, up from 5.79:1. Keep it light enough that onAccent() stays on
+  // navy: white on any of these pinks is under 3:1.
+  pink: '#f77ea8',
   purple: '#9b3df0',
   green: '#3ad46f',
   lavender: '#c38bf6',

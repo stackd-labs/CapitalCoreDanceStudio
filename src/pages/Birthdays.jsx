@@ -255,7 +255,12 @@ export default function Birthdays() {
             <div key={n} data-testid="party-step" className="flex gap-[18px] items-start">
               <div
                 className="font-display text-[52px] leading-[0.8] flex-none"
-                style={{ color: 'rgba(255,84,168,.55)' }}
+                /* 8c is the .55 alpha the mockup draws these step numerals at. Derived from
+                   ACCENT rather than the literal rgba(255,84,168,.55) it used to be: that
+                   was a hand-copied duplicate of the pink hex, and it survived the
+                   2026-08-28 lightening unchanged, leaving one stale numeral column on an
+                   otherwise retuned page. */
+                style={{ color: `${ACCENT}8c` }}
               >
                 {n}
               </div>

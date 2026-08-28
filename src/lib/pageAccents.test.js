@@ -1,5 +1,24 @@
 import { ACCENTS, STRIPE, DEFAULT_ACCENT, accentForPath } from './pageAccents'
 import { onAccent, contrastRatio, ON_LIGHT } from './accentContrast'
+import tailwindConfig from '../../tailwind.config.js'
+
+// Hue and saturation of a hex, so a test can say "not neon" in the terms the eye actually
+// uses. accentContrast.js deliberately only knows luminance — it answers "navy or white on
+// this", which is a different question from "is this colour fluorescent".
+function toHsl(hex) {
+  const h = hex.replace('#', '')
+  const full = h.length === 3 ? h.split('').map((c) => c + c).join('') : h
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(full.slice(i, i + 2), 16) / 255)
+  const max = Math.max(r, g, b)
+  const min = Math.min(r, g, b)
+  const d = max - min
+  const l = (max + min) / 2
+  if (d === 0) return { h: 0, s: 0, l: l * 100 }
+  const s = d / (1 - Math.abs(2 * l - 1))
+  const hue =
+    max === r ? ((g - b) / d) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4
+  return { h: ((hue * 60) % 360 + 360) % 360, s: s * 100, l: l * 100 }
+}
 
 test('each section resolves to the accent its mockup specifies', () => {
   expect(accentForPath('/')).toBe(ACCENTS.red)
@@ -108,4 +127,30 @@ test('Careers blue takes navy text, not the white its mockup draws', () => {
   // silently cross the threshold.
   expect(onAccent(ACCENTS.blue)).toBe(ON_LIGHT)
   expect(contrastRatio(ACCENTS.blue, ON_LIGHT)).toBeGreaterThanOrEqual(4.5)
+})
+
+test('the birthday pink stays off neon and keeps navy text legible', () => {
+  // Lightened 2026-08-28 because the birthday page read as neon. The fix was not just
+  // "lighter": the glare came from 100% saturation sitting in the magenta band, so this
+  // pins the two things that actually took it off — saturation under 95%, and a hue warm
+  // enough to read as rose rather than magenta. A future "make it pop" tweak that pushes
+  // either back is the regression.
+  const { h, s } = toHsl(ACCENTS.pink)
+  expect(h, 'hue should be a rose pink, not magenta').toBeGreaterThanOrEqual(335)
+  expect(h).toBeLessThanOrEqual(345)
+  expect(s, 'full saturation is what reads as neon').toBeLessThan(95)
+
+  // Every button and eyebrow on /birthdays is navy on this. Lightening an accent moves it
+  // away from white, so the only risk is the other direction: a darker pink flipping
+  // onAccent() to white text at around 3:1.
+  expect(onAccent(ACCENTS.pink)).toBe(ON_LIGHT)
+  expect(contrastRatio(ACCENTS.pink, ON_LIGHT)).toBeGreaterThanOrEqual(4.5)
+})
+
+test('pink is one hex, shared by the page accent and the tailwind token', () => {
+  // ACCENTS.pink drives inline styles; core.pink in tailwind.config.js drives the calendar
+  // borders, the class badges and the footer icon. They are meant to be the same colour and
+  // nothing enforces it, so retuning one and not the other ships two pinks. This is that
+  // check — it reads the config rather than restating the hex, so it cannot go stale.
+  expect(tailwindConfig.theme.extend.colors.core.pink).toBe(ACCENTS.pink)
 })

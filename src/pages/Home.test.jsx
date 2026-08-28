@@ -192,3 +192,62 @@ test('the shop section does not wear the home page accent', () => {
   expect(link.style.background).not.toBe('rgb(224, 27, 34)')
   expect(link.style.background).toBe('rgb(155, 61, 240)')
 })
+
+test('the open-house strip promotes the free event and opens the portal form safely', () => {
+  renderHome()
+  const strip = screen.getByTestId('open-house-strip')
+  expect(strip).toHaveAttribute(
+    'href',
+    'https://studio.capitalcoredance.com/register/little-movers-open-house'
+  )
+  expect(strip).toHaveAttribute('target', '_blank')
+  expect(strip).toHaveAttribute('rel', expect.stringContaining('noopener'))
+  expect(within(strip).getByText(/Free event · Wednesday, September 2/)).toBeInTheDocument()
+  expect(within(strip).getByText(/Little Movers Open House, 10:00 – 11:00 AM/)).toBeInTheDocument()
+})
+
+test('the open-house strip sits above the card grid, not below it', () => {
+  // A free event five days out has to be seen before a visitor picks a programme from
+  // the grid, not after. Position is the whole value of this strip, so it is pinned.
+  renderHome()
+  const strip = screen.getByTestId('open-house-strip')
+  const firstCard = screen.getAllByTestId('home-card')[0]
+  expect(strip.compareDocumentPosition(firstCard) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+})
+
+test('the open-house strip is a solid gold field, not a navy band', () => {
+  // The studio's call on 2026-08-28. Built first as a navy strip with a teal rule, which
+  // blended into the navy hero above and the navy card grid below — a coloured border is
+  // not enough to lift a band off a field it shares a colour with. Gold is also the notice
+  // colour the Little Movers page uses, so the two announcements match.
+  //
+  // Pins the fill, not just "not red": a future tidy-up that turns this back into a navy
+  // strip with a gold rule would pass a looser assertion and reintroduce the exact problem.
+  renderHome()
+  const strip = screen.getByTestId('open-house-strip')
+  expect(strip.style.background).toBe('rgb(245, 197, 24)')
+  expect(strip.style.background).not.toBe('rgb(224, 27, 34)') // never Home's red
+  // Navy on gold, chosen by luminance. White on #f5c518 is 1.8:1 and unreadable.
+  expect(strip.style.color).toBe('rgb(13, 27, 52)')
+})
+
+test('the open-house strip disappears once the event has finished', () => {
+  // It takes itself down with no deploy. This test has to keep passing after
+  // 2 September, so it pins both sides of the cutoff rather than trusting today's date.
+  vi.useFakeTimers()
+  try {
+    vi.setSystemTime(new Date('2026-09-02T10:59:00-04:00'))
+    const before = renderHome()
+    expect(screen.getByTestId('open-house-strip')).toBeInTheDocument()
+    before.unmount()
+
+    vi.setSystemTime(new Date('2026-09-02T11:00:00-04:00'))
+    renderHome()
+    expect(screen.queryByTestId('open-house-strip')).not.toBeInTheDocument()
+    // The rest of the page is untouched by the event ending.
+    expect(screen.getAllByTestId('home-card')).toHaveLength(6)
+    expect(screen.getByTestId('hiring-strip')).toBeInTheDocument()
+  } finally {
+    vi.useRealTimers()
+  }
+})

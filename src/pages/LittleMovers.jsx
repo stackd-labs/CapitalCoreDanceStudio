@@ -7,6 +7,7 @@ import { Kicker, SectionHeading, PrimaryAction, GhostAction, CtaBand, InverseAct
 import { simpleBreadcrumb } from '../lib/schema'
 import { ACCENTS } from '../lib/pageAccents'
 import { onAccent } from '../lib/accentContrast'
+import { OPEN_HOUSE, isOpenHouseUpcoming } from '../lib/openHouse'
 
 // Rebuilt 2026-08-11 to the studio's site mockup (page 1c, accent teal). The mockup
 // carries a hero, a row of age-tier cards and a "what a class looks like" strip; the
@@ -14,17 +15,21 @@ import { onAccent } from '../lib/accentContrast'
 // the three pricing options — is kept and restyled onto the navy field.
 const ACCENT = ACCENTS.teal
 
-// The coming-soon banner alone breaks the page accent, at the studio's request
-// (2026-08-13). Gold reads as a notice rather than as more of the page, which is the
-// point of the strip — it is a temporary status, not part of the Little Movers identity.
-// It goes when registration opens, and takes this constant with it.
+// Gold reads as a notice rather than as more of the page, at the studio's request
+// (2026-08-13) — a temporary status, not part of the Little Movers identity. It carried
+// the coming-soon banner until 2026-08-28; it now carries the open-house block and the
+// per-class "Coming soon" badge, which are the two remaining temporary statuses here.
 const NOTICE_ACCENT = ACCENTS.gold
 
-// Little Movers is not open for registration yet, so every call to action points at
-// the contact page rather than the studio portal — the portal has no Little Movers
-// classes to select. When registration opens, swap these back to
-// https://studio.capitalcoredance.com/register/classes and drop the coming-soon
-// banner and badge below.
+// Little Movers has its own portal form, live as of 2026-08-28 — NOT the /register/classes
+// one the Classes and Class Levels pages use, and not /register/adult-classes either. This
+// form books a single Little Movers class and carries the drop-in, passport and membership
+// options priced below.
+//
+// This is the PERSISTENT programme call to action and it has no end date. Keep it separate
+// from the open-house block, which is one free event on one morning and removes itself
+// after 2 September (see src/lib/openHouse.js).
+const PORTAL_LITTLE_MOVERS_URL = 'https://studio.capitalcoredance.com/register/little-movers'
 
 // The six Little Movers classes. Single source of truth for name, age range, and
 // description — the weekly schedule below references these by name so the two can
@@ -220,7 +225,7 @@ export default function LittleMovers() {
     <div className="min-h-screen flex flex-col bg-ink-base">
       <SEO
         title="Little Movers | Toddler &amp; Preschool Movement Classes in Midlothian, VA — Capital Core Dance"
-        description="Coming soon — Little Movers at Capital Core Dance in Midlothian, VA. A movement-based enrichment program for infants, toddlers, and preschoolers combining dance, music, sensory play, tumbling, and active exploration. Monday, Wednesday and Friday mornings, 45-minute classes, drop-in $10 for the first child and $3 for each additional child. Contact us to be notified when registration opens."
+        description="Little Movers at Capital Core Dance in Midlothian, VA. A movement-based enrichment program for infants, toddlers, and preschoolers combining dance, music, sensory play, tumbling, and active exploration. Weekday morning classes, 45 minutes, drop-in $10 for the first child and $3 for each additional child. Book a class on our studio portal, or join us free at the Little Movers Open House on Wednesday, September 2."
         canonical="/little-movers"
         jsonLd={LITTLE_MOVERS_JSON_LD}
       />
@@ -238,36 +243,104 @@ export default function LittleMovers() {
         titleClassName="text-[42px] sm:text-[56px] lg:text-[76px] leading-[0.92]"
         actions={
           <>
-            <PrimaryAction to="/contact">Get notified</PrimaryAction>
+            <PrimaryAction href={PORTAL_LITTLE_MOVERS_URL}>Book a class →</PrimaryAction>
             <GhostAction href="#schedule">See class times</GhostAction>
           </>
         }
       />
 
-      {/* Coming-soon notice. Registration is not open, so every action points at contact
-          rather than the studio portal — the portal has no Little Movers classes yet. */}
-      <section
-        data-testid="coming-soon-banner"
-        className="px-6 lg:px-24 py-5"
-        style={{ background: NOTICE_ACCENT }}
-      >
-        <div className="max-w-[1440px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="text-center sm:text-left" style={{ color: onAccent(NOTICE_ACCENT) }}>
-            <p className="font-body font-bold text-lg leading-snug">
-              Coming soon — a brand new program for our littlest movers.
-            </p>
-            <p className="font-body text-sm opacity-80 mt-0.5">
-              Registration isn&apos;t open yet. Get in touch and we&apos;ll let you know the moment it is.
-            </p>
+      {/* Open house, Wednesday 2 September. Sits directly under the hero, in the notice
+          gold rather than the page's teal for the same reason the coming-soon banner it
+          replaced did: this is a temporary status, not part of the Little Movers identity.
+
+          REMOVES ITSELF once the event has finished — isOpenHouseUpcoming() is the only
+          thing keeping it on the page, and no deploy is needed to take it down. See
+          src/lib/openHouse.js. The whole block and its import can be deleted after
+          2 September.
+
+          Deliberately NOT the programme call to action: the hero button above and the
+          closing band below both book an ongoing class, this books one free morning. */}
+      {isOpenHouseUpcoming() && (
+        <section
+          data-testid="open-house"
+          className="px-6 lg:px-24 py-12 lg:py-14"
+          style={{ background: NOTICE_ACCENT, color: onAccent(NOTICE_ACCENT) }}
+        >
+          <div className="max-w-[1440px] mx-auto">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-7">
+              <div>
+                <div className="font-body font-bold text-[11.5px] tracking-[0.3em] uppercase mb-3">
+                  Free event
+                </div>
+                <h2 className="font-display uppercase text-[34px] sm:text-[44px] lg:text-[52px] leading-[0.96] m-0 text-balance">
+                  Little Movers Open House
+                </h2>
+                <p
+                  data-testid="open-house-when"
+                  className="font-body font-bold text-[19px] sm:text-[21px] leading-snug mt-3 m-0"
+                >
+                  {OPEN_HOUSE.date} · {OPEN_HOUSE.time}
+                </p>
+                <p className="font-body text-[15.5px] leading-[1.6] mt-3 mb-0 max-w-[560px] opacity-80">
+                  An hour of {OPEN_HOUSE.headline} for infants, toddlers and preschoolers.
+                  Free to attend, nothing due, and no card needed to save a spot.
+                </p>
+              </div>
+              <a
+                href={OPEN_HOUSE.formUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-testid="open-house-cta"
+                className="flex-shrink-0 self-start inline-flex items-center bg-ink-base text-white font-body font-bold text-[15px] px-9 py-[19px] whitespace-nowrap transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              >
+                Save my spot →
+              </a>
+            </div>
+
+            <div
+              className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 mt-10 pt-8 border-t"
+              style={{ borderColor: 'rgba(13, 27, 52, 0.25)' }}
+            >
+              <div className="lg:col-span-2">
+                <div className="font-body font-bold text-[11px] tracking-[0.2em] uppercase mb-4 opacity-70">
+                  The hour
+                </div>
+                <ul className="flex flex-col gap-2.5 m-0 p-0 list-none">
+                  {OPEN_HOUSE.runOfShow.map(({ time, what }) => (
+                    <li
+                      key={time}
+                      data-testid="open-house-run-of-show"
+                      className="font-body text-[15px] leading-snug flex flex-col sm:flex-row sm:gap-4"
+                    >
+                      <span className="font-bold whitespace-nowrap sm:w-[128px] flex-shrink-0">
+                        {time}
+                      </span>
+                      <span className="opacity-80">{what}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <div className="font-body font-bold text-[11px] tracking-[0.2em] uppercase mb-4 opacity-70">
+                  While you&apos;re here
+                </div>
+                <ul className="flex flex-col gap-2.5 m-0 p-0 list-none">
+                  {OPEN_HOUSE.whileYoureThere.map((item) => (
+                    <li
+                      key={item}
+                      data-testid="open-house-perk"
+                      className="font-body text-[15px] leading-snug flex gap-2.5"
+                    >
+                      <span className="flex-shrink-0 font-bold">✓</span>
+                      <span className="opacity-80">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
-          <Link
-            to="/contact"
-            className="flex-shrink-0 bg-ink-base text-white font-body text-sm font-bold px-6 py-3 whitespace-nowrap hover:opacity-90 transition-opacity"
-          >
-            Contact Us →
-          </Link>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* The classes — the mockup's tier cards, filled with the studio's own classes. The
           heading deliberately carries no count: it said "Six ways to move" while only five
@@ -386,8 +459,8 @@ export default function LittleMovers() {
           <p className="font-body text-mist-400 text-sm mb-10 max-w-2xl">
             Every class runs 45 minutes, with 15 minutes between classes. No Little Movers
             class is drop-off: a parent or caregiver is welcome to stay in the class or wait
-            in the studio. This is our planned weekly schedule, and start dates are coming
-            soon.
+            in the studio. Booking is open on our studio portal, which carries the current
+            week&apos;s classes and what is still available.
           </p>
 
           {/* Table at md and up */}
@@ -470,7 +543,7 @@ export default function LittleMovers() {
           </SectionHeading>
           <p className="font-body text-mist-400 text-sm mb-10 max-w-2xl">
             Three ways to join, depending on how often you plan to come. Every option works for any
-            class on the schedule. Pricing is set — registration opens soon.
+            class on the schedule, and all three can be chosen when you book on the studio portal.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-[26px]">
@@ -536,8 +609,8 @@ export default function LittleMovers() {
       <CtaBand
         accent={ACCENT}
         headline="Ready to Get Moving?"
-        body="Join the Little Movers family and discover a fun, flexible way for your child to learn, explore, and grow through movement. More details coming soon — reach out and we'll keep you posted."
-        action={<InverseAction to="/contact">Get in Touch →</InverseAction>}
+        body="Join the Little Movers family and discover a fun, flexible way for your child to learn, explore, and grow through movement. Book a single class, a visit passport, or a monthly membership on our studio portal."
+        action={<InverseAction href={PORTAL_LITTLE_MOVERS_URL}>Book a class →</InverseAction>}
       />
 
       <Footer />

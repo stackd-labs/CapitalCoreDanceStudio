@@ -188,6 +188,25 @@ const PROMO = {
   percentOff: 30,
 }
 
+// Sibling rates, from the studio 2026-09-02. Specific to Little Movers — the studio's
+// regular class tuition has its own returning-dancer discount and nothing here applies to
+// it. Each product discounts a sibling differently, which is why these live on the cards
+// next to their own price rather than as one blanket line.
+//
+// The shape is the same for all three: THE FIRST CHILD PAYS FULL PRICE and every child
+// after that comes off by a flat dollar amount — not a percentage, and not just the
+// second child. Stated as the amount OFF rather than the resulting price so the two
+// Passport tiers can share one rule.
+//
+// The Passport was briefly written as 10% off, from "second is 10 percent off" in the
+// studio's first note. Corrected 2026-09-02: it is $10 off, the same as the membership.
+const DROP_IN_PRICE = 10
+const SIBLING = {
+  dropInOff: 5, // $10 -> $5
+  passportOff: 10, // $45 -> $35, $85 -> $75
+  membershipOff: 10, // $89 -> $79
+}
+
 // Derived, never typed. The discounted figures must not be able to drift from the base
 // prices sitting next to them — that is exactly how the $65/$60 registration fee ended up
 // stated two ways across this repo. Whole dollars render without a trailing ".00".
@@ -204,17 +223,16 @@ const PRICING = [
   {
     question: 'Just want to try it?',
     label: 'Drop-In',
-    headline: '$10',
-    // The $10 covers one child; each additional child in the same family is $3, added
-    // 2026-08-17. Stated in the unit as well as the bullet so the headline price can never
-    // be read as a per-family total.
+    headline: `$${DROP_IN_PRICE}`,
+    // The $10 covers one child; each additional child in the same family is discounted
+    // (added 2026-08-17 at $3, raised to $5 on 2026-09-02). Stated in the unit as well as
+    // the bullet so the headline price can never be read as a per-family total.
     unit: 'first child, per class',
     blurb: 'Pay as you go. Come to any single class on the booking calendar, with nothing to sign up for.',
-    lines: [
-      '$3 for each additional child',
-      'Good for any Little Movers class',
-      'No membership or commitment',
-    ],
+    lines: ['Good for any Little Movers class', 'No membership or commitment'],
+    // Every additional child, not just the second — "$5 per sib", the studio 2026-09-02.
+    // The resulting price is derived so it cannot drift from the $10 headline above it.
+    sibling: `$${DROP_IN_PRICE - SIBLING.dropInOff} for each additional child`,
   },
   {
     question: 'Come when you can',
@@ -223,6 +241,10 @@ const PRICING = [
     unit: 'or 10 visits — $85',
     blurb: 'A class pack that never locks you into a day or time — use the visits whenever your week allows.',
     lines: ['Works for any Little Movers class', '10-visit pack is $8.50 a class'],
+    // The first pass is full price and every pass after it comes off by a flat amount.
+    // Deliberately states the amount off rather than a resulting price: the same $10 comes
+    // off either tier, so one line covers both instead of listing four figures.
+    sibling: `$${SIBLING.passportOff} off each additional child's pass`,
     // Computes at checkout, so the parent sees these prices in the wizard.
     promo: `${PROMO.percentOff}% off with code ${PROMO.code} — ${promoPrice(45)} for 5 visits, ${promoPrice(85)} for 10`,
   },
@@ -251,6 +273,7 @@ const PRICING = [
       '10% off retail',
       'Exclusive Little Movers events',
     ],
+    sibling: `$${SIBLING.membershipOff} off each additional member`,
     // 🔴 Deliberately does NOT say "at checkout". The portal records this code against a
     // membership rather than charging it, so the studio applies it to the first invoice.
     promo: `${PROMO.percentOff}% off your first month with code ${PROMO.code} (${promoPrice(89)}) — we apply it to your first invoice`,
@@ -307,7 +330,7 @@ export default function LittleMovers() {
     <div className="min-h-screen flex flex-col bg-ink-base">
       <SEO
         title="Little Movers | Toddler &amp; Preschool Movement Classes in Midlothian, VA — Capital Core Dance"
-        description="Little Movers at Capital Core Dance in Midlothian, VA. A movement-based enrichment program for infants, toddlers, and preschoolers combining dance, music, sensory play, tumbling, and active exploration. Three 45-minute morning classes at 9:30, 10:30 and 11:30, drop-in $10 for the first child and $3 for each additional child. Wednesday mornings are open for booking on our studio portal now, with Monday and Friday to follow."
+        description="Little Movers at Capital Core Dance in Midlothian, VA. A movement-based enrichment program for infants, toddlers, and preschoolers combining dance, music, sensory play, tumbling, and active exploration. Three 45-minute morning classes at 9:30, 10:30 and 11:30, drop-in $10 for the first child and $5 for each additional child. Wednesday mornings are open for booking on our studio portal now, with Monday and Friday to follow."
         canonical="/little-movers"
         jsonLd={LITTLE_MOVERS_JSON_LD}
       />
@@ -590,7 +613,7 @@ export default function LittleMovers() {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-[26px]">
-            {PRICING.map(({ question, label, headline, unit, badge, blurb, lines, promo }) => (
+            {PRICING.map(({ question, label, headline, unit, badge, blurb, lines, sibling, promo }) => (
               <div
                 key={label}
                 data-testid="pricing-card"
@@ -635,15 +658,29 @@ export default function LittleMovers() {
                     </li>
                   ))}
                 </ul>
-                {/* Gold, and pushed to the bottom of the card with mt-auto so the promo
-                    line sits on the same baseline across all three cards however many
-                    bullets each one has. Notice gold rather than the teal accent for the
-                    same reason the staffing note is gold: a promo is a temporary status,
-                    and the drop-in card deliberately has none. */}
+                {/* Sibling rate, in the page's TEAL. Every card has one, and the colour is
+                    the point: teal is the Little Movers identity, and a sibling rate is
+                    permanent pricing. The promo below it is gold because a promo is a
+                    temporary status — the page has used that distinction since 2026-08-13,
+                    so putting a standing rate in gold would say the wrong thing about it.
+
+                    mt-auto here rather than on the promo: it pushes whichever block comes
+                    first to the bottom, so all three cards' footers line up. */}
+                {sibling && (
+                  <p
+                    data-testid="pricing-sibling"
+                    className="font-body text-[13px] leading-snug font-semibold mt-auto pt-5 border-t border-white/10"
+                    style={{ color: ACCENT }}
+                  >
+                    {sibling}
+                  </p>
+                )}
                 {promo && (
                   <p
                     data-testid="pricing-promo"
-                    className="font-body text-[13px] leading-snug font-semibold mt-auto pt-5 border-t border-white/10"
+                    className={`font-body text-[13px] leading-snug font-semibold${
+                      sibling ? ' mt-2' : ' mt-auto pt-5 border-t border-white/10'
+                    }`}
                     style={{ color: NOTICE_ACCENT }}
                   >
                     {promo}

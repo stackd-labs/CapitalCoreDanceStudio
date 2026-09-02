@@ -2,6 +2,7 @@ import { render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import LittleMovers from './LittleMovers'
 import { ACCENTS } from '../lib/pageAccents'
+import { FAQS } from '../lib/faqs'
 
 // The six classes and their age ranges. Widened 2026-08-17 at the studio's request so the
 // morning hands off cleanly at 18 months: Baby & Me runs 0–18 months, and every class after
@@ -290,9 +291,11 @@ test('renders the three ways to join, each framed by how often a family comes', 
   expect(cards[0].textContent).toContain('Drop-In')
   expect(cards[0].textContent).toContain('$10')
   expect(cards[0].textContent).toContain('per class')
-  // The sibling rate, added 2026-08-17: $10 covers the first child, each additional $3.
+  // The sibling rate: $10 covers the first child, each additional $5. Added 2026-08-17 at
+  // $3 and raised to $5 on 2026-09-02.
   expect(cards[0].textContent).toContain('first child')
-  expect(cards[0].textContent).toContain('$3')
+  expect(cards[0].textContent).toContain('$5')
+  expect(cards[0].textContent).not.toContain('$3') // the superseded rate
   expect(cards[0].textContent).toMatch(/additional (child|sibling)/i)
 
   // Passport
@@ -306,6 +309,59 @@ test('renders the three ways to join, each framed by how often a family comes', 
   expect(cards[2].textContent).toContain('Little Movers Membership')
   expect(cards[2].textContent).toContain('$89')
   expect(cards[2].textContent).toContain('per month')
+})
+
+test('every pricing option states its own sibling rate', () => {
+  // The studio 2026-09-02. Each product discounts a sibling differently, so the rate sits
+  // on the card next to the price it modifies rather than as one blanket line a parent has
+  // to apply themselves. All three cards carry one — unlike the promo, which the drop-in
+  // deliberately lacks.
+  renderLittleMovers()
+  const cards = screen.getAllByTestId('pricing-card')
+  const siblingOn = (card) => card.querySelector('[data-testid="pricing-sibling"]')?.textContent
+
+  expect(siblingOn(cards[0])).toMatch(/\$5 for each additional child/i)
+  expect(siblingOn(cards[1])).toMatch(/\$10 off each additional child's pass/i)
+  expect(siblingOn(cards[2])).toMatch(/\$10 off each additional member/i)
+})
+
+test('sibling rates are flat dollar amounts, never percentages', () => {
+  // 🔴 The Passport rate was briefly built as "10% off" from the studio's first note
+  // ("second is 10 percent off"), then corrected to $10 off — the same flat rule as the
+  // membership. On a $45 pass those differ by $5.50, and on the $85 tier by $1.50, so the
+  // wrong one is a real overcharge or undercharge at the desk.
+  //
+  // The only percentage anywhere in this section is MOOVE26's 30%.
+  renderLittleMovers()
+  for (const card of screen.getAllByTestId('pricing-card')) {
+    const sibling = card.querySelector('[data-testid="pricing-sibling"]')
+    expect(sibling.textContent).not.toMatch(/%/)
+    expect(sibling.textContent).toMatch(/\$\d+/)
+  }
+})
+
+test('every sibling rate applies to each child after the first, not just the second', () => {
+  // The studio 2026-09-02: "first kid is full and every kid after is just $10 off". A
+  // three-child family gets the rate twice. "Second child" wording would cap it at one.
+  renderLittleMovers()
+  for (const card of screen.getAllByTestId('pricing-card')) {
+    const sibling = card.querySelector('[data-testid="pricing-sibling"]')
+    expect(sibling.textContent).toMatch(/each additional/i)
+    expect(sibling.textContent).not.toMatch(/\bsecond\b/i)
+  }
+})
+
+test('a sibling rate is teal and a promo is gold, because one is permanent', () => {
+  // The page has meant gold = temporary status since 2026-08-13 (the coming-soon banner,
+  // then the open house, now the promo and the unstaffed days). A sibling rate is standing
+  // pricing, so it wears the Little Movers teal. Putting it in gold would tell a parent it
+  // expires. Pinned because "make the two footer lines match" is an obvious tidy-up.
+  renderLittleMovers()
+  const passport = screen.getAllByTestId('pricing-card')[1]
+  const sibling = passport.querySelector('[data-testid="pricing-sibling"]')
+  const promo = passport.querySelector('[data-testid="pricing-promo"]')
+  expect(sibling).toHaveStyle({ color: ACCENTS.teal })
+  expect(promo).toHaveStyle({ color: ACCENTS.gold })
 })
 
 test('MOOVE26 is offered on the Passport and the membership, never on the drop-in', () => {
@@ -345,6 +401,33 @@ test('the membership promo promises an invoice adjustment, not a checkout discou
   expect(promo.textContent).toMatch(/first month/i)
   expect(promo.textContent).toMatch(/first invoice/i)
   expect(promo.textContent).not.toMatch(/at checkout/i)
+})
+
+test('the promo code is spelled exactly MOOVE26 everywhere it appears', () => {
+  // 🔴 A parent types this into the portal by hand. One wrong character and the form
+  // rejects it and they pay full price — the portal matches the code exactly, and a
+  // near-miss discounts nothing rather than failing loudly. MOOSE26 for MOOVE26 is the
+  // slip that actually happened while writing this up.
+  //
+  // The page interpolates PROMO.code so it cannot drift internally, but the FAQ answer
+  // hardcodes the string, so that copy is pinned here too.
+  renderLittleMovers()
+  const shown = [
+    ...screen.getAllByTestId('pricing-promo'),
+    screen.getByTestId('promo-note'),
+  ].map((el) => el.textContent)
+
+  for (const text of shown) {
+    expect(text).toMatch(/\bMOOVE26\b/)
+    expect(text).not.toMatch(/MOOSE/i)
+  }
+
+  const pricingFaq = FAQS.flatMap((c) => c.items).find((f) =>
+    /how much does little movers cost/i.test(f.q)
+  )
+  expect(pricingFaq, 'the Little Movers pricing FAQ must exist to be checked').toBeTruthy()
+  expect(pricingFaq.a).toMatch(/\bMOOVE26\b/)
+  expect(pricingFaq.a).not.toMatch(/MOOSE/i)
 })
 
 test('the pricing section names the code once and excludes the drop-in in words', () => {

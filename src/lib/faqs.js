@@ -120,7 +120,7 @@ export const FAQS = [
       },
       {
         q: 'How much does Little Movers cost?',
-        a: 'Little Movers is priced separately from studio class tuition. Drop in for $10 for your first child and $5 for each additional child, buy a Passport of 5 visits for $45 or 10 for $85, or take the monthly membership at $89 — which includes unlimited Little Movers classes plus one Tiny Core class for ages 2–5. Bringing more than one child? The first child pays full price and every child after that comes off by a flat amount: an additional drop-in is $5, an additional Passport is $10 off, and an additional membership is $10 off a month. Code MOOVE26 takes 30% off a Passport ($31.50 for 5 visits, $59.50 for 10) and 30% off your first month of membership, which we apply to your first invoice. It does not apply to single drop-in classes.',
+        a: 'Little Movers is priced separately from studio class tuition. Drop in for $10 for your first child and $5 for each additional child, buy a Passport of 5 visits for $45 or 10 for $85, or take the monthly membership at $89 — which includes unlimited Little Movers classes plus one Tiny Core class for ages 2–5. Bringing more than one child? The first child pays full price and every child after that is cheaper: an additional child\'s drop-in is $5 instead of $10, each additional Passport is 10% off, and each additional membership is $10 less a month than the one before it — so $89, then $79, then $69. Code MOOVE26 takes 30% off a Passport ($31.50 for 5 visits, $59.50 for 10) and 30% off your first month of membership, which we apply to your first invoice. It does not apply to single drop-in classes.',
       },
       {
         q: 'Can I register for Little Movers yet?',

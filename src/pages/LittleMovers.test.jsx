@@ -321,23 +321,35 @@ test('every pricing option states its own sibling rate', () => {
   const siblingOn = (card) => card.querySelector('[data-testid="pricing-sibling"]')?.textContent
 
   expect(siblingOn(cards[0])).toMatch(/\$5 for each additional child/i)
-  expect(siblingOn(cards[1])).toMatch(/\$10 off each additional child's pass/i)
-  expect(siblingOn(cards[2])).toMatch(/\$10 off each additional member/i)
+  expect(siblingOn(cards[1])).toMatch(/10% off each additional child's pass/i)
+  expect(siblingOn(cards[2])).toMatch(/each additional member is \$10 less than the one before/i)
 })
 
-test('sibling rates are flat dollar amounts, never percentages', () => {
-  // 🔴 The Passport rate was briefly built as "10% off" from the studio's first note
-  // ("second is 10 percent off"), then corrected to $10 off — the same flat rule as the
-  // membership. On a $45 pass those differ by $5.50, and on the $85 tier by $1.50, so the
-  // wrong one is a real overcharge or undercharge at the desk.
+test('the Passport sibling rate is a PERCENTAGE, matching what the portal charges', () => {
+  // 🔴 Reconciled against the portal 2026-09-02. This page briefly said "$10 off each
+  // additional child's pass"; the portal's SIBLING_PASSPORT_DISCOUNT_PCT is 10, a
+  // PERCENTAGE. On a $45 pass that is $40.50 against $35 — the site was advertising
+  // $5.50 under what a parent gets charged, which is the wrong direction to be wrong in.
   //
-  // The only percentage anywhere in this section is MOOVE26's 30%.
+  // The portal is the source of truth because it is what takes the money. Pinned as a
+  // percentage so a future edit cannot quietly reintroduce the dollar reading, which is
+  // the more natural way to write it given the other two rates are dollars.
   renderLittleMovers()
-  for (const card of screen.getAllByTestId('pricing-card')) {
-    const sibling = card.querySelector('[data-testid="pricing-sibling"]')
-    expect(sibling.textContent).not.toMatch(/%/)
-    expect(sibling.textContent).toMatch(/\$\d+/)
-  }
+  const passport = screen.getAllByTestId('pricing-card')[1]
+  const sibling = passport.querySelector('[data-testid="pricing-sibling"]').textContent
+  expect(sibling).toMatch(/10%/)
+  expect(sibling).not.toMatch(/\$10/)
+})
+
+test('the membership sibling rate steps down rather than being flat', () => {
+  // 🔴 Also reconciled against the portal. Its membershipEstimate() is
+  // `MEMBERSHIP_FROM - i * MEMBERSHIP_SIBLING_DISCOUNT`, so the quote is $89 / $79 / $69,
+  // not $79 for every sibling. "$10 off each additional member" reads as the flat version
+  // and over-quotes a three-child family by $10.
+  renderLittleMovers()
+  const membership = screen.getAllByTestId('pricing-card')[2]
+  const sibling = membership.querySelector('[data-testid="pricing-sibling"]').textContent
+  expect(sibling).toMatch(/less than the one before/i)
 })
 
 test('every sibling rate applies to each child after the first, not just the second', () => {

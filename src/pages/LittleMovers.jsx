@@ -194,17 +194,27 @@ const PROMO = {
 // next to their own price rather than as one blanket line.
 //
 // The shape is the same for all three: THE FIRST CHILD PAYS FULL PRICE and every child
-// after that comes off by a flat dollar amount — not a percentage, and not just the
-// second child. Stated as the amount OFF rather than the resulting price so the two
-// Passport tiers can share one rule.
+// after that is cheaper. The Passport discount is a PERCENTAGE; the other two are flat
+// dollars.
 //
-// The Passport was briefly written as 10% off, from "second is 10 percent off" in the
-// studio's first note. Corrected 2026-09-02: it is $10 off, the same as the membership.
+// 🔴 THE PORTAL IS THE SOURCE OF TRUTH FOR ALL THREE, because it is what charges the
+// card. These mirror its little-movers-pricing.ts:
+//
+//   SIBLING_DROP_IN_PRICE          = 5   · first child $10 a class, every other $5
+//   SIBLING_PASSPORT_DISCOUNT_PCT  = 10  · first pass full, every extra pass 10% off
+//   MEMBERSHIP_SIBLING_DISCOUNT    = 10  · CUMULATIVE — $89, $79, $69, $59
+//
+// The Passport was briefly published here as "$10 off" on 2026-09-02, from reading "same
+// for the punch pass" as the same amount as the membership rather than the same shape.
+// The portal had it right at 10%. On a $45 pass that is $40.50 against $35, so the site
+// was advertising $5.50 under what a parent would actually be charged. Reconciled against
+// the portal the same day — when these disagree, the portal wins, because it is the one
+// that takes the money.
 const DROP_IN_PRICE = 10
 const SIBLING = {
   dropInOff: 5, // $10 -> $5
-  passportOff: 10, // $45 -> $35, $85 -> $75
-  membershipOff: 10, // $89 -> $79
+  passportPercentOff: 10, // $45 -> $40.50, $85 -> $76.50
+  membershipOff: 10, // each member $10 less than the one before: 89, 79, 69
 }
 
 // Derived, never typed. The discounted figures must not be able to drift from the base
@@ -241,10 +251,15 @@ const PRICING = [
     unit: 'or 10 visits — $85',
     blurb: 'A class pack that never locks you into a day or time — use the visits whenever your week allows.',
     lines: ['Works for any Little Movers class', '10-visit pack is $8.50 a class'],
-    // The first pass is full price and every pass after it comes off by a flat amount.
-    // Deliberately states the amount off rather than a resulting price: the same $10 comes
-    // off either tier, so one line covers both instead of listing four figures.
-    sibling: `$${SIBLING.passportOff} off each additional child's pass`,
+    // The first pass is full price and every pass after it is 10% off. States the
+    // percentage rather than resulting prices: it applies to both tiers, so one line
+    // covers them instead of listing four figures.
+    //
+    // The portal sorts a family's passes MOST EXPENSIVE FIRST so the discount always
+    // lands on the cheaper pass — a family buying a 10-visit and a 5-visit pass is never
+    // penalised for the order they picked them in. Not stated here; it can only ever make
+    // the bill lower than this line implies.
+    sibling: `${SIBLING.passportPercentOff}% off each additional child's pass`,
     // Computes at checkout, so the parent sees these prices in the wizard.
     promo: `${PROMO.percentOff}% off with code ${PROMO.code} — ${promoPrice(45)} for 5 visits, ${promoPrice(85)} for 10`,
   },
@@ -273,7 +288,10 @@ const PRICING = [
       '10% off retail',
       'Exclusive Little Movers events',
     ],
-    sibling: `$${SIBLING.membershipOff} off each additional member`,
+    // CUMULATIVE, matching the portal: $89, then $79, then $69. "$10 off each additional
+    // member" was published here first and reads as a flat $79 for every sibling, which
+    // over-quotes a three-child family by $10 — the portal keeps stepping down.
+    sibling: `Each additional member is $${SIBLING.membershipOff} less than the one before`,
     // 🔴 Deliberately does NOT say "at checkout". The portal records this code against a
     // membership rather than charging it, so the studio applies it to the first invoice.
     promo: `${PROMO.percentOff}% off your first month with code ${PROMO.code} (${promoPrice(89)}) — we apply it to your first invoice`,

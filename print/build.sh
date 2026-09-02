@@ -69,7 +69,13 @@ measure() {
   cat "${ROOT}/print/${name}.html" > "$probe"
   cat >> "$probe" <<'PROBE'
 <script>
-window.addEventListener('load', () => {
+// 🔴 WAITS FOR document.fonts.ready, NOT just 'load'. The font <link> uses
+// display=swap, so text first lays out in the fallback face and reflows when Anton
+// and Barlow arrive. Measuring on 'load' caught whichever had happened to win, and
+// the same unedited file measured 1085 on one run and 1056 on the next — a flaky
+// guard that reports different numbers for identical input is worse than none,
+// because it teaches you to ignore it.
+window.addEventListener('load', () => { document.fonts.ready.then(() => {
   // .page wrappers if the sheet has them (class-schedule, which is two pages), else
   // the body itself (little-movers, still a single body-as-page sheet). Without the
   // fallback this returns nothing for one-page sheets, which now fails the build.
@@ -85,7 +91,7 @@ window.addEventListener('load', () => {
     const h = Math.round(p.scrollHeight);
     return `p${i + 1}=${h}${h > 1056 ? '-OVERFLOW' : ''}`;
   }).join(' ');
-});
+}); });
 </script>
 PROBE
   local winprobe

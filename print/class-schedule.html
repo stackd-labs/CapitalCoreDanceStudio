@@ -518,8 +518,8 @@
   .teacher {
     background: var(--ink-panel);
     border-left: 3px solid var(--accent);
-    padding: 6px 13px 7px;
-    margin-bottom: 7px;
+    padding: 5px 12px 6px;
+    margin-bottom: 5px;
   }
   .teacher:last-child { margin-bottom: 0; }
 
@@ -721,7 +721,13 @@
       <!-- Ms. Jillian takes the whole of Tuesday: three back to back, 5:00 to 7:00. -->
       <li><div class="c-time">5:00 &ndash; 5:30</div><div class="c-name">Tiny Core Ballet &amp; Hip Hop</div><div class="c-ages">Ages 2&ndash;5</div><div class="c-with">Ms. Jillian</div></li>
       <li><div class="c-time">5:30 &ndash; 6:15</div><div class="c-name">Core Ballet &amp; Hip Hop</div><div class="c-ages">Ages 5+</div><div class="c-with">Ms. Jillian</div></li>
-      <li><div class="c-time">6:15 &ndash; 7:00</div><div class="c-name">Core Contemporary &amp; Jazz</div><div class="c-ages">Ages 5+</div><div class="c-with">Ms. Jillian</div></li>
+      <!-- Musical Theatre returns here 2026-09-02, having come off Wednesday earlier
+           the same day — so it leaves the not-running box again. "All ages", not
+           "Ages 5+": it is a Specialty class and src/lib/schedule.js has always had it
+           age-open. Ms. Hannah is on the Fall flyer but has NO entry in
+           src/lib/instructors.js — hers is one of the three flyers still to come — so
+           her name is all this sheet can honestly say about her. -->
+      <li><div class="c-time">6:15 &ndash; 7:00</div><div class="c-name">Musical Theatre</div><div class="c-ages">All ages</div><div class="c-with">Ms. Hannah</div></li>
       <!-- Tumble Tech (was 7:00) came off 2026-09-02 — see the not-running box. -->
     </ul>
   </div>
@@ -832,10 +838,15 @@
          Tumble Tech is now a FULL withdrawal: off Tuesday, then off Thursday, so
          it is gone from the week rather than running one night instead of two. Its
          entry was hedged accordingly until Thursday was settled. -->
-    <li><b>Tumble Tech</b> <span>&middot; all levels &middot; was Tuesday 7:00 and Thursday 7:15</span></li>
-    <li><b>Musical Theatre</b> <span>&middot; all ages &middot; was Wednesday 6:45</span></li>
-    <li><b>Core Plus Lyrical &amp; Contemporary</b> <span>&middot; ages 8+ &middot; was Friday 6:15</span></li>
-    <li><b>Adult Femme/Flair</b> <span>&middot; ages 16+ &middot; was Monday 7:45</span></li>
+    <li><b>Tumble Tech</b> <span>&middot; all levels &middot; was Tue 7:00 &amp; Thu 7:15</span></li>
+    <!-- Musical Theatre left this box the same day it entered it: off Wednesday, then
+         back on Tuesday at 6:15 with Ms. Hannah. It is on the grid, so it is not here.
+         Core Contemporary & Jazz took its place in the box, and like Tumble Tech before
+         it that is a PARTIAL withdrawal — it lost Tuesday but still runs Monday, and
+         saying "not running" flat would tell a parent the class is gone. -->
+    <li><b>Core Contemporary &amp; Jazz</b> <span>&middot; off Tue &middot; still runs Mon 6:15</span></li>
+    <li><b>Core Plus Lyrical &amp; Contemporary</b> <span>&middot; 8+ &middot; was Fri 6:15</span></li>
+    <li><b>Adult Femme/Flair</b> <span>&middot; 16+ &middot; was Mon 7:45</span></li>
   </ul>
 </div>
 
@@ -922,7 +933,7 @@
   <div class="teacher">
     <div class="who">
       <div class="name">Ms. Jillian</div>
-      <div class="load">9 classes &middot; Sun, Mon, Tue, Wed, Thu</div>
+      <div class="load">8 classes &middot; Sun, Mon, Tue, Wed, Thu</div>
     </div>
     <ul>
       <li><span class="t-day">Sun</span><span class="t-time">3:00 &ndash; 6:00</span><span class="t-class">Dance Academy <span class="t-meta">&middot; Studio A &middot; with Mr. Yul &amp; Ms. Kendall</span></span></li>
@@ -930,7 +941,6 @@
       <li><span class="t-day">Mon</span><span class="t-time">7:00 &ndash; 7:45</span><span class="t-class">Ballet Tech <span class="t-meta">&middot; ages 8+</span></span></li>
       <li><span class="t-day">Tue</span><span class="t-time">5:00 &ndash; 5:30</span><span class="t-class">Tiny Core Ballet &amp; Hip Hop <span class="t-meta">&middot; ages 2&ndash;5</span></span></li>
       <li><span class="t-day">Tue</span><span class="t-time">5:30 &ndash; 6:15</span><span class="t-class">Core Ballet &amp; Hip Hop <span class="t-meta">&middot; ages 5+</span></span></li>
-      <li><span class="t-day">Tue</span><span class="t-time">6:15 &ndash; 7:00</span><span class="t-class">Core Contemporary &amp; Jazz <span class="t-meta">&middot; ages 5+</span></span></li>
       <li><span class="t-day">Wed</span><span class="t-time">5:30 &ndash; 6:00</span><span class="t-class">Tiny Core Ballet &amp; Tap <span class="t-meta">&middot; ages 2&ndash;5</span></span></li>
       <li><span class="t-day">Wed</span><span class="t-time">6:00 &ndash; 6:45</span><span class="t-class">Core Hip Hop &amp; Breakdancing <span class="t-meta">&middot; ages 5+ &middot; covering for Ms. Savannah</span></span></li>
       <li><span class="t-day">Thu</span><span class="t-time">5:00 &ndash; 7:00</span><span class="t-class">Dance Academy <span class="t-meta">&middot; Studio A &middot; with Mr. Yul</span></span></li>
@@ -979,6 +989,18 @@
     <ul>
       <li><span class="t-day">Mon</span><span class="t-time">5:30 &ndash; 6:15</span><span class="t-class">Core Hip Hop &amp; Breakdancing <span class="t-meta">&middot; ages 5+</span></span></li>
       <li><span class="t-day">Mon</span><span class="t-time">6:15 &ndash; 7:00</span><span class="t-class">Core Contemporary &amp; Jazz <span class="t-meta">&middot; ages 5+</span></span></li>
+    </ul>
+  </div>
+
+  <!-- Ms. Hannah's first class on this sheet. She is named on the Fall flyer but has
+       no roster entry yet, so there is nothing more to put here than the class. -->
+  <div class="teacher">
+    <div class="who">
+      <div class="name">Ms. Hannah</div>
+      <div class="load">1 class &middot; Tue</div>
+    </div>
+    <ul>
+      <li><span class="t-day">Tue</span><span class="t-time">6:15 &ndash; 7:00</span><span class="t-class">Musical Theatre <span class="t-meta">&middot; all ages</span></span></li>
     </ul>
   </div>
 

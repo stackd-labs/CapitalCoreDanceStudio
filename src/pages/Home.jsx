@@ -281,7 +281,14 @@ export default function Home() {
           there is nothing to remember here.
 
           ⚠ The `lid` and `sid` query parameters in the URL are what tie the shop to
-          Capital Core. Do not tidy them out of the link. */}
+          Capital Core. Do not tidy them out of the link.
+
+          The destination changed 2026-09-02, from `/dancerclasslist` to `/Store` (same
+          lid and sid). Those are two different pages: the old one landed on the studio's
+          dress-code lists ("YOUR LIST"), the new one lands on the storefront, which is
+          browsable by dance style and reaches the dress-code lists from its own nav. The
+          copy below moved with it — it described a page laid out by class, which this one
+          is not. */}
       <section
         className="bg-ink-base px-6 lg:px-24 py-16 lg:py-20"
         aria-label="Dancewear shop"
@@ -294,16 +301,18 @@ export default function Home() {
             in one place
           </SectionHeading>
           {/* PLACEHOLDER — needs the studio's own words. Written deliberately narrow:
-              it says only what is verifiable from the link itself, that the shop is
-              the studio's and that it is organised by class. Anything about shipping,
-              returns, pricing or required items is the studio's to state. */}
+              it says only what is verifiable from the destination itself, that the shop
+              is the studio's, that it is browsable by style, and that the dress-code
+              lists are reachable from it. Anything about shipping, returns, pricing or
+              which items are required is the studio's to state. */}
           <p className="font-body text-[16.5px] leading-[1.65] text-mist-300 max-w-[460px] m-0 mb-7">
-            Our shop is hosted by Nimbly and laid out by class, so you can find what your
-            dancer needs without guessing at a style or a colour.
+            Our shop is hosted by Nimbly and browsable by dance style, with our class
+            dress-code lists a click away, so you can find what your dancer needs without
+            guessing at a style or a colour.
           </p>
           <PrimaryAction
             accent={ACCENTS.purple}
-            href="https://www.shopnimbly.com/dancerclasslist?lid=a0eQp00000Er2A5IAJ&sid=001Qp00000hOQQRIA4"
+            href="https://www.shopnimbly.com/Store?sid=001Qp00000hOQQRIA4&lid=a0eQp00000Er2A5IAJ"
             data-testid="nimbly-shop-link"
           >
             Shop dancewear

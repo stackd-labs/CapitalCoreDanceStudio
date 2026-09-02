@@ -174,13 +174,27 @@ test('the dancewear shop link points at Nimbly and opens safely off-site', () =>
 
   // The lid and sid parameters are what tie the shop to Capital Core. A refactor that
   // "tidies" the query string would leave a working link to the wrong storefront, which
-  // is the failure this pins.
+  // is the failure this pins. Moved 2026-09-02 from /dancerclasslist to /Store, same ids.
   expect(link).toHaveAttribute(
     'href',
-    'https://www.shopnimbly.com/dancerclasslist?lid=a0eQp00000Er2A5IAJ&sid=001Qp00000hOQQRIA4'
+    'https://www.shopnimbly.com/Store?sid=001Qp00000hOQQRIA4&lid=a0eQp00000Er2A5IAJ'
   )
+  // Pinned separately from the whole-URL check above, because losing one id is the
+  // failure that still leaves a page that loads — it just belongs to no studio.
+  expect(link.getAttribute('href')).toContain('sid=001Qp00000hOQQRIA4')
+  expect(link.getAttribute('href')).toContain('lid=a0eQp00000Er2A5IAJ')
   expect(link).toHaveAttribute('target', '_blank')
   expect(link).toHaveAttribute('rel', expect.stringContaining('noopener'))
+})
+
+test('the shop copy does not claim the old class-list layout', () => {
+  // The link landed on the studio's dress-code lists until 2026-09-02 and the copy said
+  // "laid out by class" to match. It now lands on the storefront, which is organised by
+  // dance style, so that phrasing would describe a page the visitor no longer arrives on.
+  renderHome()
+  const shop = screen.getByLabelText('Dancewear shop')
+  expect(shop.textContent).not.toMatch(/laid out by class/i)
+  expect(shop.textContent).toMatch(/browsable by dance style/i)
 })
 
 test('the shop section does not wear the home page accent', () => {

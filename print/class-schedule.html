@@ -33,10 +33,21 @@
   · A class            → edit the <li> directly. Each is time / name / ages.
   · Prices, tiers      → the "PROGRAMME TIERS" and "TUITION" sections.
 
-  🔴 A CLASS MOVED? src/lib/schedule.js is the source of truth and the website
-  reads it directly. Change it there first, then bring this sheet in line — this
-  file is a hand-kept copy, which is the one thing about it that can rot. There
-  is no test tying the two together.
+  🔴 THIS SHEET IS NOW AHEAD OF THE WEBSITE. As of 2026-09-02 it carries the new
+  Monday; src/lib/schedule.js still has the old one, so capitalcoredance.com
+  /classes still shows both Acro classes, Hip Hop at 6:15 and the Adult class at
+  8:00. The website is the source of truth for anything a parent books against,
+  so this gap has to be closed before the sheet goes out — the Monday change was
+  made here first deliberately, to be looked at before it went live.
+
+  What changed on Monday, 2026-09-02, at the studio's direction:
+    OFF   Core Acro & Jazz (was 5:30)   ·  Core Plus Acro & Lyrical (was 6:15)
+    MOVED Core Hip Hop & Breakdancing   6:15 → 5:30
+          Core Contemporary & Jazz      5:30 → 6:15
+          Adult Femme/Flair             8:00 → 7:45
+    RENAMED Core Plus Ballet & Contemporary → "Ballet Tech", 7:15 → 7:00
+    All four are 45 minutes, so the evening now runs unbroken 5:30 → 8:30.
+    Tiny Core stays 30 minutes at 5:00 (see the note on the Monday column).
 
   ── WHY THESE FIGURES AND NOT OTHERS ───────────────────────────────────────
   Everything here was derived from the repo on 2026-09-02, not retyped:
@@ -251,6 +262,34 @@
      the word, and shortening the names to make room for it would have put this
      sheet out of step with the flyer and the website. The name is the marker. */
 
+  /* ── NOT RUNNING THIS TERM ─────────────────────────────────────────────── */
+  /* Deliberately RECEDES. It carries no accent and no chip: the Little Movers
+     sheet uses gold to say "coming, not yet bookable", and these are the
+     opposite — classes that have come OFF. Borrowing gold would tell a parent
+     to wait for something that is not on its way. Dashed border and mist type
+     read as an archive note, which is what it is.
+
+     Kept on the sheet rather than deleted so a parent looking for a class that
+     was here last term finds an answer instead of assuming a printing error. */
+  .off {
+    flex: 0 0 auto;
+    margin: 14px 40px 0;
+    padding: 10px 14px 11px;
+    border: 1px dashed rgba(255, 255, 255, 0.22);
+  }
+  .off .label {
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mist-500);
+    margin-bottom: 6px;
+  }
+  .off ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 30px; flex-wrap: wrap; }
+  .off li { font-size: 11px; line-height: 1.4; }
+  .off b { color: var(--mist-400); font-weight: 700; }
+  .off span { color: var(--mist-500); }
+
   /* ── TUITION ───────────────────────────────────────────────────────────── */
   .tuition {
     flex: 0 0 auto;
@@ -339,7 +378,8 @@
 
 <div class="title">
   <h1>Class <em>Schedule</em></h1>
-  <div class="tagline">22 classes &middot; Monday to Friday &middot; Ages 2 to adult</div>
+  <!-- Count is 20 as of 2026-09-02, down from 22: two Monday Acro classes came off. -->
+  <div class="tagline">20 classes &middot; Monday to Friday &middot; Ages 2 to adult</div>
 </div>
 
 <!-- SIX tiers. Core Elite is deliberately absent: it has no classes yet. -->
@@ -354,19 +394,28 @@
 
 <div class="week">
 
+  <!-- MONDAY, rebuilt 2026-09-02 at the studio's direction. Two Acro classes came
+       off (they sit in the "not running" box below), and what remains was pulled
+       forward into one unbroken run of 45-minute classes: 5:30, 6:15, 7:00, 7:45.
+       Tiny Core stays 30 minutes at 5:00 — "keep at 45 for all" was about the four
+       classes being moved, and making the preschool class 45 would reprice it from
+       $65 to $85 and put it out of step with Tuesday's and Wednesday's Tiny Core.
+       It also lands exactly on 5:30, so the evening is now gapless. -->
   <div class="day">
     <div class="day-head">
       <div class="day-name">Monday</div>
-      <div class="day-count">7 classes</div>
+      <div class="day-count">5 classes</div>
     </div>
     <ul>
       <li><div class="c-time">5:00 &ndash; 5:30</div><div class="c-name">Tiny Core Ballet &amp; Tumble</div><div class="c-ages">Ages 2&ndash;5</div></li>
-      <li><div class="c-time">5:30 &ndash; 6:15</div><div class="c-name">Core Acro &amp; Jazz</div><div class="c-ages">Ages 5+</div></li>
-      <li><div class="c-time">5:30 &ndash; 6:15</div><div class="c-name">Core Contemporary &amp; Jazz</div><div class="c-ages">Ages 5+</div></li>
-      <li><div class="c-time">6:15 &ndash; 7:00</div><div class="c-name">Core Hip Hop &amp; Breakdancing</div><div class="c-ages">Ages 5+</div></li>
-      <li><div class="c-time">6:15 &ndash; 7:15</div><div class="c-name">Core Plus Acro &amp; Lyrical</div><div class="c-ages">Ages 8+</div></li>
-      <li><div class="c-time">7:15 &ndash; 8:00</div><div class="c-name">Core Plus Ballet &amp; Contemporary</div><div class="c-ages">Ages 8+</div></li>
-      <li><div class="c-time">8:00 &ndash; 8:45</div><div class="c-name">Adult Femme/Flair</div><div class="c-ages">Ages 16+</div></li>
+      <li><div class="c-time">5:30 &ndash; 6:15</div><div class="c-name">Core Hip Hop &amp; Breakdancing</div><div class="c-ages">Ages 5+</div></li>
+      <li><div class="c-time">6:15 &ndash; 7:00</div><div class="c-name">Core Contemporary &amp; Jazz</div><div class="c-ages">Ages 5+</div></li>
+      <!-- Renamed from "Core Plus Ballet & Contemporary". Ages held at 8+ — the
+           studio asked for a rename, not a re-audience. ⚠ Tumble Tech, the only
+           other "Tech" class, sits in the Technique tier at All Levels, so this
+           name now implies a tier this class does not have. Worth settling. -->
+      <li><div class="c-time">7:00 &ndash; 7:45</div><div class="c-name">Ballet Tech</div><div class="c-ages">Ages 8+</div></li>
+      <li><div class="c-time">7:45 &ndash; 8:30</div><div class="c-name">Adult Femme/Flair</div><div class="c-ages">Ages 16+</div></li>
     </ul>
   </div>
 
@@ -421,6 +470,16 @@
     </ul>
   </div>
 
+</div>
+
+<!-- Classes taken off Monday 2026-09-02. Add to this list, don't delete from it,
+     when a class comes off — and take one out again if it comes back. -->
+<div class="off">
+  <div class="label">Not running this term</div>
+  <ul>
+    <li><b>Core Acro &amp; Jazz</b> <span>&middot; ages 5+ &middot; was Monday 5:30</span></li>
+    <li><b>Core Plus Acro &amp; Lyrical</b> <span>&middot; ages 8+ &middot; was Monday 6:15</span></li>
+  </ul>
 </div>
 
 <div class="tuition">

@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Class Schedule — Fall 2026</title>
+
+<!--
+  ============================================================================
+  FULL CLASS SCHEDULE — FALL 2026  ·  print / PDF sheet
+  ============================================================================
+
+  The companion to little-movers-schedule.html. Same system, same build-free
+  standalone HTML, but ORANGE instead of teal: on this site an accent is
+  navigational, and /classes is orange (src/lib/pageAccents.js). That also keeps
+  the two sheets telling themselves apart on a table side by side.
+
+  ── TO MAKE THE PDF ────────────────────────────────────────────────────────
+  Open in Chrome → Ctrl+P → Destination "Save as PDF"
+    · Paper           Letter
+    · Margins         None          (the navy bleeds to the edge by design)
+    · Scale           Default / 100%
+    · Background      ✅ ON — tick "Background graphics", or you get a white
+                      page with invisible text.
+  Or headless, which prints backgrounds without the tickbox:
+
+    chrome.exe --headless=new --disable-gpu --no-pdf-header-footer \
+      --run-all-compositor-stages-before-draw --virtual-time-budget=15000 \
+      "--print-to-pdf=print/class-schedule.pdf" \
+      "file:///C:/Users/hicks/Projects/Clients/capitalcoredancewebsite/print/class-schedule.html"
+
+  ── TO EDIT ────────────────────────────────────────────────────────────────
+  · Colours and fonts   → the :root block below, one place.
+  · A class            → edit the <li> directly. Each is time / name / ages.
+  · Prices, tiers      → the "PROGRAMME TIERS" and "TUITION" sections.
+
+  🔴 A CLASS MOVED? src/lib/schedule.js is the source of truth and the website
+  reads it directly. Change it there first, then bring this sheet in line — this
+  file is a hand-kept copy, which is the one thing about it that can rot. There
+  is no test tying the two together.
+
+  ── WHY THESE FIGURES AND NOT OTHERS ───────────────────────────────────────
+  Everything here was derived from the repo on 2026-09-02, not retyped:
+
+  · 22 classes, Monday–Friday, 5:00–8:45 PM   → src/lib/schedule.js
+  · Term dates Aug 24 – Dec 18                → the Classes page kicker + FAQ
+  · SIX tiers, not seven                      → derived from the schedule.
+      Core Elite is defined in PROGRAMS but has NO classes assigned yet, and
+      the repo's rule is to derive tiers from the schedule rather than assume
+      every one is populated. Listing it would advertise an empty track.
+  · Only 30 / 45 / 60-minute prices           → those are the only lengths the
+      Fall schedule actually runs. tuition.js also publishes 75 and 90-minute
+      rates; the website has a test asserting it must not print lengths that
+      are not on the schedule, and this sheet honours the same rule.
+  · $65 / $85 / $105 per month                → monthlyPriceForMinutes()
+  · $60 a semester, $120 the year, $10 off    → REGISTRATION
+  · Adult $165 unlimited, $25 drop-in         → ADULT_PRICING
+
+  No studio crest: logo.png has "EST. 2025" baked into the artwork and that
+  year has never been confirmed. The wordmark is set in type, as the navbar
+  does it.
+-->
+
+<!-- 🔴 v1 `/css?` endpoint, NOT css2 — DO NOT "MODERNISE" IT. index.html uses
+     css2, which is right for the website, but css2 serves these families as
+     VARIABLE fonts and Chrome's --print-to-pdf will not embed the upright axis.
+     Text then silently falls back to Segoe UI and the PDF still looks
+     plausible, so the fault ships unnoticed. v1 serves static cuts that embed.
+     🔴 Needs an internet connection when you print. -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css?family=Anton|Barlow:400,500,600,700|Barlow+Condensed:500,600,700&display=swap"
+/>
+
+<style>
+  /* ── TOKENS — the website's, verbatim from tailwind.config.js ──────────── */
+  :root {
+    --ink-base:  #0d1b34;
+    --ink-deep:  #0a1529;
+    --ink-panel: #101d38;
+
+    --mist-100: #d3ddec;
+    --mist-400: #a9b8cf;
+    --mist-500: #8fa5c6;
+
+    --red:    #e01b22;
+    --orange: #ff8c2b;   /* the Classes accent — this sheet's colour */
+    --gold:   #f5c518;
+    --teal:   #2ed3c8;
+    --pink:   #f77ea8;
+
+    /* Navy on a light accent, never white. White on orange is 2.32:1. */
+    --on-accent: #0d1b34;
+
+    --accent: var(--orange);
+  }
+
+  @page { size: letter portrait; margin: 0; }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    /* Letter at the 96dpi Chrome maps CSS px to. */
+    width: 816px;
+    height: 1056px;
+    background: var(--ink-base);
+    color: var(--mist-100);
+    font-family: "Barlow", Inter, system-ui, sans-serif;
+    font-size: 12px;
+    line-height: 1.45;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  h1, h2 {
+    font-family: "Anton", "Arial Narrow", Impact, sans-serif;
+    text-transform: uppercase;
+    font-weight: 400;
+    margin: 0;
+    letter-spacing: 0.01em;
+  }
+
+  /* No border radius anywhere — the mockups are square by design. */
+
+  /* ── THE FIVE-ACCENT SIGNATURE BAR ─────────────────────────────────────── */
+  .stripe { display: flex; height: 7px; flex: 0 0 auto; }
+  .stripe span { flex: 1; }
+
+  /* ── HEADER ────────────────────────────────────────────────────────────── */
+  .head {
+    flex: 0 0 auto;
+    padding: 20px 40px 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  .wordmark { font-size: 15px; font-weight: 700; letter-spacing: 0.14em; color: #fff; }
+  .wordmark small {
+    display: block;
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    color: var(--mist-500);
+    margin-top: 3px;
+  }
+  .term {
+    text-align: right;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .term small { display: block; color: var(--mist-500); margin-top: 3px; letter-spacing: 0.13em; }
+
+  /* ── TITLE ─────────────────────────────────────────────────────────────── */
+  .title { flex: 0 0 auto; padding: 12px 40px 0; }
+  .title h1 { font-size: 50px; line-height: 0.9; color: #fff; }
+  .title h1 em { font-style: normal; color: var(--accent); }
+  .title .tagline {
+    font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--mist-400);
+    margin-top: 7px;
+  }
+
+  /* ── PROGRAMME TIERS (the key) ─────────────────────────────────────────── */
+  /* "Core" and "Core Plus" mean nothing to a parent who has not read the site,
+     and every class name on the grid below is prefixed with its tier. So the
+     key is not decoration — without it the grid is jargon. */
+  .tiers {
+    flex: 0 0 auto;
+    margin: 14px 40px 0;
+    padding: 11px 14px;
+    background: var(--ink-panel);
+    border-left: 3px solid var(--accent);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px 22px;
+  }
+  .tier { font-size: 11px; line-height: 1.35; white-space: nowrap; }
+  .tier b { color: #fff; font-weight: 700; }
+  .tier span { color: var(--mist-500); }
+
+  /* ── THE WEEK ──────────────────────────────────────────────────────────── */
+  /* Five day COLUMNS, not a time grid. The evening classes do not line up
+     across days — Monday starts at 5:00 and Thursday at 5:15, and the lengths
+     differ — so a shared time axis would be mostly empty cells. */
+  .week {
+    flex: 1 1 auto;
+    padding: 16px 40px 0;
+    display: flex;
+    gap: 9px;
+    align-items: stretch;
+  }
+  .day { flex: 1; min-width: 0; }
+  .day-head {
+    border-top: 3px solid var(--accent);
+    padding-top: 7px;
+    margin-bottom: 9px;
+  }
+  .day-name {
+    font-family: "Anton", "Arial Narrow", Impact, sans-serif;
+    text-transform: uppercase;
+    font-size: 17px;
+    line-height: 1;
+    color: #fff;
+  }
+  .day-count {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mist-500);
+    margin-top: 3px;
+  }
+
+  .day ul { list-style: none; margin: 0; padding: 0; }
+  .day li {
+    padding: 7px 0 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
+  }
+  .day li:first-child { border-top: 0; padding-top: 0; }
+
+  .c-time {
+    font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--accent);
+  }
+  .c-name {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.25;
+    margin-top: 1px;
+  }
+  .c-ages { font-size: 9.5px; color: var(--mist-500); margin-top: 1px; }
+
+  /* No adult chip: all three adult classes are already NAMED "Adult ..." in
+     src/lib/schedule.js, which follows the studio's own flyer. A chip repeated
+     the word, and shortening the names to make room for it would have put this
+     sheet out of step with the flyer and the website. The name is the marker. */
+
+  /* ── TUITION ───────────────────────────────────────────────────────────── */
+  .tuition {
+    flex: 0 0 auto;
+    margin: 14px 40px 0;
+    display: flex;
+    gap: 10px;
+  }
+  .card {
+    flex: 1;
+    background: var(--ink-panel);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 10px 12px 11px;
+  }
+  .card .label {
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 5px;
+  }
+  .card .row {
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--mist-100);
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .card .row b { color: #fff; font-weight: 700; }
+  .card .fine { font-size: 9.5px; color: var(--mist-500); margin-top: 5px; line-height: 1.4; }
+
+  /* ── FOOTER ────────────────────────────────────────────────────────────── */
+  footer {
+    flex: 0 0 auto;
+    margin-top: auto;
+    background: var(--ink-deep);
+    border-top: 3px solid var(--accent);
+    padding: 13px 40px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+  }
+  .cta { font-size: 11px; line-height: 1.5; }
+  .cta .lead {
+    font-family: "Anton", "Arial Narrow", Impact, sans-serif;
+    text-transform: uppercase;
+    font-size: 15px;
+    color: #fff;
+    margin-bottom: 3px;
+  }
+  .cta .url { color: var(--accent); font-weight: 700; }
+  .cta .fine { margin-top: 5px; font-size: 9.5px; color: var(--mist-500); font-style: italic; }
+  .contact {
+    text-align: right;
+    font-size: 10px;
+    line-height: 1.6;
+    color: var(--mist-400);
+    white-space: nowrap;
+  }
+  .contact b { display: block; color: #fff; font-size: 10.5px; letter-spacing: 0.1em; }
+</style>
+</head>
+<body>
+
+<!-- Five accents, fixed order: red, orange, gold, teal, pink. -->
+<div class="stripe">
+  <span style="background: var(--red)"></span>
+  <span style="background: var(--orange)"></span>
+  <span style="background: var(--gold)"></span>
+  <span style="background: var(--teal)"></span>
+  <span style="background: var(--pink)"></span>
+</div>
+
+<div class="head">
+  <div class="wordmark">
+    CAPITAL CORE
+    <small>DANCE STUDIO</small>
+  </div>
+  <div class="term">
+    Fall 2026
+    <small>August 24 &ndash; December 18</small>
+  </div>
+</div>
+
+<div class="title">
+  <h1>Class <em>Schedule</em></h1>
+  <div class="tagline">22 classes &middot; Monday to Friday &middot; Ages 2 to adult</div>
+</div>
+
+<!-- SIX tiers. Core Elite is deliberately absent: it has no classes yet. -->
+<div class="tiers">
+  <div class="tier"><b>Tiny Core</b> <span>&middot; ages 2&ndash;5 &middot; preschool</span></div>
+  <div class="tier"><b>Core</b> <span>&middot; ages 5+ &middot; beginner to novice</span></div>
+  <div class="tier"><b>Core Plus</b> <span>&middot; ages 8+ &middot; beginner to novice</span></div>
+  <div class="tier"><b>Technique</b> <span>&middot; all levels</span></div>
+  <div class="tier"><b>Specialty</b> <span>&middot; all ages &middot; performance</span></div>
+  <div class="tier"><b>Adult Core</b> <span>&middot; ages 16+ &middot; all levels</span></div>
+</div>
+
+<div class="week">
+
+  <div class="day">
+    <div class="day-head">
+      <div class="day-name">Monday</div>
+      <div class="day-count">7 classes</div>
+    </div>
+    <ul>
+      <li><div class="c-time">5:00 &ndash; 5:30</div><div class="c-name">Tiny Core Ballet &amp; Tumble</div><div class="c-ages">Ages 2&ndash;5</div></li>
+      <li><div class="c-time">5:30 &ndash; 6:15</div><div class="c-name">Core Acro &amp; Jazz</div><div class="c-ages">Ages 5+</div></li>
+      <li><div class="c-time">5:30 &ndash; 6:15</div><div class="c-name">Core Contemporary &amp; Jazz</div><div class="c-ages">Ages 5+</div></li>
+      <li><div class="c-time">6:15 &ndash; 7:00</div><div class="c-name">Core Hip Hop &amp; Breakdancing</div><div class="c-ages">Ages 5+</div></li>
+      <li><div class="c-time">6:15 &ndash; 7:15</div><div class="c-name">Core Plus Acro &amp; Lyrical</div><div class="c-ages">Ages 8+</div></li>
+      <li><div class="c-time">7:15 &ndash; 8:00</div><div class="c-name">Core Plus Ballet &amp; Contemporary</div><div class="c-ages">Ages 8+</div></li>
+      <li><div class="c-time">8:00 &ndash; 8:45</div><div class="c-name">Adult Femme/Flair</div><div class="c-ages">Ages 16+</div></li>
+    </ul>
+  </div>
+
+  <div class="day">
+    <div class="day-head">
+      <div class="day-name">Tuesday</div>
+      <div class="day-count">4 classes</div>
+    </div>
+    <ul>
+      <li><div class="c-time">5:00 &ndash; 5:30</div><div class="c-name">Tiny Core Ballet &amp; Hip Hop</div><div class="c-ages">Ages 2&ndash;5</div></li>
+      <li><div class="c-time">5:30 &ndash; 6:15</div><div class="c-name">Core Ballet &amp; Hip Hop</div><div class="c-ages">Ages 5+</div></li>
+      <li><div class="c-time">6:15 &ndash; 7:00</div><div class="c-name">Core Contemporary &amp; Jazz</div><div class="c-ages">Ages 5+</div></li>
+      <li><div class="c-time">7:00 &ndash; 7:45</div><div class="c-name">Tumble Tech</div><div class="c-ages">All levels</div></li>
+    </ul>
+  </div>
+
+  <div class="day">
+    <div class="day-head">
+      <div class="day-name">Wednesday</div>
+      <div class="day-count">4 classes</div>
+    </div>
+    <ul>
+      <li><div class="c-time">5:30 &ndash; 6:00</div><div class="c-name">Tiny Core Ballet &amp; Tap</div><div class="c-ages">Ages 2&ndash;5</div></li>
+      <li><div class="c-time">6:00 &ndash; 6:45</div><div class="c-name">Core Hip Hop &amp; Breakdancing</div><div class="c-ages">Ages 5+</div></li>
+      <li><div class="c-time">6:45 &ndash; 7:30</div><div class="c-name">Musical Theatre</div><div class="c-ages">All ages</div></li>
+      <li><div class="c-time">7:30 &ndash; 8:15</div><div class="c-name">Adult Pom</div><div class="c-ages">Ages 16+</div></li>
+    </ul>
+  </div>
+
+  <div class="day">
+    <div class="day-head">
+      <div class="day-name">Thursday</div>
+      <div class="day-count">4 classes</div>
+    </div>
+    <ul>
+      <li><div class="c-time">5:15 &ndash; 6:00</div><div class="c-name">Core Ballet &amp; Jazz</div><div class="c-ages">Ages 5+</div></li>
+      <li><div class="c-time">6:00 &ndash; 6:45</div><div class="c-name">Core Ballet &amp; Tap</div><div class="c-ages">Ages 5+</div></li>
+      <li><div class="c-time">6:45 &ndash; 7:15</div><div class="c-name">Pom Cheer</div><div class="c-ages">Ages 5+</div></li>
+      <li><div class="c-time">7:15 &ndash; 8:00</div><div class="c-name">Tumble Tech</div><div class="c-ages">All levels</div></li>
+    </ul>
+  </div>
+
+  <div class="day">
+    <div class="day-head">
+      <div class="day-name">Friday</div>
+      <div class="day-count">3 classes</div>
+    </div>
+    <ul>
+      <li><div class="c-time">5:30 &ndash; 6:15</div><div class="c-name">Core Ballet &amp; Modern</div><div class="c-ages">Ages 5+</div></li>
+      <li><div class="c-time">6:15 &ndash; 7:00</div><div class="c-name">Core Plus Lyrical &amp; Contemporary</div><div class="c-ages">Ages 8+</div></li>
+      <li><div class="c-time">7:00 &ndash; 7:45</div><div class="c-name">Adult Contemporary</div><div class="c-ages">Ages 16+</div></li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="tuition">
+  <!-- Priced by LENGTH, not by style: a 45-minute adult class and a 45-minute
+       Core class cost the same. Only the three lengths the Fall schedule runs. -->
+  <div class="card">
+    <div class="label">Monthly tuition</div>
+    <div class="row"><span>30-minute class</span><b>$65</b></div>
+    <div class="row"><span>45-minute class</span><b>$85</b></div>
+    <div class="row"><span>60-minute class</span><b>$105</b></div>
+    <div class="fine">Priced by class length, not by style.</div>
+  </div>
+  <div class="card">
+    <div class="label">Registration</div>
+    <div class="row"><span>Per dancer, semester</span><b>$60</b></div>
+    <div class="row"><span>Full year, both terms</span><b>$120</b></div>
+    <div class="fine">Returning dancers take $10 off. Once registered, dancers are locked into their classes and pricing for the semester.</div>
+  </div>
+  <div class="card">
+    <div class="label">Adults, 16+</div>
+    <div class="row"><span>Unlimited, monthly</span><b>$165</b></div>
+    <div class="row"><span>Drop-in, per class</span><b>$25</b></div>
+    <div class="fine">Your first adult class is always free.</div>
+  </div>
+</div>
+
+<footer>
+  <div class="cta">
+    <div class="lead">Register</div>
+    <span class="url">studio.capitalcoredance.com/register/classes</span>
+    <div class="fine">Two semesters a year &mdash; Fall runs August 24 to December 18, Spring January 11 to May 21.</div>
+  </div>
+  <div class="contact">
+    <b>CAPITAL CORE DANCE STUDIO</b>
+    13110 Midlothian Turnpike<br />
+    Midlothian, VA 23113<br />
+    804-234-4014<br />
+    info@capitalcoredance.com
+  </div>
+</footer>
+
+</body>
+</html>

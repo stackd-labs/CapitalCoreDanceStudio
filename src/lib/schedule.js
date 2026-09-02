@@ -178,14 +178,20 @@ export const SCHEDULE = [
     classes: [
       { name: 'Core Ballet & Jazz', time: '5:15 – 6:00 PM', start: '17:15', end: '18:00', infoKey: 'Core Ballet & Jazz', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'ballet', studio: 'B', instructor: 'Ms. Kendall' },
       { name: 'Core Ballet & Tap', time: '6:00 – 6:45 PM', start: '18:00', end: '18:45', infoKey: 'Core Ballet & Tap', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'ballet', studio: 'B', instructor: 'Ms. Kendall' },
-      // 🔴 BOTH ACRO CLASSES MOVED HERE FROM MONDAY AND ARE SHORTER, which REPRICES
-      // them, since tuition goes by length (src/lib/tuition.js):
-      //   Core Acro & Jazz          45 → 30 min   $85 → $65
+      // Both Acro classes moved here from Monday. They first landed in the 30- and
+      // 45-minute slots Pom Cheer and Tumble Tech had left; the studio set them BOTH
+      // TO 45 MINUTES back to back on 2026-09-02, which pushes the evening to 8:15.
+      //
+      // Tuition goes by length (src/lib/tuition.js), so of the two only one is
+      // repriced by the move:
+      //   Core Acro & Jazz          45 → 45 min   $85 unchanged
       //   Core Plus Acro & Lyrical  60 → 45 min   $105 → $85
-      // They inherited the slots Pom Cheer and Tumble Tech left, and the studio named
-      // 7:15 as the second start — the old lengths would have collided.
-      { name: 'Core Acro & Jazz', time: '6:45 – 7:15 PM', start: '18:45', end: '19:15', infoKey: 'Core Acro & Jazz', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'jazz-acro', studio: 'B', instructor: 'Ms. Kendall & Ms. Milan' },
-      { name: 'Core Plus Acro & Lyrical', time: '7:15 – 8:00 PM', start: '19:15', end: '20:00', infoKey: 'Core Plus Acro & Lyrical', program: 'core-plus', ages: 'Ages 8+', ageGroups: ['kids', 'teen'], category: 'lyrical-contemp', studio: 'B', instructor: 'Mr. Yul & Ms. Milan' },
+      //
+      // Side effect worth keeping: Mr. Yul now has 30 minutes between the Dance
+      // Company session ending at 7:00 in Studio A and this class at 7:30, where the
+      // earlier 7:15 start gave him fifteen.
+      { name: 'Core Acro & Jazz', time: '6:45 – 7:30 PM', start: '18:45', end: '19:30', infoKey: 'Core Acro & Jazz', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'jazz-acro', studio: 'B', instructor: 'Ms. Kendall & Ms. Milan' },
+      { name: 'Core Plus Acro & Lyrical', time: '7:30 – 8:15 PM', start: '19:30', end: '20:15', infoKey: 'Core Plus Acro & Lyrical', program: 'core-plus', ages: 'Ages 8+', ageGroups: ['kids', 'teen'], category: 'lyrical-contemp', studio: 'B', instructor: 'Mr. Yul & Ms. Milan' },
     ],
   },
   {

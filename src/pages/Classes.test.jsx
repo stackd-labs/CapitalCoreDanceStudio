@@ -106,7 +106,7 @@ test('program filter narrows the calendar to one tier', () => {
   let blocks = within(screen.getByTestId('class-grid')).getAllByTestId('class-block')
   expect(blocks.map((b) => b.getAttribute('aria-label'))).toEqual([
     'Ballet Tech, Monday 7:00 – 7:45 PM',
-    'Core Plus Acro & Lyrical, Thursday 7:15 – 8:00 PM',
+    'Core Plus Acro & Lyrical, Thursday 7:30 – 8:15 PM',
   ])
 
   // Specialty replaces the old Technique case: two classes, on two different nights.

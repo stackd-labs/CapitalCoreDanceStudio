@@ -299,6 +299,53 @@
      the word, and shortening the names to make room for it would have put this
      sheet out of step with the flyer and the website. The name is the marker. */
 
+  /* ── CAPITAL CORE DANCE ACADEMY ────────────────────────────────────────── */
+  /* A PARALLEL TRACK, not a row of the weekly grid. Both sessions run 6:00–7:00
+     across classes that are already on the grid at that hour — Monday's
+     Contemporary & Jazz and Thursday's Ballet & Tap — so putting them in the day
+     columns would read as the studio double-booking itself.
+
+     Built as its own band rather than by splitting Monday and Thursday into two
+     sub-columns: at 148px a day column halves to about 70px, and "Capital Core
+     Dance Academy" wraps to four lines in that width. The band says the same
+     thing — same name, same hour, alongside the regular schedule — and stays
+     legible. Say the word if the literal split is wanted instead.
+
+     Carries the page accent as a solid left rule, unlike the not-running box
+     below it, because this is a programme being ADDED, not withdrawn. */
+  .academy {
+    flex: 0 0 auto;
+    margin: 14px 40px 0;
+    padding: 11px 14px 12px;
+    background: var(--ink-panel);
+    border-left: 3px solid var(--accent);
+  }
+  .academy .label {
+    font-family: "Anton", "Arial Narrow", Impact, sans-serif;
+    text-transform: uppercase;
+    font-size: 15px;
+    line-height: 1;
+    color: #fff;
+  }
+  .academy .sub {
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mist-500);
+    margin-top: 4px;
+  }
+  .academy ul {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    display: flex;
+    gap: 34px;
+  }
+  .academy li { font-size: 11.5px; line-height: 1.4; }
+  .academy b { color: #fff; font-weight: 700; }
+  .academy span { color: var(--accent); font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-weight: 600; }
+
   /* ── NOT RUNNING THIS TERM ─────────────────────────────────────────────── */
   /* Deliberately RECEDES. It carries no accent and no chip: the Little Movers
      sheet uses gold to say "coming, not yet bookable", and these are the
@@ -424,11 +471,12 @@
 
 <div class="title">
   <h1>Class <em>Schedule</em></h1>
-  <!-- 19 as of 2026-09-02, down from 22 — Monday 5 · Tue 3 · Wed 4 · Thu 4 · Fri 3.
-       Only THREE classes actually left the week: Tumble Tech (both nights) and
-       Musical Theatre. The rest moved — both Acro classes Monday → Thursday, Pom
-       Cheer Thursday → Wednesday. Recount from the columns, not from this note. -->
-  <div class="tagline">19 classes &middot; Monday to Friday &middot; Ages 2 to adult</div>
+  <!-- 20 as of 2026-09-02. Grid: Mon 4 · Tue 3 · Wed 4 · Thu 4 · Fri 3 = 18, plus
+       the two Academy sessions in the band below = 20. The Academy counts here
+       because a parent scanning the sheet sees twenty classes on it; it does NOT
+       count in the Monday and Thursday day-counts, because it is not in those
+       columns. Recount from the columns plus the band, not from this note. -->
+  <div class="tagline">20 classes &middot; Monday to Friday &middot; Ages 2 to adult</div>
 </div>
 
 <!-- FIVE tiers, derived from the grid rather than listed from PROGRAMS.
@@ -463,7 +511,10 @@
   <div class="day">
     <div class="day-head">
       <div class="day-name">Monday</div>
-      <div class="day-count">5 classes</div>
+      <!-- 4 on the grid. The Academy session is counted in the band, not here —
+           it is a parallel track, and folding it in would imply the day column
+           lists it. -->
+      <div class="day-count">4 classes</div>
     </div>
     <ul>
       <li><div class="c-time">5:00 &ndash; 5:30</div><div class="c-name">Tiny Core Ballet &amp; Tumble</div><div class="c-ages">Ages 2&ndash;5</div><div class="c-with">Ms. Jillian</div></li>
@@ -476,7 +527,9 @@
            name now implies a tier this class does not have. Worth settling.
            Mr. Yul's flyer specialties are Lyrical and Contemporary. -->
       <li><div class="c-time">7:00 &ndash; 7:45</div><div class="c-name">Ballet Tech</div><div class="c-ages">Ages 8+</div><div class="c-with">Mr. Yul</div></li>
-      <li><div class="c-time">7:45 &ndash; 8:30</div><div class="c-name">Adult Femme/Flair</div><div class="c-ages">Ages 16+</div><div class="c-with">Ms. Savannah</div></li>
+      <!-- Adult Femme/Flair (7:45, Ms. Savannah) came off 2026-09-02. It ran only on
+           Monday, so it leaves the week entirely and sits in the not-running box.
+           Ms. Savannah has no other class on this sheet as a result. -->
     </ul>
   </div>
 
@@ -559,8 +612,21 @@
 
 </div>
 
-<!-- Classes taken off Monday 2026-09-02. Add to this list, don't delete from it,
-     when a class comes off — and take one out again if it comes back. -->
+<!-- New programme, 2026-09-02. Two sessions, both 6:00–7:00, running ALONGSIDE the
+     grid above rather than as part of it.
+     ⚠ NO AGE RANGE YET — the studio has not given one, and this sheet does not
+     invent ages. Add it to both entries when it lands. -->
+<div class="academy">
+  <div class="label">Capital Core Dance Academy</div>
+  <div class="sub">Runs alongside the weekly schedule</div>
+  <ul>
+    <li><b>Monday</b> <span>6:00 &ndash; 7:00 PM</span></li>
+    <li><b>Thursday</b> <span>6:00 &ndash; 7:00 PM</span></li>
+  </ul>
+</div>
+
+<!-- Classes taken off. Add to this list, don't delete from it, when a class comes
+     off — and take one out again if it comes back. -->
 <div class="off">
   <div class="label">Not running this term</div>
   <ul>
@@ -574,6 +640,7 @@
     <li><b>Tumble Tech</b> <span>&middot; all levels &middot; was Tuesday 7:00 and Thursday 7:15</span></li>
     <li><b>Musical Theatre</b> <span>&middot; all ages &middot; was Wednesday 6:45</span></li>
     <li><b>Core Plus Lyrical &amp; Contemporary</b> <span>&middot; ages 8+ &middot; was Friday 6:15</span></li>
+    <li><b>Adult Femme/Flair</b> <span>&middot; ages 16+ &middot; was Monday 7:45</span></li>
   </ul>
 </div>
 

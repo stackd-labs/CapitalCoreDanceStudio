@@ -62,8 +62,12 @@ export const FAQS = [
         a: 'Yes — your first class is always free, no commitment required. Just fill out our Contact form, choose "Register for a Free Trial" from the interest dropdown, and we\'ll match your dancer with the right class within 1–2 business days.',
       },
       {
+        // Names the portal address rather than just calling it "our student portal".
+        // Added 2026-09-02 alongside the footer's Enter our portal button — a parent who
+        // reads this answer on their phone has no way to act on it otherwise, and the
+        // portal is a separate system with its own sign-in.
         q: 'How do I enroll my child?',
-        a: 'You can enroll online through our student portal. If you have questions before signing up, feel free to reach out to us by phone at 804-234-4014 or by email at info@capitalcoredance.com.',
+        a: 'You can enroll online through our studio portal at studio.capitalcoredance.com, which is also linked from the footer of every page on this site. If you have questions before signing up, feel free to reach out to us by phone at 804-234-4014 or by email at info@capitalcoredance.com.',
       },
       {
         q: 'How much do classes cost?',
@@ -87,7 +91,7 @@ export const FAQS = [
       },
       {
         q: 'How do I pay?',
-        a: 'All payments are made securely through our online student portal. We accept all major credit and debit cards, ACH transfers, and checks. If you have trouble with the portal, just contact us and we\'ll help.',
+        a: 'All payments are made securely through our studio portal at studio.capitalcoredance.com. We accept all major credit and debit cards, ACH transfers, and checks. If you have trouble with the portal, just contact us and we\'ll help.',
       },
     ],
   },
@@ -123,8 +127,17 @@ export const FAQS = [
         a: 'Little Movers is priced separately from studio class tuition. Drop in for $10 for your first child and $5 for each additional child, buy a Passport of 5 visits for $45 or 10 for $85, or take the monthly membership at $89 — which includes unlimited Little Movers classes plus one Tiny Core class for ages 2–5. Bringing more than one child? The first child pays full price and every child after that is cheaper: an additional child\'s drop-in is $5 instead of $10, each additional Passport is 10% off, and each additional membership is $10 less a month than the one before it — so $89, then $79, then $69. Code MOOVE26 takes 30% off a Passport ($31.50 for 5 visits, $59.50 for 10) and 30% off your first month of membership, which we apply to your first invoice. It does not apply to single drop-in classes. Sibling rates and the code stack: the sibling rate applies first and MOOVE26 comes off the discounted total.',
       },
       {
+        // 🔴 THIS ANSWER SAID "NOT YET" UNTIL 2026-09-02, months after booking opened.
+        // It is the one question a parent ready to book actually clicks, and it was
+        // turning them away — the Little Movers page had a Book a class button on it the
+        // whole time. Registration opened 2026-08-28 and the wizard moved to /book on
+        // 2026-09-02; nothing updated this.
+        //
+        // Keep it in step with src/pages/LittleMovers.jsx: BOOKABLE_DAYS is Wednesday
+        // only, and the portal generates Wednesday sessions only. If a day opens, this
+        // answer changes with it — see the two-repo note in LittleMovers.test.jsx.
         q: 'Can I register for Little Movers yet?',
-        a: 'Not yet — the schedule above is planned and start dates are still to be confirmed. Get in touch through our Contact page and we will let you know as soon as registration opens.',
+        a: 'Yes. Wednesday mornings are open for booking now on our studio portal at studio.capitalcoredance.com/register/little-movers/book — you can book a single class, a visit Passport or a monthly membership there. Monday and Friday are on the published schedule but are not bookable yet: they are staffing up and will open once they have an instructor.',
       },
     ],
   },

@@ -67,6 +67,49 @@ test('no longer answers questions about the finished summer programmes', () => {
   expect(page).not.toMatch(/June 2[39]/)
 })
 
+test('does not tell a parent Little Movers registration is closed', () => {
+  // 🔴 It did, until 2026-09-02: "Not yet — the schedule above is planned and start dates
+  // are still to be confirmed." Booking opened 2026-08-28. So the one question a parent
+  // ready to book actually clicks was turning them away, while the Little Movers page
+  // carried a Book a class button the whole time.
+  //
+  // Nothing pinned any FAQ answer's substance before this, which is how it survived four
+  // sessions of work on the surrounding pages.
+  const answer = FAQS.flatMap(({ items }) => items).find(({ q }) =>
+    /register for little movers/i.test(q)
+  ).a
+  expect(answer).not.toMatch(/^Not yet/i)
+  expect(answer).not.toMatch(/to be confirmed/i)
+  expect(answer).not.toMatch(/as soon as registration opens/i)
+  expect(answer).toMatch(/^Yes/i)
+  // The bookable day and the path the wizard actually lives at.
+  expect(answer).toMatch(/Wednesday/)
+  expect(answer).toContain('register/little-movers/book')
+})
+
+test('the Little Movers answers agree on which mornings can be booked', () => {
+  // Three answers in this category touch the schedule. They are edited at different times
+  // by different people, and a parent reads them one after the other — so the one that
+  // names bookable days and the one that answers "can I register" must not drift apart.
+  const lm = FAQS.find(({ category }) => /little movers/i.test(category)).items
+  const meets = lm.find(({ q }) => /when do little movers/i.test(q)).a
+  const register = lm.find(({ q }) => /register for little movers/i.test(q)).a
+
+  for (const answer of [meets, register]) {
+    expect(answer).toMatch(/Wednesday/)
+    expect(answer).toMatch(/Monday and Friday/)
+  }
+})
+
+test('the enrollment and payment answers name the portal address', () => {
+  // "our student portal" with no address is unactionable on a phone, and the portal is a
+  // separate system with its own sign-in. Added 2026-09-02 with the footer button.
+  const answers = FAQS.flatMap(({ items }) => items)
+  for (const q of [/how do i enroll/i, /how do i pay/i]) {
+    expect(answers.find((a) => q.test(a.q)).a).toContain('studio.capitalcoredance.com')
+  }
+})
+
 test('quotes the same registration fee the portal charges', () => {
   const answer = FAQS.flatMap(({ items }) => items).find(({ q }) =>
     /registration fee/i.test(q)

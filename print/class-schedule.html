@@ -164,7 +164,7 @@
   /* ── HEADER ────────────────────────────────────────────────────────────── */
   .head {
     flex: 0 0 auto;
-    padding: 20px 40px 0;
+    padding: 14px 40px 0;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -189,8 +189,8 @@
   .term small { display: block; color: var(--mist-500); margin-top: 3px; letter-spacing: 0.13em; }
 
   /* ── TITLE ─────────────────────────────────────────────────────────────── */
-  .title { flex: 0 0 auto; padding: 12px 40px 0; }
-  .title h1 { font-size: 50px; line-height: 0.9; color: #fff; }
+  .title { flex: 0 0 auto; padding: 6px 40px 0; }
+  .title h1 { font-size: 44px; line-height: 0.9; color: #fff; }
   .title h1 em { font-style: normal; color: var(--accent); }
   .title .tagline {
     font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
@@ -208,7 +208,7 @@
      key is not decoration — without it the grid is jargon. */
   .tiers {
     flex: 0 0 auto;
-    margin: 14px 40px 0;
+    margin: 10px 40px 0;
     padding: 11px 14px;
     background: var(--ink-panel);
     border-left: 3px solid var(--accent);
@@ -220,13 +220,46 @@
   .tier b { color: #fff; font-weight: 700; }
   .tier span { color: var(--mist-500); }
 
+  /* ── STUDIO LABELS ─────────────────────────────────────────────────────── */
+  /* The studio has two rooms. Everything in the weekly grid runs in STUDIO B;
+     the Academy band below it is STUDIO A. Labelling them this way rather than
+     splitting every day into two sub-columns is what keeps the sheet legible:
+     five days would become ten columns of about 74px, and seven of those ten
+     would be empty, because Studio A currently runs on Monday and Thursday only.
+
+     If Studio A fills out, the band grows into a second grid and these two
+     labels become its column headers. */
+  .studio-tag {
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--on-accent);
+    background: var(--accent);
+    padding: 2px 8px;
+    display: inline-block;
+  }
+  .studio-row {
+    flex: 0 0 auto;
+    padding: 10px 40px 0;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .studio-row .hint {
+    font-size: 9.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mist-500);
+  }
+
   /* ── THE WEEK ──────────────────────────────────────────────────────────── */
   /* Five day COLUMNS, not a time grid. The evening classes do not line up
      across days — Monday starts at 5:00 and Thursday at 5:15, and the lengths
      differ — so a shared time axis would be mostly empty cells. */
   .week {
     flex: 1 1 auto;
-    padding: 16px 40px 0;
+    padding: 9px 40px 0; /* tightened: the studio row above now carries the gap */
     display: flex;
     gap: 9px;
     align-items: stretch;
@@ -315,11 +348,12 @@
      below it, because this is a programme being ADDED, not withdrawn. */
   .academy {
     flex: 0 0 auto;
-    margin: 14px 40px 0;
+    margin: 10px 40px 0;
     padding: 11px 14px 12px;
     background: var(--ink-panel);
     border-left: 3px solid var(--accent);
   }
+  .academy .studio-line { margin-bottom: 7px; }
   .academy .label {
     font-family: "Anton", "Arial Narrow", Impact, sans-serif;
     text-transform: uppercase;
@@ -344,7 +378,16 @@
   }
   .academy li { font-size: 11.5px; line-height: 1.4; }
   .academy b { color: #fff; font-weight: 700; }
-  .academy span { color: var(--accent); font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-weight: 600; }
+  /* 🔴 SCOPED TO `li span`, not `.academy span`. The broad selector also caught the
+     Studio A tag — which is a <span> — and painted it accent-on-accent, so the
+     label rendered as a solid orange rectangle with invisible text. It beat
+     .studio-tag on specificity (0,1,1 against 0,1,0), so the tag's own colour
+     never applied. Keep this scoped. */
+  .academy li span {
+    color: var(--accent);
+    font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+    font-weight: 600;
+  }
 
   /* ── NOT RUNNING THIS TERM ─────────────────────────────────────────────── */
   /* Deliberately RECEDES. It carries no accent and no chip: the Little Movers
@@ -357,7 +400,7 @@
      was here last term finds an answer instead of assuming a printing error. */
   .off {
     flex: 0 0 auto;
-    margin: 14px 40px 0;
+    margin: 10px 40px 0;
     padding: 10px 14px 11px;
     border: 1px dashed rgba(255, 255, 255, 0.22);
   }
@@ -386,7 +429,7 @@
   /* ── TUITION ───────────────────────────────────────────────────────────── */
   .tuition {
     flex: 0 0 auto;
-    margin: 14px 40px 0;
+    margin: 10px 40px 0;
     display: flex;
     gap: 10px;
   }
@@ -497,6 +540,12 @@
   <div class="tier"><b>Core Plus</b> <span>&middot; ages 8+ &middot; beginner to novice</span></div>
   <div class="tier"><b>Specialty</b> <span>&middot; all ages &middot; performance</span></div>
   <div class="tier"><b>Adult Core</b> <span>&middot; ages 16+ &middot; all levels</span></div>
+</div>
+
+<!-- Everything below runs in Studio B. Studio A is the Academy band further down. -->
+<div class="studio-row">
+  <span class="studio-tag">Studio B</span>
+  <span class="hint">The weekly schedule</span>
 </div>
 
 <div class="week">
@@ -617,6 +666,7 @@
      ⚠ NO AGE RANGE YET — the studio has not given one, and this sheet does not
      invent ages. Add it to both entries when it lands. -->
 <div class="academy">
+  <div class="studio-line"><span class="studio-tag">Studio A</span></div>
   <div class="label">Capital Core Dance Academy</div>
   <div class="sub">Runs alongside the weekly schedule</div>
   <ul>

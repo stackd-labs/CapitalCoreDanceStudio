@@ -41,8 +41,15 @@ WINROOT="$(printf '%s' "$ROOT" | sed 's|^/\([a-zA-Z]\)/|\1:/|')"
 
 FAILED=0
 
+# build <name> <expected-pages>
+#
+# The expected count is passed in rather than assumed to be 1: class-schedule grew a
+# second page (instructor view) on 2026-09-02, and the guard is only worth having if
+# it still catches an ACCIDENTAL extra page. "However many it comes out as" would
+# catch nothing.
 build() {
   local name="$1"
+  local want="$2"
   local pdf="${ROOT}/print/${name}.pdf"
 
   # 30s, not 15s. See note 1 above — 15s lost the race at least once.
@@ -55,20 +62,22 @@ build() {
   pages=$(grep -a -o '/Count [0-9]*' "$pdf" | head -1 | grep -o '[0-9]*' || echo 0)
   ok_fonts=$(grep -a -c 'Anton-Regular' "$pdf" || true)
 
-  if [ "$pages" != "1" ]; then
-    echo "🔴 ${name}: ${pages} pages, expected 1. Trim the fixed chrome, not the schedule."
+  if [ "$pages" != "$want" ]; then
+    echo "🔴 ${name}: ${pages} pages, expected ${want}. If a page overflowed, trim the"
+    echo "   fixed chrome rather than the schedule. If a page was added on purpose,"
+    echo "   update the expected count in the build() call at the bottom of this script."
     FAILED=1
   elif [ "${ok_fonts:-0}" -eq 0 ]; then
     echo "🔴 ${name}: Anton did NOT embed — the PDF is set in Segoe UI. Re-run; if it"
     echo "   persists, check the font <link> is the v1 /css? endpoint and you are online."
     FAILED=1
   else
-    echo "✅ ${name}: 1 page, fonts embedded"
+    echo "✅ ${name}: ${pages} page(s), fonts embedded"
   fi
 }
 
-build class-schedule
-build little-movers-schedule
+build class-schedule 2          # page 1 the week, page 2 by instructor
+build little-movers-schedule 1
 
 if [ "$FAILED" -ne 0 ]; then
   echo

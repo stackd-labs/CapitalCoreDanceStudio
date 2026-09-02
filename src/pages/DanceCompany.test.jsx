@@ -25,10 +25,19 @@ test('renders the hero on the shared red wedge', () => {
 
 test('nothing still points at the retired competition-clinic form', () => {
   // The clinic form was this page's only portal destination. With the clinic over it is a
-  // dead end, so no link on the page should reach the portal at all.
+  // dead end, so nothing in the PAGE's own content should reach the portal.
+  //
+  // Scoped past the footer 2026-09-02, when the shared footer gained a portal sign-in
+  // button that appears on every page. That link is chrome, not this page making a claim
+  // about the clinic, and it has its own coverage in Footer.test.jsx. The clinic-form
+  // assertion below stays document-wide — that URL must not appear anywhere, footer or not.
   renderPage()
   expect(document.querySelectorAll('a[href*="register/competition-clinic"]')).toHaveLength(0)
-  expect(document.querySelectorAll('a[href*="studio.capitalcoredance.com"]')).toHaveLength(0)
+
+  const pagePortalLinks = [
+    ...document.querySelectorAll('a[href*="studio.capitalcoredance.com"]'),
+  ].filter((a) => !a.closest('footer'))
+  expect(pagePortalLinks).toHaveLength(0)
 })
 
 test('the past clinic dates, times and cost are gone from the page', () => {

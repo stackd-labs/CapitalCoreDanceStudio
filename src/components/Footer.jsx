@@ -44,6 +44,15 @@ const LINK_COLUMNS = [
 const INSTAGRAM = 'https://www.instagram.com/capitalcoredance'
 const FACEBOOK = 'https://www.facebook.com/p/Capital-Core-Dance-Challenge-61566002721661/'
 
+// The studio portal, added to the footer 2026-09-02 at the studio's request. Deliberately
+// the BARE ORIGIN rather than /login: the portal 308s the root to its login page, so this
+// keeps working if that path is ever renamed. Verified 2026-09-02.
+//
+// This is the only way into the portal from the site chrome — the navbar is a prospective
+// parent's map of the studio, and a returning family looking to sign in looks at the
+// footer, the same argument that puts Careers here and nowhere else.
+const PORTAL_URL = 'https://studio.capitalcoredance.com'
+
 export default function Footer() {
   const { pathname } = useLocation()
   const accent = accentForPath(pathname)
@@ -103,6 +112,30 @@ export default function Footer() {
               </svg>
             </a>
           </div>
+
+          {/* Portal sign-in. Borrows the social icons' border idiom rather than a solid
+              accent fill on purpose: the footer's accent changes with the page, and a
+              solid button would recolour itself on every route, which is wrong for a
+              destination that is the same system wherever you click it from. It also
+              keeps it from outranking the page's own registration call to action.
+
+              The caption is there because "portal" alone does not tell a parent what is
+              behind it, and the portal is a separate sign-in from anything on this site. */}
+          <a
+            href={PORTAL_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-testid="portal-link"
+            className="group inline-flex items-center gap-2 mt-6 border border-white/20 hover:border-white/60 px-5 py-3 text-white text-sm font-bold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          >
+            Enter our portal
+            <span aria-hidden="true" className="transition-transform group-hover:translate-x-0.5">
+              &rarr;
+            </span>
+          </a>
+          <p className="text-mist-500 text-xs leading-[1.6] mt-2.5 max-w-[260px]">
+            Sign in to enroll, pay tuition and book classes.
+          </p>
         </div>
 
         {LINK_COLUMNS.map(({ heading, links }) => (

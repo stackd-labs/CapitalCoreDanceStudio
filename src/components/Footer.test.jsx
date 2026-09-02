@@ -48,3 +48,36 @@ test('Careers is reachable from the footer, which is the only place it is linked
   renderFooter()
   expect(screen.getByRole('link', { name: 'Careers' })).toHaveAttribute('href', '/careers')
 })
+
+test('the portal sign-in is in the footer of every page and opens off-site safely', () => {
+  // Added 2026-09-02. This is the only route into the portal from the site chrome, so a
+  // returning family that cannot find it has no way to sign in from the marketing site.
+  //
+  // The BARE ORIGIN, not /login: the portal redirects its root to the login page, so this
+  // survives that path being renamed. A test that pinned /login would go green while
+  // sending families to a 404 the day the portal reorganises its routes.
+  renderFooter()
+  const portal = screen.getByTestId('portal-link')
+  expect(portal).toHaveAttribute('href', 'https://studio.capitalcoredance.com')
+  expect(portal).toHaveAttribute('target', '_blank')
+  expect(portal).toHaveAttribute('rel', expect.stringContaining('noopener'))
+  expect(portal).toHaveTextContent(/Enter our portal/i)
+})
+
+test('the portal button says what is behind it', () => {
+  // "Portal" alone does not tell a parent what they are signing in to, and the portal is
+  // a separate system with its own sign-in — see the Privacy page, which says so.
+  renderFooter()
+  expect(screen.getByText(/Sign in to enroll, pay tuition and book classes/i)).toBeInTheDocument()
+})
+
+test('the portal button does not wear the page accent', () => {
+  // The footer recolours itself per route via accentForPath. A solid accent fill here
+  // would repaint the portal button on every page, which is wrong for a destination that
+  // is the same system wherever it is clicked from — and it would compete with each
+  // page's own registration call to action.
+  renderFooter()
+  const portal = screen.getByTestId('portal-link')
+  expect(portal.style.background).toBe('')
+  expect(portal.className).toMatch(/border-white/)
+})

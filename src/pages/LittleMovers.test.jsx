@@ -550,11 +550,19 @@ test('uses the teal solid wedge, and reaches only the Little Movers booking form
   //
   // Narrowed 2026-09-02: the open-house form was the second allowed destination and is
   // gone, and the booking form moved to /book.
+  //
+  // Scoped past the footer the same day, when the shared footer gained a portal sign-in
+  // button that renders on every page. That is chrome pointing at the portal ROOT, not
+  // this page offering a booking destination, and it has its own coverage in
+  // Footer.test.jsx. Without the filter this test would force the footer to link at the
+  // Little Movers form on every page of the site.
   renderLittleMovers()
   expect(screen.getByTestId('hero-panel')).toBeInTheDocument()
   const portalHrefs = [
     ...document.querySelectorAll('a[href*="studio.capitalcoredance.com"]'),
-  ].map((a) => a.getAttribute('href'))
+  ]
+    .filter((a) => !a.closest('footer'))
+    .map((a) => a.getAttribute('href'))
   expect(portalHrefs.length).toBeGreaterThan(0)
   for (const href of portalHrefs) {
     expect(href).toBe('https://studio.capitalcoredance.com/register/little-movers/book')

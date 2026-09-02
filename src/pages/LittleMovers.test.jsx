@@ -308,6 +308,54 @@ test('renders the three ways to join, each framed by how often a family comes', 
   expect(cards[2].textContent).toContain('per month')
 })
 
+test('MOOVE26 is offered on the Passport and the membership, never on the drop-in', () => {
+  // 🔴 The portal's promos.ts scopes the code to ['little_movers_passport',
+  // 'little_movers_membership'] and REJECTS it for a drop-in. Advertising it on the $10
+  // drop-in card would send a parent to the wizard to be told no.
+  renderLittleMovers()
+  const cards = screen.getAllByTestId('pricing-card')
+
+  expect(
+    cards[0].querySelector('[data-testid="pricing-promo"]'),
+    'the drop-in card must not offer the code'
+  ).toBeNull()
+  expect(cards[0].textContent).not.toContain('MOOVE26')
+
+  for (const card of [cards[1], cards[2]]) {
+    expect(card.querySelector('[data-testid="pricing-promo"]')).toBeInTheDocument()
+    expect(card.textContent).toContain('MOOVE26')
+  }
+
+  // The discounted figures are derived from the base prices, so a base price moving
+  // cannot leave a stale "was $45, now $31.50" pair on the page. Pinned against the
+  // arithmetic, not against a hardcoded string in the component.
+  expect(cards[1].textContent).toContain('$31.50') // 45 less 30%
+  expect(cards[1].textContent).toContain('$59.50') // 85 less 30%
+  expect(cards[2].textContent).toContain('$62.30') // 89 less 30%
+})
+
+test('the membership promo promises an invoice adjustment, not a checkout discount', () => {
+  // 🔴 The portal lists little_movers_membership in requiresApprovalFor: it does not bill
+  // memberships, so nothing computes the discount and applyPromo refuses to move money.
+  // The studio honours it by hand. "30% off at checkout" would be a promise the portal
+  // cannot keep, and the parent would go looking for a lower number that never appears.
+  renderLittleMovers()
+  const membership = screen.getAllByTestId('pricing-card')[2]
+  const promo = membership.querySelector('[data-testid="pricing-promo"]')
+  expect(promo.textContent).toMatch(/first month/i)
+  expect(promo.textContent).toMatch(/first invoice/i)
+  expect(promo.textContent).not.toMatch(/at checkout/i)
+})
+
+test('the pricing section names the code once and excludes the drop-in in words', () => {
+  renderLittleMovers()
+  const note = screen.getByTestId('promo-note')
+  expect(note.textContent).toContain('MOOVE26')
+  expect(note.textContent).toMatch(/30%/)
+  expect(note.textContent).toMatch(/Passport/)
+  expect(note.textContent).toMatch(/does not apply to single drop-in/i)
+})
+
 test('only the membership carries the best-value badge', () => {
   renderLittleMovers()
   const badges = screen.getAllByTestId('pricing-badge')

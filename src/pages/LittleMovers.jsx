@@ -169,6 +169,33 @@ const DORMANT_SCHEDULE = [
   { Tuesday: { name: 'Parent & Me Dance' }, Thursday: { name: 'Sensory Steps' } },
 ]
 
+// The studio's Little Movers promo code, added 2026-09-02. Mirrors the portal's
+// src/lib/promos.ts, which is the source of truth and the only thing that can actually
+// apply it. `appliesTo` there is ['little_movers_passport', 'little_movers_membership'].
+//
+// 🔴 THE TWO SCOPES BEHAVE DIFFERENTLY and the copy has to say so:
+//   - Passport: the discount computes at checkout, so a parent sees the lower price.
+//   - Membership: listed in `requiresApprovalFor`, so it is RECORDED, not charged. The
+//     portal does not bill memberships at all, so the studio honours 30% off the first
+//     month by hand on the invoice. Promising it "at checkout" would be a lie.
+//   - Drop-ins: rejected by the portal. This page must not imply otherwise.
+//
+// The portal has expiresAt: null, so there is no end date to state and nothing here goes
+// stale on a date. If the studio ends it, the code goes inactive there and these lines
+// come out here.
+const PROMO = {
+  code: 'MOOVE26',
+  percentOff: 30,
+}
+
+// Derived, never typed. The discounted figures must not be able to drift from the base
+// prices sitting next to them — that is exactly how the $65/$60 registration fee ended up
+// stated two ways across this repo. Whole dollars render without a trailing ".00".
+const promoPrice = (dollars) => {
+  const discounted = dollars * (1 - PROMO.percentOff / 100)
+  return `$${Number.isInteger(discounted) ? discounted : discounted.toFixed(2)}`
+}
+
 // Three ways to join, framed by how often a family expects to come rather than by
 // price. `question` is the headline a parent recognises themselves in. The per-card
 // border colour was dropped in the 2026-08-11 redesign — every card now sits on the
@@ -196,6 +223,8 @@ const PRICING = [
     unit: 'or 10 visits — $85',
     blurb: 'A class pack that never locks you into a day or time — use the visits whenever your week allows.',
     lines: ['Works for any Little Movers class', '10-visit pack is $8.50 a class'],
+    // Computes at checkout, so the parent sees these prices in the wizard.
+    promo: `${PROMO.percentOff}% off with code ${PROMO.code} — ${promoPrice(45)} for 5 visits, ${promoPrice(85)} for 10`,
   },
   {
     question: "We're here every week",
@@ -222,6 +251,9 @@ const PRICING = [
       '10% off retail',
       'Exclusive Little Movers events',
     ],
+    // 🔴 Deliberately does NOT say "at checkout". The portal records this code against a
+    // membership rather than charging it, so the studio applies it to the first invoice.
+    promo: `${PROMO.percentOff}% off your first month with code ${PROMO.code} (${promoPrice(89)}) — we apply it to your first invoice`,
   },
 ]
 
@@ -541,8 +573,24 @@ export default function LittleMovers() {
             studio portal.
           </p>
 
+          {/* Names the code once, up front, and says plainly which options it works on.
+              The drop-in is called out because the portal rejects the code there, and a
+              parent who tries it on a $10 drop-in should know that before they book. */}
+          <p
+            data-testid="promo-note"
+            className="font-body text-mist-300 text-sm mb-10 max-w-2xl border-l-2 pl-4"
+            style={{ borderColor: NOTICE_ACCENT }}
+          >
+            <strong className="text-white font-bold">
+              Save {PROMO.percentOff}% with code {PROMO.code}.
+            </strong>{' '}
+            Enter it when you book on the studio portal. It works on a Little Movers Passport
+            and on your first month of membership; it does not apply to single drop-in
+            classes.
+          </p>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-[26px]">
-            {PRICING.map(({ question, label, headline, unit, badge, blurb, lines }) => (
+            {PRICING.map(({ question, label, headline, unit, badge, blurb, lines, promo }) => (
               <div
                 key={label}
                 data-testid="pricing-card"
@@ -587,6 +635,20 @@ export default function LittleMovers() {
                     </li>
                   ))}
                 </ul>
+                {/* Gold, and pushed to the bottom of the card with mt-auto so the promo
+                    line sits on the same baseline across all three cards however many
+                    bullets each one has. Notice gold rather than the teal accent for the
+                    same reason the staffing note is gold: a promo is a temporary status,
+                    and the drop-in card deliberately has none. */}
+                {promo && (
+                  <p
+                    data-testid="pricing-promo"
+                    className="font-body text-[13px] leading-snug font-semibold mt-auto pt-5 border-t border-white/10"
+                    style={{ color: NOTICE_ACCENT }}
+                  >
+                    {promo}
+                  </p>
+                )}
               </div>
             ))}
           </div>

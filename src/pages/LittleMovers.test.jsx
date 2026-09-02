@@ -3,6 +3,7 @@ import { MemoryRouter } from 'react-router-dom'
 import LittleMovers from './LittleMovers'
 import { ACCENTS } from '../lib/pageAccents'
 import { FAQS } from '../lib/faqs'
+import { monthlyPriceForMinutes, priceToNumber } from '../lib/tuition'
 
 // The six classes and their age ranges. Widened 2026-08-17 at the studio's request so the
 // morning hands off cleanly at 18 months: Baby & Me runs 0–18 months, and every class after
@@ -113,6 +114,36 @@ test('a class that cannot actually be booked is badged Coming soon', () => {
       `${name} runs on a bookable day and must not be badged`
     ).toBeNull()
   }
+})
+
+test('🔴 OPENING A DAY IS A TWO-REPO CHANGE — read this before editing BOOKABLE_DAYS', () => {
+  // This test exists to be tripped. It has no assertion the test above does not already
+  // make; its job is to force whoever opens Monday or Friday to read the instruction,
+  // because a comment in LittleMovers.jsx did not survive being the only place it was
+  // written down.
+  //
+  // ▶ TO OPEN A STAFFED DAY, both of these ship together:
+  //
+  //   1. THIS REPO — add the day to BOOKABLE_DAYS in src/pages/LittleMovers.jsx.
+  //      Controls what the page CLAIMS. Alone, it advertises a day the wizard rejects.
+  //
+  //   2. THE PORTAL — dancestudioportal, drop `comingSoon` from that day's slots in
+  //      src/lib/little-movers-pricing.ts (LM_SCHEDULE), and check the generate_series
+  //      bounds in supabase/.../little_movers_classes.sql actually create sessions for
+  //      it. Controls what the wizard ACCEPTS. Alone, the day is bookable but this page
+  //      still greys it out and says "Not booking yet".
+  //
+  // Then revisit: the membership pitch and the drop-in copy both soften as days open,
+  // and the Wednesday-only line in the schedule note stops being true.
+  //
+  // The portal is the source of truth for money and availability. This page only ever
+  // describes it — see the SIBLING comment for the same rule applied to pricing.
+  renderLittleMovers()
+  const bookable = screen
+    .getAllByTestId('schedule-day-header')
+    .filter((h) => h.dataset.bookable === 'yes')
+    .map((h) => h.dataset.day)
+  expect(bookable).toEqual(['Wednesday'])
 })
 
 test('only Wednesday is offered as bookable on the schedule grid', () => {
@@ -248,12 +279,47 @@ test('credits the Ms. Ryan partnership on the class card, not in the schedule', 
 test('the membership includes a Tiny Core class and shows the top-up from $65', () => {
   // Added 2026-08-17. The $24 is not a new price — it is $89 minus the $65 a Tiny Core
   // class already costs, so a family reading either page reaches the same number.
+  //
+  // Both figures are derived from tuition.js by the page, so this asserts the ARITHMETIC
+  // rather than two literals: change the 30-minute price there and this test follows it
+  // instead of going red for the wrong reason.
   renderLittleMovers()
   const membership = screen.getAllByTestId('pricing-card')[2]
+  const tinyCore = priceToNumber(monthlyPriceForMinutes(30))
   expect(membership.textContent).toContain('$89')
   expect(membership.textContent).toMatch(/One Tiny Core class/i)
   expect(membership.textContent).toContain('2–5')
-  expect(membership.textContent).toContain('$24')
+  expect(membership.textContent).toContain(`$${tinyCore}`) // the Tiny Core price itself
+  expect(membership.textContent).toContain(`$${89 - tinyCore}`) // the top-up
+})
+
+test('the membership does not quote a break-even a family cannot reach', () => {
+  // 🔴 It said "worth it from about nine classes a month" — true against the $10 drop-in,
+  // but a child takes ONE age-appropriate slot a morning, and with only Wednesday
+  // bookable that is about four classes a month. A break-even nobody can reach, printed
+  // next to a "Best value" badge, is the kind of claim a parent does the maths on.
+  //
+  // The pitch leads with the included Tiny Core class instead, which is true at one
+  // bookable morning and only gets better as days open — so it needs no revisiting when
+  // Monday and Friday land. This test stops the old framing coming back with them.
+  renderLittleMovers()
+  const membership = screen.getAllByTestId('pricing-card')[2]
+  expect(membership.textContent).not.toMatch(/nine classes/i)
+  expect(membership.textContent).not.toMatch(/three mornings a week/i)
+})
+
+test('the page states that sibling rates and promo codes stack', () => {
+  // Confirmed against the portal 2026-09-02: recomputeLittleMoversAmountDue calls
+  // applyPromo(payload, passportTotal(payload)), so the sibling rate builds the subtotal
+  // and the code comes off that total. Two 5-visit passes are $45 + $40.50 = $85.50, and
+  // MOOVE26 takes it to $59.85.
+  //
+  // Left unsaid, this is a question a parent asks at the desk and a member of staff has
+  // to guess at. Saying it is also the only way a family knows to use both.
+  renderLittleMovers()
+  const note = screen.getByTestId('promo-note')
+  expect(note.textContent).toMatch(/sibling rate applies first/i)
+  expect(note.textContent).toMatch(/discounted total/i)
 })
 
 test('every slot is 45 minutes, gapped by 15, starting at 9:30', () => {

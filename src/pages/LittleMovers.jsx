@@ -7,6 +7,7 @@ import { Kicker, SectionHeading, PrimaryAction, GhostAction, CtaBand, InverseAct
 import { simpleBreadcrumb } from '../lib/schema'
 import { ACCENTS } from '../lib/pageAccents'
 import { onAccent } from '../lib/accentContrast'
+import { monthlyPriceForMinutes, priceToNumber } from '../lib/tuition'
 
 // Rebuilt 2026-08-11 to the studio's site mockup (page 1c, accent teal). The mockup
 // carries a hero, a row of age-tier cards and a "what a class looks like" strip; the
@@ -211,6 +212,16 @@ const PROMO = {
 // the portal the same day — when these disagree, the portal wins, because it is the one
 // that takes the money.
 const DROP_IN_PRICE = 10
+
+// The membership's headline, and the two figures derived from it. A Tiny Core class is 30
+// minutes, so tuition.js prices it; the top-up is what the unlimited Little Movers half
+// costs once that class is accounted for. Derived rather than typed because /tuition and
+// /class-levels publish the same top-up and are tested against it — three pages naming
+// one number by hand is how one of them goes stale.
+const MEMBERSHIP_MONTHLY = 89
+const TINY_CORE_MONTHLY = monthlyPriceForMinutes(30)
+const MEMBERSHIP_TOP_UP = `$${MEMBERSHIP_MONTHLY - priceToNumber(TINY_CORE_MONTHLY)}`
+
 const SIBLING = {
   dropInOff: 5, // $10 -> $5
   passportPercentOff: 10, // $45 -> $40.50, $85 -> $76.50
@@ -266,22 +277,32 @@ const PRICING = [
   {
     question: "We're here every week",
     label: 'Little Movers Membership',
-    headline: '$89',
+    headline: `$${MEMBERSHIP_MONTHLY}`,
     unit: 'per month',
     badge: 'Best value',
-    // "a bargain for families coming three mornings a week" was the second half of this
-    // line until 2026-09-02. Only Wednesday is bookable, so three mornings a week is not
-    // something a family can currently buy — see BOOKABLE_DAYS. Restore that half when
-    // Monday and Friday open.
-    blurb: 'Attend as many Little Movers classes as you would like. Worth it from about nine classes a month, and better value again as more mornings open.',
-    // The Tiny Core class and the top-up were added 2026-08-17. The $24 is derived, not a
-    // new price: a Tiny Core class is 30 minutes, which src/lib/tuition.js prices at $65 a
-    // month, and $89 − $65 = $24. If either number moves, this line has to move with it —
-    // Tuition.jsx and ClassLevels.jsx state the same $24 and are tested against it.
+    // 🔴 THE OLD PITCH DID NOT SURVIVE THE WEDNESDAY-ONLY SCHEDULE. It read "worth it
+    // from about nine classes a month", which is honest arithmetic against the $10
+    // drop-in — but a child takes ONE age-appropriate slot a morning, and with only
+    // Wednesday bookable that is about four classes a month. The page was quoting a
+    // break-even a family could not reach, next to a "Best value" badge.
+    //
+    // So the pitch now leads with the part that IS true today: the included Tiny Core
+    // class is TINY_CORE_MONTHLY on its own, which makes the unlimited Little Movers
+    // mornings the difference on top. That framing holds at one bookable morning and only
+    // improves as days open, so it needs no revisiting when Monday and Friday land.
+    //
+    // "a bargain for families coming three mornings a week" was cut from here the same
+    // day, for the same reason: not currently purchasable. See BOOKABLE_DAYS.
+    blurb: `Attend as many Little Movers classes as you would like, plus one Tiny Core class — which is ${TINY_CORE_MONTHLY} a month on its own, so the unlimited Little Movers mornings are the ${MEMBERSHIP_TOP_UP} on top. Better value again as more mornings open.`,
+    // The Tiny Core class and the top-up were added 2026-08-17. Both figures are DERIVED
+    // from src/lib/tuition.js rather than typed — a Tiny Core class is 30 minutes, and
+    // $89 minus that price is the top-up. Tuition.jsx and ClassLevels.jsx state the same
+    // top-up and are tested against it, which is exactly why this page must not hardcode
+    // its own copy of either number.
     lines: [
       'Unlimited Little Movers classes',
       'One Tiny Core class included (ages 2–5, your choice of day)',
-      'Already in a Tiny Core class? Just $24 more a month',
+      `Already in a Tiny Core class? Just ${MEMBERSHIP_TOP_UP} more a month`,
       'Priority registration for camps',
       'One free guest pass each month',
       '10% off birthday parties',
@@ -294,7 +315,7 @@ const PRICING = [
     sibling: `Each additional member is $${SIBLING.membershipOff} less than the one before`,
     // 🔴 Deliberately does NOT say "at checkout". The portal records this code against a
     // membership rather than charging it, so the studio applies it to the first invoice.
-    promo: `${PROMO.percentOff}% off your first month with code ${PROMO.code} (${promoPrice(89)}) — we apply it to your first invoice`,
+    promo: `${PROMO.percentOff}% off your first month with code ${PROMO.code} (${promoPrice(MEMBERSHIP_MONTHLY)}) — we apply it to your first invoice`,
   },
 ]
 
@@ -627,7 +648,9 @@ export default function LittleMovers() {
             </strong>{' '}
             Enter it when you book on the studio portal. It works on a Little Movers Passport
             and on your first month of membership; it does not apply to single drop-in
-            classes.
+            classes. Bringing more than one child? The sibling rate applies first and the
+            code comes off the discounted total, so the two add up rather than cancelling
+            out.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-[26px]">

@@ -257,6 +257,24 @@
   }
   .c-ages { font-size: 9.5px; color: var(--mist-500); margin-top: 1px; }
 
+  /* Instructor. Set apart from the age line so a parent can scan for a teacher
+     without reading the ages — the two are different questions.
+
+     Titles as the studio uses them: "Ms. Adelle", "Mr. Yul". src/lib/instructors.js
+     is the spelling authority (Adelle, not Adell) and is deliberately silent on
+     the surnames it has never been given, so this sheet is too. First names only,
+     matching the About page and the way families actually refer to them.
+
+     ⚠ ONLY MONDAY HAS THESE so far — the studio has supplied Monday's staffing.
+     A class with no instructor line simply has none assigned on this sheet yet;
+     it does not mean the class is unstaffed. */
+  .c-with {
+    font-size: 9.5px;
+    font-weight: 600;
+    color: var(--mist-400);
+    margin-top: 2px;
+  }
+
   /* No adult chip: all three adult classes are already NAMED "Adult ..." in
      src/lib/schedule.js, which follows the studio's own flyer. A chip repeated
      the word, and shortening the names to make room for it would have put this
@@ -285,7 +303,16 @@
     color: var(--mist-500);
     margin-bottom: 6px;
   }
-  .off ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 30px; flex-wrap: wrap; }
+  /* A two-column GRID, not wrapping flex: with four entries of unequal width,
+     flex-wrap left the second row's items not lining up under the first's. */
+  .off ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px 30px;
+  }
   .off li { font-size: 11px; line-height: 1.4; }
   .off b { color: var(--mist-400); font-weight: 700; }
   .off span { color: var(--mist-500); }
@@ -378,8 +405,11 @@
 
 <div class="title">
   <h1>Class <em>Schedule</em></h1>
-  <!-- Count is 20 as of 2026-09-02, down from 22: two Monday Acro classes came off. -->
-  <div class="tagline">20 classes &middot; Monday to Friday &middot; Ages 2 to adult</div>
+  <!-- 19 as of 2026-09-02, down from 22. Off: two Monday Acro classes, Tuesday's
+       Tumble Tech, Wednesday's Musical Theatre. Pom Cheer moved Thursday →
+       Wednesday, so it is a move, not a loss. Monday 5 · Tue 3 · Wed 4 · Thu 3 ·
+       Fri 3 = 18. ⚠ Thursday is unfinished, so recount when it is settled. -->
+  <div class="tagline">18 classes &middot; Monday to Friday &middot; Ages 2 to adult</div>
 </div>
 
 <!-- SIX tiers. Core Elite is deliberately absent: it has no classes yet. -->
@@ -407,28 +437,30 @@
       <div class="day-count">5 classes</div>
     </div>
     <ul>
-      <li><div class="c-time">5:00 &ndash; 5:30</div><div class="c-name">Tiny Core Ballet &amp; Tumble</div><div class="c-ages">Ages 2&ndash;5</div></li>
-      <li><div class="c-time">5:30 &ndash; 6:15</div><div class="c-name">Core Hip Hop &amp; Breakdancing</div><div class="c-ages">Ages 5+</div></li>
-      <li><div class="c-time">6:15 &ndash; 7:00</div><div class="c-name">Core Contemporary &amp; Jazz</div><div class="c-ages">Ages 5+</div></li>
+      <li><div class="c-time">5:00 &ndash; 5:30</div><div class="c-name">Tiny Core Ballet &amp; Tumble</div><div class="c-ages">Ages 2&ndash;5</div><div class="c-with">Ms. Jillian</div></li>
+      <!-- Ms. Adelle teaches back to back at 5:30 and 6:15. -->
+      <li><div class="c-time">5:30 &ndash; 6:15</div><div class="c-name">Core Hip Hop &amp; Breakdancing</div><div class="c-ages">Ages 5+</div><div class="c-with">Ms. Adelle</div></li>
+      <li><div class="c-time">6:15 &ndash; 7:00</div><div class="c-name">Core Contemporary &amp; Jazz</div><div class="c-ages">Ages 5+</div><div class="c-with">Ms. Adelle</div></li>
       <!-- Renamed from "Core Plus Ballet & Contemporary". Ages held at 8+ — the
            studio asked for a rename, not a re-audience. ⚠ Tumble Tech, the only
            other "Tech" class, sits in the Technique tier at All Levels, so this
-           name now implies a tier this class does not have. Worth settling. -->
-      <li><div class="c-time">7:00 &ndash; 7:45</div><div class="c-name">Ballet Tech</div><div class="c-ages">Ages 8+</div></li>
-      <li><div class="c-time">7:45 &ndash; 8:30</div><div class="c-name">Adult Femme/Flair</div><div class="c-ages">Ages 16+</div></li>
+           name now implies a tier this class does not have. Worth settling.
+           Mr. Yul's flyer specialties are Lyrical and Contemporary. -->
+      <li><div class="c-time">7:00 &ndash; 7:45</div><div class="c-name">Ballet Tech</div><div class="c-ages">Ages 8+</div><div class="c-with">Mr. Yul</div></li>
+      <li><div class="c-time">7:45 &ndash; 8:30</div><div class="c-name">Adult Femme/Flair</div><div class="c-ages">Ages 16+</div><div class="c-with">Ms. Savannah</div></li>
     </ul>
   </div>
 
   <div class="day">
     <div class="day-head">
       <div class="day-name">Tuesday</div>
-      <div class="day-count">4 classes</div>
+      <div class="day-count">3 classes</div>
     </div>
     <ul>
       <li><div class="c-time">5:00 &ndash; 5:30</div><div class="c-name">Tiny Core Ballet &amp; Hip Hop</div><div class="c-ages">Ages 2&ndash;5</div></li>
       <li><div class="c-time">5:30 &ndash; 6:15</div><div class="c-name">Core Ballet &amp; Hip Hop</div><div class="c-ages">Ages 5+</div></li>
       <li><div class="c-time">6:15 &ndash; 7:00</div><div class="c-name">Core Contemporary &amp; Jazz</div><div class="c-ages">Ages 5+</div></li>
-      <li><div class="c-time">7:00 &ndash; 7:45</div><div class="c-name">Tumble Tech</div><div class="c-ages">All levels</div></li>
+      <!-- Tumble Tech (was 7:00) came off 2026-09-02 — see the not-running box. -->
     </ul>
   </div>
 
@@ -440,7 +472,12 @@
     <ul>
       <li><div class="c-time">5:30 &ndash; 6:00</div><div class="c-name">Tiny Core Ballet &amp; Tap</div><div class="c-ages">Ages 2&ndash;5</div></li>
       <li><div class="c-time">6:00 &ndash; 6:45</div><div class="c-name">Core Hip Hop &amp; Breakdancing</div><div class="c-ages">Ages 5+</div></li>
-      <li><div class="c-time">6:45 &ndash; 7:30</div><div class="c-name">Musical Theatre</div><div class="c-ages">All ages</div></li>
+      <!-- Pom Cheer took Musical Theatre's 6:45 slot 2026-09-02, moved off Thursday.
+           ⚠ RUN AT 45 MINUTES HERE, not the 30 it ran on Thursday: the slot it
+           inherited is 6:45–7:30, and 45 keeps the evening gapless into Adult Pom
+           at 7:30. At 30 minutes it would end at 7:15 and leave a dead quarter
+           hour. Flagged to the studio — this is the one duration not stated. -->
+      <li><div class="c-time">6:45 &ndash; 7:30</div><div class="c-name">Pom Cheer</div><div class="c-ages">Ages 5+</div></li>
       <li><div class="c-time">7:30 &ndash; 8:15</div><div class="c-name">Adult Pom</div><div class="c-ages">Ages 16+</div></li>
     </ul>
   </div>
@@ -448,12 +485,20 @@
   <div class="day">
     <div class="day-head">
       <div class="day-name">Thursday</div>
-      <div class="day-count">4 classes</div>
+      <div class="day-count">3 classes</div>
     </div>
     <ul>
+      <!-- ⚠ THURSDAY IS NOT FINISHED. Pom Cheer is gone from here because it moved
+           to Wednesday 6:45 and cannot be in two places — that much was certain.
+           The studio's remaining instruction ("645 contempary, ballet at 645,
+           ballet at 715 remove the current classes") could not be read safely:
+           it is unclear which Ballet classes those are, whether Contemporary and
+           Ballet really run CONCURRENTLY at 6:45 (the studio can do this — Monday
+           used to run two classes at 5:30), and whether the three below are being
+           moved into those slots or replaced by new ones. Left as-is and asked,
+           rather than guessed at, because it is a schedule parents book against. -->
       <li><div class="c-time">5:15 &ndash; 6:00</div><div class="c-name">Core Ballet &amp; Jazz</div><div class="c-ages">Ages 5+</div></li>
       <li><div class="c-time">6:00 &ndash; 6:45</div><div class="c-name">Core Ballet &amp; Tap</div><div class="c-ages">Ages 5+</div></li>
-      <li><div class="c-time">6:45 &ndash; 7:15</div><div class="c-name">Pom Cheer</div><div class="c-ages">Ages 5+</div></li>
       <li><div class="c-time">7:15 &ndash; 8:00</div><div class="c-name">Tumble Tech</div><div class="c-ages">All levels</div></li>
     </ul>
   </div>
@@ -479,6 +524,12 @@
   <ul>
     <li><b>Core Acro &amp; Jazz</b> <span>&middot; ages 5+ &middot; was Monday 5:30</span></li>
     <li><b>Core Plus Acro &amp; Lyrical</b> <span>&middot; ages 8+ &middot; was Monday 6:15</span></li>
+    <!-- NOT a full withdrawal: Tumble Tech came off TUESDAY only and still runs
+         Thursday. Saying "not running" without that would tell a parent the class
+         is gone when it is one night a week instead of two. Revisit if Thursday's
+         Tumble Tech also comes off. -->
+    <li><b>Tumble Tech</b> <span>&middot; off Tuesday &middot; still runs Thursday 7:15</span></li>
+    <li><b>Musical Theatre</b> <span>&middot; all ages &middot; was Wednesday 6:45</span></li>
   </ul>
 </div>
 

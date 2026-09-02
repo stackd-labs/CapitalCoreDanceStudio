@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Little Movers — Weekly Schedule, Fall 2026</title>
+
+<!-- The site's three faces: Anton (display), Barlow (body), Barlow Condensed
+     (times and the tagline).
+
+     🔴 THIS IS THE v1 `/css?` ENDPOINT, NOT `css2` — DO NOT "MODERNISE" IT.
+     index.html uses css2, which is correct for the website, but css2 serves
+     these families as VARIABLE fonts and Chrome's --print-to-pdf pipeline will
+     not embed the upright axis. The text then silently falls back to Segoe UI
+     and the PDF still looks plausible, so the bug ships unnoticed. Two Villa
+     documents went out with exactly that fault. v1 serves static cuts and all
+     of them embed — verified 2026-09-02: 24 @font-face blocks, weights
+     400/500/600/700, static .woff2 files.
+
+     🔴 NEEDS AN INTERNET CONNECTION when you print. Offline it falls back to
+     Arial Narrow / system sans: the layout holds but the headings lose their
+     character, so check the title still looks like Anton before sending. -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css?family=Anton|Barlow:400,500,600,700|Barlow+Condensed:500,600,700&display=swap"
+/>
+
+<!--
+  ============================================================================
+  LITTLE MOVERS — WEEKLY SCHEDULE  ·  print / PDF sheet
+  ============================================================================
+
+  Built 2026-09-02 to match capitalcoredance.com: same tokens, same fonts, same
+  square-cornered navy field. It is deliberately a STANDALONE file — no build
+  step, no Tailwind, nothing to install. Open it in Chrome and print.
+
+  ── TO MAKE THE PDF ────────────────────────────────────────────────────────
+  Open in Chrome → Ctrl+P → Destination "Save as PDF"
+    · Paper           Letter
+    · Margins         None          (the navy bleeds to the edge by design)
+    · Scale           Default / 100%
+    · Background      ✅ ON — tick "Background graphics", or you get a white
+                      page with invisible text.
+  It is sized to fill exactly ONE Letter page in portrait.
+
+  ── TO EDIT ────────────────────────────────────────────────────────────────
+  · Colours and fonts     → the :root block below, one place.
+  · A class name or time  → edit the table cell directly, it is plain HTML.
+  · Prices                → the "PRICING" section near the bottom.
+
+  ── 🔴 TO OPEN MONDAY OR FRIDAY once they are staffed ──────────────────────
+  Search this file for `not-bookable`. Remove that class from the day's <th>
+  and from its three <td> cells, and delete the <span class="chip-soon"> from
+  its header. Then swap the "Booking now" note under the title.
+  The website (BOOKABLE_DAYS in src/pages/LittleMovers.jsx) and the portal
+  (comingSoon in LM_SCHEDULE) have to change in the same breath — a flyer that
+  says Monday while the portal refuses it is worse than no flyer.
+
+  ── WHAT IS VERIFIED, AND AGAINST WHAT ─────────────────────────────────────
+  Times, days, class names and ages   → the portal's little-movers-pricing.ts
+  Only Wednesday is bookable          → LM_SCHEDULE `comingSoon` flags
+  Last Wednesday is 16 December 2026  → LM_PROGRAM_END
+  Prices and sibling rates            → DROP_IN_PRICE, PASSPORTS,
+                                         SIBLING_DROP_IN_PRICE,
+                                         SIBLING_PASSPORT_DISCOUNT_PCT,
+                                         MEMBERSHIP_SIBLING_DISCOUNT
+  MOOVE26 scope                       → promos.ts (Passports + first month of
+                                         membership; NOT drop-ins)
+
+  No studio crest is used here on purpose: logo.png has "EST. 2025" baked into
+  the artwork and that year has never been confirmed. The wordmark is set in
+  type instead, the way the site navbar does it.
+-->
+
+<style>
+  /* ── TOKENS — the website's, verbatim from tailwind.config.js ──────────── */
+  :root {
+    /* the navy field */
+    --ink-base:  #0d1b34;   /* page */
+    --ink-deep:  #0a1529;   /* alternating band + footer */
+    --ink-panel: #101d38;   /* cards */
+
+    /* text ramp on navy */
+    --mist-100: #d3ddec;    /* body copy */
+    --mist-400: #a9b8cf;    /* secondary copy */
+    --mist-500: #8fa5c6;    /* labels, meta */
+
+    /* the seven accents. Little Movers is TEAL. */
+    --red:    #e01b22;
+    --orange: #ff8c2b;
+    --gold:   #f5c518;      /* the notice colour — temporary statuses only */
+    --teal:   #2ed3c8;      /* this programme's accent */
+    --pink:   #f77ea8;
+
+    /* Navy on a light accent, never white — white on teal is 1.86:1 and on
+       gold 1.63:1, both unreadable. This is the site's onAccent() rule. */
+    --on-accent: #0d1b34;
+
+    --accent: var(--teal);
+  }
+
+  /* ── PAGE ──────────────────────────────────────────────────────────────── */
+  @page { size: letter portrait; margin: 0; }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    /* 816 x 1056 px is Letter at 96dpi, which is how Chrome maps CSS px. */
+    width: 816px;
+    height: 1056px;
+    background: var(--ink-base);
+    color: var(--mist-100);
+    font-family: "Barlow", Inter, system-ui, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    /* Without this Chrome drops every background on print and you get white
+       paper with pale grey text on it. */
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Anton for every heading, always uppercase — the site's rule. */
+  h1, h2, h3, .display {
+    font-family: "Anton", "Arial Narrow", Impact, sans-serif;
+    text-transform: uppercase;
+    font-weight: 400;
+    margin: 0;
+    letter-spacing: 0.01em;
+  }
+
+  /* No border radius anywhere. The mockups are square by design. */
+
+  /* ── THE FIVE-ACCENT SIGNATURE BAR ─────────────────────────────────────── */
+  /* Same five, same order, as the bar under the site's navbar. Purple and
+     green stay out of the stripe. */
+  .stripe { display: flex; height: 7px; flex: 0 0 auto; }
+  .stripe span { flex: 1; }
+
+  /* ── HEADER ────────────────────────────────────────────────────────────── */
+  .head {
+    flex: 0 0 auto;
+    padding: 22px 46px 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  .wordmark { font-size: 15px; font-weight: 700; letter-spacing: 0.14em; color: #fff; }
+  .wordmark small {
+    display: block;
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    color: var(--mist-500);
+    margin-top: 3px;
+  }
+  .term {
+    text-align: right;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .term small { display: block; color: var(--mist-500); margin-top: 3px; letter-spacing: 0.14em; }
+
+  /* ── TITLE ─────────────────────────────────────────────────────────────── */
+  .title { flex: 0 0 auto; padding: 16px 46px 0; }
+  .title .eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--mist-500);
+    margin-bottom: 8px;
+  }
+  .title h1 { font-size: 58px; line-height: 0.9; color: #fff; }
+  .title h1 em { font-style: normal; color: var(--accent); }
+  .title .tagline {
+    font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--mist-400);
+    margin-top: 8px;
+  }
+
+  /* ── BOOKING NOTE ──────────────────────────────────────────────────────── */
+  /* Gold left rule, not teal: this is a temporary status, and the site has
+     used gold for exactly that since 2026-08-13. */
+  .note {
+    flex: 0 0 auto;
+    margin: 16px 46px 0;
+    padding: 11px 0 11px 15px;
+    border-left: 3px solid var(--gold);
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--mist-100);
+  }
+  .note b { color: #fff; }
+
+  /* ── SCHEDULE GRID ─────────────────────────────────────────────────────── */
+  /* Takes the page's leftover height and CENTRES the grid in it, so the slack sits
+     evenly above and below instead of pooling as one empty band under the table.
+     The amount of slack changes with the length of the booking note above, which is
+     why this is centred rather than nudged with a fixed margin. */
+  .grid-wrap {
+    flex: 1 1 auto;
+    padding: 14px 46px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  thead th {
+    text-align: left;
+    padding: 0 12px 9px;
+    vertical-align: bottom;
+  }
+  thead th.time-col { width: 118px; padding-left: 0; }
+  .col-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mist-500);
+  }
+  .day-name {
+    font-family: "Anton", "Arial Narrow", Impact, sans-serif;
+    text-transform: uppercase;
+    font-size: 22px;
+    line-height: 1;
+    color: #fff;
+  }
+
+  /* Chips. Teal = open (permanent state), gold = temporary status. */
+  .chip {
+    display: inline-block;
+    margin-top: 7px;
+    padding: 3px 7px;
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .chip-open { background: var(--accent); color: var(--on-accent); }
+  .chip-soon { background: var(--gold);   color: var(--on-accent); }
+
+  tbody tr { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+
+  /* Generous row padding on purpose. The sheet is one fixed page, and the grid is
+     the reason it exists, so the schedule takes the slack rather than leaving a
+     band of empty navy above the pricing. If you add a row, drop this to ~14px. */
+  th.slot {
+    text-align: left;
+    padding: 27px 12px 27px 0;
+    white-space: nowrap;
+    font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: var(--accent);
+    vertical-align: top;
+  }
+
+  td { padding: 27px 12px; vertical-align: top; }
+  .class-name { font-size: 13.5px; font-weight: 700; color: #fff; line-height: 1.25; }
+  .class-ages { font-size: 10.5px; color: var(--mist-500); margin-top: 2px; }
+
+  /* An unstaffed day is DIMMED, never hidden — a family should see the shape of
+     the programme, and a one-column grid misrepresents it. Matches the site. */
+  .not-bookable .day-name { opacity: 0.5; }
+  td.not-bookable { opacity: 0.4; }
+
+  /* Wednesday reads as the live column. */
+  .is-bookable { background: rgba(46, 211, 200, 0.06); }
+
+  /* ── PRICING ───────────────────────────────────────────────────────────── */
+  .pricing { flex: 0 0 auto; padding: 4px 46px 0; }
+  .pricing-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .pricing-head h2 { font-size: 19px; color: #fff; }
+  .pricing-head span { font-size: 11px; color: var(--mist-500); }
+
+  .cards { display: flex; gap: 11px; }
+  .card {
+    flex: 1;
+    background: var(--ink-panel);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 12px 13px 13px;
+  }
+  .card .label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .card .price {
+    font-family: "Anton", "Arial Narrow", Impact, sans-serif;
+    text-transform: uppercase;
+    font-size: 25px;
+    line-height: 1.05;
+    color: #fff;
+    margin-top: 5px;
+  }
+  .card .unit {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mist-500);
+    margin-top: 3px;
+  }
+  /* Sibling rate in teal: standing pricing, part of the identity. */
+  .card .sib {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-top: 9px;
+    padding-top: 9px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    line-height: 1.35;
+  }
+
+  /* ── PROMO ─────────────────────────────────────────────────────────────── */
+  /* Gold: a promo is a temporary status, same rule as the booking note. */
+  .promo {
+    flex: 0 0 auto;
+    margin: 13px 46px 0;
+    padding: 10px 14px;
+    background: var(--gold);
+    color: var(--on-accent);
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  .promo b { font-weight: 700; }
+
+  /* ── FOOTER ────────────────────────────────────────────────────────────── */
+  footer {
+    flex: 0 0 auto;
+    margin-top: auto;
+    background: var(--ink-deep);
+    border-top: 3px solid var(--accent);
+    padding: 14px 46px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+  }
+  .book-cta { font-size: 11.5px; line-height: 1.5; }
+  .book-cta .lead {
+    font-family: "Anton", "Arial Narrow", Impact, sans-serif;
+    text-transform: uppercase;
+    font-size: 15px;
+    color: #fff;
+    margin-bottom: 3px;
+  }
+  .book-cta .url { color: var(--accent); font-weight: 700; word-break: break-all; }
+  .contact {
+    text-align: right;
+    font-size: 10.5px;
+    line-height: 1.65;
+    color: var(--mist-400);
+    white-space: nowrap;
+  }
+  .contact b { display: block; color: #fff; font-size: 11px; letter-spacing: 0.1em; }
+  .dropoff {
+    margin-top: 6px;
+    font-size: 10px;
+    color: var(--mist-500);
+    font-style: italic;
+    white-space: normal;
+  }
+</style>
+</head>
+<body>
+
+<!-- The five-accent signature. Order is fixed: red, orange, gold, teal, pink. -->
+<div class="stripe">
+  <span style="background: var(--red)"></span>
+  <span style="background: var(--orange)"></span>
+  <span style="background: var(--gold)"></span>
+  <span style="background: var(--teal)"></span>
+  <span style="background: var(--pink)"></span>
+</div>
+
+<div class="head">
+  <div class="wordmark">
+    CAPITAL CORE
+    <small>DANCE STUDIO</small>
+  </div>
+  <div class="term">
+    Fall 2026
+    <small>Through 16 December</small>
+  </div>
+</div>
+
+<div class="title">
+  <div class="eyebrow">Ages 0 – 5 years</div>
+  <h1>Little <em>Movers</em></h1>
+  <div class="tagline">Movement. Play. Learn. Grow.</div>
+</div>
+
+<!-- 🔴 SWAP THIS when a day opens. See the header comment. -->
+<p class="note">
+  <b>Wednesday mornings are open for booking now.</b>
+  Monday and Friday are on the schedule below and are staffing up, so they are not
+  bookable yet — we will open them as soon as they have an instructor.
+</p>
+
+<div class="grid-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th class="time-col"><span class="col-label">Time</span></th>
+
+        <th class="not-bookable">
+          <span class="day-name">Monday</span>
+          <span class="chip chip-soon">Not booking yet</span>
+        </th>
+
+        <th class="is-bookable">
+          <span class="day-name">Wednesday</span>
+          <span class="chip chip-open">Booking open</span>
+        </th>
+
+        <th class="not-bookable">
+          <span class="day-name">Friday</span>
+          <span class="chip chip-soon">Not booking yet</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- 45 minutes of class, 15 minutes between. First bell 9:30. -->
+      <tr>
+        <th class="slot" scope="row">9:30 – 10:15 AM</th>
+        <td class="not-bookable">
+          <div class="class-name">Baby &amp; Me</div>
+          <div class="class-ages">0–18 months</div>
+        </td>
+        <td class="is-bookable">
+          <div class="class-name">Baby &amp; Me</div>
+          <div class="class-ages">0–18 months</div>
+        </td>
+        <td class="not-bookable">
+          <div class="class-name">Baby &amp; Me</div>
+          <div class="class-ages">0–18 months</div>
+        </td>
+      </tr>
+      <tr>
+        <th class="slot" scope="row">10:30 – 11:15 AM</th>
+        <td class="not-bookable">
+          <div class="class-name">Moovin&rsquo; &amp; Groovin&rsquo;</div>
+          <div class="class-ages">18 months–5 years</div>
+        </td>
+        <td class="is-bookable">
+          <div class="class-name">Moovin&rsquo; &amp; Groovin&rsquo;</div>
+          <div class="class-ages">18 months–5 years · with Ms. Ryan</div>
+        </td>
+        <td class="not-bookable">
+          <div class="class-name">Moovin&rsquo; &amp; Groovin&rsquo;</div>
+          <div class="class-ages">18 months–5 years</div>
+        </td>
+      </tr>
+      <!-- The last slot is what makes a day worth choosing — it differs per day. -->
+      <tr>
+        <th class="slot" scope="row">11:30 AM – 12:15 PM</th>
+        <td class="not-bookable">
+          <div class="class-name">Tiny Tumblers</div>
+          <div class="class-ages">18 months–5 years</div>
+        </td>
+        <td class="is-bookable">
+          <div class="class-name">Sensory Steps</div>
+          <div class="class-ages">18 months–5 years</div>
+        </td>
+        <td class="not-bookable">
+          <div class="class-name">Free Play Lab</div>
+          <div class="class-ages">18 months–5 years</div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="pricing">
+  <div class="pricing-head">
+    <h2>Three ways to join</h2>
+    <span>Little Movers is priced separately from studio class tuition.</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="label">Drop-in</div>
+      <div class="price">$10</div>
+      <div class="unit">First child, per class</div>
+      <div class="sib">$5 for each additional child</div>
+    </div>
+    <div class="card">
+      <div class="label">Passport</div>
+      <!-- One dollar headline, matching the other two cards. It read "5 — $45",
+           which parses as a range rather than a price. -->
+      <div class="price">$45</div>
+      <div class="unit">5 visits &middot; or 10 for $85</div>
+      <div class="sib">10% off each additional child&rsquo;s pass</div>
+    </div>
+    <div class="card">
+      <div class="label">Membership</div>
+      <div class="price">$89</div>
+      <div class="unit">Per month, unlimited</div>
+      <div class="sib">Each additional member is $10 less than the one before</div>
+    </div>
+  </div>
+</div>
+
+<!-- MOOVE26 is Passports + the first month of a membership. NOT drop-ins — the
+     portal rejects it there, so promising it would send a parent to be told no. -->
+<div class="promo">
+  <b>Save 30% with code MOOVE26</b> on a Passport or your first month of membership.
+  Not valid on single drop-in classes. Bringing more than one child? The sibling rate
+  applies first and the code comes off the discounted total.
+</div>
+
+<footer>
+  <div class="book-cta">
+    <div class="lead">Book a class</div>
+    <span class="url">studio.capitalcoredance.com/register/little-movers/book</span>
+    <div class="dropoff">
+      No Little Movers class is drop-off — a parent or caregiver is welcome to stay in
+      the class or wait in the studio.
+    </div>
+  </div>
+  <div class="contact">
+    <b>CAPITAL CORE DANCE STUDIO</b>
+    13110 Midlothian Turnpike<br />
+    Midlothian, VA 23113<br />
+    804-234-4014<br />
+    info@capitalcoredance.com
+  </div>
+</footer>
+
+</body>
+</html>

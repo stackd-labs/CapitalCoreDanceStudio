@@ -110,12 +110,10 @@ export const PROGRAMS = [
 //     nowhere to put them. Names and titles come from src/lib/instructors.js, which
 //     is the spelling authority; Ms. Hannah is named on the Fall flyer but has no
 //     roster entry yet, so hers is a name and nothing more.
-//   `studio` — 'A' or 'B'. The studio has two rooms and now runs classes in both at
-//     the same time. Without this the calendar would show the Academy overlapping
-//     four other classes and look double-booked.
-//
-// SUNDAY IS NEW as a day. The Academy is the only thing that runs at the weekend.
-// ClassCalendar's DAY_ORDER had to gain it, or the day was silently dropped.
+//   `studio` — 'A' or 'B'. The studio has two rooms. Every row below is Studio B now
+//     that the Academy is off the calendar, so the field looks redundant — it is not.
+//     It is what the printable sheet labels its two sections from, and it is what a
+//     restored Academy row would need to stop the grid reading as double-booked.
 //
 // 🔴 OFF THE SCHEDULE ENTIRELY, kept here as a record rather than deleted, because
 // the reason matters more than the absence:
@@ -126,18 +124,25 @@ export const PROGRAMS = [
 // Their CLASS_INFO entries stay: a class coming back should not need its
 // description rewritten.
 export const SCHEDULE = [
-  {
-    // The Academy only. Studio B is dark on Sundays.
-    day: 'Sunday',
-    classes: [
-      { name: 'Capital Core Dance Academy', time: '3:00 – 6:00 PM', start: '15:00', end: '18:00', infoKey: 'Capital Core Dance Academy', program: 'academy', ages: 'Ages 6–18', ageGroups: ['kids', 'teen'], category: 'academy', studio: 'A', instructor: 'Mr. Yul, Ms. Jillian & Ms. Kendall' },
-    ],
-  },
+  // 🔴 THE ACADEMY IS NOT ON THIS CALENDAR, deliberately, removed 2026-09-02.
+  //
+  // It ran in Studio A at the same time as Studio B — Sunday 3:00–6:00, Monday and
+  // Thursday 5:00–7:00 — and putting it on the grid made the grid worse for the
+  // classes most people come here to read. Monday and Thursday split four ways and
+  // truncated to "Capital Core Dance Acader…", and because the grid window derives
+  // from the earliest class, the Sunday session dragged every weekday column down
+  // past two hours of empty afternoon.
+  //
+  // The programme has NOT gone away. It is still on the printable schedule
+  // (print/class-schedule.html renders it as its own band, which is why it costs
+  // nothing there), and the Dance Academy entry in PROGRAMS still names its days on
+  // /classes. ⚠ Those are now the ONLY two places on the site that say when it runs.
+  //
+  // To put it back: restore these three rows, add 'Sunday' to ClassCalendar's
+  // DAY_ORDER, and expect the stacking and the window to come back with them.
   {
     day: 'Monday',
     classes: [
-      // Studio A runs the full 5:00–7:00 alongside the Studio B evening below.
-      { name: 'Capital Core Dance Academy', time: '5:00 – 7:00 PM', start: '17:00', end: '19:00', infoKey: 'Capital Core Dance Academy', program: 'academy', ages: 'Ages 6–18', ageGroups: ['kids', 'teen'], category: 'academy', studio: 'A', instructor: 'Mr. Yul' },
       { name: 'Tiny Core Ballet & Tumble', time: '5:00 – 5:30 PM', start: '17:00', end: '17:30', infoKey: 'Tiny Core Ballet & Tumble', program: 'tiny-core', ages: 'Ages 2–5', ageGroups: ['tiny'], category: 'tiny', studio: 'B', instructor: 'Ms. Jillian' },
       // Both standalone hip hop classes are Hip Hop & Breakdancing and share one
       // description (merged 2026-08-04). The ballet/hip hop combos are separate.
@@ -182,7 +187,6 @@ export const SCHEDULE = [
   {
     day: 'Thursday',
     classes: [
-      { name: 'Capital Core Dance Academy', time: '5:00 – 7:00 PM', start: '17:00', end: '19:00', infoKey: 'Capital Core Dance Academy', program: 'academy', ages: 'Ages 6–18', ageGroups: ['kids', 'teen'], category: 'academy', studio: 'A', instructor: 'Ms. Jillian & Mr. Yul' },
       { name: 'Core Ballet & Jazz', time: '5:15 – 6:00 PM', start: '17:15', end: '18:00', infoKey: 'Core Ballet & Jazz', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'ballet', studio: 'B', instructor: 'Ms. Kendall' },
       { name: 'Core Ballet & Tap', time: '6:00 – 6:45 PM', start: '18:00', end: '18:45', infoKey: 'Core Ballet & Tap', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'ballet', studio: 'B', instructor: 'Ms. Kendall' },
       // 🔴 BOTH ACRO CLASSES MOVED HERE FROM MONDAY AND ARE SHORTER, which REPRICES

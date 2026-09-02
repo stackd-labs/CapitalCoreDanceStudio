@@ -2,18 +2,22 @@ import { useRef, useState } from 'react'
 import ClassDetailPanel from './ClassDetailPanel'
 import { SCHEDULE } from '../lib/schedule'
 
-// Sunday added 2026-09-02 and FIRST, not last: the Academy is the only thing that
-// runs at the weekend, and the studio's own week reads Sunday to Friday. A day absent
-// from this list is silently dropped from the calendar — the grid is built by mapping
-// DAY_ORDER, not by reading the schedule — so this has to move whenever the schedule
-// gains a day. Saturday stays off until something runs on it.
-const DAY_ORDER = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+// Sunday was added on 2026-09-02 for the Academy and removed again the same day when
+// the Academy came off the calendar — nothing runs at the weekend now, and a listed
+// day with no classes renders as an empty column taking a sixth of the width.
+//
+// A day absent from this list is silently DROPPED from the grid: it is built by
+// mapping DAY_ORDER, not by reading the schedule. So this has to change whenever the
+// schedule gains or loses a day, and a test pins the two together.
+const DAY_ORDER = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
 
-// The Fall schedule runs 5:00–9:00 PM. Sixteen 15-minute slots cover it, and every
-// class time in the schedule falls on a 15-minute boundary (a test enforces this).
 // DERIVED from the schedule, not hardcoded to 17:00–21:00 as it was until 2026-09-02.
-// The Academy's Sunday session starts at 3:00 PM, two hours before the old grid began,
-// which would have given it a NEGATIVE start slot and floated it above the grid.
+// It happens to resolve back to 17:00–21:00 now that the Academy is off the calendar,
+// which is the point: the hardcoded pair was silently wrong for the two hours the
+// Academy's Sunday session sat outside it, and deriving means the next class outside
+// the evening widens the grid instead of floating above it on a negative start slot.
+//
+// Every class time falls on a 15-minute boundary, which a test enforces.
 //
 // Computed from the full SCHEDULE rather than the filtered `schedule` prop on purpose:
 // deriving it from the prop would make the grid resize every time a filter changed,

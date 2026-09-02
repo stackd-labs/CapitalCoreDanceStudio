@@ -48,18 +48,19 @@ const ALL_ROWS = SCHEDULE.flatMap(({ day, classes }) =>
   classes.map((c) => ({ ...c, day }))
 )
 
-test('the schedule still has 21 class rows', () => {
-  // 22 → 21 on 2026-09-02, when the studio reworked the week. Three classes came off
-  // (Tumble Tech both nights, Core Plus Lyrical & Contemporary, Adult Femme/Flair) and
-  // two Academy sessions plus Adult Ballet/Tech came on.
-  expect(ALL_ROWS).toHaveLength(21)
+test('the schedule still has 18 class rows', () => {
+  // 22 → 18 across 2026-09-02. Off: Tumble Tech (both nights), Core Plus Lyrical &
+  // Contemporary, Adult Femme/Flair. On: Adult Ballet/Tech. The three Academy
+  // sessions were added and then taken off the CALENDAR the same day — they still
+  // run, they are just not on the grid. See the note at the top of schedule.js.
+  expect(ALL_ROWS).toHaveLength(18)
 })
 
 // Classes the studio added on 2026-09-02 that it has not yet written copy for. The
 // detail panel renders `{info && ...}`, so these show without a description rather
 // than with an invented one — the same rule the About page follows for staff.
 // Deleting a name from this list should make the test below demand real prose.
-const AWAITING_COPY = ['Capital Core Dance Academy', 'Adult Ballet/Tech']
+const AWAITING_COPY = ['Adult Ballet/Tech']
 
 test('every schedule row resolves to prose via its infoKey', () => {
   for (const row of ALL_ROWS) {
@@ -139,12 +140,6 @@ test('the studio photo rules resolve to exactly this assignment across the Fall 
   const assignment = Object.fromEntries(names.map((n) => [n, photoForClass(n)?.photo ?? null]))
 
   expect(assignment).toEqual({
-    // ⚠ NO PHOTOGRAPH. photoForClass matches on NAME, and no rule mentions "academy",
-    // so this resolves to null and the card renders its hatched placeholder. That is
-    // the honest outcome — there is no Academy photograph — but it is the one class on
-    // the schedule without one, so it is worth seeing here rather than discovering on
-    // the page.
-    'Capital Core Dance Academy': null,
     // Takes the ballet photo off the last-resort `ballet` rule, on its name alone. It
     // is a 16+ class and the ballet photograph is not of adults; flagged rather than
     // fixed, because the fix is a photograph, not a rule.

@@ -174,7 +174,7 @@
   /* ── HEADER ────────────────────────────────────────────────────────────── */
   .head {
     flex: 0 0 auto;
-    padding: 14px 40px 0;
+    padding: 10px 40px 0;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -200,7 +200,7 @@
 
   /* ── TITLE ─────────────────────────────────────────────────────────────── */
   .title { flex: 0 0 auto; padding: 6px 40px 0; }
-  .title h1 { font-size: 44px; line-height: 0.9; color: #fff; }
+  .title h1 { font-size: 40px; line-height: 0.9; color: #fff; }
   .title h1 em { font-style: normal; color: var(--accent); }
   .title .tagline {
     font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
@@ -269,7 +269,7 @@
      differ — so a shared time axis would be mostly empty cells. */
   .week {
     flex: 1 1 auto;
-    padding: 9px 40px 0; /* tightened: the studio row above now carries the gap */
+    padding: 6px 40px 0; /* tightened: the studio row above now carries the gap */
     display: flex;
     gap: 9px;
     align-items: stretch;
@@ -385,14 +385,25 @@
     color: var(--mist-500);
     margin-top: 4px;
   }
+  /* Three columns now, each carrying a day, a time and who is on it. A single flex
+     row of "Day 0:00–0:00" entries worked while the sessions were unstaffed; with
+     three names on the Sunday block it needs two lines per session. */
   .academy ul {
     list-style: none;
     margin: 8px 0 0;
     padding: 0;
-    display: flex;
-    gap: 34px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px 26px;
   }
   .academy li { font-size: 11.5px; line-height: 1.4; }
+  .academy .who-on {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--mist-400);
+    margin-top: 1px;
+  }
   .academy b { color: #fff; font-weight: 700; }
   /* 🔴 SCOPED TO `li span`, not `.academy span`. The broad selector also caught the
      Studio A tag — which is a <span> — and painted it accent-on-accent, so the
@@ -445,7 +456,7 @@
   /* ── TUITION ───────────────────────────────────────────────────────────── */
   .tuition {
     flex: 0 0 auto;
-    margin: 10px 40px 0;
+    margin: 6px 40px 0;
     display: flex;
     gap: 10px;
   }
@@ -482,13 +493,13 @@
      20 against 18 classes. */
   .p2-head {
     flex: 0 0 auto;
-    padding: 18px 40px 0;
+    padding: 12px 40px 0;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
   }
-  .p2-title { flex: 0 0 auto; padding: 10px 40px 0; }
-  .p2-title h2 { font-size: 34px; line-height: 0.92; color: #fff; }
+  .p2-title { flex: 0 0 auto; padding: 6px 40px 0; }
+  .p2-title h2 { font-size: 27px; line-height: 0.92; color: #fff; }
   .p2-title h2 em { font-style: normal; color: var(--accent); }
   .p2-title .sub {
     font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
@@ -500,15 +511,15 @@
     margin-top: 6px;
   }
 
-  .teachers { flex: 1 1 auto; padding: 14px 40px 0; }
+  .teachers { flex: 1 1 auto; padding: 8px 40px 0; }
 
   /* One box per instructor, with air between them — the studio asked for a box,
      a space, then the next. Accent left rule, panel fill, square. */
   .teacher {
     background: var(--ink-panel);
     border-left: 3px solid var(--accent);
-    padding: 9px 14px 10px;
-    margin-bottom: 11px;
+    padding: 6px 13px 7px;
+    margin-bottom: 7px;
   }
   .teacher:last-child { margin-bottom: 0; }
 
@@ -517,7 +528,7 @@
     align-items: baseline;
     justify-content: space-between;
     gap: 12px;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
   .teacher .name {
     font-family: "Anton", "Arial Narrow", Impact, sans-serif;
@@ -540,9 +551,9 @@
     display: flex;
     align-items: baseline;
     gap: 9px;
-    padding: 2.5px 0;
+    padding: 1.5px 0;
     font-size: 11px;
-    line-height: 1.3;
+    line-height: 1.25;
   }
   .teacher li + li { border-top: 1px solid rgba(255, 255, 255, 0.07); }
   /* Fixed-width day and time so the class names line up down the box — the whole
@@ -626,12 +637,15 @@
 
 <div class="title">
   <h1>Class <em>Schedule</em></h1>
-  <!-- 20 as of 2026-09-02. Grid: Mon 4 · Tue 3 · Wed 4 · Thu 4 · Fri 3 = 18, plus
-       the two Academy sessions in the band below = 20. The Academy counts here
-       because a parent scanning the sheet sees twenty classes on it; it does NOT
-       count in the Monday and Thursday day-counts, because it is not in those
-       columns. Recount from the columns plus the band, not from this note. -->
-  <div class="tagline">20 classes &middot; Monday to Friday &middot; Ages 2 to adult</div>
+  <!-- 21 as of 2026-09-02. Studio B grid: Mon 4 · Tue 3 · Wed 4 · Thu 4 · Fri 3 = 18,
+       plus THREE Academy sessions in the band below = 21. The Academy counts here
+       because a parent scanning the sheet sees twenty-one classes on it; it does NOT
+       count in the day-counts, because it is not in those columns.
+       "Sunday to Friday", not "Monday to Friday": the Academy's Sunday session is the
+       only thing the studio runs at the weekend, and a sheet that says Monday–Friday
+       while printing a Sunday class contradicts itself. Saturday is the one clear day.
+       Recount from the columns plus the band, not from this note. -->
+  <div class="tagline">21 classes &middot; Sunday to Friday &middot; Ages 2 to adult</div>
 </div>
 
 <!-- FIVE tiers, derived from the grid rather than listed from PROGRAMS.
@@ -787,17 +801,22 @@
 
 </div>
 
-<!-- New programme, 2026-09-02. Two sessions, both 6:00–7:00, running ALONGSIDE the
-     grid above rather than as part of it.
-     ⚠ NO AGE RANGE YET — the studio has not given one, and this sheet does not
-     invent ages. Add it to both entries when it lands. -->
+<!-- New programme, 2026-09-02. THREE sessions now, and Sunday is the only thing the
+     studio runs outside Monday–Friday — which is why the sub-line says so rather
+     than leaving a parent to notice a sixth day on a "Monday to Friday" sheet.
+     ⚠ STILL NO AGE RANGE. The studio has not given one and this sheet does not
+     invent ages. Add it to all three entries when it lands. -->
 <div class="academy">
   <div class="studio-line"><span class="studio-tag">Studio A</span></div>
   <div class="label">Capital Core Dance Academy</div>
-  <div class="sub">Runs alongside the weekly schedule</div>
+  <div class="sub">Alongside the weekly schedule &middot; includes Sunday</div>
   <ul>
-    <li><b>Monday</b> <span>5:00 &ndash; 7:00 PM</span></li>
-    <li><b>Thursday</b> <span>5:00 &ndash; 7:00 PM</span></li>
+    <li><b>Sunday</b> <span>3:00 &ndash; 6:00 PM</span>
+      <span class="who-on">Mr. Yul, Ms. Jillian &amp; Ms. Kendall</span></li>
+    <li><b>Monday</b> <span>5:00 &ndash; 7:00 PM</span>
+      <span class="who-on">Mr. Yul</span></li>
+    <li><b>Thursday</b> <span>5:00 &ndash; 7:00 PM</span>
+      <span class="who-on">Ms. Jillian &amp; Mr. Yul</span></li>
   </ul>
 </div>
 
@@ -903,9 +922,10 @@
   <div class="teacher">
     <div class="who">
       <div class="name">Ms. Jillian</div>
-      <div class="load">7 classes &middot; Mon, Tue, Wed</div>
+      <div class="load">9 classes &middot; Sun, Mon, Tue, Wed, Thu</div>
     </div>
     <ul>
+      <li><span class="t-day">Sun</span><span class="t-time">3:00 &ndash; 6:00</span><span class="t-class">Dance Academy <span class="t-meta">&middot; Studio A &middot; with Mr. Yul &amp; Ms. Kendall</span></span></li>
       <li><span class="t-day">Mon</span><span class="t-time">5:00 &ndash; 5:30</span><span class="t-class">Tiny Core Ballet &amp; Tumble <span class="t-meta">&middot; ages 2&ndash;5</span></span></li>
       <li><span class="t-day">Mon</span><span class="t-time">7:00 &ndash; 7:45</span><span class="t-class">Ballet Tech <span class="t-meta">&middot; ages 8+</span></span></li>
       <li><span class="t-day">Tue</span><span class="t-time">5:00 &ndash; 5:30</span><span class="t-class">Tiny Core Ballet &amp; Hip Hop <span class="t-meta">&middot; ages 2&ndash;5</span></span></li>
@@ -913,33 +933,41 @@
       <li><span class="t-day">Tue</span><span class="t-time">6:15 &ndash; 7:00</span><span class="t-class">Core Contemporary &amp; Jazz <span class="t-meta">&middot; ages 5+</span></span></li>
       <li><span class="t-day">Wed</span><span class="t-time">5:30 &ndash; 6:00</span><span class="t-class">Tiny Core Ballet &amp; Tap <span class="t-meta">&middot; ages 2&ndash;5</span></span></li>
       <li><span class="t-day">Wed</span><span class="t-time">6:00 &ndash; 6:45</span><span class="t-class">Core Hip Hop &amp; Breakdancing <span class="t-meta">&middot; ages 5+ &middot; covering for Ms. Savannah</span></span></li>
+      <li><span class="t-day">Thu</span><span class="t-time">5:00 &ndash; 7:00</span><span class="t-class">Dance Academy <span class="t-meta">&middot; Studio A &middot; with Mr. Yul</span></span></li>
+    </ul>
+  </div>
+
+  <!-- Mr. Yul moved above Ms. Kendall here: the Academy took him from 4 to 7 and
+       her from 5 to 6. The order is by load, so it changes when the load does. -->
+  <div class="teacher">
+    <div class="who">
+      <div class="name">Mr. Yul</div>
+      <div class="load">7 classes &middot; Sun, Mon, Thu, Fri</div>
+    </div>
+    <ul>
+      <li><span class="t-day">Sun</span><span class="t-time">3:00 &ndash; 6:00</span><span class="t-class">Dance Academy <span class="t-meta">&middot; Studio A &middot; with Ms. Jillian &amp; Ms. Kendall</span></span></li>
+      <li><span class="t-day">Mon</span><span class="t-time">5:00 &ndash; 7:00</span><span class="t-class">Dance Academy <span class="t-meta">&middot; Studio A &middot; on his own</span></span></li>
+      <li><span class="t-day">Thu</span><span class="t-time">5:00 &ndash; 7:00</span><span class="t-class">Dance Academy <span class="t-meta">&middot; Studio A &middot; with Ms. Jillian</span></span></li>
+      <!-- 🔶 15 minutes to cross rooms after the Academy ends at 7:00. -->
+      <li><span class="t-day">Thu</span><span class="t-time">7:15 &ndash; 8:00</span><span class="t-class">Core Plus Acro &amp; Lyrical <span class="t-meta">&middot; ages 8+ &middot; Studio B &middot; with Ms. Milan</span></span></li>
+      <li><span class="t-day">Fri</span><span class="t-time">5:30 &ndash; 6:15</span><span class="t-class">Core Ballet &amp; Modern <span class="t-meta">&middot; ages 5+</span></span></li>
+      <li><span class="t-day">Fri</span><span class="t-time">6:15 &ndash; 7:00</span><span class="t-class">Adult Ballet/Tech <span class="t-meta">&middot; ages 16+</span></span></li>
+      <li><span class="t-day">Fri</span><span class="t-time">7:00 &ndash; 7:45</span><span class="t-class">Adult Contemporary <span class="t-meta">&middot; ages 16+</span></span></li>
     </ul>
   </div>
 
   <div class="teacher">
     <div class="who">
       <div class="name">Ms. Kendall</div>
-      <div class="load">5 classes &middot; Wed, Thu</div>
+      <div class="load">6 classes &middot; Sun, Wed, Thu</div>
     </div>
     <ul>
+      <li><span class="t-day">Sun</span><span class="t-time">3:00 &ndash; 6:00</span><span class="t-class">Dance Academy <span class="t-meta">&middot; Studio A &middot; with Mr. Yul &amp; Ms. Jillian</span></span></li>
       <li><span class="t-day">Wed</span><span class="t-time">6:45 &ndash; 7:30</span><span class="t-class">Pom Cheer <span class="t-meta">&middot; ages 5+</span></span></li>
       <li><span class="t-day">Wed</span><span class="t-time">7:30 &ndash; 8:15</span><span class="t-class">Adult Pom <span class="t-meta">&middot; ages 16+</span></span></li>
       <li><span class="t-day">Thu</span><span class="t-time">5:15 &ndash; 6:00</span><span class="t-class">Core Ballet &amp; Jazz <span class="t-meta">&middot; ages 5+</span></span></li>
       <li><span class="t-day">Thu</span><span class="t-time">6:00 &ndash; 6:45</span><span class="t-class">Core Ballet &amp; Tap <span class="t-meta">&middot; ages 5+</span></span></li>
       <li><span class="t-day">Thu</span><span class="t-time">6:45 &ndash; 7:15</span><span class="t-class">Core Acro &amp; Jazz <span class="t-meta">&middot; ages 5+ &middot; with Ms. Milan</span></span></li>
-    </ul>
-  </div>
-
-  <div class="teacher">
-    <div class="who">
-      <div class="name">Mr. Yul</div>
-      <div class="load">4 classes &middot; Thu, Fri</div>
-    </div>
-    <ul>
-      <li><span class="t-day">Thu</span><span class="t-time">7:15 &ndash; 8:00</span><span class="t-class">Core Plus Acro &amp; Lyrical <span class="t-meta">&middot; ages 8+ &middot; with Ms. Milan</span></span></li>
-      <li><span class="t-day">Fri</span><span class="t-time">5:30 &ndash; 6:15</span><span class="t-class">Core Ballet &amp; Modern <span class="t-meta">&middot; ages 5+</span></span></li>
-      <li><span class="t-day">Fri</span><span class="t-time">6:15 &ndash; 7:00</span><span class="t-class">Adult Ballet/Tech <span class="t-meta">&middot; ages 16+</span></span></li>
-      <li><span class="t-day">Fri</span><span class="t-time">7:00 &ndash; 7:45</span><span class="t-class">Adult Contemporary <span class="t-meta">&middot; ages 16+</span></span></li>
     </ul>
   </div>
 
@@ -978,18 +1006,21 @@
     </p>
   </div>
 
-  <!-- The Academy is Studio A and has no one assigned. It belongs on a per-person
-       page precisely BECAUSE it is nobody's yet — leaving it off would hide the
-       gap. Not a .teacher box: it is a hole, not a person. -->
+  <!-- Was an "Unassigned" box while the Academy had nobody on it. Staffed 2026-09-02,
+       so it is now a team view of the programme instead. Kept as its own box rather
+       than left to the three instructor boxes above: the Academy is the only thing
+       running in Studio A and on a Sunday, and it is the only entry still missing an
+       age range — worth one place that says all of that at once. -->
   <div class="teacher" style="border-left-color: var(--mist-500)">
     <div class="who">
-      <div class="name" style="color: var(--mist-400)">Unassigned</div>
-      <div class="load">2 blocks &middot; Studio A</div>
+      <div class="name" style="color: var(--mist-400)">Academy &middot; Studio A</div>
+      <div class="load">3 sessions &middot; also in the boxes above</div>
     </div>
     <p class="note" style="margin: 2px 0 0">
-      Capital Core Dance Academy, Monday and Thursday 5:00 &ndash; 7:00, has no instructor
-      and no age range yet. Both days clash with Studio B, so whoever takes it cannot
-      be Ms. Jillian or Ms. Adelle on Monday, or Ms. Kendall or Ms. Milan on Thursday.
+      Sunday 3:00 &ndash; 6:00 all three &middot; Monday 5:00 &ndash; 7:00 Mr. Yul &middot;
+      Thursday 5:00 &ndash; 7:00 Ms. Jillian and Mr. Yul. <b>Still no age range.</b>
+      Thursday is tight for Mr. Yul: the Academy ends at 7:00 and he is on Acro &amp;
+      Lyrical in Studio B at 7:15.
     </p>
   </div>
 

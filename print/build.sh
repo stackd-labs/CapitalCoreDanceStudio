@@ -21,6 +21,14 @@
 #   2. THE SHEET SPILLS TO TWO PAGES. The layout has no slack left; adding any block
 #      pushes it over, and page two is mostly empty navy so it is easy to miss.
 #
+#   3. A PAGE OVERFLOWS AND IS SILENTLY CLIPPED. This is the nastiest of the three,
+#      and the page-count check CANNOT catch it: .page sets overflow:hidden, so
+#      content past 1056px is cut rather than pushed onto a new page. The count
+#      stays correct while the footer quietly disappears. Caught on 2026-09-02 with
+#      page 2 running 150px over — the whole Academy summary and the footer were
+#      being cut off, and both the PDF and the page-count check looked fine.
+#      So each page is MEASURED in a real browser below, not eyeballed.
+#
 # The verification runs BEFORE the copy into public/, and a failure aborts. The first
 # version of this script checked after copying, and duly published the Segoe UI PDF
 # to the live domain.
@@ -47,6 +55,47 @@ FAILED=0
 # second page (instructor view) on 2026-09-02, and the guard is only worth having if
 # it still catches an ACCIDENTAL extra page. "However many it comes out as" would
 # catch nothing.
+# Measure every .page's content height in a real browser. Appends a probe script to
+# a throwaway copy so the sheet itself stays free of build scaffolding, then reads the
+# result back out of <title> — the only channel headless Chrome gives us without a
+# driver. Echoes "OVERFLOW" per page that exceeds 1056px.
+measure() {
+  local name="$1"
+  # Written NEXT TO the sheet, not in $TMPDIR: on Git Bash TMPDIR is a Windows path
+  # (C:\Users\...\Temp\), which breaks both the POSIX cat and the /c/ → c:/ rewrite
+  # below. The first version used it, produced no output at all, and the check then
+  # passed vacuously — see the empty "no clipping ()" it printed.
+  local probe="${ROOT}/print/.probe-${name}.html"
+  cat "${ROOT}/print/${name}.html" > "$probe"
+  cat >> "$probe" <<'PROBE'
+<script>
+window.addEventListener('load', () => {
+  // .page wrappers if the sheet has them (class-schedule, which is two pages), else
+  // the body itself (little-movers, still a single body-as-page sheet). Without the
+  // fallback this returns nothing for one-page sheets, which now fails the build.
+  const pages = document.querySelectorAll('.page');
+  const boxes = pages.length ? [...pages] : [document.body];
+  document.title = 'PROBE ' + boxes.map((p, i) => {
+    // scrollHeight, NOT lastElementChild's bottom. This probe appends its own <script>
+    // to the document, and on the body-fallback path that script becomes the last
+    // element child — a zero-height node, which measured the page at 0 and passed.
+    // scrollHeight reports full content height even under overflow:hidden.
+    // Round BEFORE comparing: sub-pixel layout puts a page that fits exactly at
+    // 1056.0001, which a raw `> 1056` reported as an overflow.
+    const h = Math.round(p.scrollHeight);
+    return `p${i + 1}=${h}${h > 1056 ? '-OVERFLOW' : ''}`;
+  }).join(' ');
+});
+</script>
+PROBE
+  local winprobe
+  winprobe="$(printf '%s' "$probe" | sed 's|^/\([a-zA-Z]\)/|\1:/|')"
+  "$CHROME" --headless=new --disable-gpu --virtual-time-budget=25000 \
+    --run-all-compositor-stages-before-draw --dump-dom "file:///${winprobe}" 2>/dev/null \
+    | grep -o '<title>PROBE [^<]*</title>' | sed 's|<title>PROBE ||; s|</title>||'
+  rm -f "$probe"
+}
+
 build() {
   local name="$1"
   local want="$2"
@@ -72,7 +121,22 @@ build() {
     echo "   persists, check the font <link> is the v1 /css? endpoint and you are online."
     FAILED=1
   else
-    echo "✅ ${name}: ${pages} page(s), fonts embedded"
+    local heights
+    heights="$(measure "$name")"
+    if [ -z "$heights" ]; then
+      # A measurement that returns nothing must FAIL, not pass. Silence here means the
+      # probe did not run, and "no overflow detected" would be a lie rather than a pass.
+      echo "🔴 ${name}: could not measure page heights — the probe returned nothing."
+      echo "   Not treating that as a pass. Check the probe path and that Chrome ran."
+      FAILED=1
+    elif printf '%s' "$heights" | grep -q OVERFLOW; then
+      echo "🔴 ${name}: a page overflows 1056px and is being CLIPPED — ${heights}"
+      echo "   The PDF will look fine and the page count will be right; the bottom of"
+      echo "   that page is simply cut off. Trim fixed chrome until every page is ≤1056."
+      FAILED=1
+    else
+      echo "✅ ${name}: ${pages} page(s), fonts embedded, no clipping (${heights})"
+    fi
   fi
 }
 

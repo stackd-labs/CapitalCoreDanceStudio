@@ -50,7 +50,7 @@ const ALL_ROWS = SCHEDULE.flatMap(({ day, classes }) =>
 
 test('the schedule still has 18 class rows', () => {
   // 22 → 18 across 2026-09-02. Off: Tumble Tech (both nights), Core Plus Lyrical &
-  // Contemporary, Adult Femme/Flair. On: Adult Ballet/Tech. The three Academy
+  // Contemporary, Adult Femme/Flair. On: Adult Ballet/Tech. The three Dance Company
   // sessions were added and then taken off the CALENDAR the same day — they still
   // run, they are just not on the grid. See the note at the top of schedule.js.
   expect(ALL_ROWS).toHaveLength(18)
@@ -114,7 +114,7 @@ test('start and end agree with the flyer-verbatim time string', () => {
 
 test('every class runs inside the calendar grid window', () => {
   // The window was hardcoded 17:00–21:00 here and in ClassCalendar until 2026-09-02,
-  // when the Academy's Sunday session at 3:00 PM would have been given a NEGATIVE
+  // when the Dance Company's Sunday session at 3:00 PM would have been given a NEGATIVE
   // start slot and floated above the grid. Both now derive the bounds from the
   // schedule, so this asserts the INVARIANT — every class fits, and no class ends
   // before it starts — rather than two literal hours that go stale.

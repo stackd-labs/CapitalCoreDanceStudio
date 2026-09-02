@@ -33,12 +33,15 @@
   · A class            → edit the <li> directly. Each is time / name / ages.
   · Prices, tiers      → the "PROGRAMME TIERS" and "TUITION" sections.
 
-  🔴 THIS SHEET IS NOW AHEAD OF THE WEBSITE. As of 2026-09-02 it carries the new
-  Monday; src/lib/schedule.js still has the old one, so capitalcoredance.com
-  /classes still shows both Acro classes, Hip Hop at 6:15 and the Adult class at
-  8:00. The website is the source of truth for anything a parent books against,
-  so this gap has to be closed before the sheet goes out — the Monday change was
-  made here first deliberately, to be looked at before it went live.
+  🔴 THIS SHEET AND THE WEBSITE MUST BE CHANGED TOGETHER. src/lib/schedule.js was
+  brought in line on 2026-09-02 and they now describe the same week — but nothing
+  derives one from the other, so a class moved in one place stays wrong in the
+  other. The website is the source of truth for anything a parent books against.
+
+  ONE DELIBERATE DIFFERENCE: the Dance Company is on this sheet and NOT on the
+  website calendar. Its three sessions run in Studio A at the same time as Studio
+  B, which reads fine as a band here and wrecked the grid there. /dance-company is
+  its home on the site.
 
   The whole week's diff, 2026-09-02, at the studio's direction:
 
@@ -71,7 +74,8 @@
   ── WHY THESE FIGURES AND NOT OTHERS ───────────────────────────────────────
   Everything here was derived from the repo on 2026-09-02, not retyped:
 
-  · 22 classes, Monday–Friday, 5:00–8:45 PM   → src/lib/schedule.js
+  · 18 Studio B classes + 3 Company sessions  → src/lib/schedule.js (the
+      Company sessions live only here — see the note above)
   · Term dates Aug 24 – Dec 18                → the Classes page kicker + FAQ
   · SIX tiers, not seven                      → derived from the schedule.
       Core Elite is defined in PROGRAMS but has NO classes assigned yet, and
@@ -158,7 +162,7 @@
   /* Stop the grid stretching. On the full sheet .week is flex:1 so it absorbs the
      leftover height, which is right when the tuition and not-running blocks sit
      below it. With those hidden it grew into the gap instead and left a band of
-     empty navy between the last class and the Academy. Natural height here, and
+     empty navy between the last class and the Dance Company. Natural height here, and
      the footer's margin-top:auto collects the slack at the bottom where it reads
      as margin rather than as a mistake. */
   html[data-only='schedule'] .week { flex: 0 0 auto; }
@@ -267,7 +271,7 @@
 
   /* ── STUDIO LABELS ─────────────────────────────────────────────────────── */
   /* The studio has two rooms. Everything in the weekly grid runs in STUDIO B;
-     the Academy band below it is STUDIO A. Labelling them this way rather than
+     the Dance Company band below it is STUDIO A. Labelling them this way rather than
      splitting every day into two sub-columns is what keeps the sheet legible:
      five days would become ten columns of about 74px, and seven of those ten
      would be empty, because Studio A currently runs on Monday and Thursday only.
@@ -383,7 +387,7 @@
      the word, and shortening the names to make room for it would have put this
      sheet out of step with the flyer and the website. The name is the marker. */
 
-  /* ── CAPITAL CORE DANCE ACADEMY ────────────────────────────────────────── */
+  /* ── CAPITAL CORE DANCE COMPANY ────────────────────────────────────────── */
   /* A PARALLEL TRACK, not a row of the weekly grid. Both sessions run 6:00–7:00
      across classes that are already on the grid at that hour — Monday's
      Contemporary & Jazz and Thursday's Ballet & Tap — so putting them in the day
@@ -391,28 +395,28 @@
 
      Built as its own band rather than by splitting Monday and Thursday into two
      sub-columns: at 148px a day column halves to about 70px, and "Capital Core
-     Dance Academy" wraps to four lines in that width. The band says the same
+     Dance Company" wraps to four lines in that width. The band says the same
      thing — same name, same hour, alongside the regular schedule — and stays
      legible. Say the word if the literal split is wanted instead.
 
      Carries the page accent as a solid left rule, unlike the not-running box
      below it, because this is a programme being ADDED, not withdrawn. */
-  .academy {
+  .company {
     flex: 0 0 auto;
     margin: 10px 40px 0;
     padding: 11px 14px 12px;
     background: var(--ink-panel);
     border-left: 3px solid var(--accent);
   }
-  .academy .studio-line { margin-bottom: 7px; }
-  .academy .label {
+  .company .studio-line { margin-bottom: 7px; }
+  .company .label {
     font-family: "Anton", "Arial Narrow", Impact, sans-serif;
     text-transform: uppercase;
     font-size: 15px;
     line-height: 1;
     color: #fff;
   }
-  .academy .sub {
+  .company .sub {
     font-size: 9.5px;
     font-weight: 600;
     letter-spacing: 0.14em;
@@ -423,7 +427,7 @@
   /* Three columns now, each carrying a day, a time and who is on it. A single flex
      row of "Day 0:00–0:00" entries worked while the sessions were unstaffed; with
      three names on the Sunday block it needs two lines per session. */
-  .academy ul {
+  .company ul {
     list-style: none;
     margin: 8px 0 0;
     padding: 0;
@@ -431,21 +435,21 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 4px 26px;
   }
-  .academy li { font-size: 11.5px; line-height: 1.4; }
-  .academy .who-on {
+  .company li { font-size: 11.5px; line-height: 1.4; }
+  .company .who-on {
     display: block;
     font-size: 10px;
     font-weight: 600;
     color: var(--mist-400);
     margin-top: 1px;
   }
-  .academy b { color: #fff; font-weight: 700; }
-  /* 🔴 SCOPED TO `li span`, not `.academy span`. The broad selector also caught the
+  .company b { color: #fff; font-weight: 700; }
+  /* 🔴 SCOPED TO `li span`, not `.company span`. The broad selector also caught the
      Studio A tag — which is a <span> — and painted it accent-on-accent, so the
      label rendered as a solid orange rectangle with invisible text. It beat
      .studio-tag on specificity (0,1,1 against 0,1,0), so the tag's own colour
      never applied. Keep this scoped. */
-  .academy li span {
+  .company li span {
     color: var(--accent);
     font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
     font-weight: 600;
@@ -681,10 +685,10 @@
 <div class="title">
   <h1>Class <em>Schedule</em></h1>
   <!-- 21 as of 2026-09-02. Studio B grid: Mon 4 · Tue 3 · Wed 4 · Thu 4 · Fri 3 = 18,
-       plus THREE Academy sessions in the band below = 21. The Academy counts here
+       plus THREE Dance Company sessions in the band below = 21. The Dance Company counts here
        because a parent scanning the sheet sees twenty-one classes on it; it does NOT
        count in the day-counts, because it is not in those columns.
-       "Sunday to Friday", not "Monday to Friday": the Academy's Sunday session is the
+       "Sunday to Friday", not "Monday to Friday": the Dance Company's Sunday session is the
        only thing the studio runs at the weekend, and a sheet that says Monday–Friday
        while printing a Sunday class contradicts itself. Saturday is the one clear day.
        Recount from the columns plus the band, not from this note. -->
@@ -711,7 +715,7 @@
   <div class="tier"><b>Adult Core</b> <span>&middot; ages 16+ &middot; all levels</span></div>
 </div>
 
-<!-- Everything below runs in Studio B. Studio A is the Academy band further down. -->
+<!-- Everything below runs in Studio B. Studio A is the Dance Company band further down. -->
 <div class="studio-row">
   <span class="studio-tag">Studio B</span>
   <span class="hint">The weekly schedule</span>
@@ -729,7 +733,7 @@
   <div class="day">
     <div class="day-head">
       <div class="day-name">Monday</div>
-      <!-- 4 on the grid. The Academy session is counted in the band, not here —
+      <!-- 4 on the grid. The Dance Company session is counted in the band, not here —
            it is a parallel track, and folding it in would imply the day column
            lists it. -->
       <div class="day-count">4 classes</div>
@@ -857,9 +861,9 @@
      It sits on the SUB-LINE rather than on each session, because it is a property
      of the programme and not of a day; repeating it three times would imply the
      three sessions could differ. -->
-<div class="academy">
+<div class="company">
   <div class="studio-line"><span class="studio-tag">Studio A</span></div>
-  <div class="label">Capital Core Dance Academy</div>
+  <div class="label">Capital Core Dance Company</div>
   <div class="sub">Ages 6&ndash;18 &middot; alongside the weekly schedule &middot; includes Sunday</div>
   <ul>
     <li><b>Sunday</b> <span>3:00 &ndash; 6:00 PM</span>
@@ -981,18 +985,18 @@
       <div class="load">8 classes &middot; Sun, Mon, Tue, Wed, Thu</div>
     </div>
     <ul>
-      <li><span class="t-day">Sun</span><span class="t-time">3:00 &ndash; 6:00</span><span class="t-class">Dance Academy <span class="t-meta">&middot; Studio A &middot; with Mr. Yul &amp; Ms. Kendall</span></span></li>
+      <li><span class="t-day">Sun</span><span class="t-time">3:00 &ndash; 6:00</span><span class="t-class">Dance Company <span class="t-meta">&middot; Studio A &middot; with Mr. Yul &amp; Ms. Kendall</span></span></li>
       <li><span class="t-day">Mon</span><span class="t-time">5:00 &ndash; 5:30</span><span class="t-class">Tiny Core Ballet &amp; Tumble <span class="t-meta">&middot; ages 2&ndash;5</span></span></li>
       <li><span class="t-day">Mon</span><span class="t-time">7:00 &ndash; 7:45</span><span class="t-class">Ballet Tech <span class="t-meta">&middot; ages 8+</span></span></li>
       <li><span class="t-day">Tue</span><span class="t-time">5:00 &ndash; 5:30</span><span class="t-class">Tiny Core Ballet &amp; Hip Hop <span class="t-meta">&middot; ages 2&ndash;5</span></span></li>
       <li><span class="t-day">Tue</span><span class="t-time">5:30 &ndash; 6:15</span><span class="t-class">Core Ballet &amp; Hip Hop <span class="t-meta">&middot; ages 5+</span></span></li>
       <li><span class="t-day">Wed</span><span class="t-time">5:30 &ndash; 6:00</span><span class="t-class">Tiny Core Ballet &amp; Tap <span class="t-meta">&middot; ages 2&ndash;5</span></span></li>
       <li><span class="t-day">Wed</span><span class="t-time">6:00 &ndash; 6:45</span><span class="t-class">Core Hip Hop &amp; Breakdancing <span class="t-meta">&middot; ages 5+ &middot; covering for Ms. Savannah</span></span></li>
-      <li><span class="t-day">Thu</span><span class="t-time">5:00 &ndash; 7:00</span><span class="t-class">Dance Academy <span class="t-meta">&middot; Studio A &middot; with Mr. Yul</span></span></li>
+      <li><span class="t-day">Thu</span><span class="t-time">5:00 &ndash; 7:00</span><span class="t-class">Dance Company <span class="t-meta">&middot; Studio A &middot; with Mr. Yul</span></span></li>
     </ul>
   </div>
 
-  <!-- Mr. Yul moved above Ms. Kendall here: the Academy took him from 4 to 7 and
+  <!-- Mr. Yul moved above Ms. Kendall here: the Dance Company took him from 4 to 7 and
        her from 5 to 6. The order is by load, so it changes when the load does. -->
   <div class="teacher">
     <div class="who">
@@ -1000,10 +1004,10 @@
       <div class="load">7 classes &middot; Sun, Mon, Thu, Fri</div>
     </div>
     <ul>
-      <li><span class="t-day">Sun</span><span class="t-time">3:00 &ndash; 6:00</span><span class="t-class">Dance Academy <span class="t-meta">&middot; Studio A &middot; with Ms. Jillian &amp; Ms. Kendall</span></span></li>
-      <li><span class="t-day">Mon</span><span class="t-time">5:00 &ndash; 7:00</span><span class="t-class">Dance Academy <span class="t-meta">&middot; Studio A &middot; on his own</span></span></li>
-      <li><span class="t-day">Thu</span><span class="t-time">5:00 &ndash; 7:00</span><span class="t-class">Dance Academy <span class="t-meta">&middot; Studio A &middot; with Ms. Jillian</span></span></li>
-      <!-- 🔶 15 minutes to cross rooms after the Academy ends at 7:00. -->
+      <li><span class="t-day">Sun</span><span class="t-time">3:00 &ndash; 6:00</span><span class="t-class">Dance Company <span class="t-meta">&middot; Studio A &middot; with Ms. Jillian &amp; Ms. Kendall</span></span></li>
+      <li><span class="t-day">Mon</span><span class="t-time">5:00 &ndash; 7:00</span><span class="t-class">Dance Company <span class="t-meta">&middot; Studio A &middot; on his own</span></span></li>
+      <li><span class="t-day">Thu</span><span class="t-time">5:00 &ndash; 7:00</span><span class="t-class">Dance Company <span class="t-meta">&middot; Studio A &middot; with Ms. Jillian</span></span></li>
+      <!-- 🔶 15 minutes to cross rooms after the Dance Company ends at 7:00. -->
       <li><span class="t-day">Thu</span><span class="t-time">7:15 &ndash; 8:00</span><span class="t-class">Core Plus Acro &amp; Lyrical <span class="t-meta">&middot; ages 8+ &middot; Studio B &middot; with Ms. Milan</span></span></li>
       <li><span class="t-day">Fri</span><span class="t-time">5:30 &ndash; 6:15</span><span class="t-class">Core Ballet &amp; Modern <span class="t-meta">&middot; ages 5+</span></span></li>
       <li><span class="t-day">Fri</span><span class="t-time">6:15 &ndash; 7:00</span><span class="t-class">Adult Ballet/Tech <span class="t-meta">&middot; ages 16+</span></span></li>
@@ -1017,7 +1021,7 @@
       <div class="load">6 classes &middot; Sun, Wed, Thu</div>
     </div>
     <ul>
-      <li><span class="t-day">Sun</span><span class="t-time">3:00 &ndash; 6:00</span><span class="t-class">Dance Academy <span class="t-meta">&middot; Studio A &middot; with Mr. Yul &amp; Ms. Jillian</span></span></li>
+      <li><span class="t-day">Sun</span><span class="t-time">3:00 &ndash; 6:00</span><span class="t-class">Dance Company <span class="t-meta">&middot; Studio A &middot; with Mr. Yul &amp; Ms. Jillian</span></span></li>
       <li><span class="t-day">Wed</span><span class="t-time">6:45 &ndash; 7:30</span><span class="t-class">Pom Cheer <span class="t-meta">&middot; ages 5+</span></span></li>
       <li><span class="t-day">Wed</span><span class="t-time">7:30 &ndash; 8:15</span><span class="t-class">Adult Pom <span class="t-meta">&middot; ages 16+</span></span></li>
       <li><span class="t-day">Thu</span><span class="t-time">5:15 &ndash; 6:00</span><span class="t-class">Core Ballet &amp; Jazz <span class="t-meta">&middot; ages 5+</span></span></li>
@@ -1073,19 +1077,19 @@
     </p>
   </div>
 
-  <!-- Was an "Unassigned" box while the Academy had nobody on it, then a staffing
-       gap note. Both filled in on 2026-09-02. Kept as its own box because the Academy
+  <!-- Was an "Unassigned" box while the Dance Company had nobody on it, then a staffing
+       gap note. Both filled in on 2026-09-02. Kept as its own box because the Dance Company
        is still the only thing running in Studio A and the only thing on a Sunday —
        one place that says the whole programme at once, next to the per-person view. -->
   <div class="teacher" style="border-left-color: var(--mist-500)">
     <div class="who">
-      <div class="name" style="color: var(--mist-400)">Academy &middot; Studio A</div>
+      <div class="name" style="color: var(--mist-400)">Dance Company &middot; Studio A</div>
       <div class="load">Ages 6&ndash;18 &middot; 3 sessions &middot; also in the boxes above</div>
     </div>
     <p class="note" style="margin: 2px 0 0">
       Sunday 3:00 &ndash; 6:00 all three &middot; Monday 5:00 &ndash; 7:00 Mr. Yul &middot;
       Thursday 5:00 &ndash; 7:00 Ms. Jillian and Mr. Yul. Thursday is tight for Mr. Yul:
-      the Academy ends at 7:00 and he is on Acro &amp; Lyrical in Studio B at 7:15.
+      the Dance Company ends at 7:00 and he is on Acro &amp; Lyrical in Studio B at 7:15.
     </p>
   </div>
 

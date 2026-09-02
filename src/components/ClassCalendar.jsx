@@ -2,8 +2,8 @@ import { useRef, useState } from 'react'
 import ClassDetailPanel from './ClassDetailPanel'
 import { SCHEDULE } from '../lib/schedule'
 
-// Sunday was added on 2026-09-02 for the Academy and removed again the same day when
-// the Academy came off the calendar — nothing runs at the weekend now, and a listed
+// Sunday was added on 2026-09-02 for the Dance Company and removed again the same day
+// when the Company came off the calendar — nothing runs at the weekend now, and a listed
 // day with no classes renders as an empty column taking a sixth of the width.
 //
 // A day absent from this list is silently DROPPED from the grid: it is built by
@@ -12,9 +12,9 @@ import { SCHEDULE } from '../lib/schedule'
 const DAY_ORDER = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
 
 // DERIVED from the schedule, not hardcoded to 17:00–21:00 as it was until 2026-09-02.
-// It happens to resolve back to 17:00–21:00 now that the Academy is off the calendar,
+// It happens to resolve back to 17:00–21:00 now the Dance Company is off the calendar,
 // which is the point: the hardcoded pair was silently wrong for the two hours the
-// Academy's Sunday session sat outside it, and deriving means the next class outside
+// Company's Sunday session sat outside it, and deriving means the next class outside
 // the evening widens the grid instead of floating above it on a negative start slot.
 //
 // Every class time falls on a 15-minute boundary, which a test enforces.

@@ -25,7 +25,7 @@
 #      and the page-count check CANNOT catch it: .page sets overflow:hidden, so
 #      content past 1056px is cut rather than pushed onto a new page. The count
 #      stays correct while the footer quietly disappears. Caught on 2026-09-02 with
-#      page 2 running 150px over — the whole Academy summary and the footer were
+#      page 2 running 150px over — the whole Dance Company summary and the footer were
 #      being cut off, and both the PDF and the page-count check looked fine.
 #      So each page is MEASURED in a real browser below, not eyeballed.
 #

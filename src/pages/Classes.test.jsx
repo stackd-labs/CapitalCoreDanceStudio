@@ -54,9 +54,8 @@ test('the program filter lists every scheduled tier with its age range', () => {
     'Tiny Core (2–5)',
     'Core (5+)',
     'Core Plus (8+)',
-    // Technique and Dance Academy are both absent, for the same reason by two
-    // different routes: Technique lost Tumble Tech, and the Academy was taken off the
-    // calendar. Neither has a class to filter to.
+    // Technique is absent: it lost Tumble Tech, its only class, so there is nothing
+    // to filter to.
     'Specialty (All Ages)',
     'Adult Core (16+)',
   ]) {
@@ -68,16 +67,17 @@ test('a tier with no classes is announced in the key but kept out of the filter'
   // Offering an empty tier as a filter option gives a dropdown entry that always
   // lands on the empty state — indistinguishable from a broken filter.
   //
-  // THREE tiers are empty, each by a different route, which is why this asserts the
+  // Two tiers are empty, each by a different route, which is why this asserts the
   // behaviour rather than naming a single case:
-  //   Core Elite    — never had classes, since it was added 2026-08-11.
-  //   Technique     — lost Tumble Tech, its only class, on 2026-09-02.
-  //   Dance Academy — its sessions were taken off the CALENDAR on 2026-09-02 so the
-  //                   grid would stack cleanly. The programme still runs, and this key
-  //                   is deliberately the only place on the site that still says so.
+  //   Core Elite — never had classes, since it was added 2026-08-11.
+  //   Technique  — lost Tumble Tech, its only class, on 2026-09-02.
+  //
+  // The Dance Company is deliberately NOT among them: it is a programme with its own
+  // page and navbar item, not a class tier, so it has no PROGRAMS entry at all.
   renderClasses()
   const key = within(screen.getByTestId('program-key'))
-  for (const label of ['Core Elite', 'Technique', 'Dance Academy']) {
+  expect(key.queryByText('Dance Company')).not.toBeInTheDocument()
+  for (const label of ['Core Elite', 'Technique']) {
     expect(screen.queryByRole('option', { name: new RegExp(label) }), `${label} is offered as a filter`).not.toBeInTheDocument()
     expect(key.getByText(label), `${label} missing from the key`).toBeInTheDocument()
   }

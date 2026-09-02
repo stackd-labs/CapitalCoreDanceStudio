@@ -38,7 +38,7 @@ const PORTAL_REGISTER_URL = 'https://studio.capitalcoredance.com/register/classe
 // are all stated on this page already, and the instructor page is for staff.
 const FALL_FLYER = {
   src: '/fall-2026-schedule.png',
-  alt: 'Capital Core Dance Studio Fall 2026 class schedule: Monday to Friday evening classes in Studio B with day, time, class, age range and instructor, plus the Capital Core Dance Academy in Studio A on Sunday, Monday and Thursday',
+  alt: 'Capital Core Dance Studio Fall 2026 class schedule: Monday to Friday evening classes in Studio B with day, time, class, age range and instructor, plus the Capital Core Dance Company in Studio A on Sunday, Monday and Thursday',
   filename: 'capital-core-fall-2026-schedule.png',
   pdf: '/fall-2026-schedule.pdf',
 }

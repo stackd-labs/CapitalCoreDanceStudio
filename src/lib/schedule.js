@@ -80,20 +80,6 @@ export const PROGRAMS = [
     level: 'All Levels',
     blurb: 'Evening classes for adults 16+, whatever your experience — first class always free.',
   },
-  {
-    // Added 2026-09-02. The Academy is its own programme rather than a tier of the
-    // recreational track: it runs in Studio A, alongside the weekly schedule, and is
-    // the only thing the studio runs on a Sunday.
-    //
-    // ⚠ PLACEHOLDER BLURB. Everything in it is verifiable — the days, the room, the
-    // ages — but it is descriptive, not the studio's own words, and it is the one
-    // line on this page written in-house. Replace it when the studio supplies copy.
-    value: 'academy',
-    label: 'Dance Academy',
-    ages: '6–18',
-    level: 'Academy',
-    blurb: 'Our Studio A programme, running alongside the weekly schedule on Sunday, Monday and Thursday.',
-  },
 ]
 
 // Fall 2026 schedule (Aug 24 – Dec 18).
@@ -111,9 +97,9 @@ export const PROGRAMS = [
 //     is the spelling authority; Ms. Hannah is named on the Fall flyer but has no
 //     roster entry yet, so hers is a name and nothing more.
 //   `studio` — 'A' or 'B'. The studio has two rooms. Every row below is Studio B now
-//     that the Academy is off the calendar, so the field looks redundant — it is not.
-//     It is what the printable sheet labels its two sections from, and it is what a
-//     restored Academy row would need to stop the grid reading as double-booked.
+//     that the Dance Company is off the calendar, so the field looks redundant — it
+//     is not. It is what the printable sheet labels its two sections from, and what
+//     a restored Company row would need to stop the grid reading as double-booked.
 //
 // 🔴 OFF THE SCHEDULE ENTIRELY, kept here as a record rather than deleted, because
 // the reason matters more than the absence:
@@ -124,22 +110,25 @@ export const PROGRAMS = [
 // Their CLASS_INFO entries stay: a class coming back should not need its
 // description rewritten.
 export const SCHEDULE = [
-  // 🔴 THE ACADEMY IS NOT ON THIS CALENDAR, deliberately, removed 2026-09-02.
+  // 🔴 THE DANCE COMPANY IS NOT ON THIS CALENDAR, deliberately.
   //
-  // It ran in Studio A at the same time as Studio B — Sunday 3:00–6:00, Monday and
-  // Thursday 5:00–7:00 — and putting it on the grid made the grid worse for the
-  // classes most people come here to read. Monday and Thursday split four ways and
-  // truncated to "Capital Core Dance Acader…", and because the grid window derives
-  // from the earliest class, the Sunday session dragged every weekday column down
-  // past two hours of empty afternoon.
+  // Its three sessions — Sunday 3:00–6:00, Monday and Thursday 5:00–7:00, all in
+  // Studio A — ran alongside Studio B, and putting them on the grid made the grid
+  // worse for the classes most people come here to read: Monday and Thursday split
+  // four ways and truncated, and because the window derives from the earliest class,
+  // the Sunday session dragged every weekday column down past two hours of empty
+  // afternoon.
   //
-  // The programme has NOT gone away. It is still on the printable schedule
-  // (print/class-schedule.html renders it as its own band, which is why it costs
-  // nothing there), and the Dance Academy entry in PROGRAMS still names its days on
-  // /classes. ⚠ Those are now the ONLY two places on the site that say when it runs.
+  // It is not a class tier either, which is why it has no PROGRAMS entry: it is the
+  // studio's youth performance and competition programme, and it has its own page at
+  // /dance-company plus a navbar item. That page is its home.
   //
-  // To put it back: restore these three rows, add 'Sunday' to ClassCalendar's
-  // DAY_ORDER, and expect the stacking and the window to come back with them.
+  // ⚠ THE COMPANY'S REHEARSAL TIMES ARE ON THE PRINTABLE SHEET AND NOWHERE ELSE ON
+  // THE SITE. /dance-company describes the programme but never says which days.
+  //
+  // To put it on the calendar anyway: add the rows back with program/category and a
+  // PROGRAMS entry, add 'Sunday' to ClassCalendar's DAY_ORDER, and expect the
+  // stacking and the widened window to come back with them.
   {
     day: 'Monday',
     classes: [

@@ -310,91 +310,37 @@ test('every pricing card explains what the option actually is', () => {
   }
 })
 
-test('the open-house block is gold, deliberately off the page accent', () => {
-  // The gold notice field was requested by the studio 2026-08-13 for the coming-soon
-  // banner and inherited by the open house on 2026-08-28. It is a temporary status, not
-  // part of the Little Movers identity, so it does not wear the page's teal — which is
-  // also what stops a future "make everything the accent" tidy-up from reverting it.
+test('the finished open house is gone from the page and its meta description', () => {
+  // The 2 September 2026 event is over and the whole block came out 2026-09-02, along
+  // with src/lib/openHouse.js. The meta description named the event too and was NOT
+  // date-gated, so it would have advertised a finished free morning in search results
+  // long after the block itself had gone. Both are pinned.
   renderLittleMovers()
-  const block = screen.getByTestId('open-house')
-  expect(block).toHaveStyle({ background: ACCENTS.gold })
-  expect(block).not.toHaveStyle({ background: ACCENTS.teal })
-  expect(block).toHaveTextContent(/Little Movers Open House/)
-})
+  expect(screen.queryByTestId('open-house')).not.toBeInTheDocument()
+  expect(screen.queryByText(/Open House/i)).not.toBeInTheDocument()
+  expect(screen.queryByText(/Save my spot/)).not.toBeInTheDocument()
 
-test('the open house states the date, the hour and that it is free', () => {
-  renderLittleMovers()
-  const block = screen.getByTestId('open-house')
-  expect(within(block).getByTestId('open-house-when')).toHaveTextContent(
-    'Wednesday, September 2 · 10:00 – 11:00 AM'
-  )
-  expect(block).toHaveTextContent(/Free event/)
-  expect(block).toHaveTextContent(/Free to attend, nothing due/)
-})
-
-test('the open house lists the run of show and what else is on offer', () => {
-  renderLittleMovers()
-  const block = screen.getByTestId('open-house')
-  expect(
-    within(block)
-      .getAllByTestId('open-house-run-of-show')
-      .map((li) => li.textContent)
-  ).toEqual([
-    "10:00 – 10:30Welcome & Moovin' & Groovin' with Miss Ryan",
-    '10:30 – 10:40Tiny Tumble',
-    '10:40 – 10:50Sensory Play',
-    '10:50 – 11:00Free Play',
-  ])
-  expect(within(block).getAllByTestId('open-house-perk')).toHaveLength(4)
-})
-
-test('the open-house call to action is the free-event form, not the class booking form', () => {
-  // The two are deliberately different destinations: one free morning against an
-  // ongoing programme. Sending an open-house visitor to the booking form would ask a
-  // parent for a payment method for an event that costs nothing.
-  renderLittleMovers()
-  const cta = screen.getByTestId('open-house-cta')
-  expect(cta).toHaveAttribute(
-    'href',
-    'https://studio.capitalcoredance.com/register/little-movers-open-house'
-  )
-  expect(cta).toHaveAttribute('target', '_blank')
-  expect(cta).toHaveAttribute('rel', 'noopener noreferrer')
-  expect(cta).toHaveTextContent('Save my spot')
-})
-
-test('the whole open-house block disappears once the event has finished', () => {
-  // The promotion takes itself down with no deploy. This is the test that has to keep
-  // passing after 2 September, so it pins both sides of the cutoff rather than trusting
-  // whatever today happens to be.
-  vi.useFakeTimers()
-  try {
-    vi.setSystemTime(new Date('2026-09-02T10:59:00-04:00'))
-    const before = renderLittleMovers()
-    expect(screen.getByTestId('open-house')).toBeInTheDocument()
-    before.unmount()
-
-    vi.setSystemTime(new Date('2026-09-02T11:00:00-04:00'))
-    renderLittleMovers()
-    expect(screen.queryByTestId('open-house')).not.toBeInTheDocument()
-    // The ongoing programme call to action is NOT part of the event and must survive it.
-    expect(screen.getAllByRole('link', { name: 'Book a class →' })).toHaveLength(2)
-  } finally {
-    vi.useRealTimers()
-  }
+  const description = document.querySelector('meta[name="description"]')?.getAttribute('content')
+  expect(description).toBeTruthy()
+  expect(description).not.toMatch(/open house/i)
+  expect(description).not.toMatch(/September 2/)
 })
 
 test('the persistent call to action books a Little Movers class on the portal', () => {
   // Registration opened 2026-08-28. Before that every action on this page pointed at
   // /contact because the portal had no Little Movers classes to select; it now has its
   // own form, which is NOT the /register/classes one the rest of the site uses.
+  //
+  // The portal moved this form to the /book path on 2026-09-02. The bare
+  // /register/little-movers URL is no longer the booking page, so the exact path is
+  // pinned rather than a /register/little-movers prefix match.
   renderLittleMovers()
   const bookLinks = screen.getAllByRole('link', { name: 'Book a class →' })
   expect(bookLinks).toHaveLength(2) // hero and closing band
   for (const link of bookLinks) {
     expect(link).toHaveAttribute(
       'href',
-      'https://studio.capitalcoredance.com/register/little-movers'
+      'https://studio.capitalcoredance.com/register/little-movers/book'
     )
     expect(link).toHaveAttribute('rel', 'noopener noreferrer')
   }
@@ -416,11 +362,14 @@ test('closing call to action reads as the studio wrote it', () => {
   expect(screen.getByText(/Join the Little Movers family/)).toBeInTheDocument()
 })
 
-test('uses the teal solid wedge, and reaches only the two Little Movers portal forms', () => {
+test('uses the teal solid wedge, and reaches only the Little Movers booking form', () => {
   // Every portal link on this page must be a Little Movers destination. The general
   // /register/classes form is built around enrolling a school-age dancer for the season
   // and has no Little Movers class to select, so landing a toddler's parent there is a
   // dead end — which is exactly the kind of thing a later copy-paste could reintroduce.
+  //
+  // Narrowed 2026-09-02: the open-house form was the second allowed destination and is
+  // gone, and the booking form moved to /book.
   renderLittleMovers()
   expect(screen.getByTestId('hero-panel')).toBeInTheDocument()
   const portalHrefs = [
@@ -428,7 +377,7 @@ test('uses the teal solid wedge, and reaches only the two Little Movers portal f
   ].map((a) => a.getAttribute('href'))
   expect(portalHrefs.length).toBeGreaterThan(0)
   for (const href of portalHrefs) {
-    expect(href).toMatch(/\/register\/little-movers(-open-house)?$/)
+    expect(href).toBe('https://studio.capitalcoredance.com/register/little-movers/book')
   }
 })
 

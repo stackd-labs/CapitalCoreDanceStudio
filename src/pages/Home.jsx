@@ -17,8 +17,6 @@ import {
 import { localBusinessSchema } from '../lib/schema'
 import { SCHEDULE } from '../lib/schedule'
 import { ACCENTS } from '../lib/pageAccents'
-import { onAccent } from '../lib/accentContrast'
-import { OPEN_HOUSE, isOpenHouseUpcoming } from '../lib/openHouse'
 
 // Rebuilt 2026-08-11 to the studio's "Capital Core Site" mockup (page 1a, accent red).
 //
@@ -181,60 +179,12 @@ export default function Home() {
         }
       />
 
-      {/* Open house strip, Wednesday 2 September. First thing under the hero, above the
-          card grid, so it is one scroll gesture from the top of the page and lands before
-          a visitor has picked a programme.
-
-          Above the grid rather than below it because the grid is where a visitor commits to
-          a direction; a free event five days out has to be seen before that choice, not
-          after. It sits below the hero rather than above it so the five-accent stripe under
-          the navbar stays the first thing on the page — that stripe is the brand signature
-          and nothing has ever been allowed in front of it.
-
-          A SOLID GOLD FIELD, not a navy strip with a coloured rule like the hiring strip
-          below. It was built that way first, in the Little Movers teal, and the studio's
-          verdict on 2026-08-28 was that it blended: a navy band between a navy hero and a
-          navy card grid reads as more page, however bright its top border is. Gold is the
-          one thing on this site that is not the navy field, which is exactly what a free
-          event five days out needs, and it matches the open-house block on /little-movers
-          so the two read as the same announcement.
-
-          It follows the page's outbound rule either way — a strip that sends a visitor off
-          this site never wears Home's red — and it is the notice gold the Little Movers
-          page has used for a temporary status since 2026-08-13, not a new colour.
-
-          REMOVES ITSELF after the event, with no deploy needed — see src/lib/openHouse.js.
-          The whole block and its import can be deleted after 2 September. */}
-      {isOpenHouseUpcoming() && (
-        <a
-          href={OPEN_HOUSE.formUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          data-testid="open-house-strip"
-          className="group block px-6 lg:px-24 py-7 lg:py-8 transition-opacity hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-inset"
-          style={{ background: ACCENTS.gold, color: onAccent(ACCENTS.gold) }}
-        >
-          <div className="max-w-[1440px] mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-5">
-            <div>
-              <div className="font-body font-bold text-[11px] tracking-[0.3em] uppercase mb-2">
-                Free event · {OPEN_HOUSE.date}
-              </div>
-              <p className="font-body text-[16.5px] leading-[1.5] m-0">
-                Little Movers Open House, {OPEN_HOUSE.time}. An hour of music, tumbling and
-                sensory play for infants, toddlers and preschoolers, with a studio tour and
-                our team on hand.
-              </p>
-            </div>
-            {/* A navy pill rather than the hiring strip's bare arrow: on a solid accent
-                field a text link has nothing to sit against. Kept a span, not a button —
-                the whole strip is already the anchor, and a button inside an anchor is
-                invalid. */}
-            <span className="flex-shrink-0 inline-flex items-center bg-ink-base text-white font-body font-bold text-[15px] px-8 py-[17px] whitespace-nowrap transition-opacity group-hover:opacity-90">
-              Save my spot &rarr;
-            </span>
-          </div>
-        </a>
-      )}
+      {/* A gold Little Movers Open House strip sat here, between the hero and the card
+          grid, for the 2 September 2026 event. Removed 2026-09-02 once the morning was
+          over, along with src/lib/openHouse.js and the matching block on /little-movers.
+          Recoverable from git history if the studio runs another one — the placement
+          argument and the reason it was solid gold rather than a bordered navy band are
+          both in that commit's version of this comment. */}
 
       {/* Link blocks — programmes plus Birthdays / Adult Classes / Contact */}
       <section className="bg-ink-deep px-6 lg:px-24 py-16 lg:py-20">

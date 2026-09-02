@@ -128,6 +128,41 @@
 
   @page { size: letter portrait; margin: 0; }
 
+  /* ── SCHEDULE-ONLY VARIANT ─────────────────────────────────────────────── */
+  /* Open the same file with ?only=schedule and it renders the week and nothing
+     else: no tuition, no registration, no adult rates, no not-running box, and no
+     instructor page. That is what /classes needs — the page already states tuition
+     and registration itself, so a printable that repeats them is duplication a
+     parent has to reconcile.
+
+     A VARIANT, not a second file, and that is the whole point. A separate
+     schedule-only sheet would be a third hand-kept copy of the same classes, on top
+     of this sheet and src/lib/schedule.js. Hiding blocks means the two outputs
+     cannot disagree about what is on Tuesday.
+
+     The tier key STAYS. Every class on the grid is named "Core", "Core Plus" or
+     "Tiny Core", so without the key the schedule is jargon rather than extra
+     information. Say the word and it goes too.
+
+     🔴 Driven by a script setting data-only on <html>. If JS does not run you get
+     the full sheet — a safe failure, and an obvious one. */
+  html[data-only='schedule'] .off,
+  html[data-only='schedule'] .tuition,
+  html[data-only='schedule'] .page + .page {
+    display: none !important;
+  }
+  /* The footer's registration line belongs to the full sheet. Schedule-only keeps
+     the footer for the studio's contact details but drops the CTA. */
+  html[data-only='schedule'] .cta { visibility: hidden; }
+
+  /* Stop the grid stretching. On the full sheet .week is flex:1 so it absorbs the
+     leftover height, which is right when the tuition and not-running blocks sit
+     below it. With those hidden it grew into the gap instead and left a band of
+     empty navy between the last class and the Academy. Natural height here, and
+     the footer's margin-top:auto collects the slack at the bottom where it reads
+     as margin rather than as a mistake. */
+  html[data-only='schedule'] .week { flex: 0 0 auto; }
+
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
 
@@ -611,6 +646,14 @@
 </style>
 </head>
 <body>
+
+<!-- Sets data-only BEFORE first paint, so the hidden blocks never flash. Deliberately
+     inline and at the top of the body rather than deferred to load. -->
+<script>
+  if (location.search.includes('only=schedule')) {
+    document.documentElement.setAttribute('data-only', 'schedule')
+  }
+</script>
 
 <!-- ════════════════ PAGE 1 — THE WEEK ════════════════ -->
 <div class="page">

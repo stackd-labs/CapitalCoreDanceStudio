@@ -190,13 +190,28 @@ test('the week calendar comes before the class cards', () => {
   expect(calendar.compareDocumentPosition(cards) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
 })
 
-test('renders the printable Fall flyer card with a download link', () => {
+test('renders the printable Fall schedule card with a download link', () => {
+  // Swapped from the studio's old flyer PNG to a generated one on 2026-09-02. The old
+  // image showed the pre-rework week and Core-era naming, so the page was offering a
+  // download that contradicted the calendar directly above it.
   renderClasses()
   const card = screen.getByTestId('fall-flyer-card')
-  expect(within(card).getByRole('img', { name: /Fall 2026 full class schedule/i })).toBeInTheDocument()
+  expect(within(card).getByRole('img', { name: /Fall 2026 class schedule/i })).toBeInTheDocument()
   const download = within(card).getByRole('link', { name: 'Download PNG' })
-  expect(download).toHaveAttribute('href', '/flyer-fall-schedule.png')
+  expect(download).toHaveAttribute('href', '/fall-2026-schedule.png')
   expect(download).toHaveAttribute('download', 'capital-core-fall-2026-schedule.png')
+})
+
+test('the printable schedule is the generated one, not the retired flyer', () => {
+  // /flyer-fall-schedule.png is still in public/ and still stale. Nothing should point
+  // at it: it is kept only so an old link does not 404, and it must never come back as
+  // the page's own image.
+  renderClasses()
+  const srcs = [...document.querySelectorAll('img, a')].map(
+    (el) => el.getAttribute('src') || el.getAttribute('href') || ''
+  )
+  expect(srcs.some((s) => s.includes('flyer-fall-schedule'))).toBe(false)
+  expect(srcs.some((s) => s.includes('fall-2026-schedule.png'))).toBe(true)
 })
 
 test('View Flyer opens the lightbox and Close dismisses it', () => {

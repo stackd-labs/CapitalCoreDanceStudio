@@ -159,3 +159,33 @@ fi
 # it breaks any link already sent to a parent.
 cp "${ROOT}/print/class-schedule.pdf" "${ROOT}/public/class-schedule-fall-2026.pdf"
 echo "✅ public/class-schedule-fall-2026.pdf refreshed"
+
+# ── THE SCHEDULE-ONLY ASSETS FOR /classes ─────────────────────────────────────
+# Same HTML, ?only=schedule, so the grid can never disagree with the full sheet.
+# The page shows the PNG (matching how the old flyer was displayed) and offers it
+# for download; the two-page PDF stays available separately.
+#
+# Rendered at 2x. The PNG is displayed at roughly 400px wide on the page and opened
+# full-size in a lightbox, so 1x is visibly soft on the lightbox and on any screen
+# above 1x — which is most of them.
+ONLY_URL="file:///${WINROOT}/print/class-schedule.html?only=schedule"
+
+"$CHROME" --headless=new --disable-gpu --hide-scrollbars --force-device-scale-factor=2 \
+  --window-size=816,1056 --run-all-compositor-stages-before-draw --virtual-time-budget=30000 \
+  "--screenshot=${ROOT}/public/fall-2026-schedule.png" "$ONLY_URL" >/dev/null 2>&1
+
+"$CHROME" --headless=new --disable-gpu --no-pdf-header-footer \
+  --run-all-compositor-stages-before-draw --virtual-time-budget=30000 \
+  "--print-to-pdf=${ROOT}/public/fall-2026-schedule.pdf" "$ONLY_URL" >/dev/null 2>&1
+
+# Verify rather than assume: a one-page PDF means the instructor page really was
+# hidden, and Anton embedded means the fonts arrived for this render too.
+only_pages=$(grep -a -o '/Count [0-9]*' "${ROOT}/public/fall-2026-schedule.pdf" | head -1 | grep -o '[0-9]*' || echo 0)
+only_fonts=$(grep -a -c 'Anton-Regular' "${ROOT}/public/fall-2026-schedule.pdf" || true)
+if [ "$only_pages" != "1" ] || [ "${only_fonts:-0}" -eq 0 ]; then
+  echo "🔴 schedule-only: ${only_pages} page(s), Anton $([ "${only_fonts:-0}" -gt 0 ] && echo embedded || echo MISSING)."
+  echo "   Expected 1 page with fonts. Two pages means ?only=schedule did not take —"
+  echo "   check the inline script that sets data-only on <html>."
+  exit 1
+fi
+echo "✅ public/fall-2026-schedule.png + .pdf refreshed (1 page, fonts embedded)"

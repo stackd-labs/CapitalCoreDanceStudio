@@ -24,13 +24,23 @@ const ACCENT = ACCENTS.orange
 // ($60 new dancer / $50 returning); monthly tuition is billed separately.
 const PORTAL_REGISTER_URL = 'https://studio.capitalcoredance.com/register/classes'
 
-// The studio's printed Fall flyer — the "Full Class Schedule" table, which carries the
-// program tier and an instructor column. SCHEDULE was reconciled to it on 2026-08-10;
-// the instructor column is still the one thing with no field in the data model.
+// The printable schedule. Replaced the studio's old flyer PNG on 2026-09-02 — that
+// image was STALE: it showed the pre-rework week, the old class naming, and 5+ ages for
+// classes that are now Core Plus 8+, so the page was offering a download that
+// contradicted the calendar directly above it.
+//
+// 🔴 GENERATED, NOT DRAWN. `bash print/build.sh` renders it from
+// print/class-schedule.html with ?only=schedule, which is the same file as the two-page
+// staff sheet — so this image cannot disagree with that sheet about what runs on
+// Tuesday. It is REGENERATED, never edited: any change belongs in the HTML.
+//
+// Schedule only, deliberately. The full sheet's tuition, registration and adult rates
+// are all stated on this page already, and the instructor page is for staff.
 const FALL_FLYER = {
-  src: '/flyer-fall-schedule.png',
-  alt: 'Capital Core Dance Studio Fall 2026 full class schedule table, listing day, time, program tier, class, ages, and instructor for every class Monday through Friday',
+  src: '/fall-2026-schedule.png',
+  alt: 'Capital Core Dance Studio Fall 2026 class schedule: Monday to Friday evening classes in Studio B with day, time, class, age range and instructor, plus the Capital Core Dance Academy in Studio A on Sunday, Monday and Thursday',
   filename: 'capital-core-fall-2026-schedule.png',
+  pdf: '/fall-2026-schedule.pdf',
 }
 
 const DANCE_STYLES = [

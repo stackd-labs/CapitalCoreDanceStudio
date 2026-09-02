@@ -103,6 +103,21 @@ const TIME_SLOTS = ['9:30 – 10:15 AM', '10:30 – 11:15 AM', '11:30 AM – 12:
 // choosing: Tiny Tumblers Monday, Sensory Steps Wednesday, Free Play Lab Friday.
 const DAYS = ['Monday', 'Wednesday', 'Friday']
 
+// 🔴 WHICH DAYS CAN ACTUALLY BE BOOKED. Monday and Friday are published but unstaffed as
+// of 2026-09-02, so the portal does not offer them: the booking wizard generates sessions
+// for Wednesdays only (20 Wednesdays x 3 slots for the term). A parent who reads "Monday
+// 11:30 Tiny Tumblers" here and clicks Book finds no Monday, which is the mismatch this
+// closes.
+//
+// The unstaffed days still SHOW, dimmed and labelled, so a family sees the shape of the
+// programme rather than a one-column grid. That is deliberate and matches the portal.
+//
+// ▶ TO OPEN A DAY once it is staffed: add it here, and add it to the portal's LM_SCHEDULE
+// in the same change (dropping `comingSoon` on those slots). This constant only controls
+// what this page claims; it cannot make the portal take a booking.
+const BOOKABLE_DAYS = new Set(['Wednesday'])
+const isBookable = (day) => BOOKABLE_DAYS.has(day)
+
 // SCHEDULE[slotIndex][day] — one class per day per slot, 9 in all.
 const SCHEDULE = [
   {
@@ -130,12 +145,21 @@ const SCHEDULE = [
 //
 // NOTE: 'Parent & Me Dance' appeared ONLY on Tuesday and Thursday, so it is currently on
 // no published day even though it is still one of the six classes listed on the page.
-// Which classes actually appear on the published grid. Derived from SCHEDULE rather than
-// listed by hand so it cannot fall out of step: take a class off a day and its card is
-// badged "Coming soon" automatically, put it back and the badge goes. This is what keeps
-// the classes section honest — six are described, and today only five can be attended.
+// Which classes can actually be attended. Derived from SCHEDULE *filtered by
+// BOOKABLE_DAYS* rather than listed by hand, so it cannot fall out of step: take a class
+// off a bookable day and its card is badged "Coming soon" automatically, put it back and
+// the badge goes. This is what keeps the classes section honest — six are described, and
+// only the ones a parent can really book are offered without a badge.
+//
+// Narrowed 2026-09-02 from "on the grid at all" to "on a day that is staffed". Tiny
+// Tumblers (Monday) and the Free Play Lab (Friday) are on the published grid but not
+// bookable, so they now carry the badge alongside Parent & Me Dance.
 const SCHEDULED_CLASS_NAMES = new Set(
-  SCHEDULE.flatMap((slot) => Object.values(slot).map(({ name }) => name))
+  SCHEDULE.flatMap((slot) =>
+    Object.entries(slot)
+      .filter(([day]) => isBookable(day))
+      .map(([, { name }]) => name)
+  )
 )
 
 const DORMANT_DAYS = ['Tuesday', 'Thursday']
@@ -158,7 +182,7 @@ const PRICING = [
     // 2026-08-17. Stated in the unit as well as the bullet so the headline price can never
     // be read as a per-family total.
     unit: 'first child, per class',
-    blurb: 'Pay as you go. Come to any single class, any morning, with nothing to sign up for.',
+    blurb: 'Pay as you go. Come to any single class on the booking calendar, with nothing to sign up for.',
     lines: [
       '$3 for each additional child',
       'Good for any Little Movers class',
@@ -179,7 +203,11 @@ const PRICING = [
     headline: '$89',
     unit: 'per month',
     badge: 'Best value',
-    blurb: 'Attend as many Little Movers classes as you would like. Worth it from about nine classes a month, and a bargain for families coming three mornings a week.',
+    // "a bargain for families coming three mornings a week" was the second half of this
+    // line until 2026-09-02. Only Wednesday is bookable, so three mornings a week is not
+    // something a family can currently buy — see BOOKABLE_DAYS. Restore that half when
+    // Monday and Friday open.
+    blurb: 'Attend as many Little Movers classes as you would like. Worth it from about nine classes a month, and better value again as more mornings open.',
     // The Tiny Core class and the top-up were added 2026-08-17. The $24 is derived, not a
     // new price: a Tiny Core class is 30 minutes, which src/lib/tuition.js prices at $65 a
     // month, and $89 − $65 = $24. If either number moves, this line has to move with it —
@@ -208,15 +236,37 @@ const CLASS_SHAPE = [
   { n: '04', name: 'Stickers & goodbye', blurb: 'A calm finish, a sticker, and something to show you.' },
 ]
 
-// One schedule cell: class name and age range.
-function ScheduleCell({ entry }) {
+// One schedule cell: class name and age range. An unstaffed day's cells are dimmed rather
+// than hidden — the class is real and published, it just cannot be booked yet, and the day
+// header carries the label that says so.
+function ScheduleCell({ entry, day }) {
   if (!entry) return null
   const info = CLASSES_BY_NAME[entry.name]
+  const bookable = isBookable(day)
   return (
-    <div data-testid="schedule-entry" className="text-left">
+    <div
+      data-testid="schedule-entry"
+      data-bookable={bookable ? 'yes' : 'no'}
+      className={`text-left${bookable ? '' : ' opacity-40'}`}
+    >
       <div className="font-body text-white font-bold text-sm leading-snug">{entry.name}</div>
       <div className="font-body text-mist-500 text-xs mt-0.5">{info?.ages}</div>
     </div>
+  )
+}
+
+// The gold chip that marks an unstaffed day, in both the table header and the mobile day
+// heading. Same notice gold as the per-class badge, for the same reason: a temporary
+// status reads as a status, not as part of the Little Movers identity.
+function NotBookingYet() {
+  return (
+    <span
+      data-testid="day-not-bookable"
+      className="font-body text-[10px] font-bold uppercase tracking-[0.14em] px-2 py-1 flex-shrink-0 normal-case"
+      style={{ background: NOTICE_ACCENT, color: onAccent(NOTICE_ACCENT) }}
+    >
+      Not booking yet
+    </span>
   )
 }
 
@@ -225,7 +275,7 @@ export default function LittleMovers() {
     <div className="min-h-screen flex flex-col bg-ink-base">
       <SEO
         title="Little Movers | Toddler &amp; Preschool Movement Classes in Midlothian, VA — Capital Core Dance"
-        description="Little Movers at Capital Core Dance in Midlothian, VA. A movement-based enrichment program for infants, toddlers, and preschoolers combining dance, music, sensory play, tumbling, and active exploration. Monday, Wednesday and Friday morning classes, 45 minutes, drop-in $10 for the first child and $3 for each additional child. Book a class on our studio portal."
+        description="Little Movers at Capital Core Dance in Midlothian, VA. A movement-based enrichment program for infants, toddlers, and preschoolers combining dance, music, sensory play, tumbling, and active exploration. Three 45-minute morning classes at 9:30, 10:30 and 11:30, drop-in $10 for the first child and $3 for each additional child. Wednesday mornings are open for booking on our studio portal now, with Monday and Friday to follow."
         canonical="/little-movers"
         jsonLd={LITTLE_MOVERS_JSON_LD}
       />
@@ -235,7 +285,7 @@ export default function LittleMovers() {
         eyebrow="Ages 0 – 5 years"
         title={['Little', [{ text: 'Movers', accent: ACCENT }]]}
         tagline="Movement. Play. Learn. Grow."
-        body="A first dance experience for infants, toddlers and preschoolers — 45-minute morning classes on Mondays, Wednesdays and Fridays, built on music, sensory play and active exploration."
+        body="A first dance experience for infants, toddlers and preschoolers — 45-minute morning classes built on music, sensory play and active exploration. Wednesday mornings are open for booking now, with Monday and Friday to follow."
         photoCaption="Toddlers in class"
         photoSrc="/little-movers-hero.jpg"
         photoAlt="Five toddlers in pastel leotards and tutus standing at the barre in a Little Movers class"
@@ -375,6 +425,21 @@ export default function LittleMovers() {
             week&apos;s classes and what is still available.
           </p>
 
+          {/* Says out loud what the dimmed columns mean. A grid with two greyed days and no
+              explanation reads as a rendering fault; a parent needs to know the Monday and
+              Friday classes are real and coming, not cancelled. */}
+          <p
+            data-testid="staffing-note"
+            className="font-body text-mist-300 text-sm mb-10 max-w-2xl border-l-2 pl-4"
+            style={{ borderColor: NOTICE_ACCENT }}
+          >
+            <strong className="text-white font-bold">
+              Wednesday mornings are open for booking right now.
+            </strong>{' '}
+            Monday and Friday are on the schedule below and are staffing up, so they are not
+            bookable yet. We will open them as soon as they have an instructor.
+          </p>
+
           {/* Table at md and up */}
           <div className="hidden md:block overflow-x-auto">
             <table data-testid="schedule-table" className="w-full border-collapse">
@@ -386,9 +451,17 @@ export default function LittleMovers() {
                   {DAYS.map((day) => (
                     <th
                       key={day}
+                      data-testid="schedule-day-header"
+                      data-day={day}
+                      data-bookable={isBookable(day) ? 'yes' : 'no'}
                       className="text-left font-body text-white text-xs font-bold uppercase tracking-wider pb-3 px-3"
                     >
-                      {day}
+                      <span className={isBookable(day) ? '' : 'opacity-50'}>{day}</span>
+                      {!isBookable(day) && (
+                        <span className="block mt-2">
+                          <NotBookingYet />
+                        </span>
+                      )}
                     </th>
                   ))}
                 </tr>
@@ -405,7 +478,7 @@ export default function LittleMovers() {
                     </th>
                     {DAYS.map((day) => (
                       <td key={day} className="align-top py-4 px-3">
-                        <ScheduleCell entry={row[day]} />
+                        <ScheduleCell entry={row[day]} day={day} />
                       </td>
                     ))}
                   </tr>
@@ -417,9 +490,16 @@ export default function LittleMovers() {
           {/* Day-by-day below md */}
           <div data-testid="schedule-list" className="md:hidden flex flex-col gap-8">
             {DAYS.map((day) => (
-              <div key={day}>
+              <div key={day} data-testid="schedule-day" data-day={day}>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="font-display uppercase text-white text-xl">{day}</div>
+                  <div
+                    className={`font-display uppercase text-white text-xl${
+                      isBookable(day) ? '' : ' opacity-50'
+                    }`}
+                  >
+                    {day}
+                  </div>
+                  {!isBookable(day) && <NotBookingYet />}
                   <div className="flex-1 h-px bg-white/15" />
                 </div>
                 <div className="flex flex-col gap-3">
@@ -429,9 +509,11 @@ export default function LittleMovers() {
                         key={`${day}-${i}`}
                         className="border border-white/[0.12] bg-ink-panel px-4 py-3 flex items-start justify-between gap-4"
                       >
-                        <ScheduleCell entry={row[day]} />
+                        <ScheduleCell entry={row[day]} day={day} />
                         <div
-                          className="font-body text-sm font-medium flex-shrink-0 text-right"
+                          className={`font-body text-sm font-medium flex-shrink-0 text-right${
+                            isBookable(day) ? '' : ' opacity-40'
+                          }`}
                           style={{ color: ACCENT }}
                         >
                           {TIME_SLOTS[i]}
@@ -455,7 +537,8 @@ export default function LittleMovers() {
           </SectionHeading>
           <p className="font-body text-mist-400 text-sm mb-10 max-w-2xl">
             Three ways to join, depending on how often you plan to come. Every option works for any
-            class on the schedule, and all three can be chosen when you book on the studio portal.
+            Little Movers class you can book, and all three can be chosen when you book on the
+            studio portal.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-[26px]">

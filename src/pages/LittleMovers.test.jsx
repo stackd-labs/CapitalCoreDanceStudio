@@ -79,27 +79,76 @@ test('renders all eight benefits', () => {
   ])
 })
 
-test('a class that is not on the published schedule is badged Coming soon', () => {
+test('a class that cannot actually be booked is badged Coming soon', () => {
   // Parent & Me Dance ran only on Tuesday and Thursday, so when those days went dormant
   // (2026-08-17) it was left listed among the classes but bookable on no day — a parent
-  // could read about it and never find when it meets. The badge is derived from SCHEDULE
-  // rather than hand-set, so it appears and disappears on its own as days change.
+  // could read about it and never find when it meets.
+  //
+  // Widened 2026-09-02: the badge now means "not bookable", not "not on the grid". Monday
+  // and Friday are published but unstaffed, and the portal offers Wednesdays only, so
+  // Tiny Tumblers (Monday) and the Free Play Lab (Friday) are in the same position Parent
+  // & Me Dance is — described on the page, impossible to book. The badge is derived from
+  // SCHEDULE filtered by BOOKABLE_DAYS rather than hand-set, so adding a staffed day
+  // clears the right badges on its own.
   renderLittleMovers()
   const cardFor = (name) =>
     [...screen.getAllByTestId('little-movers-class')].find((c) =>
       c.querySelector('[data-testid="class-name"]').textContent.includes(name)
     )
-  const unscheduled = cardFor('Parent & Me Dance')
-  expect(unscheduled.querySelector('[data-testid="class-coming-soon"]')).toBeInTheDocument()
-  expect(unscheduled.textContent).toMatch(/coming soon/i)
 
-  // Everything on the grid must NOT be badged, or the badge means nothing.
-  for (const name of ['Baby & Me', "Moovin' & Groovin'", 'Tiny Tumblers', 'Sensory Steps']) {
+  for (const name of ['Parent & Me Dance', 'Tiny Tumblers', 'Little Movers Free Play Lab']) {
+    const card = cardFor(name)
+    expect(
+      card.querySelector('[data-testid="class-coming-soon"]'),
+      `${name} cannot be booked and must be badged`
+    ).toBeInTheDocument()
+    expect(card.textContent).toMatch(/coming soon/i)
+  }
+
+  // The Wednesday line-up must NOT be badged, or the badge means nothing.
+  for (const name of ['Baby & Me', "Moovin' & Groovin'", 'Sensory Steps']) {
     expect(
       cardFor(name).querySelector('[data-testid="class-coming-soon"]'),
-      `${name} is on the schedule and must not be badged`
+      `${name} runs on a bookable day and must not be badged`
     ).toBeNull()
   }
+})
+
+test('only Wednesday is offered as bookable on the schedule grid', () => {
+  // 🔴 The mismatch this closes: the portal's booking wizard generates sessions for
+  // Wednesdays only, so a parent who read "Monday 11:30 Tiny Tumblers" here, clicked Book
+  // and found no Monday was sent to a dead end by this page.
+  //
+  // Monday and Friday still SHOW — a family should see the shape of the programme, and
+  // hiding them would make the page look like a one-day programme it is not. They are
+  // dimmed and labelled instead, which is exactly what the portal does.
+  renderLittleMovers()
+
+  const headers = screen.getAllByTestId('schedule-day-header')
+  expect(headers.map((h) => h.dataset.day)).toEqual(['Monday', 'Wednesday', 'Friday'])
+  expect(
+    Object.fromEntries(headers.map((h) => [h.dataset.day, h.dataset.bookable]))
+  ).toEqual({ Monday: 'no', Wednesday: 'yes', Friday: 'no' })
+
+  // Every unstaffed day carries the label, in the table header and the mobile heading.
+  expect(screen.getAllByTestId('day-not-bookable').length).toBeGreaterThanOrEqual(2)
+
+  // Wednesday's three cells are the only ones marked bookable. Nine cells per breakpoint,
+  // rendered twice (table + mobile list), so three of nine are bookable in each.
+  const entries = screen.getAllByTestId('schedule-entry')
+  const bookable = entries.filter((e) => e.dataset.bookable === 'yes')
+  expect(entries.length).toBeGreaterThan(0)
+  expect(bookable.length * 3).toBe(entries.length)
+})
+
+test('the page says out loud which mornings can be booked', () => {
+  // Two dimmed columns with no explanation read as a rendering fault, or as cancelled
+  // classes. The note has to name the open day and promise the others.
+  renderLittleMovers()
+  const note = screen.getByTestId('staffing-note')
+  expect(note.textContent).toMatch(/Wednesday mornings are open for booking/i)
+  expect(note.textContent).toMatch(/Monday and Friday/i)
+  expect(note.textContent).toMatch(/not\s+bookable yet/i)
 })
 
 test('the classes heading does not hardcode a count that can go stale', () => {

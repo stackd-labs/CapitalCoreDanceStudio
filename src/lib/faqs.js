@@ -116,7 +116,7 @@ export const FAQS = [
       },
       {
         q: 'When do Little Movers classes meet?',
-        a: 'Monday, Wednesday and Friday mornings, in three 45-minute classes with 15 minutes between them: 9:30, 10:30 and 11:30. Every day opens with Baby & Me and Moovin\' & Groovin\'; the last class of the morning changes by day — Tiny Tumblers on Monday, Sensory Steps on Wednesday, and the Free Play Lab on Friday.',
+        a: 'Monday, Wednesday and Friday mornings, in three 45-minute classes with 15 minutes between them: 9:30, 10:30 and 11:30. Every day opens with Baby & Me and Moovin\' & Groovin\'; the last class of the morning changes by day — Tiny Tumblers on Monday, Sensory Steps on Wednesday, and the Free Play Lab on Friday. Wednesday is the morning you can book right now: Monday and Friday are staffing up and will open once they have an instructor.',
       },
       {
         q: 'How much does Little Movers cost?',

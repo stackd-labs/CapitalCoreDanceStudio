@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
-import { accentForPath } from '../lib/pageAccents'
+import { accentForPath, ACCENTS } from '../lib/pageAccents'
+import { onAccent } from '../lib/accentContrast'
 
 // Restyled 2026-08-11 to the studio's site mockups: four columns on the deep navy, a
 // heavy top border in the page's accent, Barlow throughout. Every address, link and
@@ -113,11 +114,17 @@ export default function Footer() {
             </a>
           </div>
 
-          {/* Portal sign-in. Borrows the social icons' border idiom rather than a solid
-              accent fill on purpose: the footer's accent changes with the page, and a
-              solid button would recolour itself on every route, which is wrong for a
-              destination that is the same system wherever you click it from. It also
-              keeps it from outranking the page's own registration call to action.
+          {/* Portal sign-in. Solid orange at the studio's request (2026-09-02) — it was
+              an outlined button for a few hours and did not stand out.
+
+              🔴 A FIXED orange, deliberately NOT `accent` from accentForPath. The footer
+              recolours per route, and a portal button that changed colour on every page
+              would be wrong for a destination that is the same system wherever it is
+              clicked from. Hardcoding one accent is the point here, not an oversight.
+
+              Text colour comes from onAccent() rather than being typed: white on #ff8c2b
+              is 2.32:1 and unreadable, navy is 7.39:1. Deriving it means this cannot ship
+              an unreadable button if the orange is ever retuned the way pink was.
 
               The caption is there because "portal" alone does not tell a parent what is
               behind it, and the portal is a separate sign-in from anything on this site. */}
@@ -126,7 +133,8 @@ export default function Footer() {
             target="_blank"
             rel="noopener noreferrer"
             data-testid="portal-link"
-            className="group inline-flex items-center gap-2 mt-6 border border-white/20 hover:border-white/60 px-5 py-3 text-white text-sm font-bold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            className="group inline-flex items-center gap-2 mt-6 px-5 py-3 text-sm font-bold transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            style={{ background: ACCENTS.orange, color: onAccent(ACCENTS.orange) }}
           >
             Enter our portal
             <span aria-hidden="true" className="transition-transform group-hover:translate-x-0.5">

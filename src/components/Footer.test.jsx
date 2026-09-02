@@ -71,13 +71,33 @@ test('the portal button says what is behind it', () => {
   expect(screen.getByText(/Sign in to enroll, pay tuition and book classes/i)).toBeInTheDocument()
 })
 
-test('the portal button does not wear the page accent', () => {
-  // The footer recolours itself per route via accentForPath. A solid accent fill here
-  // would repaint the portal button on every page, which is wrong for a destination that
-  // is the same system wherever it is clicked from — and it would compete with each
-  // page's own registration call to action.
+test('the portal button is orange, and the SAME orange on every page', () => {
+  // Solid orange at the studio's request 2026-09-02, to make it stand out.
+  //
+  // 🔴 A FIXED orange, not accentForPath. The footer recolours per route, so the failure
+  // this pins is someone "tidying" the hardcoded colour into the surrounding `accent`
+  // variable — which reads like an improvement and would repaint the portal button on
+  // every page, for a destination that is the same system wherever it is clicked from.
+  // Rendering at two routes with different accents is the only way to catch that.
+  const atRed = render(
+    <MemoryRouter initialEntries={['/']}><Footer /></MemoryRouter>
+  )
+  const onHome = screen.getByTestId('portal-link').style.background
+  atRed.unmount()
+
+  render(
+    <MemoryRouter initialEntries={['/little-movers']}><Footer /></MemoryRouter>
+  )
+  const onLittleMovers = screen.getByTestId('portal-link').style.background
+
+  expect(onHome).toBe('rgb(255, 140, 43)') // ACCENTS.orange
+  expect(onLittleMovers).toBe(onHome)
+})
+
+test('the portal button puts navy on the orange, not white', () => {
+  // White on #ff8c2b is 2.32:1 and unreadable; navy is 7.39:1. The colour is derived by
+  // onAccent() rather than typed, so this also guards a future retune of the orange —
+  // the pink was tuned in place once already.
   renderFooter()
-  const portal = screen.getByTestId('portal-link')
-  expect(portal.style.background).toBe('')
-  expect(portal.className).toMatch(/border-white/)
+  expect(screen.getByTestId('portal-link').style.color).toBe('rgb(13, 27, 52)')
 })

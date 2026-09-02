@@ -80,70 +80,132 @@ export const PROGRAMS = [
     level: 'All Levels',
     blurb: 'Evening classes for adults 16+, whatever your experience — first class always free.',
   },
+  {
+    // Added 2026-09-02. The Academy is its own programme rather than a tier of the
+    // recreational track: it runs in Studio A, alongside the weekly schedule, and is
+    // the only thing the studio runs on a Sunday.
+    //
+    // ⚠ PLACEHOLDER BLURB. Everything in it is verifiable — the days, the room, the
+    // ages — but it is descriptive, not the studio's own words, and it is the one
+    // line on this page written in-house. Replace it when the studio supplies copy.
+    value: 'academy',
+    label: 'Dance Academy',
+    ages: '6–18',
+    level: 'Academy',
+    blurb: 'Our Studio A programme, running alongside the weekly schedule on Sunday, Monday and Thursday.',
+  },
 ]
 
-// Fall 2026 schedule — names follow the studio's "Full Class Schedule" flyer
-// (Aug 24 – Dec 18), which prefixes each class with its program tier.
+// Fall 2026 schedule (Aug 24 – Dec 18).
+//
+// ── REBUILT 2026-09-02 ────────────────────────────────────────────────────────
+// The studio reworked the whole week. This file and print/class-schedule.html were
+// brought into line in the same change; that sheet's header comment carries the
+// day-by-day diff and the reasoning behind each move.
+//
+// TWO FIELDS ARE NEW, and both were previously facts the site simply could not
+// express:
+//
+//   `instructor` — the flyer has named instructors all along and the data model had
+//     nowhere to put them. Names and titles come from src/lib/instructors.js, which
+//     is the spelling authority; Ms. Hannah is named on the Fall flyer but has no
+//     roster entry yet, so hers is a name and nothing more.
+//   `studio` — 'A' or 'B'. The studio has two rooms and now runs classes in both at
+//     the same time. Without this the calendar would show the Academy overlapping
+//     four other classes and look double-booked.
+//
+// SUNDAY IS NEW as a day. The Academy is the only thing that runs at the weekend.
+// ClassCalendar's DAY_ORDER had to gain it, or the day was silently dropped.
+//
+// 🔴 OFF THE SCHEDULE ENTIRELY, kept here as a record rather than deleted, because
+// the reason matters more than the absence:
+//   Tumble Tech                      was Tue 7:00 and Thu 7:15 — the only Technique
+//                                    class, so that tier now has nothing in it
+//   Core Plus Lyrical & Contemporary was Fri 6:15, parked
+//   Adult Femme/Flair                was Mon 8:00
+// Their CLASS_INFO entries stay: a class coming back should not need its
+// description rewritten.
 export const SCHEDULE = [
+  {
+    // The Academy only. Studio B is dark on Sundays.
+    day: 'Sunday',
+    classes: [
+      { name: 'Capital Core Dance Academy', time: '3:00 – 6:00 PM', start: '15:00', end: '18:00', infoKey: 'Capital Core Dance Academy', program: 'academy', ages: 'Ages 6–18', ageGroups: ['kids', 'teen'], category: 'academy', studio: 'A', instructor: 'Mr. Yul, Ms. Jillian & Ms. Kendall' },
+    ],
+  },
   {
     day: 'Monday',
     classes: [
-      { name: 'Tiny Core Ballet & Tumble', time: '5:00 – 5:30 PM', start: '17:00', end: '17:30', infoKey: 'Tiny Core Ballet & Tumble', program: 'tiny-core', ages: 'Ages 2–5', ageGroups: ['tiny'], category: 'tiny' },
-      { name: 'Core Acro & Jazz', time: '5:30 – 6:15 PM', start: '17:30', end: '18:15', infoKey: 'Core Acro & Jazz', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'jazz-acro' },
-      { name: 'Core Contemporary & Jazz', time: '5:30 – 6:15 PM', start: '17:30', end: '18:15', infoKey: 'Core Contemporary & Jazz', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'jazz-acro' },
+      // Studio A runs the full 5:00–7:00 alongside the Studio B evening below.
+      { name: 'Capital Core Dance Academy', time: '5:00 – 7:00 PM', start: '17:00', end: '19:00', infoKey: 'Capital Core Dance Academy', program: 'academy', ages: 'Ages 6–18', ageGroups: ['kids', 'teen'], category: 'academy', studio: 'A', instructor: 'Mr. Yul' },
+      { name: 'Tiny Core Ballet & Tumble', time: '5:00 – 5:30 PM', start: '17:00', end: '17:30', infoKey: 'Tiny Core Ballet & Tumble', program: 'tiny-core', ages: 'Ages 2–5', ageGroups: ['tiny'], category: 'tiny', studio: 'B', instructor: 'Ms. Jillian' },
       // Both standalone hip hop classes are Hip Hop & Breakdancing and share one
       // description (merged 2026-08-04). The ballet/hip hop combos are separate.
-      { name: 'Core Hip Hop & Breakdancing', time: '6:15 – 7:00 PM', start: '18:15', end: '19:00', infoKey: 'Core Hip Hop & Breakdancing', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'hiphop' },
-      { name: 'Core Plus Acro & Lyrical', time: '6:15 – 7:15 PM', start: '18:15', end: '19:15', infoKey: 'Core Plus Acro & Lyrical', program: 'core-plus', ages: 'Ages 8+', ageGroups: ['kids', 'teen'], category: 'lyrical-contemp' },
-      { name: 'Core Plus Ballet & Contemporary', time: '7:15 – 8:00 PM', start: '19:15', end: '20:00', infoKey: 'Core Plus Ballet & Contemporary', program: 'core-plus', ages: 'Ages 8+', ageGroups: ['kids', 'teen'], category: 'ballet' },
-      // Adult class names already lead with "Adult", so they are not additionally
-      // prefixed with their "Adult Core" tier.
-      { name: 'Adult Femme/Flair', time: '8:00 – 8:45 PM', start: '20:00', end: '20:45', infoKey: 'Adult Femme Flair', program: 'adult-core', ages: 'Ages 16+ · Adult', ageGroups: ['adult'], category: 'adult' },
+      { name: 'Core Hip Hop & Breakdancing', time: '5:30 – 6:15 PM', start: '17:30', end: '18:15', infoKey: 'Core Hip Hop & Breakdancing', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'hiphop', studio: 'B', instructor: 'Ms. Adelle' },
+      { name: 'Core Contemporary & Jazz', time: '6:15 – 7:00 PM', start: '18:15', end: '19:00', infoKey: 'Core Contemporary & Jazz', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'jazz-acro', studio: 'B', instructor: 'Ms. Adelle' },
+      // Renamed from 'Core Plus Ballet & Contemporary' on 2026-09-02. The infoKey
+      // deliberately does NOT follow the name: it is the same class with the same
+      // description, and repointing it would have orphaned the studio's own copy.
+      // ⚠ Still program 'core-plus' at 8+. The studio asked for a rename, not a
+      // re-audience — but 'Tech' named the Technique tier on Tumble Tech, so the
+      // name now implies a tier this class does not have. Unresolved.
+      { name: 'Ballet Tech', time: '7:00 – 7:45 PM', start: '19:00', end: '19:45', infoKey: 'Core Plus Ballet & Contemporary', program: 'core-plus', ages: 'Ages 8+', ageGroups: ['kids', 'teen'], category: 'ballet', studio: 'B', instructor: 'Ms. Jillian' },
     ],
   },
   {
     day: 'Tuesday',
     classes: [
-      { name: 'Tiny Core Ballet & Hip Hop', time: '5:00 – 5:30 PM', start: '17:00', end: '17:30', infoKey: 'Tiny Core Ballet & Hip Hop', program: 'tiny-core', ages: 'Ages 2–5', ageGroups: ['tiny'], category: 'tiny' },
-      { name: 'Core Ballet & Hip Hop', time: '5:30 – 6:15 PM', start: '17:30', end: '18:15', infoKey: 'Core Ballet & Hip Hop', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'ballet' },
-      { name: 'Core Contemporary & Jazz', time: '6:15 – 7:00 PM', start: '18:15', end: '19:00', infoKey: 'Core Contemporary & Jazz', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'jazz-acro' },
-      { name: 'Tumble Tech', time: '7:00 – 7:45 PM', start: '19:00', end: '19:45', infoKey: 'Tumble Tech', program: 'technique', ages: 'All Levels', ageGroups: ['kids', 'teen'], category: 'tumble-cheer' },
+      { name: 'Tiny Core Ballet & Hip Hop', time: '5:00 – 5:30 PM', start: '17:00', end: '17:30', infoKey: 'Tiny Core Ballet & Hip Hop', program: 'tiny-core', ages: 'Ages 2–5', ageGroups: ['tiny'], category: 'tiny', studio: 'B', instructor: 'Ms. Jillian' },
+      { name: 'Core Ballet & Hip Hop', time: '5:30 – 6:15 PM', start: '17:30', end: '18:15', infoKey: 'Core Ballet & Hip Hop', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'ballet', studio: 'B', instructor: 'Ms. Jillian' },
+      // Moved here from Wednesday 6:45 on 2026-09-02, taking the slot Core
+      // Contemporary & Jazz had. 'All Ages' per the flyer, but ageGroups deliberately
+      // stays kids/teen: adding 'adult' would surface Musical Theatre under the Adult
+      // age filter, which is not what the studio means by "all ages".
+      { name: 'Musical Theatre', time: '6:15 – 7:00 PM', start: '18:15', end: '19:00', infoKey: 'Musical Theatre', program: 'specialty', ages: 'All Ages', ageGroups: ['kids', 'teen'], category: 'musical-theatre', studio: 'B', instructor: 'Ms. Hannah' },
     ],
   },
   {
     day: 'Wednesday',
     classes: [
-      { name: 'Tiny Core Ballet & Tap', time: '5:30 – 6:00 PM', start: '17:30', end: '18:00', infoKey: 'Tiny Core Ballet & Tap', program: 'tiny-core', ages: 'Ages 2–5', ageGroups: ['tiny'], category: 'tiny' },
-      { name: 'Core Hip Hop & Breakdancing', time: '6:00 – 6:45 PM', start: '18:00', end: '18:45', infoKey: 'Core Hip Hop & Breakdancing', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'hiphop' },
-      // 'All Ages' per the flyer, but ageGroups deliberately stays kids/teen: adding
-      // 'adult' here would surface Musical Theatre under the Adult age filter and on
-      // an adults-only view, which is not what the studio means by "all ages".
-      { name: 'Musical Theatre', time: '6:45 – 7:30 PM', start: '18:45', end: '19:30', infoKey: 'Musical Theatre', program: 'specialty', ages: 'All Ages', ageGroups: ['kids', 'teen'], category: 'musical-theatre' },
-      { name: 'Adult Pom', time: '7:30 – 8:15 PM', start: '19:30', end: '20:15', infoKey: 'Adult Pom', program: 'adult-core', ages: 'Ages 16+ · Adult', ageGroups: ['adult'], category: 'adult' },
+      { name: 'Tiny Core Ballet & Tap', time: '5:30 – 6:00 PM', start: '17:30', end: '18:00', infoKey: 'Tiny Core Ballet & Tap', program: 'tiny-core', ages: 'Ages 2–5', ageGroups: ['tiny'], category: 'tiny', studio: 'B', instructor: 'Ms. Jillian' },
+      // Ms. Jillian is covering while Ms. Savannah is out, which leaves Savannah with
+      // no class on the schedule. Put her back here when she returns.
+      { name: 'Core Hip Hop & Breakdancing', time: '6:00 – 6:45 PM', start: '18:00', end: '18:45', infoKey: 'Core Hip Hop & Breakdancing', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'hiphop', studio: 'B', instructor: 'Ms. Jillian' },
+      // Moved from Thursday 6:45 and LENGTHENED 30 → 45 minutes to fill the slot
+      // Musical Theatre vacated, which keeps the evening gapless into Adult Pom.
+      { name: 'Pom Cheer', time: '6:45 – 7:30 PM', start: '18:45', end: '19:30', infoKey: 'Pom Cheer', program: 'specialty', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'tumble-cheer', studio: 'B', instructor: 'Ms. Kendall' },
+      // Adult class names already lead with "Adult", so they are not additionally
+      // prefixed with their "Adult Core" tier.
+      { name: 'Adult Pom', time: '7:30 – 8:15 PM', start: '19:30', end: '20:15', infoKey: 'Adult Pom', program: 'adult-core', ages: 'Ages 16+ · Adult', ageGroups: ['adult'], category: 'adult', studio: 'B', instructor: 'Ms. Kendall' },
     ],
   },
   {
     day: 'Thursday',
     classes: [
-      { name: 'Core Ballet & Jazz', time: '5:15 – 6:00 PM', start: '17:15', end: '18:00', infoKey: 'Core Ballet & Jazz', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'ballet' },
-      { name: 'Core Ballet & Tap', time: '6:00 – 6:45 PM', start: '18:00', end: '18:45', infoKey: 'Core Ballet & Tap', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'ballet' },
-      { name: 'Pom Cheer', time: '6:45 – 7:15 PM', start: '18:45', end: '19:15', infoKey: 'Pom Cheer', program: 'specialty', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'tumble-cheer' },
-      // Both tumbling classes carry the same name and share one description
-      // (merged 2026-08-03) — an intentional divergence from the older printed flyer,
-      // which read 'Tumble' here.
-      { name: 'Tumble Tech', time: '7:15 – 8:00 PM', start: '19:15', end: '20:00', infoKey: 'Tumble Tech', program: 'technique', ages: 'All Levels', ageGroups: ['kids', 'teen'], category: 'tumble-cheer' },
+      { name: 'Capital Core Dance Academy', time: '5:00 – 7:00 PM', start: '17:00', end: '19:00', infoKey: 'Capital Core Dance Academy', program: 'academy', ages: 'Ages 6–18', ageGroups: ['kids', 'teen'], category: 'academy', studio: 'A', instructor: 'Ms. Jillian & Mr. Yul' },
+      { name: 'Core Ballet & Jazz', time: '5:15 – 6:00 PM', start: '17:15', end: '18:00', infoKey: 'Core Ballet & Jazz', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'ballet', studio: 'B', instructor: 'Ms. Kendall' },
+      { name: 'Core Ballet & Tap', time: '6:00 – 6:45 PM', start: '18:00', end: '18:45', infoKey: 'Core Ballet & Tap', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'ballet', studio: 'B', instructor: 'Ms. Kendall' },
+      // 🔴 BOTH ACRO CLASSES MOVED HERE FROM MONDAY AND ARE SHORTER, which REPRICES
+      // them, since tuition goes by length (src/lib/tuition.js):
+      //   Core Acro & Jazz          45 → 30 min   $85 → $65
+      //   Core Plus Acro & Lyrical  60 → 45 min   $105 → $85
+      // They inherited the slots Pom Cheer and Tumble Tech left, and the studio named
+      // 7:15 as the second start — the old lengths would have collided.
+      { name: 'Core Acro & Jazz', time: '6:45 – 7:15 PM', start: '18:45', end: '19:15', infoKey: 'Core Acro & Jazz', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'jazz-acro', studio: 'B', instructor: 'Ms. Kendall & Ms. Milan' },
+      { name: 'Core Plus Acro & Lyrical', time: '7:15 – 8:00 PM', start: '19:15', end: '20:00', infoKey: 'Core Plus Acro & Lyrical', program: 'core-plus', ages: 'Ages 8+', ageGroups: ['kids', 'teen'], category: 'lyrical-contemp', studio: 'B', instructor: 'Mr. Yul & Ms. Milan' },
     ],
   },
   {
     day: 'Friday',
     classes: [
-      { name: 'Core Ballet & Modern', time: '5:30 – 6:15 PM', start: '17:30', end: '18:15', infoKey: 'Core Ballet & Modern', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'ballet' },
-      // Moved Core → Core Plus on 2026-08-10 at the studio's request. Ages follow the
-      // tier (5+ → 8+), which diverges from the printed flyer's 5+ for this one class.
-      { name: 'Core Plus Lyrical & Contemporary', time: '6:15 – 7:00 PM', start: '18:15', end: '19:00', infoKey: 'Core Plus Lyrical & Contemporary', program: 'core-plus', ages: 'Ages 8+', ageGroups: ['kids', 'teen'], category: 'lyrical-contemp' },
+      { name: 'Core Ballet & Modern', time: '5:30 – 6:15 PM', start: '17:30', end: '18:15', infoKey: 'Core Ballet & Modern', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'ballet', studio: 'B', instructor: 'Mr. Yul' },
+      // New 2026-09-02, in the slot Core Plus Lyrical & Contemporary left. Named to
+      // the studio's own adult pattern. No CLASS_INFO entry yet — the detail panel
+      // renders without a description rather than inventing one.
+      { name: 'Adult Ballet/Tech', time: '6:15 – 7:00 PM', start: '18:15', end: '19:00', infoKey: 'Adult Ballet/Tech', program: 'adult-core', ages: 'Ages 16+ · Adult', ageGroups: ['adult'], category: 'adult', studio: 'B', instructor: 'Mr. Yul' },
       // Shortened from 7:00 – 8:00 PM on 2026-08-10 to match the studio's Full Class
       // Schedule flyer, which ends this class at 7:45 like the other 45-minute classes.
-      { name: 'Adult Contemporary', time: '7:00 – 7:45 PM', start: '19:00', end: '19:45', infoKey: 'Adult Contemporary', program: 'adult-core', ages: 'Ages 16+ · Adult', ageGroups: ['adult'], category: 'adult' },
+      { name: 'Adult Contemporary', time: '7:00 – 7:45 PM', start: '19:00', end: '19:45', infoKey: 'Adult Contemporary', program: 'adult-core', ages: 'Ages 16+ · Adult', ageGroups: ['adult'], category: 'adult', studio: 'B', instructor: 'Mr. Yul' },
     ],
   },
 ]

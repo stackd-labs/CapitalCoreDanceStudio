@@ -1,12 +1,32 @@
 import { useRef, useState } from 'react'
 import ClassDetailPanel from './ClassDetailPanel'
+import { SCHEDULE } from '../lib/schedule'
 
-const DAY_ORDER = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+// Sunday added 2026-09-02 and FIRST, not last: the Academy is the only thing that
+// runs at the weekend, and the studio's own week reads Sunday to Friday. A day absent
+// from this list is silently dropped from the calendar — the grid is built by mapping
+// DAY_ORDER, not by reading the schedule — so this has to move whenever the schedule
+// gains a day. Saturday stays off until something runs on it.
+const DAY_ORDER = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
 
 // The Fall schedule runs 5:00–9:00 PM. Sixteen 15-minute slots cover it, and every
 // class time in the schedule falls on a 15-minute boundary (a test enforces this).
-const GRID_START_MINUTES = 17 * 60
-const GRID_END_MINUTES = 21 * 60
+// DERIVED from the schedule, not hardcoded to 17:00–21:00 as it was until 2026-09-02.
+// The Academy's Sunday session starts at 3:00 PM, two hours before the old grid began,
+// which would have given it a NEGATIVE start slot and floated it above the grid.
+//
+// Computed from the full SCHEDULE rather than the filtered `schedule` prop on purpose:
+// deriving it from the prop would make the grid resize every time a filter changed,
+// and blocks would jump around under the cursor.
+//
+// Floored and ceiled to the hour so the axis still lands on labelled hour marks.
+const ALL_ROWS = SCHEDULE.flatMap(({ classes }) => classes)
+const toMin = (hhmm) => {
+  const [h, m] = hhmm.split(':').map(Number)
+  return h * 60 + m
+}
+const GRID_START_MINUTES = Math.floor(Math.min(...ALL_ROWS.map((c) => toMin(c.start))) / 60) * 60
+const GRID_END_MINUTES = Math.ceil(Math.max(...ALL_ROWS.map((c) => toMin(c.end))) / 60) * 60
 const SLOT_MINUTES = 15
 const SLOT_PX = 22
 const TOTAL_SLOTS = (GRID_END_MINUTES - GRID_START_MINUTES) / SLOT_MINUTES

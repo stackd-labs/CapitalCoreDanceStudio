@@ -28,7 +28,12 @@ const SCHEDULE_ROWS_BY_INFO_KEY = SCHEDULE.flatMap(({ day, classes }) =>
   return acc
 }, {})
 
-const ADULT_INFO_KEYS = ['Adult Femme Flair', 'Adult Pom', 'Adult Contemporary']
+// Derived, matching the page. Hardcoded here as three keys until 2026-09-02, and when
+// Adult Femme/Flair came off the schedule this suite failed to load at all rather than
+// reporting a useful failure — the same fault as the page itself had.
+const ADULT_INFO_KEYS = SCHEDULE.flatMap(({ classes }) =>
+  classes.filter((c) => c.program === 'adult-core').map((c) => c.infoKey)
+)
 
 const CLASSES = ADULT_INFO_KEYS.map((infoKey) => {
   const row = SCHEDULE_ROWS_BY_INFO_KEY[infoKey]
@@ -79,14 +84,30 @@ test('each rendered day/time matches the SCHEDULE row with that infoKey', () => 
   })
 })
 
-test('every class has a non-empty description', () => {
+// Added 2026-09-02 with no studio copy. The card renders `{info?.description}`, so it
+// shows the class — name, day, time, price — with the description simply absent, rather
+// than inventing prose for a real class on a live page.
+const AWAITING_COPY = ['Adult Ballet/Tech']
+
+test('every class has a non-empty description, except those awaiting studio copy', () => {
   renderAdultClasses()
   for (const card of screen.getAllByTestId('adult-class-card')) {
     const name = card.querySelector('[data-testid="adult-class-name"]').textContent.trim()
+    if (AWAITING_COPY.includes(name)) continue
     const description = card.querySelector('[data-testid="adult-class-description"]')
     expect(description, `${name} is missing a description`).not.toBeNull()
     expect(description.textContent.trim().length).toBeGreaterThan(60)
   }
+})
+
+test('only the classes we know about are missing copy', () => {
+  // Keeps the skip list honest and short. Without this a second adult class could join
+  // it and ship blank.
+  renderAdultClasses()
+  const blank = screen.getAllByTestId('adult-class-card')
+    .filter((c) => (c.querySelector('[data-testid="adult-class-description"]')?.textContent.trim().length ?? 0) === 0)
+    .map((c) => c.querySelector('[data-testid="adult-class-name"]').textContent.trim())
+  expect(blank.sort()).toEqual([...AWAITING_COPY].sort())
 })
 
 test('states the 16+ age requirement and that no experience is needed', () => {
@@ -121,9 +142,18 @@ test('the evening window is derived from the schedule, not typed out', () => {
   const bullets = screen.getAllByTestId('adult-info-bullet').map((el) => el.textContent)
   const window = bullets.find((b) => /run in the evening/.test(b))
   expect(window).toBeTruthy()
-  // Mon 8:00–8:45, Wed 7:30–8:15, Fri 7:00–7:45 → earliest 7:00, latest 8:45.
-  expect(window).toContain('between 7:00 and 8:45 PM')
-  expect(window).not.toContain('9:00')
+  // Derived here as well as on the page. Pinning the literal "7:00 and 8:45" broke the
+  // moment the studio dropped Adult Femme/Flair (the 8:45 finish) and added Adult
+  // Ballet/Tech at 6:15 — a correct page failing a stale test. The invariant is that
+  // the sentence states the real earliest start and latest end.
+  const rows = ADULT_INFO_KEYS.map((k) => SCHEDULE_ROWS_BY_INFO_KEY[k])
+  const to12h = (hhmm) => {
+    const [h, m] = hhmm.split(':').map(Number)
+    return `${h > 12 ? h - 12 : h}:${String(m).padStart(2, '0')}`
+  }
+  const earliest = to12h(rows.map((r) => r.start).sort()[0])
+  const latest = to12h(rows.map((r) => r.end).sort().at(-1))
+  expect(window).toContain(`between ${earliest} and ${latest} PM`)
 })
 
 test('wears its own lavender, not the Classes orange', () => {
@@ -177,7 +207,10 @@ test('the tuition page and the adults page cannot quote different rates', () => 
   // Both now read CLASS_PRICES. This asserts the shared table is genuinely the source
   // the page rendered from, so re-introducing a local copy on either page fails here.
   renderAdultClasses()
-  const minutes = classLengthMinutes(SCHEDULE_ROWS_BY_INFO_KEY['Adult Femme Flair'])
+  // Was hardcoded to 'Adult Femme Flair', which came off the schedule 2026-09-02 and
+  // took this suite down with it. Reads the first adult class the schedule actually
+  // has, so retiring one is a content change and not a broken test.
+  const minutes = classLengthMinutes(SCHEDULE_ROWS_BY_INFO_KEY[ADULT_INFO_KEYS[0]])
   const fromTable = CLASS_PRICES.find((p) => p.minutes === minutes)
   expect(fromTable, `no published rate for a ${minutes}-minute class`).toBeTruthy()
   expect(screen.getByTestId('adult-headline-price')).toHaveTextContent(fromTable.monthly)
@@ -187,7 +220,10 @@ test('offers three ways to pay, each at the figure the tuition module holds', ()
   renderAdultClasses()
   expect(screen.getAllByTestId('adult-price-card')).toHaveLength(3)
 
-  const minutes = classLengthMinutes(SCHEDULE_ROWS_BY_INFO_KEY['Adult Femme Flair'])
+  // Was hardcoded to 'Adult Femme Flair', which came off the schedule 2026-09-02 and
+  // took this suite down with it. Reads the first adult class the schedule actually
+  // has, so retiring one is a content change and not a broken test.
+  const minutes = classLengthMinutes(SCHEDULE_ROWS_BY_INFO_KEY[ADULT_INFO_KEYS[0]])
   expect(screen.getByTestId('adult-headline-price')).toHaveTextContent(
     monthlyPriceForMinutes(minutes)
   )

@@ -11,25 +11,37 @@ const MONDAY = SCHEDULE.find((d) => d.day === 'Monday').classes
 test('clusterByOverlap puts concurrent classes in one cluster and sequential ones apart', () => {
   const clusters = clusterByOverlap(MONDAY)
   const names = clusters.map((c) => c.map((x) => x.name))
+  // One long cluster now: the Academy runs 17:00-19:00 in Studio A and therefore
+  // overlaps all three Studio B classes before 19:00. Ballet Tech starts exactly as
+  // it ends, so it clusters alone. This is the case the two-room schedule creates —
+  // the rooms genuinely run at once, and the grid has to show that without looking
+  // like the studio double-booked itself.
   expect(names).toEqual([
-    ['Tiny Core Ballet & Tumble'],
-    ['Core Acro & Jazz', 'Core Contemporary & Jazz'],
-    ['Core Hip Hop & Breakdancing', 'Core Plus Acro & Lyrical'],
-    ['Core Plus Ballet & Contemporary'],
-    ['Adult Femme/Flair'],
+    [
+      'Capital Core Dance Academy',
+      'Tiny Core Ballet & Tumble',
+      'Core Hip Hop & Breakdancing',
+      'Core Contemporary & Jazz',
+    ],
+    ['Ballet Tech'],
   ])
 })
 
 test('clusterByOverlap treats a class ending exactly when the next starts as sequential', () => {
-  // Tiny ends 17:30 and Core Acro starts 17:30 — back to back, not overlapping.
-  const clusters = clusterByOverlap([MONDAY[0], MONDAY[1]])
+  // Picked by NAME rather than by index: MONDAY[0] is now the Academy, which overlaps
+  // everything before 19:00, so the old positional fixture stopped expressing
+  // "back to back". Tiny ends 17:30 and Hip Hop starts 17:30 — touching, not
+  // overlapping.
+  const tiny = MONDAY.find((c) => c.name === 'Tiny Core Ballet & Tumble')
+  const hiphop = MONDAY.find((c) => c.name === 'Core Hip Hop & Breakdancing')
+  const clusters = clusterByOverlap([tiny, hiphop])
   expect(clusters).toHaveLength(2)
 })
 
 test('renders every class in both the grid and the mobile list', () => {
   renderCalendar()
-  expect(screen.getAllByTestId('class-block')).toHaveLength(22)
-  expect(screen.getAllByTestId('class-list-item')).toHaveLength(22)
+  expect(screen.getAllByTestId('class-block')).toHaveLength(21)
+  expect(screen.getAllByTestId('class-list-item')).toHaveLength(21)
 })
 
 test('block height encodes duration', () => {
@@ -40,40 +52,48 @@ test('block height encodes duration', () => {
 
   // 30-minute class spans 2 slots, 45-minute spans 3, 60-minute spans 4.
   expect(block('Tiny Core Ballet & Tumble')).toHaveAttribute('data-span', '2')
-  expect(block('Core Acro & Jazz')).toHaveAttribute('data-span', '3')
-  expect(block('Core Plus Acro & Lyrical')).toHaveAttribute('data-span', '4')
+  expect(block('Core Ballet & Modern')).toHaveAttribute('data-span', '3')
+  // Three hours: the Academy's Sunday session is the longest block on the grid, and
+  // the reason the window had to widen past a four-hour evening.
+  expect(block('Capital Core Dance Academy, Sunday')).toHaveAttribute('data-span', '12')
 })
 
-test('block start slot is measured from 5:00 PM', () => {
+test('block start slot is measured from the start of the derived window', () => {
   renderCalendar()
   const grid = screen.getByTestId('class-grid')
-  // 17:00 is slot 0; Thursday's 17:15 start is slot 1; 20:00 is slot 12.
-  expect(within(grid).getByRole('button', { name: /Tiny Core Ballet & Tumble/ })).toHaveAttribute('data-start-slot', '0')
-  expect(within(grid).getByRole('button', { name: /Core Ballet & Jazz, Thursday/ })).toHaveAttribute('data-start-slot', '1')
-  expect(within(grid).getByRole('button', { name: /Adult Femme\/Flair/ })).toHaveAttribute('data-start-slot', '12')
+  // The window starts at 15:00 now, not 17:00 — the Academy's Sunday session is the
+  // earliest thing on the schedule and the grid derives its bounds from the data, so
+  // every weekday class shifted down by eight slots.
+  expect(within(grid).getByRole('button', { name: /Capital Core Dance Academy, Sunday/ })).toHaveAttribute('data-start-slot', '0')
+  expect(within(grid).getByRole('button', { name: /Tiny Core Ballet & Tumble/ })).toHaveAttribute('data-start-slot', '8')
+  expect(within(grid).getByRole('button', { name: /Core Ballet & Jazz, Thursday/ })).toHaveAttribute('data-start-slot', '9')
+  expect(within(grid).getByRole('button', { name: /Adult Pom/ })).toHaveAttribute('data-start-slot', '18')
 })
 
 test('concurrent Monday classes render side by side, not stacked', () => {
   renderCalendar()
   const grid = screen.getByTestId('class-grid')
-  // Scoped to ", Monday" — "Core Contemporary & Jazz" also recurs on Tuesday's schedule,
-  // so an unqualified name match is ambiguous across the whole (all-days) grid.
-  const acro = within(grid).getByRole('button', { name: /Core Acro & Jazz, Monday/ })
-  const contemp = within(grid).getByRole('button', { name: /Core Contemporary & Jazz, Monday/ })
+  // Both Acro classes moved to Thursday on 2026-09-02, so Monday's concurrency is now
+  // between the two ROOMS: the Academy in Studio A and Tiny Core in Studio B, both at
+  // 5:00. Scoped to ", Monday" because several class names recur across days.
+  const academy = within(grid).getByRole('button', { name: /Capital Core Dance Academy, Monday/ })
+  const tiny = within(grid).getByRole('button', { name: /Tiny Core Ballet & Tumble, Monday/ })
 
-  expect(acro).toHaveAttribute('data-cluster-size', '2')
-  expect(contemp).toHaveAttribute('data-cluster-size', '2')
-  expect(acro).toHaveAttribute('data-cluster-index', '0')
-  expect(contemp).toHaveAttribute('data-cluster-index', '1')
-  // Same rows, different horizontal offsets — that is what "side by side" means here.
-  expect(acro.getAttribute('data-start-slot')).toBe(contemp.getAttribute('data-start-slot'))
-  expect(acro.style.left).not.toBe(contemp.style.left)
+  expect(academy).toHaveAttribute('data-cluster-size', '4')
+  expect(tiny).toHaveAttribute('data-cluster-size', '4')
+  expect(academy).toHaveAttribute('data-cluster-index', '0')
+  expect(tiny).toHaveAttribute('data-cluster-index', '1')
+  // Same row, different horizontal offsets — that is what "side by side" means here.
+  expect(academy.getAttribute('data-start-slot')).toBe(tiny.getAttribute('data-start-slot'))
+  expect(academy.style.left).not.toBe(tiny.style.left)
 })
 
 test('a class with no concurrent neighbour spans the full day column', () => {
   renderCalendar()
   const grid = screen.getByTestId('class-grid')
-  const solo = within(grid).getByRole('button', { name: /Adult Femme\/Flair/ })
+  // Ballet Tech starts exactly as the Academy ends, so nothing overlaps it. Adult
+  // Femme/Flair held this role until it came off the schedule.
+  const solo = within(grid).getByRole('button', { name: /Ballet Tech, Monday/ })
   expect(solo).toHaveAttribute('data-cluster-size', '1')
   expect(solo.style.left).toBe('0%')
   expect(solo.style.width).toBe('100%')
@@ -83,7 +103,7 @@ test('each block names its class, day, and time for screen readers', () => {
   renderCalendar()
   const grid = screen.getByTestId('class-grid')
   expect(
-    within(grid).getByRole('button', { name: 'Tumble Tech, Tuesday 7:00 – 7:45 PM' })
+    within(grid).getByRole('button', { name: 'Musical Theatre, Tuesday 6:15 – 7:00 PM' })
   ).toBeInTheDocument()
 })
 
@@ -95,24 +115,31 @@ test('a mobile list item names its class, day, time, and ages for screen readers
   const list = screen.getByTestId('class-list')
   expect(
     within(list).getByRole('button', {
-      name: 'Tumble Tech, Tuesday 7:00 – 7:45 PM, All Levels',
+      name: 'Musical Theatre, Tuesday 6:15 – 7:00 PM, All Ages',
     })
   ).toBeInTheDocument()
 })
 
-test('renders all five weekday column headers', () => {
+test('renders a column header for every day the studio runs, Sunday included', () => {
+  // Sunday joined on 2026-09-02 with the Academy. A day missing from ClassCalendar's
+  // DAY_ORDER is silently dropped from the grid — the grid maps DAY_ORDER, it does not
+  // read the schedule — so this is the guard for that.
   renderCalendar()
   const grid = screen.getByTestId('class-grid')
-  for (const day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']) {
+  for (const day of ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']) {
     expect(within(grid).getByText(day)).toBeInTheDocument()
   }
 })
 
-test('renders the time gutter every half hour from 5:00 to 9:00', () => {
+test('renders the time gutter every half hour across the whole derived window', () => {
+  // 3:00 now, not 5:00: the Academy's Sunday session starts at 3:00 PM. Weekday
+  // columns simply have an empty band at the top, which is the truth — nothing runs
+  // then.
   renderCalendar()
   const labels = screen.getAllByTestId('time-label').map((el) => el.textContent.trim())
   expect(labels).toEqual([
-    '5:00', '5:30', '6:00', '6:30', '7:00', '7:30', '8:00', '8:30', '9:00',
+    '3:00', '3:30', '4:00', '4:30', '5:00', '5:30', '6:00', '6:30',
+    '7:00', '7:30', '8:00', '8:30', '9:00',
   ])
 })
 
@@ -124,7 +151,7 @@ test('clicking a block opens its detail panel; Escape closes it and restores foc
   fireEvent.click(block)
   const dialog = screen.getByRole('dialog')
   expect(within(dialog).getByRole('heading', { name: 'Musical Theatre' })).toBeInTheDocument()
-  expect(within(dialog).getByText(/Wednesday/)).toBeInTheDocument()
+  expect(within(dialog).getByText(/Tuesday/)).toBeInTheDocument()
 
   fireEvent.keyDown(document, { key: 'Escape' })
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument()

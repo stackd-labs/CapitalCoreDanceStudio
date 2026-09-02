@@ -33,7 +33,17 @@ const PORTAL_REGISTER_URL = 'https://studio.capitalcoredance.com/register/adult-
 // below (matched on infoKey) rather than duplicated here, so this page can never
 // drift out of sync with the Fall schedule. Prose lives in src/lib/classInfo.js,
 // keyed by the names below.
-const ADULT_INFO_KEYS = ['Adult Femme Flair', 'Adult Pom', 'Adult Contemporary']
+// DERIVED from the schedule, not listed by hand. This was a hardcoded array of three
+// infoKeys until 2026-09-02, and the moment the studio took Adult Femme/Flair off the
+// Monday schedule this page crashed outright — the key had no row, and
+// classLengthMinutes(undefined) threw before the page could render. A page that lists
+// the adult classes should read which classes are adult, the same way the rest of this
+// file derives length and price rather than quoting them.
+//
+// Picks up Adult Ballet/Tech automatically, and drops anything the studio retires.
+const ADULT_INFO_KEYS = SCHEDULE.flatMap(({ classes }) =>
+  classes.filter((c) => c.program === 'adult-core').map((c) => c.infoKey)
+)
 
 const SCHEDULE_ROWS_BY_INFO_KEY = SCHEDULE.flatMap(({ day, classes }) =>
   classes.map((c) => ({ ...c, day }))
@@ -127,7 +137,12 @@ export default function AdultClasses() {
     <div className="min-h-screen flex flex-col bg-ink-base">
       <SEO
         title="Adult Dance Classes in Midlothian, VA | Capital Core Dance Studio"
-        description="Evening dance classes for adults 16+ in Midlothian, VA — Femme Flair on Mondays, Pom on Wednesdays, and Contemporary on Fridays. $85 a month for one 45-minute class, $165 a month for all three, or $25 to drop in. Beginner-friendly, no experience necessary, first class always free."
+        // ⚠ This sentence names the classes by hand while the page derives them. It
+        // said "Femme Flair on Mondays, Pom on Wednesdays, and Contemporary on Fridays"
+        // until 2026-09-02, after Femme Flair had come off the schedule entirely — a
+        // meta description advertising a class that no longer runs. Re-check it
+        // whenever the adult line-up changes.
+        description="Evening dance classes for adults 16+ in Midlothian, VA — Pom on Wednesdays, Ballet/Tech and Contemporary on Fridays. $85 a month for one 45-minute class, $165 a month for all three, or $25 to drop in. Beginner-friendly, no experience necessary, first class always free."
         canonical="/adult-classes"
         jsonLd={ADULT_CLASSES_JSON_LD}
       />

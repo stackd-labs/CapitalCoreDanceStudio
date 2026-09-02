@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import Classes from './Classes'
-import { PROGRAMS } from '../lib/schedule'
+import { PROGRAMS, SCHEDULE } from '../lib/schedule'
 
 function renderClasses() {
   return render(<MemoryRouter initialEntries={['/classes']}><Classes /></MemoryRouter>)
@@ -31,10 +31,11 @@ test('renders real class names', () => {
   expect(within(grid).getByRole('button', { name: /Core Hip Hop & Breakdancing, Monday/ })).toBeInTheDocument()
   expect(within(grid).getByRole('button', { name: /Core Hip Hop & Breakdancing, Wednesday/ })).toBeInTheDocument()
   expect(within(grid).getByRole('button', { name: /Musical Theatre/ })).toBeInTheDocument()
-  // Anchored by day: two schedule rows are named Tumble Tech since the 2026-08-03
-  // merge, so an unanchored /Tumble Tech/ matches both blocks.
-  expect(within(grid).getByRole('button', { name: /Tumble Tech, Tuesday/ })).toBeInTheDocument()
-  expect(within(grid).getByRole('button', { name: /Tumble Tech, Thursday/ })).toBeInTheDocument()
+  // Anchored by day: several class names recur across days, so an unanchored match is
+  // ambiguous. Tumble Tech held this spot until it came off both its nights on
+  // 2026-09-02; the Academy is the new class that runs on more than one day.
+  expect(within(grid).getByRole('button', { name: /Capital Core Dance Academy, Sunday/ })).toBeInTheDocument()
+  expect(within(grid).getByRole('button', { name: /Capital Core Dance Academy, Thursday/ })).toBeInTheDocument()
 })
 
 test('does not render Private Lessons', () => {
@@ -58,21 +59,31 @@ test('the program filter lists every scheduled tier with its age range', () => {
     'Tiny Core (2–5)',
     'Core (5+)',
     'Core Plus (8+)',
-    'Technique (All Levels)',
+    // Technique dropped out on 2026-09-02: Tumble Tech was its only class and came
+    // off both nights, so the tier has nothing to filter to. Dance Academy took its
+    // place in the list.
     'Specialty (All Ages)',
     'Adult Core (16+)',
+    'Dance Academy (6–18)',
   ]) {
     expect(screen.getByRole('option', { name: label })).toBeInTheDocument()
   }
 })
 
 test('a tier with no classes is announced in the key but kept out of the filter', () => {
-  // Core Elite exists in PROGRAMS from 2026-08-11 with no classes assigned yet.
-  // Offering it as a filter option would give a dropdown entry that always lands on
-  // the empty state — indistinguishable from a broken filter.
+  // Offering an empty tier as a filter option gives a dropdown entry that always
+  // lands on the empty state — indistinguishable from a broken filter.
+  //
+  // TWO tiers are empty now. Core Elite has been since it was added on 2026-08-11.
+  // Technique joined it on 2026-09-02 when Tumble Tech, its only class, came off both
+  // its nights — the same rule, reached a different way, which is why this asserts
+  // the behaviour for both rather than naming one.
   renderClasses()
-  expect(screen.queryByRole('option', { name: /Core Elite/ })).not.toBeInTheDocument()
-  expect(within(screen.getByTestId('program-key')).getByText('Core Elite')).toBeInTheDocument()
+  const key = within(screen.getByTestId('program-key'))
+  for (const label of ['Core Elite', 'Technique']) {
+    expect(screen.queryByRole('option', { name: new RegExp(label) }), `${label} is offered as a filter`).not.toBeInTheDocument()
+    expect(key.getByText(label), `${label} missing from the key`).toBeInTheDocument()
+  }
 })
 
 test('the program key explains every tier, including unscheduled ones', () => {
@@ -91,23 +102,23 @@ test('program filter narrows the calendar to one tier', () => {
   renderClasses()
   const [programSelect] = screen.getAllByRole('combobox')
 
-  // Core Plus is the three 8+ classes. Lyrical & Contemporary joined them on
-  // 2026-08-10, moving up from Core. Grid order is by day column, so Monday first.
+  // Core Plus is down to two after the 2026-09-02 rework: Lyrical & Contemporary was
+  // parked, Ballet & Contemporary was renamed Ballet Tech, and Acro & Lyrical moved
+  // from Monday to Thursday. Grid order is by day column, so Monday first.
   fireEvent.change(programSelect, { target: { value: 'core-plus' } })
   let blocks = within(screen.getByTestId('class-grid')).getAllByTestId('class-block')
   expect(blocks.map((b) => b.getAttribute('aria-label'))).toEqual([
-    'Core Plus Acro & Lyrical, Monday 6:15 – 7:15 PM',
-    'Core Plus Ballet & Contemporary, Monday 7:15 – 8:00 PM',
-    'Core Plus Lyrical & Contemporary, Friday 6:15 – 7:00 PM',
+    'Ballet Tech, Monday 7:00 – 7:45 PM',
+    'Core Plus Acro & Lyrical, Thursday 7:15 – 8:00 PM',
   ])
 
-  // Technique is both Tumble Tech classes — the tier that exists because the flyer
-  // labelled them Core Plus but colour-coded them all-levels Technique.
-  fireEvent.change(programSelect, { target: { value: 'technique' } })
+  // The Academy replaces Technique here: Technique is no longer offered as a filter
+  // at all, so selecting it is not a case a visitor can reach.
+  fireEvent.change(programSelect, { target: { value: 'academy' } })
   blocks = within(screen.getByTestId('class-grid')).getAllByTestId('class-block')
-  expect(blocks).toHaveLength(2)
+  expect(blocks).toHaveLength(3)
   for (const block of blocks) {
-    expect(block.getAttribute('aria-label')).toMatch(/^Tumble Tech/)
+    expect(block.getAttribute('aria-label')).toMatch(/^Capital Core Dance Academy/)
   }
 })
 
@@ -129,7 +140,7 @@ test('program and style filters compose rather than override', () => {
 test('style filter narrows the calendar to matching classes', () => {
   renderClasses()
   const grid = screen.getByTestId('class-grid')
-  expect(within(grid).getAllByTestId('class-block')).toHaveLength(22)
+  expect(within(grid).getAllByTestId('class-block')).toHaveLength(21)
 
   const [, , styleSelect] = screen.getAllByRole('combobox')
   fireEvent.change(styleSelect, { target: { value: 'hiphop' } })
@@ -215,12 +226,20 @@ test('renders Enroll Now CTA', () => {
 
 test('the class card grid mirrors the calendar and both follow the filters', () => {
   renderClasses()
-  expect(screen.getAllByTestId('class-card')).toHaveLength(22)
+  expect(screen.getAllByTestId('class-card')).toHaveLength(21)
 
   const [programSelect] = screen.getAllByRole('combobox')
+  // Core Plus is two classes after the 2026-09-02 rework, not three. The number matters
+  // less than the two counts AGREEING — a card grid and a calendar showing different
+  // sets under the same filter is the defect this test exists for — so it is derived
+  // once and asserted against both.
   fireEvent.change(programSelect, { target: { value: 'core-plus' } })
-  expect(screen.getAllByTestId('class-card')).toHaveLength(3)
-  expect(within(screen.getByTestId('class-grid')).getAllByTestId('class-block')).toHaveLength(3)
+  const corePlusCount = SCHEDULE.flatMap(({ classes }) =>
+    classes.filter((c) => c.program === 'core-plus')
+  ).length
+  expect(corePlusCount).toBe(2)
+  expect(screen.getAllByTestId('class-card')).toHaveLength(corePlusCount)
+  expect(within(screen.getByTestId('class-grid')).getAllByTestId('class-block')).toHaveLength(corePlusCount)
 })
 
 test('the Enroll Now action keeps its button styling when given a layout class', () => {

@@ -48,22 +48,42 @@ const ALL_ROWS = SCHEDULE.flatMap(({ day, classes }) =>
   classes.map((c) => ({ ...c, day }))
 )
 
-test('the schedule still has 22 class rows', () => {
-  expect(ALL_ROWS).toHaveLength(22)
+test('the schedule still has 21 class rows', () => {
+  // 22 → 21 on 2026-09-02, when the studio reworked the week. Three classes came off
+  // (Tumble Tech both nights, Core Plus Lyrical & Contemporary, Adult Femme/Flair) and
+  // two Academy sessions plus Adult Ballet/Tech came on.
+  expect(ALL_ROWS).toHaveLength(21)
 })
+
+// Classes the studio added on 2026-09-02 that it has not yet written copy for. The
+// detail panel renders `{info && ...}`, so these show without a description rather
+// than with an invented one — the same rule the About page follows for staff.
+// Deleting a name from this list should make the test below demand real prose.
+const AWAITING_COPY = ['Capital Core Dance Academy', 'Adult Ballet/Tech']
 
 test('every schedule row resolves to prose via its infoKey', () => {
   for (const row of ALL_ROWS) {
+    if (AWAITING_COPY.includes(row.infoKey)) continue
     const info = getClassInfo(row.infoKey)
     expect(info, `${row.day} "${row.name}" has infoKey "${row.infoKey}" with no entry`).toBeDefined()
     expect(info.description.length).toBeGreaterThan(60)
   }
 })
 
-test('every classInfo entry is used by at least one schedule row', () => {
+test('the classes awaiting copy are exactly the ones we think', () => {
+  // The point of the skip list is that it stays SHORT and visible. Without this, a
+  // fourth class could quietly join it and ship with no description at all.
+  const missing = [...new Set(ALL_ROWS.map((r) => r.infoKey))].filter((k) => !getClassInfo(k))
+  expect(missing.sort()).toEqual([...AWAITING_COPY].sort())
+})
+
+test('classInfo keeps copy only for current classes and recent departures', () => {
   const used = new Set(ALL_ROWS.map((r) => r.infoKey))
-  const orphans = Object.keys(CLASS_INFO).filter((key) => !used.has(key))
-  expect(orphans, 'copy exists for classes no longer on the schedule').toEqual([])
+  const orphans = Object.keys(CLASS_INFO).filter((key) => !used.has(key)).sort()
+  // Kept deliberately, not stale: all three came off the schedule on 2026-09-02 and
+  // the studio may bring them back. A class returning should not need its description
+  // rewritten. Prune this list if the studio confirms one is gone for good.
+  expect(orphans).toEqual(['Adult Femme Flair', 'Core Plus Lyrical & Contemporary', 'Tumble Tech'])
 })
 
 test('every row has 24-hour start and end on 15-minute boundaries', () => {
@@ -91,14 +111,21 @@ test('start and end agree with the flyer-verbatim time string', () => {
   }
 })
 
-test('every class runs inside the 5:00 PM to 9:00 PM grid window', () => {
+test('every class runs inside the calendar grid window', () => {
+  // The window was hardcoded 17:00–21:00 here and in ClassCalendar until 2026-09-02,
+  // when the Academy's Sunday session at 3:00 PM would have been given a NEGATIVE
+  // start slot and floated above the grid. Both now derive the bounds from the
+  // schedule, so this asserts the INVARIANT — every class fits, and no class ends
+  // before it starts — rather than two literal hours that go stale.
   const toMinutes = (hhmm) => {
     const [h, m] = hhmm.split(':').map(Number)
     return h * 60 + m
   }
+  const gridStart = Math.floor(Math.min(...ALL_ROWS.map((r) => toMinutes(r.start))) / 60) * 60
+  const gridEnd = Math.ceil(Math.max(...ALL_ROWS.map((r) => toMinutes(r.end))) / 60) * 60
   for (const row of ALL_ROWS) {
-    expect(toMinutes(row.start), `${row.name} starts before 17:00`).toBeGreaterThanOrEqual(17 * 60)
-    expect(toMinutes(row.end), `${row.name} ends after 21:00`).toBeLessThanOrEqual(21 * 60)
+    expect(toMinutes(row.start), `${row.name} starts before the grid`).toBeGreaterThanOrEqual(gridStart)
+    expect(toMinutes(row.end), `${row.name} ends after the grid`).toBeLessThanOrEqual(gridEnd)
     expect(toMinutes(row.end), `${row.name} ends before it starts`).toBeGreaterThan(toMinutes(row.start))
   }
 })
@@ -112,16 +139,29 @@ test('the studio photo rules resolve to exactly this assignment across the Fall 
   const assignment = Object.fromEntries(names.map((n) => [n, photoForClass(n)?.photo ?? null]))
 
   expect(assignment).toEqual({
+    // ⚠ NO PHOTOGRAPH. photoForClass matches on NAME, and no rule mentions "academy",
+    // so this resolves to null and the card renders its hatched placeholder. That is
+    // the honest outcome — there is no Academy photograph — but it is the one class on
+    // the schedule without one, so it is worth seeing here rather than discovering on
+    // the page.
+    'Capital Core Dance Academy': null,
+    // Takes the ballet photo off the last-resort `ballet` rule, on its name alone. It
+    // is a 16+ class and the ballet photograph is not of adults; flagged rather than
+    // fixed, because the fix is a photograph, not a rule.
+    'Adult Ballet/Tech': '/class-ballet.jpg',
     'Adult Contemporary': '/class-contemporary.jpg',
-    'Adult Femme/Flair': '/class-femme-flair.jpg',
     // Its own photograph as of 2026-08-17, no longer the shared pom one: this is a 16+
     // class and the pom photo is of three teenagers. 'Pom Cheer' keeps that photo.
     'Adult Pom': '/class-adult-pom.jpg',
+    // Renamed from 'Core Plus Ballet & Contemporary' on 2026-09-02, and the rename
+    // MOVED ITS PHOTOGRAPH: the old name hit the contemporary rule, "Ballet Tech" hits
+    // the ballet one. Exactly the silent change this test exists to surface.
+    'Ballet Tech': '/class-ballet.jpg',
     'Core Acro & Jazz': '/class-acro.jpg',
     'Core Ballet & Hip Hop': '/class-hip-hop.jpg',
     'Core Ballet & Jazz': '/class-jazz.jpg',
-    // The two classes the new `ballet` rule picks up — it sits last, so it only catches
-    // ballet classes no more specific rule has already claimed.
+    // The classes the last-resort `ballet` rule picks up — it sits last, so it only
+    // catches ballet classes no more specific rule has already claimed.
     'Core Ballet & Modern': '/class-ballet.jpg',
     'Core Ballet & Tap': '/class-ballet.jpg',
     // Jazz, not contemporary: the studio's jazz rule names every class with "jazz" in
@@ -129,9 +169,6 @@ test('the studio photo rules resolve to exactly this assignment across the Fall 
     'Core Contemporary & Jazz': '/class-jazz.jpg',
     'Core Hip Hop & Breakdancing': '/class-hip-hop.jpg',
     'Core Plus Acro & Lyrical': '/class-lyrical.jpg',
-    'Core Plus Ballet & Contemporary': '/class-contemporary.jpg',
-    // Lyrical, not contemporary: it takes the style its own name leads with.
-    'Core Plus Lyrical & Contemporary': '/class-lyrical.jpg',
     'Musical Theatre': '/class-musical-theatre.jpg',
     // Unchanged, and the point of giving Adult Pom its own rule: the shared pom
     // photograph is of teenagers, which suits this class and not a 16+ one.
@@ -142,7 +179,6 @@ test('the studio photo rules resolve to exactly this assignment across the Fall 
     'Tiny Core Ballet & Hip Hop': '/class-tiny-ballet.jpg',
     'Tiny Core Ballet & Tap': '/class-tiny-ballet.jpg',
     'Tiny Core Ballet & Tumble': '/class-tiny-ballet.jpg',
-    'Tumble Tech': '/class-tumble.jpg',
   })
 })
 

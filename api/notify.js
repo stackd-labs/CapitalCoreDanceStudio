@@ -86,6 +86,15 @@ function buildContactEmail({ firstName, lastName, email, phone, interest, dancer
  *
  * `silent: true` tells the portal we already emailed, so it records the
  * submission and rings its in-app bell without sending a second alert. */
+function uuidv4Fallback() {
+  const b = new Uint8Array(16)
+  for (let i = 0; i < 16; i++) b[i] = Math.floor(Math.random() * 256)
+  b[6] = (b[6] & 0x0f) | 0x40
+  b[8] = (b[8] & 0x3f) | 0x80
+  const h = [...b].map(x => x.toString(16).padStart(2, '0')).join('')
+  return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`
+}
+
 async function copyToPortal(data) {
   const secret = process.env.SITE_INTAKE_SECRET
   const base = process.env.PORTAL_INTAKE_URL || 'https://studio.capitalcoredance.com'
@@ -93,8 +102,14 @@ async function copyToPortal(data) {
     console.warn('[notify] SITE_INTAKE_SECRET not set, submission not copied to the portal')
     return
   }
+  /* 🔴 MUST BE A UUID. site_intake.source_row_id is a uuid column, so a
+     readable fallback id like `web-<timestamp>` is rejected outright with a
+     500 and the submission is lost. Caught by an end-to-end post against
+     production before this shipped. randomUUID exists on every Node the site
+     deploys to; the fallback is only for an exotic runtime and must still
+     produce a valid v4. */
   const record = {
-    id: (globalThis.crypto?.randomUUID?.() ?? `web-${Date.now()}-${Math.random().toString(16).slice(2)}`),
+    id: (globalThis.crypto?.randomUUID?.() ?? uuidv4Fallback()),
     created_at: new Date().toISOString(),
     first_name: data.firstName ?? null,
     last_name: data.lastName ?? null,

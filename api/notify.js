@@ -65,6 +65,65 @@ function buildContactEmail({ firstName, lastName, email, phone, interest, dancer
   `
 }
 
+
+/* Copy the submission into the studio portal.
+ *
+ * WHY THIS EXISTS. The portal used to learn about website forms from a Supabase
+ * DB webhook on this site's own database. That database is gone (the project
+ * was deleted when the site was trimmed off Supabase on 2026-08-19), so the
+ * table the webhook watched no longer exists and nothing has reached the portal
+ * since roughly 2026-07-19. Seven weeks of enquiries lived only in the studio
+ * inbox, including a free-trial request for a four year old that was found six
+ * days late. This posts the same shape the webhook used to, straight to the
+ * portal.
+ *
+ * 🔴 FAIL-SOFT, AND ALWAYS AFTER THE EMAIL. The email is the path that must not
+ * break: it is what the studio actually reads, and it kept working through the
+ * entire outage precisely because it never depended on the portal. If the
+ * portal is unreachable, misconfigured or slow, the visitor still gets a 200
+ * and the studio still gets its mail. Never await this before the send, and
+ * never let it throw.
+ *
+ * `silent: true` tells the portal we already emailed, so it records the
+ * submission and rings its in-app bell without sending a second alert. */
+async function copyToPortal(data) {
+  const secret = process.env.SITE_INTAKE_SECRET
+  const base = process.env.PORTAL_INTAKE_URL || 'https://studio.capitalcoredance.com'
+  if (!secret) {
+    console.warn('[notify] SITE_INTAKE_SECRET not set, submission not copied to the portal')
+    return
+  }
+  const record = {
+    id: (globalThis.crypto?.randomUUID?.() ?? `web-${Date.now()}-${Math.random().toString(16).slice(2)}`),
+    created_at: new Date().toISOString(),
+    first_name: data.firstName ?? null,
+    last_name: data.lastName ?? null,
+    email: data.email ?? null,
+    phone: data.phone ?? null,
+    // The slug, not the label: the portal matches payload.interest === 'trial'
+    // to decide what shows in its Trials list. Sending "Free Trial" there would
+    // put every trial request back in the general pile.
+    interest: data.interest ?? null,
+    dancer_name: data.dancerName ?? null,
+    dancer_age: data.dancerAge ?? null,
+    message: data.message ?? null,
+  }
+  try {
+    const ctrl = new AbortController()
+    const t = setTimeout(() => ctrl.abort(), 8000)
+    const r = await fetch(`${base}/api/intake/from-site`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-intake-secret': secret },
+      body: JSON.stringify({ type: 'INSERT', table: 'contact_submissions', silent: true, record }),
+      signal: ctrl.signal,
+    })
+    clearTimeout(t)
+    if (!r.ok) console.error(`[notify] portal copy failed: ${r.status} ${await r.text().catch(() => '')}`)
+  } catch (err) {
+    console.error('[notify] portal copy failed:', err?.message ?? err)
+  }
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
@@ -95,6 +154,9 @@ export default async function handler(req, res) {
       subject,
       html,
     })
+    // Only after the mail is away. A portal failure must not turn a delivered
+    // enquiry into a 500 the visitor sees as "please try again".
+    await copyToPortal(data)
     return res.status(200).json({ ok: true })
   } catch (err) {
     console.error('Resend error:', err)

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
@@ -104,6 +104,10 @@ export default function Contact() {
   const [status, setStatus] = useState('idle') // idle | submitting | success | error
   const [errorMsg, setErrorMsg] = useState('')
   const [trialFromLink, setTrialFromLink] = useState(false)
+  // Spam screening, read by api/notify.js: when the form opened, and a honeypot that
+  // only bots fill. See the comment on spamReason there.
+  const openedAt = useRef(Date.now())
+  const [ccdRef, setCcdRef] = useState('')
 
   // Pre-select the interest when arriving from a /contact?interest=<value> link. Any value
   // in INTEREST_GROUPS works, so a page can send a visitor here with their topic already
@@ -144,6 +148,8 @@ export default function Contact() {
           dancerName: form.dancerName,
           dancerAge: form.dancerAge,
           message: form.message,
+          ccd_ref: ccdRef,
+          elapsedMs: Date.now() - openedAt.current,
         }),
       })
 
@@ -151,6 +157,7 @@ export default function Contact() {
 
       setStatus('success')
       setForm(INITIAL_FORM)
+      openedAt.current = Date.now()
     } catch {
       setStatus('error')
       setErrorMsg('Something went wrong. Please try again or email us directly at info@capitalcoredance.com.')
@@ -240,6 +247,21 @@ export default function Contact() {
               </div>
             ) : (
               <form className="flex flex-col" aria-label="Contact us" onSubmit={handleSubmit}>
+                {/* Honeypot. display:none + tabIndex -1 + aria-hidden keeps it away from
+                    people, screen readers and keyboard users. The name and label are
+                    meaningless on purpose so Chrome autofill never matches it. */}
+                <div aria-hidden="true" style={{ display: 'none' }}>
+                  <label htmlFor="ccd_ref">Leave this blank</label>
+                  <input
+                    id="ccd_ref"
+                    name="ccd_ref"
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={ccdRef}
+                    onChange={(e) => setCcdRef(e.target.value)}
+                  />
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-[18px]">
                   <div className="flex flex-col gap-2">
                     <label className={labelClass} htmlFor="firstName">

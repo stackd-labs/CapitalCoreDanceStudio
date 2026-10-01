@@ -66,6 +66,48 @@ function buildContactEmail({ firstName, lastName, email, phone, interest, dancer
 }
 
 
+/* Spam screening, added 2026-10-01 after bot submissions started reaching the studio
+ * inbox (and, through copyToPortal, the portal's intake bell).
+ *
+ * Three cheap checks, no third party:
+ *  - HONEYPOT. Contact.jsx renders a hidden `ccd_ref` field. Humans never see it, form
+ *    bots fill every field. Deliberately NOT named company/email/address/website:
+ *    Chrome autofill fills those from a saved profile even when hidden, which silently
+ *    blocked real customers on Bounce FX.
+ *  - TIMING. The page sends how long the form was open. Under MIN_FILL_MS is a script.
+ *    A missing value counts too: that is something posting straight at this endpoint.
+ *  - CONTENT. Real-looking email, names without links, length caps, and no
+ *    link-stuffed message.
+ *
+ * Spam gets a 200 {ok:true} and is dropped, so a bot sees success and learns nothing.
+ * Only an over-length field gets a real 400, since a human could plausibly hit it.
+ * Every drop is logged with its reason, so a false positive shows up in Vercel logs.
+ *
+ * Next step if this is not enough: Cloudflare Turnstile (free, mostly invisible).
+ */
+const MIN_FILL_MS = 3000
+const MAX_LEN = { firstName: 80, lastName: 80, email: 200, phone: 40, dancerName: 120, dancerAge: 20, message: 5000 }
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+const LINK_RE = /https?:\/\/|www\.|\[url|<a\s/gi
+
+export function spamReason(data) {
+  if (String(data.ccd_ref ?? '').trim() !== '') return 'honeypot'
+  const elapsed = Number(data.elapsedMs)
+  if (!Number.isFinite(elapsed) || elapsed < MIN_FILL_MS) return 'too-fast'
+  if (!EMAIL_RE.test(String(data.email ?? '').trim())) return 'bad-email'
+  if (!String(data.firstName ?? '').trim() || !String(data.message ?? '').trim()) return 'missing-fields'
+  for (const f of ['firstName', 'lastName', 'dancerName']) {
+    if ((String(data[f] ?? '').match(LINK_RE) || []).length) return `link-in-${f}`
+  }
+  if ((String(data.message ?? '').match(LINK_RE) || []).length > 2) return 'link-stuffed'
+  return null
+}
+
+function overLength(data) {
+  return Object.entries(MAX_LEN).find(([f, max]) => String(data[f] ?? '').length > max)?.[0] ?? null
+}
+
+
 /* Copy the submission into the studio portal.
  *
  * WHY THIS EXISTS. The portal used to learn about website forms from a Supabase
@@ -156,6 +198,13 @@ export default async function handler(req, res) {
   // fields it does not have.
   let subject, html
   if (formType === 'contact') {
+    const tooLong = overLength(data)
+    if (tooLong) return res.status(400).json({ error: `${tooLong} is too long` })
+    const reason = spamReason(data)
+    if (reason) {
+      console.warn(`[notify] dropped as spam: ${reason}`)
+      return res.status(200).json({ ok: true })
+    }
     subject = data.interest === 'trial' ? 'New Free Trial Request' : 'New Contact Form Submission'
     html = buildContactEmail(data)
   } else {

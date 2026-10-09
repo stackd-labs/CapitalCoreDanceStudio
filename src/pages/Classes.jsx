@@ -24,11 +24,11 @@ const ACCENT = ACCENTS.orange
 // ($60 new dancer / $50 returning); monthly tuition is billed separately.
 const PORTAL_REGISTER_URL = 'https://studio.capitalcoredance.com/register/classes'
 
-// 🔴 The printable Fall schedule card (PNG/PDF flyer + lightbox) was REMOVED from this
-// page on 2026-10-08, at the studio's request, after the Friday adult classes swapped
-// times: a generated flyer cannot follow the calendar without a rebuild, and a stale one
-// contradicts the week above it. The calendar is the only schedule on the page. The files
-// (public/fall-2026-schedule.png/.pdf, built by print/build.sh) were left in place.
+// 🔴 The printable Fall schedule (PNG/PDF flyer + lightbox) was taken down on 2026-10-08,
+// at the studio's request, after the Friday adult classes swapped times: a generated flyer
+// cannot follow the calendar without a rebuild, and a stale one contradicts the week above
+// it. The files were deleted from public/ and the card's button is disabled until the
+// studio adds a new PDF. (print/build.sh still knows how to generate the old ones.)
 
 const DANCE_STYLES = [
   'Ballet',
@@ -276,6 +276,33 @@ export default function Classes() {
                 </div>
               ))}
             </dl>
+          </div>
+
+          {/* Printable schedule. The button is deliberately NOT a link until the studio adds
+              the new PDF (2026-10-08): the old files are deleted, so nothing can be clicked
+              or downloaded. When the new PDF is in public/, point an <a> at it and drop
+              this disabled button. */}
+          <div
+            data-testid="fall-flyer-card"
+            className="mt-8 border border-white/[0.12] bg-ink-panel px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-6"
+          >
+            <div className="text-center sm:text-left">
+              <Kicker accent={ACCENT} className="mb-2">Printable Fall Schedule</Kicker>
+              <h3 className="font-display uppercase text-white text-2xl leading-none mb-2">
+                Save the whole schedule on one page
+              </h3>
+              <p className="font-body text-mist-400 text-sm leading-relaxed m-0">
+                A printable copy of the Fall 2026 schedule is on the way.
+              </p>
+            </div>
+            <button
+              type="button"
+              disabled
+              aria-disabled="true"
+              className="flex-shrink-0 font-body font-bold text-sm px-6 py-3 border border-white/25 text-mist-500 cursor-not-allowed opacity-60"
+            >
+              Download schedule (coming soon)
+            </button>
           </div>
 
           <PrimaryAction accent={ACCENT} href={PORTAL_REGISTER_URL} className="mt-8">

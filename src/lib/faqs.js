@@ -77,17 +77,13 @@ export const FAQS = [
         q: 'What is the registration fee?',
         // Interpolated from REGISTRATION, not typed: this answer said $65 while the portal
         // charged $60.
-        a: `There is a $${REGISTRATION.perSemester} registration fee per dancer per semester, or $${REGISTRATION.fullYear} for the full year (both semesters). Returning dancers get a discount, and sibling discounts and family fee caps are available for families with multiple dancers enrolled.`,
+        a: `There is a $${REGISTRATION.perSemester} registration fee per dancer per semester, or $${REGISTRATION.fullYear} for the full year (both semesters).`,
       },
       {
         q: 'When are your semesters?',
         // Spring was given as "January – June"; the Tuition page publishes it as ending
         // 21 May 2027.
         a: 'Two semesters a year. Fall 2026 runs August 24 to December 18, and Spring 2027 runs January 11 to May 21. Once registered, dancers are locked into their classes and pricing for the semester.',
-      },
-      {
-        q: 'Do you offer discounts?',
-        a: 'Yes. We offer multi-class discounts for dancers enrolled in more than one class, multi-student discounts for families with multiple dancers, and sibling discounts on registration fees. Reach out to us for details.',
       },
       {
         q: 'How do I pay?',
@@ -120,11 +116,11 @@ export const FAQS = [
       },
       {
         q: 'When do Little Movers classes meet?',
-        a: 'Monday, Wednesday and Friday mornings, in three 45-minute classes with 15 minutes between them: 9:30, 10:30 and 11:30. Every day opens with Baby & Me and Moovin\' & Groovin\'; the last class of the morning changes by day — Tiny Tumblers on Monday, Sensory Steps on Wednesday, and the Free Play Lab on Friday. Wednesday is the morning you can book right now: Monday and Friday are staffing up and will open once they have an instructor.',
+        a: 'Little Movers meets once a week, on Wednesday mornings from 10:00 to 11:00 AM.',
       },
       {
         q: 'How much does Little Movers cost?',
-        a: 'Little Movers is priced separately from studio class tuition. Drop in for $10 for your first child and $5 for each additional child, buy a Passport of 5 visits for $45 or 10 for $85, or take the monthly membership at $89 — which includes unlimited Little Movers classes plus one Tiny Core class for ages 2–5. Bringing more than one child? The first child pays full price and every child after that is cheaper: an additional child\'s drop-in is $5 instead of $10, each additional Passport is 10% off, and each additional membership is $10 less a month than the one before it — so $89, then $79, then $69. Code MOOVE26 takes 30% off a Passport ($31.50 for 5 visits, $59.50 for 10) and 30% off your first month of membership, which we apply to your first invoice. It does not apply to single drop-in classes. Sibling rates and the code stack: the sibling rate applies first and MOOVE26 comes off the discounted total.',
+        a: 'Little Movers is priced separately from studio class tuition. Drop in for $10 a class, buy a Passport of 5 visits for $45 or 10 for $85, or take the monthly membership at $89 — which includes unlimited Little Movers classes plus one Tiny Core class for ages 2–5.',
       },
       {
         // 🔴 THIS ANSWER SAID "NOT YET" UNTIL 2026-09-02, months after booking opened.
@@ -133,11 +129,10 @@ export const FAQS = [
         // whole time. Registration opened 2026-08-28 and the wizard moved to /book on
         // 2026-09-02; nothing updated this.
         //
-        // Keep it in step with src/pages/LittleMovers.jsx: BOOKABLE_DAYS is Wednesday
-        // only, and the portal generates Wednesday sessions only. If a day opens, this
-        // answer changes with it — see the two-repo note in LittleMovers.test.jsx.
+        // Keep it in step with src/pages/LittleMovers.jsx: Little Movers is one Wednesday
+        // class, 10 to 11 AM (since 2026-10-08), and the portal has to match.
         q: 'Can I register for Little Movers yet?',
-        a: 'Yes. Wednesday mornings are open for booking now on our studio portal at studio.capitalcoredance.com/register/little-movers/book — you can book a single class, a visit Passport or a monthly membership there. Monday and Friday are on the published schedule but are not bookable yet: they are staffing up and will open once they have an instructor.',
+        a: 'Yes. Booking is open on our studio portal at studio.capitalcoredance.com/register/little-movers/book — you can book a single class, a visit Passport or a monthly membership there.',
       },
     ],
   },

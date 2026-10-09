@@ -457,17 +457,17 @@ export const POSTS = [
     category: 'Enrollment',
     date: '2026-05-02',
     readMinutes: 5,
-    title: 'Understanding Dance Tuition, Fees & Discounts for 2026',
+    title: 'Understanding Dance Tuition & Fees for 2026',
     metaTitle:
       'Dance Class Tuition & Fees 2026 in Midlothian, VA | Capital Core Dance Studio',
     metaDescription:
-      'A clear breakdown of Capital Core Dance Studio’s 2026 tuition by class length, registration fees, semesters, and the discounts available for multiple classes and siblings in Midlothian, VA.',
+      'A clear breakdown of Capital Core Dance Studio’s 2026 tuition by class length, registration fees, and semesters in Midlothian, VA.',
     excerpt:
-      'How much does dance cost per month? Here’s a transparent breakdown of tuition by class length, registration fees, and the discounts that can lower your total.',
+      'How much does dance cost per month? Here’s a transparent breakdown of tuition by class length, registration fees, and semesters.',
     tldr:
       // Registration corrected $65 -> $60 on 2026-08-17 to match the portal form. The
       // leading $65 is the 30-minute class rate and is unchanged — do not "fix" both.
-      'At Capital Core Dance Studio, monthly tuition is based on class length: $65 (30 min), $85 (45 min), $105 (60 min), $125 (75 min), and $150 (90 min). Registration is $60 per dancer per semester or $120 for the full year, and multi-class, multi-student, and sibling discounts are available.',
+      'At Capital Core Dance Studio, monthly tuition is based on class length: $65 (30 min), $85 (45 min), $105 (60 min), $125 (75 min), and $150 (90 min). Registration is $60 per dancer per semester or $120 for the full year.',
     related: [
       { to: '/tuition', label: 'View Full Tuition Details' },
       { to: '/faq', label: 'Enrollment FAQ' },
@@ -492,9 +492,8 @@ export const POSTS = [
         ],
       },
       {
-        heading: 'What discounts can lower my cost?',
+        heading: 'How do I pay?',
         body: [
-          'Several discounts can bring your total down: multi-class discounts for dancers enrolled in more than one class, multi-student discounts for families with multiple dancers, and sibling discounts on registration fees, including family fee caps.',
           'All payments run through our online student portal, which accepts major credit and debit cards, ACH transfers, and checks. Reach out if you’d like help estimating your family’s total.',
         ],
       },
@@ -506,17 +505,13 @@ export const POSTS = [
       },
       {
         q: 'What is the registration fee?',
-        a: 'It is $60 per dancer per semester, or $120 for the full year covering both semesters. Returning dancers get a discount, and sibling discounts and family fee caps apply for families with multiple dancers.',
+        a: 'It is $60 per dancer per semester, or $120 for the full year covering both semesters.',
       },
       {
         q: 'When are the semesters?',
         // Was 'January–June', which contradicted this post's own body copy 23 lines
         // above and the Tuition page's May 21 end date. The body is right.
         a: 'There are two semesters per year: Fall (August–December) and Spring (January–May).',
-      },
-      {
-        q: 'What discounts are available?',
-        a: 'Multi-class discounts, multi-student discounts for families with several dancers, and sibling discounts on registration fees.',
       },
     ],
   },

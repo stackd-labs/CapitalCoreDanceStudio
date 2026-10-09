@@ -67,7 +67,7 @@ const INTEREST_GROUPS = [
     label: 'Visiting & enrolling',
     options: [
       { value: 'tour', label: 'Schedule a Studio Tour' },
-      { value: 'tuition', label: 'Tuition, Fees & Discounts' },
+      { value: 'tuition', label: 'Tuition & Fees' },
       { value: 'registration-help', label: 'Help With Registration or Payment' },
     ],
   },

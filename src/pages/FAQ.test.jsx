@@ -82,22 +82,20 @@ test('does not tell a parent Little Movers registration is closed', () => {
   expect(answer).not.toMatch(/to be confirmed/i)
   expect(answer).not.toMatch(/as soon as registration opens/i)
   expect(answer).toMatch(/^Yes/i)
-  // The bookable day and the path the wizard actually lives at.
-  expect(answer).toMatch(/Wednesday/)
+  // The path the wizard actually lives at.
   expect(answer).toContain('register/little-movers/book')
 })
 
-test('the Little Movers answers agree on which mornings can be booked', () => {
-  // Three answers in this category touch the schedule. They are edited at different times
-  // by different people, and a parent reads them one after the other — so the one that
-  // names bookable days and the one that answers "can I register" must not drift apart.
+test('the Little Movers schedule answer is one Wednesday class, 10 to 11 AM', () => {
+  // Cut from Monday / Wednesday / Friday on 2026-10-08. Nothing may still promise the old
+  // days or times, and no Little Movers answer may advertise a sibling rate or promo code.
   const lm = FAQS.find(({ category }) => /little movers/i.test(category)).items
   const meets = lm.find(({ q }) => /when do little movers/i.test(q)).a
-  const register = lm.find(({ q }) => /register for little movers/i.test(q)).a
-
-  for (const answer of [meets, register]) {
-    expect(answer).toMatch(/Wednesday/)
-    expect(answer).toMatch(/Monday and Friday/)
+  expect(meets).toMatch(/Wednesday/)
+  expect(meets).toMatch(/10:00 to 11:00 AM/)
+  for (const { a } of lm) {
+    expect(a).not.toMatch(/Monday|Friday|9:30|10:30|11:30|staffing up/)
+    expect(a).not.toMatch(/MOOVE26|sibling|additional child|% off/i)
   }
 })
 

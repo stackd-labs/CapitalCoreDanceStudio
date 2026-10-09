@@ -15,12 +15,6 @@ import { monthlyPriceForMinutes, priceToNumber } from '../lib/tuition'
 // the three pricing options — is kept and restyled onto the navy field.
 const ACCENT = ACCENTS.teal
 
-// Gold reads as a notice rather than as more of the page, at the studio's request
-// (2026-08-13) — a temporary status, not part of the Little Movers identity. It carried
-// the coming-soon banner until 2026-08-28, then the open-house block until 2026-09-02;
-// the per-class "Coming soon" badge is now the only temporary status left here.
-const NOTICE_ACCENT = ACCENTS.gold
-
 // Little Movers has its own portal form, live as of 2026-08-28 — NOT the /register/classes
 // one the Classes and Class Levels pages use, and not /register/adult-classes either. This
 // form books a single Little Movers class and carries the drop-in, passport and membership
@@ -75,11 +69,6 @@ const CLASSES = [
   },
 ]
 
-const CLASSES_BY_NAME = CLASSES.reduce((acc, c) => {
-  acc[c.name] = c
-  return acc
-}, {})
-
 const BENEFITS = [
   'Confidence',
   'Coordination',
@@ -91,126 +80,21 @@ const BENEFITS = [
   'Independence',
 ]
 
-// Every class runs 45 minutes, in three morning slots. Values are class names that
-// index into CLASSES above.
+// One class a week: Wednesday mornings, 10:00 to 11:00 AM. Cut from Monday / Wednesday /
+// Friday (three 45-minute slots at 9:30, 10:30 and 11:30) on 2026-10-08, at the studio's
+// request. The old grid and its staffing notes are in git history.
 //
-// Regapped 2026-08-17 at the studio's request: 45 minutes of class with 15 minutes
-// between, first bell 9:30. The flyer's original grid (9:30 / 10:15 / 11:00) ran them back
-// to back, which left no changeover time. The third slot is the only one that crosses
-// noon, hence its two explicit meridiems — the other two share a single trailing AM.
-const TIME_SLOTS = ['9:30 – 10:15 AM', '10:30 – 11:15 AM', '11:30 AM – 12:15 PM']
-// Monday / Wednesday / Friday only, as of 2026-08-17. Every day opens the same way —
-// Baby & Me then Moovin' & Groovin' — and the last slot is what makes a day worth
-// choosing: Tiny Tumblers Monday, Sensory Steps Wednesday, Free Play Lab Friday.
-const DAYS = ['Monday', 'Wednesday', 'Friday']
+// ▶ The portal's booking wizard (LM_SCHEDULE in dancestudioportal) still generates the old
+// Wednesday slots; the same change has to be made there.
+const TIME_SLOTS = ['10:00 – 11:00 AM']
+const DAYS = ['Wednesday']
 
-// 🔴 WHICH DAYS CAN ACTUALLY BE BOOKED. Monday and Friday are published but unstaffed as
-// of 2026-09-02, so the portal does not offer them: the booking wizard generates sessions
-// for Wednesdays only (20 Wednesdays x 3 slots for the term). A parent who reads "Monday
-// 11:30 Tiny Tumblers" here and clicks Book finds no Monday, which is the mismatch this
-// closes.
-//
-// The unstaffed days still SHOW, dimmed and labelled, so a family sees the shape of the
-// programme rather than a one-column grid. That is deliberate and matches the portal.
-//
-// ▶ TO OPEN A DAY once it is staffed: add it here, and add it to the portal's LM_SCHEDULE
-// in the same change (dropping `comingSoon` on those slots). This constant only controls
-// what this page claims; it cannot make the portal take a booking.
-const BOOKABLE_DAYS = new Set(['Wednesday'])
-const isBookable = (day) => BOOKABLE_DAYS.has(day)
-
-// SCHEDULE[slotIndex][day] — one class per day per slot, 9 in all.
+// SCHEDULE[slotIndex][day]. The one hour covers every age, so the cell names the program
+// and carries its own age range rather than looking one up from CLASSES.
 const SCHEDULE = [
-  {
-    Monday: { name: 'Baby & Me' },
-    Wednesday: { name: 'Baby & Me' },
-    Friday: { name: 'Baby & Me' },
-  },
-  {
-    Monday: { name: "Moovin' & Groovin'" },
-    Wednesday: { name: "Moovin' & Groovin'" },
-    Friday: { name: "Moovin' & Groovin'" },
-  },
-  {
-    Monday: { name: 'Tiny Tumblers' },
-    Wednesday: { name: 'Sensory Steps' },
-    Friday: { name: 'Little Movers Free Play Lab' },
-  },
+  { Wednesday: { name: 'Little Movers', ages: '0–5 years' } },
 ]
 
-// DORMANT — Tuesday and Thursday were taken off the published schedule 2026-08-17 and
-// their line-ups are parked here rather than deleted, so the studio can switch the two
-// days back on without rebuilding the grid: merge these into DAYS and SCHEDULE above.
-// Nothing renders from this; it is a record, and it lints clean because no-unused-vars
-// here exempts SCREAMING_CASE names.
-//
-// NOTE: 'Parent & Me Dance' appeared ONLY on Tuesday and Thursday, so it is currently on
-// no published day even though it is still one of the six classes listed on the page.
-// Which classes can actually be attended. Derived from SCHEDULE *filtered by
-// BOOKABLE_DAYS* rather than listed by hand, so it cannot fall out of step: take a class
-// off a bookable day and its card is badged "Coming soon" automatically, put it back and
-// the badge goes. This is what keeps the classes section honest — six are described, and
-// only the ones a parent can really book are offered without a badge.
-//
-// Narrowed 2026-09-02 from "on the grid at all" to "on a day that is staffed". Tiny
-// Tumblers (Monday) and the Free Play Lab (Friday) are on the published grid but not
-// bookable, so they now carry the badge alongside Parent & Me Dance.
-const SCHEDULED_CLASS_NAMES = new Set(
-  SCHEDULE.flatMap((slot) =>
-    Object.entries(slot)
-      .filter(([day]) => isBookable(day))
-      .map(([, { name }]) => name)
-  )
-)
-
-const DORMANT_DAYS = ['Tuesday', 'Thursday']
-const DORMANT_SCHEDULE = [
-  { Tuesday: { name: 'Sensory Steps' }, Thursday: { name: 'Little Movers Free Play Lab' } },
-  { Tuesday: { name: 'Little Movers Free Play Lab' }, Thursday: { name: 'Parent & Me Dance' } },
-  { Tuesday: { name: 'Parent & Me Dance' }, Thursday: { name: 'Sensory Steps' } },
-]
-
-// The studio's Little Movers promo code, added 2026-09-02. Mirrors the portal's
-// src/lib/promos.ts, which is the source of truth and the only thing that can actually
-// apply it. `appliesTo` there is ['little_movers_passport', 'little_movers_membership'].
-//
-// 🔴 THE TWO SCOPES BEHAVE DIFFERENTLY and the copy has to say so:
-//   - Passport: the discount computes at checkout, so a parent sees the lower price.
-//   - Membership: listed in `requiresApprovalFor`, so it is RECORDED, not charged. The
-//     portal does not bill memberships at all, so the studio honours 30% off the first
-//     month by hand on the invoice. Promising it "at checkout" would be a lie.
-//   - Drop-ins: rejected by the portal. This page must not imply otherwise.
-//
-// The portal has expiresAt: null, so there is no end date to state and nothing here goes
-// stale on a date. If the studio ends it, the code goes inactive there and these lines
-// come out here.
-const PROMO = {
-  code: 'MOOVE26',
-  percentOff: 30,
-}
-
-// Sibling rates, from the studio 2026-09-02. Specific to Little Movers — the studio's
-// regular class tuition has its own returning-dancer discount and nothing here applies to
-// it. Each product discounts a sibling differently, which is why these live on the cards
-// next to their own price rather than as one blanket line.
-//
-// The shape is the same for all three: THE FIRST CHILD PAYS FULL PRICE and every child
-// after that is cheaper. The Passport discount is a PERCENTAGE; the other two are flat
-// dollars.
-//
-// 🔴 THE PORTAL IS THE SOURCE OF TRUTH FOR ALL THREE, because it is what charges the
-// card. These mirror its little-movers-pricing.ts:
-//
-//   SIBLING_DROP_IN_PRICE          = 5   · first child $10 a class, every other $5
-//   SIBLING_PASSPORT_DISCOUNT_PCT  = 10  · first pass full, every extra pass 10% off
-//   MEMBERSHIP_SIBLING_DISCOUNT    = 10  · CUMULATIVE — $89, $79, $69, $59
-//
-// The Passport was briefly published here as "$10 off" on 2026-09-02, from reading "same
-// for the punch pass" as the same amount as the membership rather than the same shape.
-// The portal had it right at 10%. On a $45 pass that is $40.50 against $35, so the site
-// was advertising $5.50 under what a parent would actually be charged. Reconciled against
-// the portal the same day — when these disagree, the portal wins, because it is the one
-// that takes the money.
 const DROP_IN_PRICE = 10
 
 // The membership's headline, and the two figures derived from it. A Tiny Core class is 30
@@ -222,38 +106,23 @@ const MEMBERSHIP_MONTHLY = 89
 const TINY_CORE_MONTHLY = monthlyPriceForMinutes(30)
 const MEMBERSHIP_TOP_UP = `$${MEMBERSHIP_MONTHLY - priceToNumber(TINY_CORE_MONTHLY)}`
 
-const SIBLING = {
-  dropInOff: 5, // $10 -> $5
-  passportPercentOff: 10, // $45 -> $40.50, $85 -> $76.50
-  membershipOff: 10, // each member $10 less than the one before: 89, 79, 69
-}
-
-// Derived, never typed. The discounted figures must not be able to drift from the base
-// prices sitting next to them — that is exactly how the $65/$60 registration fee ended up
-// stated two ways across this repo. Whole dollars render without a trailing ".00".
-const promoPrice = (dollars) => {
-  const discounted = dollars * (1 - PROMO.percentOff / 100)
-  return `$${Number.isInteger(discounted) ? discounted : discounted.toFixed(2)}`
-}
-
 // Three ways to join, framed by how often a family expects to come rather than by
 // price. `question` is the headline a parent recognises themselves in. The per-card
 // border colour was dropped in the 2026-08-11 redesign — every card now sits on the
 // page's single teal accent.
+//
+// 🔴 NO DISCOUNTS ARE ADVERTISED (studio's call, 2026-10-08, "for now"): the sibling rates,
+// the MOOVE26 code and the membership's 10% off parties and retail were all taken off this
+// page. The portal's little-movers-pricing.ts and promos.ts still apply them at checkout,
+// so they are on the portal punch list for the same change.
 const PRICING = [
   {
     question: 'Just want to try it?',
     label: 'Drop-In',
     headline: `$${DROP_IN_PRICE}`,
-    // The $10 covers one child; each additional child in the same family is discounted
-    // (added 2026-08-17 at $3, raised to $5 on 2026-09-02). Stated in the unit as well as
-    // the bullet so the headline price can never be read as a per-family total.
-    unit: 'first child, per class',
+    unit: 'per class',
     blurb: 'Pay as you go. Come to any single class on the booking calendar, with nothing to sign up for.',
     lines: ['Good for any Little Movers class', 'No membership or commitment'],
-    // Every additional child, not just the second — "$5 per sib", the studio 2026-09-02.
-    // The resulting price is derived so it cannot drift from the $10 headline above it.
-    sibling: `$${DROP_IN_PRICE - SIBLING.dropInOff} for each additional child`,
   },
   {
     question: 'Come when you can',
@@ -262,17 +131,6 @@ const PRICING = [
     unit: 'or 10 visits — $85',
     blurb: 'A class pack that never locks you into a day or time — use the visits whenever your week allows.',
     lines: ['Works for any Little Movers class', '10-visit pack is $8.50 a class'],
-    // The first pass is full price and every pass after it is 10% off. States the
-    // percentage rather than resulting prices: it applies to both tiers, so one line
-    // covers them instead of listing four figures.
-    //
-    // The portal sorts a family's passes MOST EXPENSIVE FIRST so the discount always
-    // lands on the cheaper pass — a family buying a 10-visit and a 5-visit pass is never
-    // penalised for the order they picked them in. Not stated here; it can only ever make
-    // the bill lower than this line implies.
-    sibling: `${SIBLING.passportPercentOff}% off each additional child's pass`,
-    // Computes at checkout, so the parent sees these prices in the wizard.
-    promo: `${PROMO.percentOff}% off with code ${PROMO.code} — ${promoPrice(45)} for 5 visits, ${promoPrice(85)} for 10`,
   },
   {
     question: "We're here every week",
@@ -280,42 +138,19 @@ const PRICING = [
     headline: `$${MEMBERSHIP_MONTHLY}`,
     unit: 'per month',
     badge: 'Best value',
-    // 🔴 THE OLD PITCH DID NOT SURVIVE THE WEDNESDAY-ONLY SCHEDULE. It read "worth it
-    // from about nine classes a month", which is honest arithmetic against the $10
-    // drop-in — but a child takes ONE age-appropriate slot a morning, and with only
-    // Wednesday bookable that is about four classes a month. The page was quoting a
-    // break-even a family could not reach, next to a "Best value" badge.
-    //
-    // So the pitch now leads with the part that IS true today: the included Tiny Core
-    // class is TINY_CORE_MONTHLY on its own, which makes the unlimited Little Movers
-    // mornings the difference on top. That framing holds at one bookable morning and only
-    // improves as days open, so it needs no revisiting when Monday and Friday land.
-    //
-    // "a bargain for families coming three mornings a week" was cut from here the same
-    // day, for the same reason: not currently purchasable. See BOOKABLE_DAYS.
-    blurb: `Attend as many Little Movers classes as you would like, plus one Tiny Core class — which is ${TINY_CORE_MONTHLY} a month on its own, so the unlimited Little Movers mornings are the ${MEMBERSHIP_TOP_UP} on top. Better value again as more mornings open.`,
-    // The Tiny Core class and the top-up were added 2026-08-17. Both figures are DERIVED
-    // from src/lib/tuition.js rather than typed — a Tiny Core class is 30 minutes, and
-    // $89 minus that price is the top-up. Tuition.jsx and ClassLevels.jsx state the same
-    // top-up and are tested against it, which is exactly why this page must not hardcode
-    // its own copy of either number.
+    // The included Tiny Core class is TINY_CORE_MONTHLY on its own, which makes the
+    // unlimited Little Movers class the difference on top. Both figures are DERIVED from
+    // src/lib/tuition.js; Tuition.jsx and ClassLevels.jsx state the same top-up and are
+    // tested against it, so this page must not hardcode its own copy.
+    blurb: `Attend as many Little Movers classes as you would like, plus one Tiny Core class — which is ${TINY_CORE_MONTHLY} a month on its own, so the unlimited Little Movers class is the ${MEMBERSHIP_TOP_UP} on top.`,
     lines: [
       'Unlimited Little Movers classes',
       'One Tiny Core class included (ages 2–5, your choice of day)',
       `Already in a Tiny Core class? Just ${MEMBERSHIP_TOP_UP} more a month`,
       'Priority registration for camps',
       'One free guest pass each month',
-      '10% off birthday parties',
-      '10% off retail',
       'Exclusive Little Movers events',
     ],
-    // CUMULATIVE, matching the portal: $89, then $79, then $69. "$10 off each additional
-    // member" was published here first and reads as a flat $79 for every sibling, which
-    // over-quotes a three-child family by $10 — the portal keeps stepping down.
-    sibling: `Each additional member is $${SIBLING.membershipOff} less than the one before`,
-    // 🔴 Deliberately does NOT say "at checkout". The portal records this code against a
-    // membership rather than charging it, so the studio applies it to the first invoice.
-    promo: `${PROMO.percentOff}% off your first month with code ${PROMO.code} (${promoPrice(MEMBERSHIP_MONTHLY)}) — we apply it to your first invoice`,
   },
 ]
 
@@ -330,37 +165,14 @@ const CLASS_SHAPE = [
   { n: '04', name: 'Stickers & goodbye', blurb: 'A calm finish, a sticker, and something to show you.' },
 ]
 
-// One schedule cell: class name and age range. An unstaffed day's cells are dimmed rather
-// than hidden — the class is real and published, it just cannot be booked yet, and the day
-// header carries the label that says so.
-function ScheduleCell({ entry, day }) {
+// One schedule cell: class name and age range.
+function ScheduleCell({ entry }) {
   if (!entry) return null
-  const info = CLASSES_BY_NAME[entry.name]
-  const bookable = isBookable(day)
   return (
-    <div
-      data-testid="schedule-entry"
-      data-bookable={bookable ? 'yes' : 'no'}
-      className={`text-left${bookable ? '' : ' opacity-40'}`}
-    >
+    <div data-testid="schedule-entry" className="text-left">
       <div className="font-body text-white font-bold text-sm leading-snug">{entry.name}</div>
-      <div className="font-body text-mist-500 text-xs mt-0.5">{info?.ages}</div>
+      <div className="font-body text-mist-500 text-xs mt-0.5">{entry.ages}</div>
     </div>
-  )
-}
-
-// The gold chip that marks an unstaffed day, in both the table header and the mobile day
-// heading. Same notice gold as the per-class badge, for the same reason: a temporary
-// status reads as a status, not as part of the Little Movers identity.
-function NotBookingYet() {
-  return (
-    <span
-      data-testid="day-not-bookable"
-      className="font-body text-[10px] font-bold uppercase tracking-[0.14em] px-2 py-1 flex-shrink-0 normal-case"
-      style={{ background: NOTICE_ACCENT, color: onAccent(NOTICE_ACCENT) }}
-    >
-      Not booking yet
-    </span>
   )
 }
 
@@ -369,7 +181,7 @@ export default function LittleMovers() {
     <div className="min-h-screen flex flex-col bg-ink-base">
       <SEO
         title="Little Movers | Toddler &amp; Preschool Movement Classes in Midlothian, VA — Capital Core Dance"
-        description="Little Movers at Capital Core Dance in Midlothian, VA. A movement-based enrichment program for infants, toddlers, and preschoolers combining dance, music, sensory play, tumbling, and active exploration. Three 45-minute morning classes at 9:30, 10:30 and 11:30, drop-in $10 for the first child and $5 for each additional child. Wednesday mornings are open for booking on our studio portal now, with Monday and Friday to follow."
+        description="Little Movers at Capital Core Dance in Midlothian, VA. A movement-based enrichment program for infants, toddlers, and preschoolers combining dance, music, sensory play, tumbling, and active exploration. Wednesday mornings from 10 to 11 AM, drop-in $10 a class. Booking is open on our studio portal."
         canonical="/little-movers"
         jsonLd={LITTLE_MOVERS_JSON_LD}
       />
@@ -379,7 +191,7 @@ export default function LittleMovers() {
         eyebrow="Ages 0 – 5 years"
         title={['Little', [{ text: 'Movers', accent: ACCENT }]]}
         tagline="Movement. Play. Learn. Grow."
-        body="A first dance experience for infants, toddlers and preschoolers — 45-minute morning classes built on music, sensory play and active exploration. Wednesday mornings are open for booking now, with Monday and Friday to follow."
+        body="A first dance experience for infants, toddlers and preschoolers — a Wednesday morning class, 10 to 11 AM, built on music, sensory play and active exploration."
         photoCaption="Toddlers in class"
         photoSrc="/little-movers-hero.jpg"
         photoAlt="Five toddlers in pastel leotards and tutus standing at the barre in a Little Movers class"
@@ -422,18 +234,6 @@ export default function LittleMovers() {
                   >
                     {name}
                   </div>
-                  {/* Gold, matching the page's coming-soon banner rather than the teal
-                      accent — the same reason that banner breaks the accent: it reads as a
-                      status, not as part of the Little Movers identity. */}
-                  {!SCHEDULED_CLASS_NAMES.has(name) && (
-                    <span
-                      data-testid="class-coming-soon"
-                      className="font-body text-[10px] font-bold uppercase tracking-[0.14em] px-2 py-1 flex-shrink-0"
-                      style={{ background: NOTICE_ACCENT, color: onAccent(NOTICE_ACCENT) }}
-                    >
-                      Coming soon
-                    </span>
-                  )}
                 </div>
                 <p className="font-body text-[14.5px] leading-[1.6] text-mist-400 mb-4 m-0">
                   {description}
@@ -505,33 +305,18 @@ export default function LittleMovers() {
         </div>
       </section>
 
-      {/* Weekly schedule */}
+      {/* Weekly schedule. One class a week since 2026-10-08. */}
       <section id="schedule" className="px-6 lg:px-24 py-16 lg:py-20 scroll-mt-24">
         <div className="max-w-[1440px] mx-auto">
           <Kicker accent={ACCENT}>Weekly schedule</Kicker>
           <SectionHeading className="text-white mb-3">
-            Monday, Wednesday &amp; Friday mornings
+            Wednesday mornings, 10 to 11 AM
           </SectionHeading>
           <p className="font-body text-mist-400 text-sm mb-10 max-w-2xl">
-            Every class runs 45 minutes, with 15 minutes between classes. No Little Movers
-            class is drop-off: a parent or caregiver is welcome to stay in the class or wait
-            in the studio. Booking is open on our studio portal, which carries the current
-            week&apos;s classes and what is still available.
-          </p>
-
-          {/* Says out loud what the dimmed columns mean. A grid with two greyed days and no
-              explanation reads as a rendering fault; a parent needs to know the Monday and
-              Friday classes are real and coming, not cancelled. */}
-          <p
-            data-testid="staffing-note"
-            className="font-body text-mist-300 text-sm mb-10 max-w-2xl border-l-2 pl-4"
-            style={{ borderColor: NOTICE_ACCENT }}
-          >
-            <strong className="text-white font-bold">
-              Wednesday mornings are open for booking right now.
-            </strong>{' '}
-            Monday and Friday are on the schedule below and are staffing up, so they are not
-            bookable yet. We will open them as soon as they have an instructor.
+            Little Movers meets once a week, on Wednesday mornings from 10:00 to 11:00 AM. No
+            Little Movers class is drop-off: a parent or caregiver is welcome to stay in the
+            class or wait in the studio. Booking is open on our studio portal, which carries the
+            current week&apos;s class and what is still available.
           </p>
 
           {/* Table at md and up */}
@@ -547,15 +332,9 @@ export default function LittleMovers() {
                       key={day}
                       data-testid="schedule-day-header"
                       data-day={day}
-                      data-bookable={isBookable(day) ? 'yes' : 'no'}
                       className="text-left font-body text-white text-xs font-bold uppercase tracking-wider pb-3 px-3"
                     >
-                      <span className={isBookable(day) ? '' : 'opacity-50'}>{day}</span>
-                      {!isBookable(day) && (
-                        <span className="block mt-2">
-                          <NotBookingYet />
-                        </span>
-                      )}
+                      {day}
                     </th>
                   ))}
                 </tr>
@@ -572,7 +351,7 @@ export default function LittleMovers() {
                     </th>
                     {DAYS.map((day) => (
                       <td key={day} className="align-top py-4 px-3">
-                        <ScheduleCell entry={row[day]} day={day} />
+                        <ScheduleCell entry={row[day]} />
                       </td>
                     ))}
                   </tr>
@@ -586,14 +365,7 @@ export default function LittleMovers() {
             {DAYS.map((day) => (
               <div key={day} data-testid="schedule-day" data-day={day}>
                 <div className="flex items-center gap-3 mb-4">
-                  <div
-                    className={`font-display uppercase text-white text-xl${
-                      isBookable(day) ? '' : ' opacity-50'
-                    }`}
-                  >
-                    {day}
-                  </div>
-                  {!isBookable(day) && <NotBookingYet />}
+                  <div className="font-display uppercase text-white text-xl">{day}</div>
                   <div className="flex-1 h-px bg-white/15" />
                 </div>
                 <div className="flex flex-col gap-3">
@@ -603,11 +375,9 @@ export default function LittleMovers() {
                         key={`${day}-${i}`}
                         className="border border-white/[0.12] bg-ink-panel px-4 py-3 flex items-start justify-between gap-4"
                       >
-                        <ScheduleCell entry={row[day]} day={day} />
+                        <ScheduleCell entry={row[day]} />
                         <div
-                          className={`font-body text-sm font-medium flex-shrink-0 text-right${
-                            isBookable(day) ? '' : ' opacity-40'
-                          }`}
+                          className="font-body text-sm font-medium flex-shrink-0 text-right"
                           style={{ color: ACCENT }}
                         >
                           {TIME_SLOTS[i]}
@@ -635,26 +405,8 @@ export default function LittleMovers() {
             studio portal.
           </p>
 
-          {/* Names the code once, up front, and says plainly which options it works on.
-              The drop-in is called out because the portal rejects the code there, and a
-              parent who tries it on a $10 drop-in should know that before they book. */}
-          <p
-            data-testid="promo-note"
-            className="font-body text-mist-300 text-sm mb-10 max-w-2xl border-l-2 pl-4"
-            style={{ borderColor: NOTICE_ACCENT }}
-          >
-            <strong className="text-white font-bold">
-              Save {PROMO.percentOff}% with code {PROMO.code}.
-            </strong>{' '}
-            Enter it when you book on the studio portal. It works on a Little Movers Passport
-            and on your first month of membership; it does not apply to single drop-in
-            classes. Bringing more than one child? The sibling rate applies first and the
-            code comes off the discounted total, so the two add up rather than cancelling
-            out.
-          </p>
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-[26px]">
-            {PRICING.map(({ question, label, headline, unit, badge, blurb, lines, sibling, promo }) => (
+            {PRICING.map(({ question, label, headline, unit, badge, blurb, lines }) => (
               <div
                 key={label}
                 data-testid="pricing-card"
@@ -699,34 +451,6 @@ export default function LittleMovers() {
                     </li>
                   ))}
                 </ul>
-                {/* Sibling rate, in the page's TEAL. Every card has one, and the colour is
-                    the point: teal is the Little Movers identity, and a sibling rate is
-                    permanent pricing. The promo below it is gold because a promo is a
-                    temporary status — the page has used that distinction since 2026-08-13,
-                    so putting a standing rate in gold would say the wrong thing about it.
-
-                    mt-auto here rather than on the promo: it pushes whichever block comes
-                    first to the bottom, so all three cards' footers line up. */}
-                {sibling && (
-                  <p
-                    data-testid="pricing-sibling"
-                    className="font-body text-[13px] leading-snug font-semibold mt-auto pt-5 border-t border-white/10"
-                    style={{ color: ACCENT }}
-                  >
-                    {sibling}
-                  </p>
-                )}
-                {promo && (
-                  <p
-                    data-testid="pricing-promo"
-                    className={`font-body text-[13px] leading-snug font-semibold${
-                      sibling ? ' mt-2' : ' mt-auto pt-5 border-t border-white/10'
-                    }`}
-                    style={{ color: NOTICE_ACCENT }}
-                  >
-                    {promo}
-                  </p>
-                )}
               </div>
             ))}
           </div>

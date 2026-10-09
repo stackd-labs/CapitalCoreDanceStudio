@@ -85,11 +85,9 @@ const UNIFORM = (() => {
 // The three ways to pay, 2026-08-13. Only the single-class rate is derived from class
 // length; the pass and the drop-in are flat adult-only offers held in src/lib/tuition.js.
 //
-// Every comparison the pass makes about itself is arithmetic on those two figures, never
-// a typed claim. "Less than the price of two" is true today at $165 against $85 — but it
-// is one repricing away from being false, and a page that keeps saying it would be
-// advertising a discount the studio no longer gives. So the phrase renders only while
-// `beatsTwo` holds, and the saving is subtracted rather than written down.
+// The page no longer claims a saving for the pass (2026-10-08: no discounts advertised
+// anywhere, for now). The figures below are kept because the pass price card still reads
+// PASS.monthly and PASS.count.
 const PASS = (() => {
   if (!UNIFORM) return null
   const single = priceToNumber(UNIFORM.monthly)
@@ -255,7 +253,7 @@ export default function AdultClasses() {
             <Link to="/tuition" className="font-semibold hover:underline" style={{ color: ACCENT }}>
               Tuition
             </Link>{' '}
-            for registration fees and family discounts.
+            for registration fees.
           </p>
         </div>
       </section>
@@ -322,10 +320,7 @@ export default function AdultClasses() {
                 </div>
                 <div className="font-body text-mist-500 text-[12.5px] mt-2 mb-5">a month</div>
                 <p className="font-body text-[14.5px] leading-[1.6] text-mist-400 m-0 mt-auto">
-                  Take all {PASS.count} adult classes every week
-                  {PASS.beatsTwo ? ' for less than the price of two' : ''} — that&apos;s{' '}
-                  <span className="text-white font-bold">{money(PASS.savings)} a month</span> off
-                  paying for them separately.
+                  Take all {PASS.count} adult classes every week for one flat monthly price.
                 </p>
               </div>
 
@@ -361,6 +356,22 @@ export default function AdultClasses() {
                 get in touch to try one
               </Link>{' '}
               before you pay anything.
+            </p>
+
+            {/* Added 2026-10-08 for anyone who books through ClassPass. The generic ClassPass
+                site on purpose: the studio's own listing URL is not confirmed. */}
+            <p data-testid="classpass-note" className="font-body text-mist-500 text-xs mt-3">
+              A ClassPass member?{' '}
+              <a
+                href="https://classpass.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold hover:underline"
+                style={{ color: ACCENT }}
+              >
+                Visit ClassPass
+              </a>{' '}
+              to see how to book with your membership.
             </p>
           </div>
         </section>

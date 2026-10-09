@@ -186,19 +186,20 @@ test('the week calendar comes before the class cards', () => {
   expect(calendar.compareDocumentPosition(cards) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
 })
 
-test('the page carries no printable schedule flyer, the calendar is the only schedule', () => {
-  // Removed 2026-10-08 at the studio's request: a generated PNG/PDF cannot follow the
-  // calendar when times change, and a stale one contradicts the week above it.
+test('the printable schedule button is disabled and nothing links to a schedule file', () => {
+  // Taken down 2026-10-08 at the studio's request until a new PDF is added: the files
+  // are deleted from public/, so a live link would 404.
   renderClasses()
-  expect(screen.queryByTestId('fall-flyer-card')).not.toBeInTheDocument()
-  expect(screen.queryByRole('button', { name: 'View Flyer' })).not.toBeInTheDocument()
+  const card = screen.getByTestId('fall-flyer-card')
+  const button = within(card).getByRole('button', { name: /Download schedule/i })
+  expect(button).toBeDisabled()
+  expect(within(card).queryByRole('link')).not.toBeInTheDocument()
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   const refs = [...document.querySelectorAll('img, a')].map(
     (el) => el.getAttribute('src') || el.getAttribute('href') || ''
   )
   expect(refs.some((s) => /schedule\.(png|pdf)|flyer-fall-schedule/.test(s))).toBe(false)
 })
-
 test('renders Enroll Now CTA', () => {
   renderClasses()
   expect(screen.getByRole('link', { name: 'Enroll Now' })).toBeInTheDocument()

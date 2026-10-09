@@ -33,18 +33,16 @@ test('marks both end-of-semester performance dates tentative', () => {
   expect(spring.textContent).toContain('(tentative)')
 })
 
-test('lists the returning-student discount as one figure, from the shared constant', () => {
-  // This page published "$5–$10 per semester" while the portal charged a flat $10 and
-  // the Classes page recorded $60 new / $50 returning. Reading REGISTRATION here means
-  // the test cannot pass while the page and the constant disagree.
+test('🔴 advertises no discounts of any kind', () => {
+  // The studio's call, 2026-10-08, "for now": the returning-student, multi-class,
+  // multi-student and sibling discounts all came off the page. The portal's own billing
+  // rules are a separate matter. Registration figures still come from the shared constant.
   renderTuition()
-  expect(
-    screen.getByText(
-      `Returning students receive a $${REGISTRATION.returningDiscount} discount per semester`
-    )
-  ).toBeInTheDocument()
-  expect(screen.getByText(`$${REGISTRATION.returningDiscount} per semester`)).toBeInTheDocument()
-  expect(screen.queryByText(/\$5\s*[–-]\s*\$10/)).not.toBeInTheDocument()
+  expect(screen.queryByText(/discount/i)).not.toBeInTheDocument()
+  expect(screen.queryByText(/ways to save/i)).not.toBeInTheDocument()
+  expect(screen.queryAllByTestId('discount')).toHaveLength(0)
+  expect(screen.queryByText(/sibling/i)).not.toBeInTheDocument()
+  expect(document.body.textContent).toContain(`$${REGISTRATION.perSemester}`)
 })
 
 test('directs payment to the studio portal and not iClassPortal', () => {

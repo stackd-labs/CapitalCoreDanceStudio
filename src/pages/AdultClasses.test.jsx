@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import AdultClasses from './AdultClasses'
 import { SCHEDULE } from '../lib/schedule'
@@ -234,34 +234,25 @@ test('offers three ways to pay, each at the figure the tuition module holds', ()
   expect(screen.getByTestId('adult-price-badge')).toHaveTextContent('Best value')
 })
 
-test('the pass works out its own saving rather than quoting a typed one', () => {
-  // The saving is the difference between the pass and paying for every adult class
-  // separately. Repricing either figure must move this number, not leave a stale one on
-  // the page — which a hard-coded "$90" would.
-  const single = priceToNumber(monthlyPriceForMinutes(45))
-  const expected = single * ADULT_INFO_KEYS.length - ADULT_PRICING.unlimitedMonthly
-
+test('the pass states no saving or discount', () => {
+  // 2026-10-08: no discounts are advertised anywhere on the site, for now. The pass keeps
+  // its flat monthly price but no longer claims a saving against paying per class.
   renderAdultClasses()
   const pass = screen.getByTestId('adult-pass-price').closest('[data-testid="adult-price-card"]')
-  expect(pass).toHaveTextContent(`$${expected} a month`)
   expect(pass).toHaveTextContent(`all ${ADULT_INFO_KEYS.length} adult classes`)
+  expect(pass).toHaveTextContent('one flat monthly price')
+  expect(pass).not.toHaveTextContent(/off paying|less than the price|saving/i)
+  expect(document.body.textContent).not.toMatch(/discount/i)
 })
 
-test('the "less than the price of two" claim appears only while it is arithmetically true', () => {
-  // $165 against $85 is true today by $5. It is one repricing away from being false, and
-  // a page that kept saying it would be advertising a discount the studio does not give.
-  const single = priceToNumber(monthlyPriceForMinutes(45))
-  const beatsTwo = ADULT_PRICING.unlimitedMonthly < single * 2
-
+test('links to ClassPass for members', () => {
   renderAdultClasses()
-  const pass = screen.getByTestId('adult-pass-price').closest('[data-testid="adult-price-card"]')
-  if (beatsTwo) {
-    expect(pass).toHaveTextContent('for less than the price of two')
-  } else {
-    expect(pass).not.toHaveTextContent('price of two')
-  }
+  const note = screen.getByTestId('classpass-note')
+  const link = within(note).getByRole('link', { name: 'Visit ClassPass' })
+  expect(link).toHaveAttribute('href', 'https://classpass.com')
+  expect(link).toHaveAttribute('target', '_blank')
+  expect(link).toHaveAttribute('rel', 'noopener noreferrer')
 })
-
 test('the free-trial offer is a link to Contact, not a dead sentence', () => {
   // Booking a free class goes through the studio, not the registration portal, so the
   // sentence that makes the offer has to be the way to take it up.

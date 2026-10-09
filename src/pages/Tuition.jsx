@@ -55,7 +55,7 @@ const SEPARATELY_PRICED = [
     name: 'Little Movers',
     price: 'From $10',
     blurb:
-      'Ages 0–5, Monday/Wednesday/Friday mornings. Pay per class, buy a visit pack, or take the monthly membership — which includes a Tiny Core class.',
+      'Ages 0–5, Wednesday mornings, 10 to 11 AM. Pay per class, buy a visit pack, or take the monthly membership — which includes a Tiny Core class.',
   },
   {
     to: '/adult-classes',
@@ -87,27 +87,14 @@ function examplesFor(minutes) {
   return [...(EXAMPLES_BY_MINUTES[minutes] || [])].slice(0, 3)
 }
 
-const DISCOUNTS = [
-  // Read from REGISTRATION, not typed. This line said "$5–$10" while the portal
-  // charged a flat $10 — see the note on returningDiscount in src/lib/tuition.js.
-  `Returning students receive a ${money(REGISTRATION.returningDiscount)} discount per semester`,
-  'Multi-class discount for dancers enrolled in more than one class',
-  'Multi-student discounts for families with multiple dancers',
-  'Sibling discounts and family fee caps on registration fees',
-]
-
+// 🔴 No discounts are advertised anywhere on the site (studio's call, 2026-10-08, "for
+// now"). The portal still has its own billing rules; this page just does not promise any.
 // The mockup's "fees at a glance" list. Label on the left, the studio's figure on the
 // right — every value below appears verbatim elsewhere on this page.
 const FEES = [
   // From REGISTRATION, not typed: this row said $65 while the portal charged $60.
   { label: 'Registration — per dancer, per semester', value: money(REGISTRATION.perSemester) },
   { label: 'Registration — full year (both semesters)', value: money(REGISTRATION.fullYear) },
-  {
-    label: 'Returning student discount',
-    value: `${money(REGISTRATION.returningDiscount)} per semester`,
-  },
-  { label: 'Multi-class discount', value: 'Available' },
-  { label: 'Multi-student & sibling discounts', value: 'Available' },
   { label: 'Payment methods', value: 'Card, ACH, or check' },
 ]
 
@@ -118,7 +105,7 @@ export default function Tuition() {
     <div className="min-h-screen flex flex-col bg-ink-base">
       <SEO
         title="Dance Class Tuition &amp; Fees | Capital Core Dance Studio – Midlothian, VA"
-        description="Transparent dance class pricing in Midlothian, VA. Monthly rates from $65 (30-min) to $150 (90-min) classes. Fall semester runs August 24 – December 18, 2026; spring runs January 11 – May 21, 2027. Registration fees, returning-student and sibling discounts explained."
+        description="Transparent dance class pricing in Midlothian, VA. Monthly rates from $65 (30-min) to $150 (90-min) classes. Fall semester runs August 24 – December 18, 2026; spring runs January 11 – May 21, 2027. Registration fees and payment options explained."
         canonical="/tuition"
         jsonLd={simpleBreadcrumb('Tuition', '/tuition')}
       />
@@ -153,8 +140,7 @@ export default function Tuition() {
           <Kicker accent={ACCENT}>Class pricing</Kicker>
           <SectionHeading className="text-white mb-3">Priced by class length</SectionHeading>
           <p className="font-body text-mist-400 text-sm mb-10 max-w-2xl">
-            Prices are per class, per month. Multi-class and multi-student discounts are available
-            — see the fees below.
+            Prices are per class, per month. Registration and payment details are below.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[26px]">
@@ -253,9 +239,9 @@ export default function Tuition() {
         </div>
       </section>
 
-      {/* Semesters + discounts + payment */}
+      {/* Semesters + payment */}
       <section className="bg-ink-deep px-6 lg:px-24 py-16 lg:py-20">
-        <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-3 gap-[26px]">
+        <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-[26px]">
           <div className="border border-white/[0.14] px-7 py-8">
             <Kicker accent={ACCENT} className="mb-2">How it works</Kicker>
             <h3 className="font-display uppercase text-white text-[24px] leading-none mb-5">
@@ -276,27 +262,6 @@ export default function Tuition() {
                 </div>
               ))}
             </div>
-          </div>
-
-          <div className="border border-white/[0.14] px-7 py-8">
-            <Kicker accent={ACCENT} className="mb-2">Discounts available</Kicker>
-            <h3 className="font-display uppercase text-white text-[24px] leading-none mb-5">
-              Ways to save
-            </h3>
-            <ul className="flex flex-col gap-2.5">
-              {DISCOUNTS.map((item) => (
-                <li
-                  key={item}
-                  data-testid="discount"
-                  className="font-body text-mist-300 text-sm flex gap-2.5 leading-relaxed"
-                >
-                  <span className="flex-shrink-0" style={{ color: ACCENT }}>
-                    ✓
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ul>
           </div>
 
           <div className="border border-white/[0.14] px-7 py-8">

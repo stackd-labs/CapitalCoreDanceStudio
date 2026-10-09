@@ -55,11 +55,9 @@ const ROLES = [
     title: 'Preschool Instructor',
     tag: 'Part time',
     styles: 'Creative movement · Infants to preschool',
-    // Must match the grid on the Little Movers page: Monday, Wednesday and Friday,
-    // three 45-minute classes at 9:30, 10:30 and 11:30. This said "weekday mornings,
-    // about 9:00 AM to 12:00 PM", which asked candidates to be free on two mornings
-    // the programme does not run.
-    schedule: 'Mon, Wed & Fri mornings, 9:30 AM to 12:15 PM',
+    // Must match the Little Movers page: one class, Wednesday 10:00 to 11:00 AM
+    // (changed from Mon / Wed / Fri on 2026-10-08).
+    schedule: 'Wednesday mornings, 10:00 to 11:00 AM',
     pay: '$15 to $25 / hour',
     intro: [
       'Capital Core Dance Studio is hiring an energetic, dependable and nurturing Preschool Movement and Enrichment Instructor to join our new Little Movers early childhood program.',
@@ -133,8 +131,8 @@ const ROLES = [
         // programme has not started — the Little Movers page carries a coming-soon
         // banner and is not open for registration. Corrected 2026-08-19.
         body: [
-          'Part-time mornings. Little Movers is planned for Monday, Wednesday and Friday mornings, in three 45-minute classes at 9:30, 10:30 and 11:30. Start dates are still being confirmed, so the first weeks will be built with whoever takes the role.',
-          'Applicants do not need to be available all three mornings. Please include your Monday, Wednesday and Friday morning availability when applying.',
+          'Part-time. Little Movers meets once a week, on Wednesday mornings from 10:00 to 11:00 AM.',
+          'Please include your Wednesday morning availability when applying.',
         ],
       },
       {
@@ -149,7 +147,7 @@ const ROLES = [
         body: ['Send your resume along with a brief introduction telling us:'],
         items: [
           'Your experience working with young children.',
-          'Your Monday, Wednesday and Friday morning availability.',
+          'Your Wednesday morning availability.',
           'Any experience with dance, movement, tumbling, sensory play, early childhood education or similar programming.',
           "Why you're interested in joining the Little Movers team.",
         ],
@@ -157,7 +155,7 @@ const ROLES = [
     ],
     facts: [
       'Job type: Part-time',
-      'Schedule: Monday, Wednesday and Friday mornings',
+      'Schedule: Wednesday mornings, 10:00 to 11:00 AM',
       'Location: In person, Midlothian, VA',
     ],
     closing:

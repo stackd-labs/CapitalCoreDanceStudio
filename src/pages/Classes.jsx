@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
@@ -24,24 +24,11 @@ const ACCENT = ACCENTS.orange
 // ($60 new dancer / $50 returning); monthly tuition is billed separately.
 const PORTAL_REGISTER_URL = 'https://studio.capitalcoredance.com/register/classes'
 
-// The printable schedule. Replaced the studio's old flyer PNG on 2026-09-02 — that
-// image was STALE: it showed the pre-rework week, the old class naming, and 5+ ages for
-// classes that are now Core Plus 8+, so the page was offering a download that
-// contradicted the calendar directly above it.
-//
-// 🔴 GENERATED, NOT DRAWN. `bash print/build.sh` renders it from
-// print/class-schedule.html with ?only=schedule, which is the same file as the two-page
-// staff sheet — so this image cannot disagree with that sheet about what runs on
-// Tuesday. It is REGENERATED, never edited: any change belongs in the HTML.
-//
-// Schedule only, deliberately. The full sheet's tuition, registration and adult rates
-// are all stated on this page already, and the instructor page is for staff.
-const FALL_FLYER = {
-  src: '/fall-2026-schedule.png',
-  alt: 'Capital Core Dance Studio Fall 2026 class schedule: Monday to Friday evening classes in Studio B with day, time, class, age range and instructor, plus the Capital Core Dance Company in Studio A on Sunday, Monday and Thursday',
-  filename: 'capital-core-fall-2026-schedule.png',
-  pdf: '/fall-2026-schedule.pdf',
-}
+// 🔴 The printable Fall schedule card (PNG/PDF flyer + lightbox) was REMOVED from this
+// page on 2026-10-08, at the studio's request, after the Friday adult classes swapped
+// times: a generated flyer cannot follow the calendar without a rebuild, and a stale one
+// contradicts the week above it. The calendar is the only schedule on the page. The files
+// (public/fall-2026-schedule.png/.pdf, built by print/build.sh) were left in place.
 
 const DANCE_STYLES = [
   'Ballet',
@@ -178,16 +165,6 @@ export default function Classes() {
   const [selectedProgram, setSelectedProgram] = useState('All')
   const [selectedAge, setSelectedAge] = useState('All')
   const [selectedCategory, setSelectedCategory] = useState('All')
-  const [flyerOpen, setFlyerOpen] = useState(false)
-
-  useEffect(() => {
-    if (!flyerOpen) return
-    const onKeyDown = (e) => {
-      if (e.key === 'Escape') setFlyerOpen(false)
-    }
-    document.addEventListener('keydown', onKeyDown)
-    return () => document.removeEventListener('keydown', onKeyDown)
-  }, [flyerOpen])
 
   const matches = (c) =>
     (selectedProgram === 'All' || c.program === selectedProgram) &&
@@ -301,47 +278,6 @@ export default function Classes() {
             </dl>
           </div>
 
-          {/* Printable flyer */}
-          <div
-            data-testid="fall-flyer-card"
-            className="mt-8 border border-white/[0.12] bg-ink-panel px-6 py-6 flex flex-col sm:flex-row items-center gap-6"
-          >
-            <button
-              onClick={() => setFlyerOpen(true)}
-              className="flex-shrink-0 w-full sm:w-56 border border-white/20 group relative cursor-zoom-in"
-            >
-              <img src={FALL_FLYER.src} alt={FALL_FLYER.alt} className="w-full h-auto block" />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors" />
-            </button>
-            <div className="text-center sm:text-left">
-              <Kicker accent={ACCENT} className="mb-2">Printable Fall Schedule</Kicker>
-              <h3 className="font-display uppercase text-white text-2xl leading-none mb-2">
-                Save the whole schedule on one page
-              </h3>
-              <p className="font-body text-mist-400 text-sm leading-relaxed mb-4">
-                Every Fall 2026 class with its program level, ages, and instructor — handy for the
-                fridge or sharing with another dance family.
-              </p>
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4">
-                <button
-                  onClick={() => setFlyerOpen(true)}
-                  className="font-body font-bold text-sm px-6 py-3 transition-opacity hover:opacity-90"
-                  style={{ background: ACCENT, color: onAccent(ACCENT) }}
-                >
-                  View Flyer
-                </button>
-                <a
-                  href={FALL_FLYER.src}
-                  download={FALL_FLYER.filename}
-                  className="font-body text-sm font-semibold hover:underline"
-                  style={{ color: ACCENT }}
-                >
-                  Download PNG
-                </a>
-              </div>
-            </div>
-          </div>
-
           <PrimaryAction accent={ACCENT} href={PORTAL_REGISTER_URL} className="mt-8">
             Enroll Now
           </PrimaryAction>
@@ -375,40 +311,6 @@ export default function Classes() {
       )}
 
       <Footer />
-
-      {/* Flyer lightbox */}
-      {flyerOpen && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label="Fall 2026 schedule flyer"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4 py-6 overflow-y-auto"
-          onClick={() => setFlyerOpen(false)}
-        >
-          <div
-            className="relative bg-ink-panel border border-white/15 shadow-2xl max-w-5xl w-full overflow-hidden my-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <img src={FALL_FLYER.src} alt={FALL_FLYER.alt} className="w-full h-auto block" />
-            <div className="flex items-center justify-between gap-3 px-5 py-4 border-t border-white/[0.12]">
-              <a
-                href={FALL_FLYER.src}
-                download={FALL_FLYER.filename}
-                className="font-body text-sm font-bold px-5 py-2.5 transition-opacity hover:opacity-90"
-                style={{ background: ACCENT, color: onAccent(ACCENT) }}
-              >
-                Download Flyer
-              </a>
-              <button
-                onClick={() => setFlyerOpen(false)}
-                className="font-body text-mist-500 text-sm hover:text-white transition-colors"
-              >
-                Close ✕
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

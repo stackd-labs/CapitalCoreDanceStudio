@@ -198,13 +198,15 @@ export const SCHEDULE = [
     day: 'Friday',
     classes: [
       { name: 'Core Ballet & Modern', time: '5:30 – 6:15 PM', start: '17:30', end: '18:15', infoKey: 'Core Ballet & Modern', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'ballet', studio: 'B', instructor: 'Mr. Yul' },
+      // The two Friday adult classes swapped times on 2026-10-08 (participants told):
+      // Contemporary is now 6:15, Ballet/Tech 7:00. The portal's classes table has the
+      // same swap. Contemporary was shortened from 7:00 – 8:00 PM on 2026-08-10 to
+      // match the studio's Full Class Schedule flyer (45 minutes like the others).
+      { name: 'Adult Contemporary', time: '6:15 – 7:00 PM', start: '18:15', end: '19:00', infoKey: 'Adult Contemporary', program: 'adult-core', ages: 'Ages 16+ · Adult', ageGroups: ['adult'], category: 'adult', studio: 'B', instructor: 'Mr. Yul' },
       // New 2026-09-02, in the slot Core Plus Lyrical & Contemporary left. Named to
       // the studio's own adult pattern. No CLASS_INFO entry yet — the detail panel
       // renders without a description rather than inventing one.
-      { name: 'Adult Ballet/Tech', time: '6:15 – 7:00 PM', start: '18:15', end: '19:00', infoKey: 'Adult Ballet/Tech', program: 'adult-core', ages: 'Ages 16+ · Adult', ageGroups: ['adult'], category: 'adult', studio: 'B', instructor: 'Mr. Yul' },
-      // Shortened from 7:00 – 8:00 PM on 2026-08-10 to match the studio's Full Class
-      // Schedule flyer, which ends this class at 7:45 like the other 45-minute classes.
-      { name: 'Adult Contemporary', time: '7:00 – 7:45 PM', start: '19:00', end: '19:45', infoKey: 'Adult Contemporary', program: 'adult-core', ages: 'Ages 16+ · Adult', ageGroups: ['adult'], category: 'adult', studio: 'B', instructor: 'Mr. Yul' },
+      { name: 'Adult Ballet/Tech', time: '7:00 – 7:45 PM', start: '19:00', end: '19:45', infoKey: 'Adult Ballet/Tech', program: 'adult-core', ages: 'Ages 16+ · Adult', ageGroups: ['adult'], category: 'adult', studio: 'B', instructor: 'Mr. Yul' },
     ],
   },
 ]

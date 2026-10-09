@@ -186,48 +186,17 @@ test('the week calendar comes before the class cards', () => {
   expect(calendar.compareDocumentPosition(cards) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
 })
 
-test('renders the printable Fall schedule card with a download link', () => {
-  // Swapped from the studio's old flyer PNG to a generated one on 2026-09-02. The old
-  // image showed the pre-rework week and Core-era naming, so the page was offering a
-  // download that contradicted the calendar directly above it.
+test('the page carries no printable schedule flyer, the calendar is the only schedule', () => {
+  // Removed 2026-10-08 at the studio's request: a generated PNG/PDF cannot follow the
+  // calendar when times change, and a stale one contradicts the week above it.
   renderClasses()
-  const card = screen.getByTestId('fall-flyer-card')
-  expect(within(card).getByRole('img', { name: /Fall 2026 class schedule/i })).toBeInTheDocument()
-  const download = within(card).getByRole('link', { name: 'Download PNG' })
-  expect(download).toHaveAttribute('href', '/fall-2026-schedule.png')
-  expect(download).toHaveAttribute('download', 'capital-core-fall-2026-schedule.png')
-})
-
-test('the printable schedule is the generated one, not the retired flyer', () => {
-  // /flyer-fall-schedule.png is still in public/ and still stale. Nothing should point
-  // at it: it is kept only so an old link does not 404, and it must never come back as
-  // the page's own image.
-  renderClasses()
-  const srcs = [...document.querySelectorAll('img, a')].map(
+  expect(screen.queryByTestId('fall-flyer-card')).not.toBeInTheDocument()
+  expect(screen.queryByRole('button', { name: 'View Flyer' })).not.toBeInTheDocument()
+  expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  const refs = [...document.querySelectorAll('img, a')].map(
     (el) => el.getAttribute('src') || el.getAttribute('href') || ''
   )
-  expect(srcs.some((s) => s.includes('flyer-fall-schedule'))).toBe(false)
-  expect(srcs.some((s) => s.includes('fall-2026-schedule.png'))).toBe(true)
-})
-
-test('View Flyer opens the lightbox and Close dismisses it', () => {
-  renderClasses()
-  expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-
-  fireEvent.click(screen.getByRole('button', { name: 'View Flyer' }))
-  const dialog = screen.getByRole('dialog', { name: 'Fall 2026 schedule flyer' })
-  expect(within(dialog).getByRole('link', { name: 'Download Flyer' })).toBeInTheDocument()
-
-  fireEvent.click(within(dialog).getByRole('button', { name: /Close/ }))
-  expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-})
-
-test('Escape closes the flyer lightbox', () => {
-  renderClasses()
-  fireEvent.click(screen.getByRole('button', { name: 'View Flyer' }))
-  expect(screen.getByRole('dialog')).toBeInTheDocument()
-  fireEvent.keyDown(document, { key: 'Escape' })
-  expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  expect(refs.some((s) => /schedule\.(png|pdf)|flyer-fall-schedule/.test(s))).toBe(false)
 })
 
 test('renders Enroll Now CTA', () => {

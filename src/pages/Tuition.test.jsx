@@ -118,15 +118,10 @@ test('the separately-priced links quote each rate from the shared source, not ty
   expect(section.textContent).toContain(`$${ADULT_PRICING.unlimitedMonthly}`)
 })
 
-test('offers Tiny Core families the $24 top-up to the Little Movers membership', () => {
-  // Added 2026-08-17. Belongs on this page because $65 — the number the $24 is measured
-  // against — is published here, so the arithmetic is checkable in one place.
+test('does not promote the Little Movers membership (paused 2026-10-12)', () => {
   renderTuition()
-  const note = screen.getByTestId('tiny-core-membership-note')
-  expect(note.textContent).toContain('$24')
-  expect(note.textContent).toContain('$89')
-  expect(note.textContent).toMatch(/Little Movers/i)
-  expect(note.querySelector('a')).toHaveAttribute('href', '/little-movers')
+  expect(screen.queryByTestId('tiny-core-membership-note')).not.toBeInTheDocument()
+  expect(document.body.textContent).not.toMatch(/\$89|monthly membership —/)
 })
 
 test('each price card names real classes of that length, read from the schedule', () => {

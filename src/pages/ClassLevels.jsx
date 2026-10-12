@@ -66,10 +66,10 @@ const CLASS_GROUPS = [
   },
   {
     program: 'specialty',
-    // Overridden: the tier's shorthand is "All Ages" because Musical Theatre is, but
-    // Pom Cheer is 5+, so the group header must not promise all ages for both.
-    ages: 'Ages 5+',
-    infoKeys: ['Musical Theatre', 'Pom Cheer'],
+    // Overridden: Musical Theatre is all ages but Majorette is 6 to 17, so the group header
+    // must not promise one age range for both. Each class card carries its own.
+    ages: 'Ages vary by class',
+    infoKeys: ['Musical Theatre', 'Majorette'],
   },
 ]
   .filter(({ infoKeys }) => infoKeys.length > 0)
@@ -96,7 +96,7 @@ const IMPORTANT_INFO = [
   'Tiny Core classes are designed for dancers ages 2–5.',
   'Core and Core Plus are both beginner–novice — whether this is a dancer’s first class ever or their return after time away. Core starts at age 5, Core Plus at age 8, so older dancers starting out learn with their own age group.',
   'Core Elite is intermediate–advanced, for dancers who have built their foundation. Placement is by instructor recommendation.',
-  'Adult, Tumble Tech, Pom Cheer, and Musical Theatre classes welcome dancers of all experience levels.',
+  'Adult, Tumble Tech, Majorette, and Musical Theatre classes welcome dancers of all experience levels.',
   'Class placement recommendations may be made by instructors to ensure every dancer is in the class that best supports their growth.',
 ]
 
@@ -131,7 +131,7 @@ export default function ClassLevels() {
     <div className="min-h-screen flex flex-col bg-ink-base">
       <SEO
         title="Dance Class Descriptions &amp; Levels | Capital Core Dance Studio — Midlothian, VA"
-        description="Which dance class fits your dancer? Full class descriptions for Capital Core Dance Studio in Midlothian, VA — Tiny Core (ages 2–5), Core (ages 5+), Core Plus (ages 8+), Technique, and Specialty classes including Musical Theatre and Pom Cheer. Adult classes (16+) have their own page."
+        description="Which dance class fits your dancer? Full class descriptions for Capital Core Dance Studio in Midlothian, VA — Tiny Core (ages 2–5), Core (ages 5+), Core Plus (ages 8+), Technique, and Specialty classes including Musical Theatre and Majorette. Adult classes (16+) have their own page."
         canonical="/class-levels"
         jsonLd={CLASS_LEVELS_JSON_LD}
       />
@@ -186,29 +186,6 @@ export default function ClassLevels() {
               })}
             </div>
 
-            {/* Tiny Core only. A parent choosing a 2–5 class is the one person for whom
-                the Little Movers membership is a straight upgrade rather than a second
-                purchase, so the note lives inside this tier instead of on the page as a
-                whole. The $24 is $89 − the $65 that /tuition publishes for a 30-minute
-                class; the same figure appears there and on /little-movers. */}
-            {program === 'tiny-core' && (
-              <p
-                data-testid="tiny-core-membership-note"
-                className="font-body text-[14.5px] leading-[1.6] text-mist-400 mt-8 max-w-3xl"
-              >
-                <span className="font-semibold text-white">Already booking a Tiny Core class?</span>{' '}
-                For $24 more a month you can take the{' '}
-                <Link
-                  to="/little-movers"
-                  className="font-semibold underline underline-offset-2"
-                  style={{ color: ACCENT }}
-                >
-                  Little Movers membership
-                </Link>{' '}
-                instead — it includes one Tiny Core class plus unlimited Little Movers morning
-                classes for ages 2–5.
-              </p>
-            )}
           </div>
         </section>
       ))}

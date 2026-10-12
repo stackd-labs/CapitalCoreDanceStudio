@@ -83,17 +83,8 @@ const ROLES = [
       {
         heading: 'Classes may include',
         items: [
-          'Baby & Me',
           "Moovin' & Groovin'",
-          'Tiny Tumblers',
-          'Sensory Steps',
-          'Little Movers Free Play Lab',
-          'Parent & Me Dance, once it returns to the schedule',
         ],
-        // Parent & Me Dance came off the published grid on 2026-08-17 when Tuesday and
-        // Thursday were withdrawn, so it currently runs on no day. The Little Movers
-        // page badges it "Coming soon"; this list had no such qualifier, which offered
-        // an applicant a class nobody can be assigned to. Moved to the end and marked.
       },
       {
         heading: "We're looking for someone who",

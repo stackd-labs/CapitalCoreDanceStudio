@@ -59,7 +59,8 @@ test('expanding a posting reveals its full description and an apply button', () 
 
   expect(toggle).toHaveAttribute('aria-expanded', 'true')
   expect(screen.getByText(/Little Movers is designed for infants/)).toBeInTheDocument()
-  expect(screen.getByText('Sensory Steps')).toBeInTheDocument()
+  expect(screen.getByText("Moovin' & Groovin'")).toBeInTheDocument()
+  expect(screen.queryByText('Sensory Steps')).not.toBeInTheDocument()
   expect(screen.getByText(/\$15\.00 to \$25\.00 per hour/)).toBeInTheDocument()
 
   const apply = screen.getByRole('link', { name: 'Apply for this role' })

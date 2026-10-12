@@ -55,7 +55,7 @@ const SEPARATELY_PRICED = [
     name: 'Little Movers',
     price: 'From $10',
     blurb:
-      'Ages 0–5, Wednesday mornings, 10 to 11 AM. Pay per class, buy a visit pack, or take the monthly membership — which includes a Tiny Core class.',
+      'Ages 0–5, Wednesday mornings, 10 to 11 AM. Pay per class or buy a visit pack. Contact the studio about monthly memberships.',
   },
   {
     to: '/adult-classes',
@@ -198,25 +198,6 @@ export default function Tuition() {
             })}
           </div>
 
-          {/* The $24 is arithmetic on the two numbers either side of it — the $65 card
-              above and the $89 membership on /little-movers — so it is stated here rather
-              than as a separate price a family has to take on trust. LittleMovers.jsx
-              carries the same figure and both are tested against it. */}
-          <p
-            data-testid="tiny-core-membership-note"
-            className="font-body text-[14.5px] leading-[1.6] text-mist-400 mt-8 max-w-3xl"
-          >
-            <span className="font-semibold text-white">Tiny Core families:</span> a 30-minute Tiny
-            Core class is $65 a month. For $24 more — $89 a month — the{' '}
-            <Link
-              to="/little-movers"
-              className="font-semibold underline underline-offset-2"
-              style={{ color: ACCENT }}
-            >
-              Little Movers membership
-            </Link>{' '}
-            covers that class plus unlimited Little Movers morning classes.
-          </p>
         </div>
       </section>
 

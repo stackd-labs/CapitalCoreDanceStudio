@@ -48,7 +48,7 @@ const GROUPS = [
   },
   {
     title: 'Specialty',
-    classes: ['Musical Theatre', 'Pom Cheer'],
+    classes: ['Musical Theatre', 'Majorette'],
   },
   // The Adult Core group lives on its own page since 2026-08-03 — its coverage is in
   // AdultClasses.test.jsx. This page is ages 2–17 only.
@@ -67,8 +67,9 @@ test('renders all five youth program tiers with their age lines', () => {
   renderClassLevels()
   const titles = screen.getAllByTestId('group-title').map((el) => el.textContent.trim())
   expect(titles).toEqual(GROUPS.map((g) => g.title))
-  // Core and Specialty both read 'Ages 5+'; the rest are distinct.
-  expect(screen.getAllByText('Ages 5+')).toHaveLength(2)
+  // Core reads 'Ages 5+'; Specialty has mixed ranges (Musical Theatre all ages, Majorette 6 to 17).
+  expect(screen.getAllByText('Ages 5+')).toHaveLength(1)
+  expect(screen.getAllByText('Ages vary by class')).toHaveLength(1)
   expect(screen.getAllByText('Ages 2–5')).toHaveLength(1)
   expect(screen.getAllByText('Ages 8+')).toHaveLength(1)
   // The Technique eyebrow. Regression guard: deriving this from the tier's filter
@@ -139,14 +140,11 @@ test('renders every youth class on the Fall schedule, in group order', () => {
   expect(names).toHaveLength(16)
 })
 
-test('the Tiny Core tier offers the $24 top-up to the Little Movers membership', () => {
-  // Added 2026-08-17, in the Tiny Core tier specifically: this is where a parent of a
-  // 2-to-5-year-old is choosing, so it is where the upgrade is worth knowing about.
+test('no Little Movers membership is promoted on the class levels page', () => {
+  // Memberships are paused (2026-10-12): contact the studio. The Tiny Core note is gone.
   renderClassLevels()
-  const note = screen.getByTestId('tiny-core-membership-note')
-  expect(note.textContent).toContain('$24')
-  expect(note.textContent).toMatch(/Little Movers/i)
-  expect(note.querySelector('a')).toHaveAttribute('href', '/little-movers')
+  expect(screen.queryByTestId('tiny-core-membership-note')).not.toBeInTheDocument()
+  expect(document.body.textContent).not.toMatch(/Little Movers membership/i)
 })
 
 test('adult classes live on their own page, not duplicated here', () => {
@@ -237,7 +235,7 @@ test('Beginner and Intermediate survive only as skill bands, never as program or
 
   // Every class name now leads with its tier.
   for (const name of names) {
-    expect(name).toMatch(/^(Tiny Core|Core Plus|Core|Tumble Tech|Musical Theatre|Pom Cheer)/)
+    expect(name).toMatch(/^(Tiny Core|Core Plus|Core|Tumble Tech|Musical Theatre|Majorette)/)
   }
 
   // And the band is present where it belongs. 'Intermediate – Advanced' belongs to

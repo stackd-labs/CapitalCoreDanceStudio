@@ -363,7 +363,7 @@ export default function AdultClasses() {
             <p data-testid="classpass-note" className="font-body text-mist-500 text-xs mt-3">
               A ClassPass member?{' '}
               <a
-                href="https://classpass.com"
+                href="https://classpass.com/studios/capital-core-dance-midlothian"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-semibold hover:underline"

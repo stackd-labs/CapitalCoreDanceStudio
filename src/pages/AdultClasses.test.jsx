@@ -249,7 +249,7 @@ test('links to ClassPass for members', () => {
   renderAdultClasses()
   const note = screen.getByTestId('classpass-note')
   const link = within(note).getByRole('link', { name: 'Visit ClassPass' })
-  expect(link).toHaveAttribute('href', 'https://classpass.com')
+  expect(link).toHaveAttribute('href', 'https://classpass.com/studios/capital-core-dance-midlothian')
   expect(link).toHaveAttribute('target', '_blank')
   expect(link).toHaveAttribute('rel', 'noopener noreferrer')
 })

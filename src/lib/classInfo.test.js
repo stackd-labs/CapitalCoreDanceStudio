@@ -6,7 +6,7 @@ import { SCHEDULE } from './schedule'
 test('holds an entry for all 21 distinct classes', () => {
   // 19: 'Tumble' merged into 'Tumble Tech' (2026-08-03) and 'Beginner Hip Hop' merged
   // into 'Beginner Hip Hop & Breakdancing' (2026-08-04).
-  expect(Object.keys(CLASS_INFO)).toHaveLength(19)
+  expect(Object.keys(CLASS_INFO)).toHaveLength(20)
 })
 
 test('every entry has a usable description', () => {
@@ -84,7 +84,7 @@ test('classInfo keeps copy only for current classes and recent departures', () =
   // Kept deliberately, not stale: all three came off the schedule on 2026-09-02 and
   // the studio may bring them back. A class returning should not need its description
   // rewritten. Prune this list if the studio confirms one is gone for good.
-  expect(orphans).toEqual(['Adult Femme Flair', 'Core Plus Lyrical & Contemporary', 'Tumble Tech'])
+  expect(orphans).toEqual(['Adult Femme Flair', 'Core Plus Lyrical & Contemporary', 'Pom Cheer', 'Tumble Tech'])
 })
 
 test('every row has 24-hour start and end on 15-minute boundaries', () => {
@@ -167,7 +167,7 @@ test('the studio photo rules resolve to exactly this assignment across the Fall 
     'Musical Theatre': '/class-musical-theatre.jpg',
     // Unchanged, and the point of giving Adult Pom its own rule: the shared pom
     // photograph is of teenagers, which suits this class and not a 16+ one.
-    'Pom Cheer': '/class-pom.jpg',
+    'Majorette': '/class-majorette.jpg',
     // All three take the tiny photograph, including the hip hop and tumble ones — the
     // tiny rule matches first precisely so neither teenage photo can land on a class of
     // 2-to-5-year-olds.
@@ -197,6 +197,7 @@ test('overlapping classes go to the more specific rule, not the broad one', () =
     'adult-pom',
     'hip-hop',
     'jazz',
+    'majorette',
     'pom',
     'femme-flair',
     'musical-theatre',
@@ -233,6 +234,7 @@ test('every photo a rule points at is a real file under public/', () => {
     'Adult Pom',
     'Core Ballet & Hip Hop',
     'Core Ballet & Jazz',
+    'Majorette',
     'Pom Cheer',
     'Adult Femme/Flair',
     'Musical Theatre',

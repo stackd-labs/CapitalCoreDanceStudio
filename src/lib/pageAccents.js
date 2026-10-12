@@ -81,6 +81,10 @@ const ACCENT_BY_PATH = {
   // purple to lavender on 2026-08-13.
   '/adult-classes': ACCENTS.lavender,
 
+  // Specialty Classes and its Majorette page, added 2026-10-12.
+  '/specialty-classes': ACCENTS.orange,
+  '/majorette': ACCENTS.red,
+
   '/little-movers': ACCENTS.teal,
   '/terms': ACCENTS.teal,
 

@@ -4,17 +4,11 @@ import LittleMovers from './LittleMovers'
 import { FAQS } from '../lib/faqs'
 import { monthlyPriceForMinutes, priceToNumber } from '../lib/tuition'
 
-// The six classes and their age ranges. Widened 2026-08-17 at the studio's request so the
-// morning hands off cleanly at 18 months: Baby & Me runs 0–18 months, and every class after
-// it takes 18 months–5 years. Parent & Me Dance keeps the flyer's 18 months–3 years.
-const CLASSES = [
-  ['Baby & Me', '0–18 months'],
-  ['Parent & Me Dance', '18 months–3 years'],
-  ["Moovin' & Groovin'", '18 months–5 years'],
-  ['Tiny Tumblers', '18 months–5 years'],
-  ['Sensory Steps', '18 months–5 years'],
-  ['Little Movers Free Play Lab', '18 months–5 years'],
-]
+// ONE class for now (2026-10-12): Moovin' & Groovin', ages 0–5, parents participate. The
+// other five (Baby & Me, Parent & Me Dance, Tiny Tumblers, Sensory Steps, Free Play Lab) are
+// off the page and must not creep back without the studio saying so.
+const CLASSES = [["Moovin' & Groovin'", '0–5 years']]
+const REMOVED = ['Baby & Me', 'Parent & Me', 'Tiny Tumblers', 'Sensory Steps', 'Free Play Lab']
 
 // ONE class a week since 2026-10-08: Wednesday 10:00 to 11:00 AM. It was Monday / Wednesday
 // / Friday in three 45-minute slots (9:30, 10:30, 11:30) until the studio cut it back.
@@ -60,10 +54,12 @@ test('the classes heading does not hardcode a count that can go stale', () => {
   expect(screen.queryByText(/Six ways to move/i)).not.toBeInTheDocument()
 })
 
-test('renders all six classes with their age ranges and descriptions, none badged', () => {
+test('renders only Moovin & Groovin, ages 0-5 with parents participating, none badged', () => {
   renderLittleMovers()
   const cards = screen.getAllByTestId('little-movers-class')
-  expect(cards).toHaveLength(6)
+  expect(cards).toHaveLength(1)
+  expect(cards[0].textContent).toMatch(/Parents and caregivers participate/)
+  for (const gone of REMOVED) expect(document.body.textContent, gone).not.toContain(gone)
   cards.forEach((card, i) => {
     const [name, ages] = CLASSES[i]
     expect(card.textContent).toContain(name)
@@ -86,7 +82,7 @@ test('the schedule is one Wednesday class, 10 to 11 AM', () => {
   const headers = screen.getAllByTestId('schedule-day-header')
   expect(headers.map((h) => h.dataset.day)).toEqual(DAYS_SHOWN)
   expect(within(rows[1]).getAllByRole('cell')).toHaveLength(1)
-  expect(within(table).getByTestId('schedule-entry').textContent).toMatch(/Little Movers/)
+  expect(within(table).getByTestId('schedule-entry').textContent).toMatch(/Moovin/)
   expect(within(table).getByTestId('schedule-entry').textContent).toContain('0–5 years')
 
   // The mobile list carries the same single slot.
@@ -134,28 +130,14 @@ test('credits the Ms. Ryan partnership on the class card, not in the schedule', 
   }
 })
 
-test('the membership includes a Tiny Core class and shows the top-up from $65', () => {
-  // The $24 is not a new price — it is $89 minus the $65 a Tiny Core class already costs,
-  // so a family reading either page reaches the same number. Both figures are derived from
-  // tuition.js by the page, so this asserts the ARITHMETIC rather than two literals.
+test('the membership is greyed out, unpriced, and points to the studio', () => {
+  // Paused 2026-10-12: visible but not bookable, so no price and no perks are advertised.
   renderLittleMovers()
   const membership = screen.getAllByTestId('pricing-card')[2]
-  const tinyCore = priceToNumber(monthlyPriceForMinutes(30))
-  expect(membership.textContent).toContain('$89')
-  expect(membership.textContent).toMatch(/One Tiny Core class/i)
-  expect(membership.textContent).toContain('2–5')
-  expect(membership.textContent).toContain(`$${tinyCore}`) // the Tiny Core price itself
-  expect(membership.textContent).toContain(`$${89 - tinyCore}`) // the top-up
-})
-
-test('the membership does not quote a break-even a family cannot reach', () => {
-  // It said "worth it from about nine classes a month", which a family cannot reach with
-  // one class a week. The pitch leads with the included Tiny Core class instead.
-  renderLittleMovers()
-  const membership = screen.getAllByTestId('pricing-card')[2]
-  expect(membership.textContent).not.toMatch(/nine classes/i)
-  expect(membership.textContent).not.toMatch(/three mornings a week/i)
-  expect(membership.textContent).not.toMatch(/more mornings open/i)
+  expect(membership).toHaveAttribute('aria-disabled', 'true')
+  expect(membership.className).toMatch(/opacity-50/)
+  expect(membership.textContent).toMatch(/contact the studio/i)
+  expect(membership.textContent).not.toMatch(/$89|$24|Tiny Core|Best value/)
 })
 
 test('states the class length range and that no class is drop-off', () => {
@@ -183,14 +165,13 @@ test('renders the three ways to join, each framed by how often a family comes', 
   // Passport
   expect(cards[1].textContent).toContain('Come when you can')
   expect(cards[1].textContent).toContain('Little Movers Passport')
-  expect(cards[1].textContent).toContain('5 visits — $45')
-  expect(cards[1].textContent).toContain('10 visits — $85')
+  expect(cards[1].textContent).toContain('5 visits — $40')
+  expect(cards[1].textContent).toContain('10 visits — $80')
 
-  // Membership
+  // Membership: paused, greyed out, no price.
   expect(cards[2].textContent).toContain("We're here every week")
   expect(cards[2].textContent).toContain('Little Movers Membership')
-  expect(cards[2].textContent).toContain('$89')
-  expect(cards[2].textContent).toContain('per month')
+  expect(cards[2].textContent).toMatch(/contact the studio/i)
 })
 
 test('🔴 no discount is advertised anywhere on the page: no sibling rates, no promo code', () => {
@@ -213,34 +194,6 @@ test('🔴 no discount is advertised anywhere on the page: no sibling rates, no 
   )
   expect(pricingFaq, 'the Little Movers pricing FAQ must exist to be checked').toBeTruthy()
   expect(pricingFaq.a).not.toMatch(/MOOVE26|sibling|additional child|% off/i)
-})
-
-test('only the membership carries the best-value badge', () => {
-  renderLittleMovers()
-  const badges = screen.getAllByTestId('pricing-badge')
-  expect(badges).toHaveLength(1)
-  expect(badges[0].textContent).toBe('Best value')
-  expect(badges[0].closest('[data-testid="pricing-card"]').textContent).toContain(
-    'Little Movers Membership'
-  )
-})
-
-test('membership lists unlimited classes, the Tiny Core inclusion, and its perks (no discounts)', () => {
-  // The Tiny Core class and the $24 top-up sit directly after the unlimited line —
-  // deliberately above the perks, because they are what the money buys.
-  renderLittleMovers()
-  const membership = screen.getAllByTestId('pricing-card')[2]
-  const lines = [...membership.querySelectorAll('[data-testid="pricing-line"]')].map((el) =>
-    el.textContent.replace('✓', '').trim()
-  )
-  expect(lines).toEqual([
-    'Unlimited Little Movers classes',
-    'One Tiny Core class included (ages 2–5, your choice of day)',
-    'Already in a Tiny Core class? Just $24 more a month',
-    'Priority registration for camps',
-    'One free guest pass each month',
-    'Exclusive Little Movers events',
-  ])
 })
 
 test('no longer advertises the retired three-tier membership prices', () => {
@@ -332,4 +285,17 @@ test('the schedule time column is a row header, not a data cell', () => {
   const table = screen.getByTestId('schedule-table')
   const rowHeaders = within(table).getAllByRole('rowheader')
   expect(rowHeaders.map((th) => th.textContent)).toEqual([SLOT])
+})
+
+test('the schedule comes first, right after the hero and before the class card', () => {
+  renderLittleMovers()
+  const schedule = document.getElementById('schedule')
+  const card = screen.getByTestId('little-movers-class')
+  expect(schedule.compareDocumentPosition(card) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  const hero = screen.getByRole('heading', { level: 1 })
+  expect(hero.compareDocumentPosition(schedule) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  const priorSections = [...document.querySelectorAll('main section')].filter(
+    (sec) => sec.compareDocumentPosition(schedule) & Node.DOCUMENT_POSITION_FOLLOWING
+  )
+  expect(priorSections.filter((sec) => !sec.contains(hero))).toHaveLength(0)
 })

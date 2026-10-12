@@ -184,6 +184,7 @@ test('the top-level bar is in the studio\u2019s chosen order', () => {
     'Home',
     'About',
     'Classes',
+    'Specialty Classes',
     'Little Movers',
     'Birthdays',
     'Adults',
@@ -199,10 +200,11 @@ test('the mobile sheet follows the same order as the bar', () => {
   const labels = [...sheet.children]
     .map((group) => group.querySelector('a')?.textContent.trim())
     .filter(Boolean)
-  expect(labels.slice(0, 7)).toEqual([
+  expect(labels.slice(0, 8)).toEqual([
     'Home',
     'About',
     'Classes',
+    'Specialty Classes',
     'Little Movers',
     'Birthdays',
     'Adults',

@@ -26,6 +26,8 @@ const NAV_LINKS = [
       { to: '/tuition', label: 'Tuition' },
     ],
   },
+  // Added 2026-10-12: Musical Theatre and Majorette. Its own top-level item at the studio's request.
+  { to: '/specialty-classes', label: 'Specialty Classes' },
   { to: '/little-movers', label: 'Little Movers' },
   { to: '/birthdays', label: 'Birthdays' },
   // Promoted out of the Classes dropdown to the top bar on 2026-08-11. Labelled

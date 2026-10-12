@@ -16,6 +16,8 @@ const LINK_COLUMNS = [
       { to: '/class-levels', label: 'Class Levels' },
       { to: '/adult-classes', label: 'Adult Classes' },
       { to: '/little-movers', label: 'Little Movers' },
+      { to: '/specialty-classes', label: 'Specialty Classes' },
+      { to: '/majorette', label: 'Majorette' },
       { to: '/tuition', label: 'Tuition' },
     ],
   },

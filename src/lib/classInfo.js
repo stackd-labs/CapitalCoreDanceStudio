@@ -63,6 +63,9 @@ export const CLASS_INFO = {
   'Musical Theatre': {
     description: 'Love to perform? This Broadway-inspired class combines dance, acting, and storytelling while helping students build confidence, stage presence, and performance skills.',
   },
+  'Majorette': {
+    description: 'Step, stand, spin, perform. Dancers learn baton technique, marching and majorette style, and routines that build discipline, teamwork, and confidence.',
+  },
   'Pom Cheer': {
     description: 'Learn pom technique, cheer motions, jumps, and exciting dance combinations while developing teamwork, confidence, and performance quality.',
   },
@@ -138,6 +141,12 @@ const CLASS_PHOTO_RULES = [
     match: (name) => /jazz/i.test(name),
     photo: '/class-jazz.jpg',
     photoAlt: 'A dancer in a jazz line with one arm extended at Capital Core Dance',
+  },
+  {
+    id: 'majorette',
+    match: (name) => /majorette/i.test(name),
+    photo: '/class-majorette.jpg',
+    photoAlt: 'A majorette in a red, white and blue sequin costume and white boots holding a baton overhead, on the Capital Core Dance Majorette Class flyer',
   },
   {
     id: 'pom',

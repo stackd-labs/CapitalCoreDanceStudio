@@ -34,7 +34,7 @@ export const FAQS = [
         q: 'What ages do you teach?',
         // Was "starting at age 2", which stopped being true when Little Movers opened with
         // Baby & Me at 0–18 months.
-        a: 'From babies through adults. Little Movers starts at birth — Baby & Me is 0–18 months — Tiny Core classes are for ages 2–5, Core starts at 5, Core Plus at 8, and our adult evening classes are 16 and up.',
+        a: 'From babies through adults. Little Movers is for ages 0–5, Tiny Core classes are for ages 2–5, Core starts at 5, Core Plus at 8, and our adult evening classes are 16 and up.',
       },
       {
         q: 'Do you have classes for beginners?',
@@ -112,7 +112,7 @@ export const FAQS = [
         // settled it on 2026-08-19 — NO Little Movers class is drop-off, and a
         // caregiver may stay in the room or wait in the studio. The Little Movers page
         // says the same thing above its schedule grid.
-        a: 'Little Movers is our movement-based enrichment programme for infants, toddlers and preschoolers — dance, music, sensory play, tumbling and active exploration. Baby & Me runs 0–18 months, and every class after it takes 18 months to 5 years. No class is drop-off: a parent or caregiver stays with you, either in the class or in the studio.',
+        a: 'Little Movers is our movement-based enrichment programme for infants, toddlers and preschoolers — dance, music, sensory play, tumbling and active exploration. Right now it is one class, Moovin’ & Groovin’, for ages 0–5 on Wednesday mornings, where parents and caregivers participate alongside their little one.',
       },
       {
         q: 'When do Little Movers classes meet?',
@@ -120,7 +120,7 @@ export const FAQS = [
       },
       {
         q: 'How much does Little Movers cost?',
-        a: 'Little Movers is priced separately from studio class tuition. Drop in for $10 a class, buy a Passport of 5 visits for $45 or 10 for $85, or take the monthly membership at $89 — which includes unlimited Little Movers classes plus one Tiny Core class for ages 2–5.',
+        a: 'Little Movers is priced separately from studio class tuition. Drop in for $10 a class, buy a Passport of 5 visits for $40 or 10 for $80. Monthly memberships are paused for now, so contact the studio if you are interested.',
       },
       {
         // 🔴 THIS ANSWER SAID "NOT YET" UNTIL 2026-09-02, months after booking opened.
@@ -132,7 +132,7 @@ export const FAQS = [
         // Keep it in step with src/pages/LittleMovers.jsx: Little Movers is one Wednesday
         // class, 10 to 11 AM (since 2026-10-08), and the portal has to match.
         q: 'Can I register for Little Movers yet?',
-        a: 'Yes. Booking is open on our studio portal at studio.capitalcoredance.com/register/little-movers/book — you can book a single class, a visit Passport or a monthly membership there.',
+        a: 'Yes. Booking is open on our studio portal at studio.capitalcoredance.com/register/little-movers/book — you can book a single class or a visit Passport there.',
       },
     ],
   },

@@ -12,6 +12,8 @@ import Birthdays from './pages/Birthdays'
 import Contact from './pages/Contact'
 import Careers from './pages/Careers'
 import FAQ from './pages/FAQ'
+import Majorette from './pages/Majorette'
+import SpecialtyClasses from './pages/SpecialtyClasses'
 import Blog from './pages/Blog'
 import BlogPost from './pages/BlogPost'
 import Privacy from './pages/Privacy'
@@ -51,6 +53,8 @@ export default function App() {
         <Route path="/class-levels" element={<ClassLevels />} />
         <Route path="/adult-classes" element={<AdultClasses />} />
         <Route path="/little-movers" element={<LittleMovers />} />
+        <Route path="/majorette" element={<Majorette />} />
+        <Route path="/specialty-classes" element={<SpecialtyClasses />} />
         <Route path="/dance-company" element={<DanceCompany />} />
         <Route path="/competition-team" element={<DanceCompany />} />
         <Route path="/birthdays" element={<Birthdays />} />

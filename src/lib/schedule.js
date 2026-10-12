@@ -167,7 +167,8 @@ export const SCHEDULE = [
       { name: 'Core Hip Hop & Breakdancing', time: '6:00 – 6:45 PM', start: '18:00', end: '18:45', infoKey: 'Core Hip Hop & Breakdancing', program: 'core', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'hiphop', studio: 'B', instructor: 'Ms. Jillian' },
       // Moved from Thursday 6:45 and LENGTHENED 30 → 45 minutes to fill the slot
       // Musical Theatre vacated, which keeps the evening gapless into Adult Pom.
-      { name: 'Pom Cheer', time: '6:45 – 7:30 PM', start: '18:45', end: '19:30', infoKey: 'Pom Cheer', program: 'specialty', ages: 'Ages 5+', ageGroups: ['kids', 'teen'], category: 'tumble-cheer', studio: 'B', instructor: 'Ms. Kendall' },
+      // Replaced Pom Cheer in this slot 2026-10-10. Ages 6-17 is a hard window on the portal form.
+      { name: 'Majorette', time: '6:45 – 7:30 PM', start: '18:45', end: '19:30', infoKey: 'Majorette', program: 'specialty', ages: 'Ages 6–17', ageGroups: ['kids', 'teen'], category: 'tumble-cheer', studio: 'B', instructor: 'Ms. Milan' },
       // Adult class names already lead with "Adult", so they are not additionally
       // prefixed with their "Adult Core" tier.
       { name: 'Adult Pom', time: '7:30 – 8:15 PM', start: '19:30', end: '20:15', infoKey: 'Adult Pom', program: 'adult-core', ages: 'Ages 16+ · Adult', ageGroups: ['adult'], category: 'adult', studio: 'B', instructor: 'Ms. Kendall' },

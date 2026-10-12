@@ -114,7 +114,7 @@ test('program filter narrows the calendar to one tier', () => {
   blocks = within(screen.getByTestId('class-grid')).getAllByTestId('class-block')
   expect(blocks).toHaveLength(2)
   for (const block of blocks) {
-    expect(block.getAttribute('aria-label')).toMatch(/^(Musical Theatre|Pom Cheer)/)
+    expect(block.getAttribute('aria-label')).toMatch(/^(Musical Theatre|Majorette)/)
   }
 })
 

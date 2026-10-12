@@ -1,3 +1,4 @@
+import { textAccent } from '../lib/accentContrast'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
@@ -74,6 +75,7 @@ export default function About() {
         jsonLd={simpleBreadcrumb('About', '/about')}
       />
       <Navbar />
+      <main id="main-content" tabIndex={-1} className="flex-1 min-w-0">
 
       <Hero
         // The mockup reads "EST. 2025"; the studio has not confirmed a founding year, so
@@ -206,7 +208,7 @@ export default function About() {
               >
                 <div
                   className="font-body text-[11px] font-semibold tracking-[0.2em] uppercase mb-2.5"
-                  style={{ color: ACCENT }}
+                  style={{ color: textAccent(ACCENT) }}
                 >
                   {eyebrow}
                 </div>
@@ -238,7 +240,7 @@ export default function About() {
                 data-testid="program"
                 className="font-body text-mist-300 text-[15px] flex gap-2.5 leading-relaxed"
               >
-                <span className="flex-shrink-0" style={{ color: ACCENT }}>
+                <span className="flex-shrink-0" style={{ color: textAccent(ACCENT) }}>
                   ✓
                 </span>
                 {p}
@@ -280,6 +282,7 @@ export default function About() {
         action={<InverseAction to="/contact">Become Part of the Family</InverseAction>}
       />
 
+      </main>
       <Footer />
     </div>
   )

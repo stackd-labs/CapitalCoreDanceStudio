@@ -3,7 +3,7 @@ import Footer from './Footer'
 import SEO from './SEO'
 import Hero from './Hero'
 import { PrimaryAction, GhostAction } from './blocks'
-import { onAccent } from '../lib/accentContrast'
+import { onAccent, textAccent } from '../lib/accentContrast'
 
 // The shared shell for Privacy and Terms, from the studio's site mockups (pages 1k and
 // 1l). Both are the identical layout in different accents — a hero, a 260px table of
@@ -35,6 +35,7 @@ export default function LegalPage({
     <div className="min-h-screen flex flex-col bg-ink-base">
       <SEO {...seo} />
       <Navbar />
+      <main id="main-content" tabIndex={-1} className="flex-1 min-w-0">
 
       <Hero
         accent={accent}
@@ -113,7 +114,7 @@ export default function LegalPage({
                             key={i}
                             className="font-body text-[16px] leading-[1.75] text-mist-300 flex gap-3"
                           >
-                            <span className="flex-shrink-0" style={{ color: accent }} aria-hidden="true">
+                            <span className="flex-shrink-0" style={{ color: textAccent(accent) }} aria-hidden="true">
                               —
                             </span>
                             {item}
@@ -135,8 +136,7 @@ export default function LegalPage({
                 Questions?
               </h2>
               <p className="font-body text-mist-400 text-sm leading-relaxed mb-5">
-                Reach out anytime — we&apos;re happy to walk you through any of this or update your
-                information on request.
+                Reach out if you have questions or need help using this site.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <a
@@ -163,6 +163,7 @@ export default function LegalPage({
         </div>
       </section>
 
+      </main>
       <Footer />
     </div>
   )

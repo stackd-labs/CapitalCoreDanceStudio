@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useModalFocus } from '../lib/useModalFocus'
+import { useState } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
@@ -13,7 +14,7 @@ import {
 } from '../components/blocks'
 import { simpleBreadcrumb } from '../lib/schema'
 import { ACCENTS } from '../lib/pageAccents'
-import { onAccent } from '../lib/accentContrast'
+import { onAccent, textAccent } from '../lib/accentContrast'
 
 // Rebuilt 2026-08-11 to the studio's site mockup (page 1d, accent pink): hero, a
 // three-card package grid, and a numbered "how it works" row. The studio's own content
@@ -140,7 +141,7 @@ function CheckList({ items, testId }) {
           data-testid={testId}
           className="font-body text-mist-300 text-sm flex gap-2.5 leading-relaxed"
         >
-          <span className="flex-shrink-0" style={{ color: ACCENT }}>
+          <span className="flex-shrink-0" style={{ color: textAccent(ACCENT) }}>
             ✓
           </span>
           {item}
@@ -153,14 +154,7 @@ function CheckList({ items, testId }) {
 export default function Birthdays() {
   const [activeFlyer, setActiveFlyer] = useState(null)
 
-  useEffect(() => {
-    if (!activeFlyer) return
-    const onKeyDown = (e) => {
-      if (e.key === 'Escape') setActiveFlyer(null)
-    }
-    document.addEventListener('keydown', onKeyDown)
-    return () => document.removeEventListener('keydown', onKeyDown)
-  }, [activeFlyer])
+  const flyerPanel = useModalFocus(!!activeFlyer, () => setActiveFlyer(null))
 
   return (
     <div className="min-h-screen flex flex-col bg-ink-base">
@@ -171,6 +165,7 @@ export default function Birthdays() {
         jsonLd={BIRTHDAYS_JSON_LD}
       />
       <Navbar />
+      <main id="main-content" tabIndex={-1} className="flex-1 min-w-0">
 
       <Hero
         eyebrow="90 minutes · up to 10 children"
@@ -210,7 +205,7 @@ export default function Birthdays() {
                   {name}
                 </div>
                 <div>
-                  <div className="font-display text-[44px] leading-none" style={{ color: ACCENT }}>
+                  <div className="font-display text-[44px] leading-none" style={{ color: textAccent(ACCENT) }}>
                     {price}
                   </div>
                   <div className="font-body text-mist-500 text-xs uppercase tracking-[0.14em] mt-2">
@@ -220,7 +215,7 @@ export default function Birthdays() {
                 <div className="flex flex-col gap-2.5 flex-1">
                   {items.map((item) => (
                     <div key={item} className="flex gap-2.5 font-body text-[14.5px] leading-[1.5] text-mist-400">
-                      <span style={{ color: ACCENT }}>—</span>
+                      <span style={{ color: textAccent(ACCENT) }}>—</span>
                       <span>{item}</span>
                     </div>
                   ))}
@@ -230,7 +225,7 @@ export default function Birthdays() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="border-[1.5px] font-body font-bold text-[13.5px] py-3.5 text-center transition-colors hover:text-ink-base"
-                  style={{ borderColor: ACCENT, color: ACCENT }}
+                  style={{ borderColor: ACCENT, color: textAccent(ACCENT) }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background = ACCENT
                     e.currentTarget.style.color = onAccent(ACCENT)
@@ -260,7 +255,7 @@ export default function Birthdays() {
                    was a hand-copied duplicate of the pink hex, and it survived the
                    2026-08-28 lightening unchanged, leaving one stale numeral column on an
                    otherwise retuned page. */
-                style={{ color: `${ACCENT}8c` }}
+                style={{ color: ACCENT }}
               >
                 {n}
               </div>
@@ -298,7 +293,7 @@ export default function Birthdays() {
                   data-testid="theme"
                   className="font-body text-mist-300 text-sm flex gap-2.5 leading-relaxed"
                 >
-                  <span className="flex-shrink-0" style={{ color: ACCENT }}>
+                  <span className="flex-shrink-0" style={{ color: textAccent(ACCENT) }}>
                     ★
                   </span>
                   {theme}
@@ -368,11 +363,14 @@ export default function Birthdays() {
         }
       />
 
+      </main>
       <Footer />
 
       {/* Flyer lightbox */}
       {activeFlyer && (
         <div
+          ref={flyerPanel}
+          tabIndex={-1}
           role="dialog"
           aria-modal="true"
           aria-label={activeFlyer.alt}

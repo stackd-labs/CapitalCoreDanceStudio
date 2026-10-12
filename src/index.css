@@ -20,7 +20,9 @@ body {
 .cc-marquee-track {
   display: inline-flex;
   white-space: nowrap;
-  animation: cc-marquee 24s linear infinite;
+  animation: none;
+  white-space: normal;
+  flex-wrap: wrap;
   will-change: transform;
 }
 @keyframes cc-rise {
@@ -32,4 +34,15 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .cc-marquee-track { animation: none; }
   .cc-rise { animation: none; }
+}
+
+/* Accessibility: keyboard focus, reflow, and user motion preferences. */
+.skip-link { position: fixed; top: 8px; left: 8px; z-index: 1000; padding: 12px 18px; background: #fff; color: #101828; transform: translateY(-160%); font-weight: 700; }
+.skip-link:focus { transform: none; }
+:focus-visible { outline: 3px solid #fff; outline-offset: 3px; box-shadow: 0 0 0 5px #172554; }
+main { min-width: 0; }
+[id] { scroll-margin-top: 6rem; }
+p, a { overflow-wrap: anywhere; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }

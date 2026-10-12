@@ -1,3 +1,4 @@
+import { textAccent } from '../lib/accentContrast'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
@@ -382,7 +383,7 @@ function RoleCard({ role }) {
         <span
           aria-hidden="true"
           className="flex items-center justify-center w-9 h-9 border font-body text-[20px] leading-none"
-          style={{ borderColor: ACCENT, color: ACCENT }}
+          style={{ borderColor: ACCENT, color: textAccent(ACCENT) }}
         >
           {open ? '−' : '+'}
         </span>
@@ -401,7 +402,7 @@ function RoleCard({ role }) {
               <div key={section.heading} className="mt-8">
                 <h4
                   className="font-body font-bold text-[11.5px] tracking-[0.2em] uppercase mb-3.5"
-                  style={{ color: ACCENT }}
+                  style={{ color: textAccent(ACCENT) }}
                 >
                   {section.heading}
                 </h4>
@@ -417,7 +418,7 @@ function RoleCard({ role }) {
                   <ul className="flex flex-col gap-2.5 m-0 p-0 list-none">
                     {section.items.map((item) => (
                       <li key={item} className="flex items-start gap-3">
-                        <span className="font-bold mt-0.5 flex-shrink-0" style={{ color: ACCENT }}>
+                        <span className="font-bold mt-0.5 flex-shrink-0" style={{ color: textAccent(ACCENT) }}>
                           &#9656;
                         </span>
                         <span className="font-body text-[15px] leading-[1.6] text-mist-300">
@@ -470,6 +471,7 @@ export default function Careers() {
         jsonLd={simpleBreadcrumb('Careers', '/careers')}
       />
       <Navbar />
+      <main id="main-content" tabIndex={-1} className="flex-1 min-w-0">
 
       <Hero
         eyebrow="Hiring for 2026 – 2027"
@@ -492,7 +494,7 @@ export default function Careers() {
         }
       />
 
-      <main className="flex-1">
+      <div className="flex-1">
         {/* Open roles */}
         <section id="open-roles" className="bg-ink-deep px-6 lg:px-24 py-16 lg:py-20 scroll-mt-24">
           <div className="max-w-[1440px] mx-auto">
@@ -517,7 +519,7 @@ export default function Careers() {
             <p className="font-body text-[15px] leading-relaxed text-mist-400 mt-7 m-0">
               Teach something we have not listed? We keep general applications on file and read
               every one.{' '}
-              <Link to={APPLY_PATH} className="font-bold hover:underline" style={{ color: ACCENT }}>
+              <Link to={APPLY_PATH} className="font-bold hover:underline" style={{ color: textAccent(ACCENT) }}>
                 Tell us what you teach &rarr;
               </Link>
             </p>
@@ -608,7 +610,7 @@ export default function Careers() {
                         key={point}
                         className="flex items-start gap-3 border-b border-white/[0.12] pb-3"
                       >
-                        <span className="font-bold mt-0.5 flex-shrink-0" style={{ color: ACCENT }}>
+                        <span className="font-bold mt-0.5 flex-shrink-0" style={{ color: textAccent(ACCENT) }}>
                           &#9656;
                         </span>
                         <span className="font-body text-[15px] leading-[1.5] text-mist-300">
@@ -635,7 +637,7 @@ export default function Careers() {
                 <div key={step.n} className="border-t-[3px] pt-[18px]" style={{ borderColor: ACCENT }}>
                   <div
                     className="font-body font-semibold text-[11px] tracking-[0.2em] uppercase mb-2.5"
-                    style={{ color: ACCENT }}
+                    style={{ color: textAccent(ACCENT) }}
                   >
                     {step.n}
                   </div>
@@ -690,7 +692,7 @@ export default function Careers() {
             </div>
           </div>
         </section>
-      </main>
+      </div>
 
       <CtaBand
         headline="Come teach a class"
@@ -698,6 +700,7 @@ export default function Careers() {
         action={<InverseAction to={APPLY_PATH}>Get in touch</InverseAction>}
       />
 
+      </main>
       <Footer />
     </div>
   )

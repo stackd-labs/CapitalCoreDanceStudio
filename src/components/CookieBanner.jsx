@@ -39,6 +39,7 @@ export default function CookieBanner() {
       // ignore
     }
     setVisible(false)
+    document.getElementById('main-content')?.focus({ preventScroll: true })
   }
 
   if (!visible) return null
@@ -47,7 +48,7 @@ export default function CookieBanner() {
     // Outer wrapper has pointer-events-none so empty space around the banner
     // never intercepts clicks on the form/submit buttons underneath.
     <div
-      role="dialog"
+      role="region"
       aria-live="polite"
       aria-label="Privacy and cookie notice"
       className="fixed inset-x-0 bottom-0 z-50 px-3 pb-3 sm:px-4 sm:pb-4 pointer-events-none"

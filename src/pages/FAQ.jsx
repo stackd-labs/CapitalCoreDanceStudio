@@ -1,3 +1,4 @@
+import { textAccent } from '../lib/accentContrast'
 import { useState } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
@@ -48,7 +49,7 @@ function FAQItem({ q, a }) {
           className={`font-display text-[22px] leading-none flex-none transition-transform ${
             open ? 'rotate-45' : ''
           }`}
-          style={{ color: ACCENT }}
+          style={{ color: textAccent(ACCENT) }}
           aria-hidden="true"
         >
           +
@@ -80,6 +81,7 @@ export default function FAQ() {
       />
 
       <Navbar />
+      <main id="main-content" tabIndex={-1} className="flex-1 min-w-0">
 
       <Hero
         eyebrow="For new families"
@@ -124,6 +126,7 @@ export default function FAQ() {
         action={<InverseAction to="/contact">Contact Us</InverseAction>}
       />
 
+      </main>
       <Footer />
     </div>
   )

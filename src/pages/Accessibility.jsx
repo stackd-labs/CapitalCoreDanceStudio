@@ -1,0 +1,8 @@
+import LegalPage from '../components/LegalPage'
+export default function Accessibility() {
+  return <LegalPage accent="#89e5a9" seo={{ title: 'Accessibility | Capital Core Dance Studio', description: 'Accessibility information and ways to request help using our website.', canonical: '/accessibility' }} eyebrow="Using our website" title={['Accessibility']} tagline="Help using our website" intro="We want families and dancers to be able to use our website and find the information they need." lastUpdated="October 10, 2026" readLabel="Read the statement" askLabel="Contact us" sections={[
+    { title: 'Our approach', body: ['We use the Web Content Accessibility Guidelines (WCAG) Level AA as a reference for improvements. Our work includes keyboard navigation, visible focus, descriptive labels, readable contrast, and layouts that adapt to smaller screens.'] },
+    { title: 'Scope and limitations', body: ['We have reviewed public website pages with automated checks and keyboard checks. This is not a claim that every page meets every accessibility requirement. Native screen-reader testing remains to be completed. Third-party services, the separate studio portal, and downloadable documents may have different accessibility limitations.'] },
+    { title: 'Get help or report a barrier', body: [<>Email <a className="underline" href="mailto:info@capitalcoredance.com">info@capitalcoredance.com</a> or call <a className="underline" href="tel:8042344014">804-234-4014</a> if you have difficulty using the site or need information in another format. Include the page address, what you were trying to do, and the difficulty you encountered. You may also tell us your browser or assistive technology if you are comfortable sharing it.</>] },
+  ]} />
+}

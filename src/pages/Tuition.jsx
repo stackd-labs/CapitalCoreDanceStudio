@@ -17,7 +17,7 @@ import {
   priceToNumber,
 } from '../lib/tuition'
 import { ACCENTS } from '../lib/pageAccents'
-import { onAccent } from '../lib/accentContrast'
+import { onAccent, textAccent } from '../lib/accentContrast'
 
 // Rebuilt 2026-08-11 to the studio's site mockup (page 1h): hero, a card grid of prices,
 // and a "fees at a glance" label/value list. Every figure is the studio's own — nothing
@@ -110,6 +110,7 @@ export default function Tuition() {
         jsonLd={simpleBreadcrumb('Tuition', '/tuition')}
       />
       <Navbar />
+      <main id="main-content" tabIndex={-1} className="flex-1 min-w-0">
 
       <Hero
         eyebrow="2026 – 2027 rates"
@@ -156,7 +157,7 @@ export default function Tuition() {
                     {duration} Classes
                   </div>
                   <div className="flex items-baseline gap-2.5">
-                    <span className="font-display text-[52px] leading-none" style={{ color: ACCENT }}>
+                    <span className="font-display text-[52px] leading-none" style={{ color: textAccent(ACCENT) }}>
                       {monthly}
                     </span>
                     <span className="font-body text-[12px] font-semibold tracking-[0.14em] text-mist-500 uppercase">
@@ -167,13 +168,13 @@ export default function Tuition() {
                     {examples.length > 0 ? (
                       examples.map((name) => (
                         <div key={name} className="flex gap-2.5">
-                          <span style={{ color: ACCENT }}>—</span>
+                          <span style={{ color: textAccent(ACCENT) }}>—</span>
                           <span>{name}</span>
                         </div>
                       ))
                     ) : (
                       <div className="flex gap-2.5">
-                        <span style={{ color: ACCENT }}>—</span>
+                        <span style={{ color: textAccent(ACCENT) }}>—</span>
                         <span>Longer-format classes — none on the Fall 2026 schedule.</span>
                       </div>
                     )}
@@ -181,7 +182,7 @@ export default function Tuition() {
                   <Link
                     to="/classes"
                     className="border-[1.5px] font-body font-bold text-[13.5px] py-3.5 text-center transition-colors"
-                    style={{ borderColor: ACCENT, color: ACCENT }}
+                    style={{ borderColor: ACCENT, color: textAccent(ACCENT) }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.background = ACCENT
                       e.currentTarget.style.color = onAccent(ACCENT)
@@ -253,14 +254,14 @@ export default function Tuition() {
             <ul className="flex flex-col gap-2.5 mb-4">
               {PAYMENT.map((item) => (
                 <li key={item} className="font-body text-mist-300 text-sm flex gap-2.5 leading-relaxed">
-                  <span className="flex-shrink-0" style={{ color: ACCENT }}>
+                  <span className="flex-shrink-0" style={{ color: textAccent(ACCENT) }}>
                     ✓
                   </span>
                   {item}
                 </li>
               ))}
               <li className="font-body text-mist-300 text-sm flex gap-2.5 leading-relaxed">
-                <span className="flex-shrink-0" style={{ color: ACCENT }}>
+                <span className="flex-shrink-0" style={{ color: textAccent(ACCENT) }}>
                   ✓
                 </span>
                 <span>
@@ -270,7 +271,7 @@ export default function Tuition() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-semibold hover:underline"
-                    style={{ color: ACCENT }}
+                    style={{ color: textAccent(ACCENT) }}
                   >
                     studio portal
                   </a>
@@ -311,7 +312,7 @@ export default function Tuition() {
                 </div>
                 <div
                   className="font-display text-[34px] leading-none mt-3"
-                  style={{ color: ACCENT }}
+                  style={{ color: textAccent(ACCENT) }}
                 >
                   {price}
                 </div>
@@ -320,7 +321,7 @@ export default function Tuition() {
                 </p>
                 <span
                   className="font-body text-[13px] font-bold mt-5"
-                  style={{ color: ACCENT }}
+                  style={{ color: textAccent(ACCENT) }}
                 >
                   See {name} →
                 </span>
@@ -333,6 +334,7 @@ export default function Tuition() {
         </div>
       </section>
 
+      </main>
       <Footer />
     </div>
   )

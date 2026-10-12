@@ -1,3 +1,4 @@
+import { textAccent } from '../lib/accentContrast'
 import { useState } from 'react'
 import PhotoSlot from './PhotoSlot'
 
@@ -40,7 +41,7 @@ export default function StaffCard({ person, accent }) {
         <div
           data-testid="staff-role"
           className="font-body text-[11.5px] font-semibold tracking-[0.16em] uppercase mb-1"
-          style={{ color: accent }}
+          style={{ color: textAccent(accent) }}
         >
           {role}
         </div>

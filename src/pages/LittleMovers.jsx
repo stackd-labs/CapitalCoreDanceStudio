@@ -6,7 +6,7 @@ import Hero from '../components/Hero'
 import { Kicker, SectionHeading, PrimaryAction, GhostAction, CtaBand, InverseAction } from '../components/blocks'
 import { simpleBreadcrumb } from '../lib/schema'
 import { ACCENTS } from '../lib/pageAccents'
-import { onAccent } from '../lib/accentContrast'
+import { onAccent, textAccent } from '../lib/accentContrast'
 
 // Rebuilt 2026-08-11 to the studio's site mockup (page 1c, accent teal). The mockup
 // carries a hero, a row of age-tier cards and a "what a class looks like" strip; the
@@ -199,7 +199,7 @@ export default function LittleMovers() {
                     <th
                       scope="row"
                       className="text-left font-body text-sm font-semibold py-4 pr-4 whitespace-nowrap"
-                      style={{ color: ACCENT }}
+                      style={{ color: textAccent(ACCENT) }}
                     >
                       {TIME_SLOTS[i]}
                     </th>
@@ -232,7 +232,7 @@ export default function LittleMovers() {
                         <ScheduleCell entry={row[day]} />
                         <div
                           className="font-body text-sm font-medium flex-shrink-0 text-right"
-                          style={{ color: ACCENT }}
+                          style={{ color: textAccent(ACCENT) }}
                         >
                           {TIME_SLOTS[i]}
                         </div>
@@ -265,7 +265,7 @@ export default function LittleMovers() {
                 data-testid="little-movers-class"
                 className="border border-white/[0.12] px-7 pt-8 pb-[34px]"
               >
-                <div className="font-display text-[38px] leading-none" style={{ color: ACCENT }}>
+                <div className="font-display text-[38px] leading-none" style={{ color: textAccent(ACCENT) }}>
                   {ages}
                 </div>
                 <div className="flex items-start justify-between gap-3 mt-3 mb-3">
@@ -283,7 +283,7 @@ export default function LittleMovers() {
                   <div
                     data-testid="class-partner"
                     className="font-body text-[12px] font-semibold tracking-[0.14em] uppercase"
-                    style={{ color: ACCENT }}
+                    style={{ color: textAccent(ACCENT) }}
                   >
                     {partner}
                   </div>
@@ -308,7 +308,7 @@ export default function LittleMovers() {
               >
                 <div
                   className="font-body text-[11px] font-semibold tracking-[0.2em] uppercase mb-2.5"
-                  style={{ color: ACCENT }}
+                  style={{ color: textAccent(ACCENT) }}
                 >
                   {n}
                 </div>
@@ -336,7 +336,7 @@ export default function LittleMovers() {
                 data-testid="benefit"
                 className="font-body text-mist-300 text-sm flex gap-2.5"
               >
-                <span className="flex-shrink-0" style={{ color: ACCENT }}>
+                <span className="flex-shrink-0" style={{ color: textAccent(ACCENT) }}>
                   ✓
                 </span>
                 {item}
@@ -370,7 +370,7 @@ export default function LittleMovers() {
                 <div className="flex items-center justify-between gap-3 mt-1">
                   <p
                     className="font-body text-[10px] font-bold tracking-[0.3em] uppercase"
-                    style={{ color: ACCENT }}
+                    style={{ color: textAccent(ACCENT) }}
                   >
                     {label}
                   </p>
@@ -398,7 +398,7 @@ export default function LittleMovers() {
                       data-testid="pricing-line"
                       className="font-body text-mist-300 text-sm flex gap-2.5"
                     >
-                      <span className="flex-shrink-0" style={{ color: ACCENT }}>
+                      <span className="flex-shrink-0" style={{ color: textAccent(ACCENT) }}>
                         ✓
                       </span>
                       {line}
@@ -411,7 +411,7 @@ export default function LittleMovers() {
 
           <p className="font-body text-mist-500 text-xs mt-8 text-center">
             Little Movers pricing is separate from studio class tuition. See{' '}
-            <Link to="/tuition" className="font-semibold hover:underline" style={{ color: ACCENT }}>
+            <Link to="/tuition" className="font-semibold hover:underline" style={{ color: textAccent(ACCENT) }}>
               Tuition
             </Link>{' '}
             for our regular class rates.

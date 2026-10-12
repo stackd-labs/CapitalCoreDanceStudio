@@ -137,6 +137,7 @@ export default function Home() {
         jsonLd={localBusinessSchema}
       />
       <Navbar />
+      <main id="main-content" tabIndex={-1} className="flex-1 min-w-0">
 
       <Hero
         /* The five-accent stripe panel belongs to Home alone — every other page uses a
@@ -357,6 +358,7 @@ export default function Home() {
         action={<InverseAction to="/classes">Browse the schedule</InverseAction>}
       />
 
+      </main>
       <Footer />
     </div>
   )

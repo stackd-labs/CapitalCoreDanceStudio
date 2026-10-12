@@ -15,7 +15,7 @@ import {
   priceToNumber,
 } from '../lib/tuition'
 import { ACCENTS } from '../lib/pageAccents'
-import { onAccent } from '../lib/accentContrast'
+import { onAccent, textAccent } from '../lib/accentContrast'
 
 // Converted to the redesign 2026-08-11. No mockup covers this page, so it follows the
 // system. Promoted the same day from the Classes dropdown to a top-level nav item, and
@@ -145,6 +145,7 @@ export default function AdultClasses() {
         jsonLd={ADULT_CLASSES_JSON_LD}
       />
       <Navbar />
+      <main id="main-content" tabIndex={-1} className="flex-1 min-w-0">
 
       <Hero
         eyebrow="Ages 16 and up"
@@ -208,7 +209,7 @@ export default function AdultClasses() {
                   <div
                     data-testid="adult-class-when"
                     className="font-body text-[11.5px] font-semibold tracking-[0.14em] uppercase mb-3"
-                    style={{ color: ACCENT }}
+                    style={{ color: textAccent(ACCENT) }}
                   >
                     {day}
                     {' · '}
@@ -246,11 +247,11 @@ export default function AdultClasses() {
 
           <p className="font-body text-mist-500 text-xs mt-8 text-center">
             Days, times and prices are from the Fall 2026 schedule. See the{' '}
-            <Link to="/classes" className="font-semibold hover:underline" style={{ color: ACCENT }}>
+            <Link to="/classes" className="font-semibold hover:underline" style={{ color: textAccent(ACCENT) }}>
               full schedule
             </Link>{' '}
             for everything on the calendar, or{' '}
-            <Link to="/tuition" className="font-semibold hover:underline" style={{ color: ACCENT }}>
+            <Link to="/tuition" className="font-semibold hover:underline" style={{ color: textAccent(ACCENT) }}>
               Tuition
             </Link>{' '}
             for registration fees.
@@ -283,7 +284,7 @@ export default function AdultClasses() {
                 <div
                   data-testid="adult-headline-price"
                   className="font-display text-[56px] leading-none"
-                  style={{ color: ACCENT }}
+                  style={{ color: textAccent(ACCENT) }}
                 >
                   {UNIFORM.monthly}
                 </div>
@@ -314,7 +315,7 @@ export default function AdultClasses() {
                 <div
                   data-testid="adult-pass-price"
                   className="font-display text-[56px] leading-none"
-                  style={{ color: ACCENT }}
+                  style={{ color: textAccent(ACCENT) }}
                 >
                   {money(PASS.monthly)}
                 </div>
@@ -335,7 +336,7 @@ export default function AdultClasses() {
                 <div
                   data-testid="adult-dropin-price"
                   className="font-display text-[56px] leading-none"
-                  style={{ color: ACCENT }}
+                  style={{ color: textAccent(ACCENT) }}
                 >
                   {money(ADULT_PRICING.dropIn)}
                 </div>
@@ -351,7 +352,7 @@ export default function AdultClasses() {
               <Link
                 to="/contact"
                 className="font-semibold hover:underline"
-                style={{ color: ACCENT }}
+                style={{ color: textAccent(ACCENT) }}
               >
                 get in touch to try one
               </Link>{' '}
@@ -367,7 +368,7 @@ export default function AdultClasses() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-semibold hover:underline"
-                style={{ color: ACCENT }}
+                style={{ color: textAccent(ACCENT) }}
               >
                 Visit ClassPass
               </a>{' '}
@@ -414,6 +415,7 @@ export default function AdultClasses() {
         }
       />
 
+      </main>
       <Footer />
     </div>
   )

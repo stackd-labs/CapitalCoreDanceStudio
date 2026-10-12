@@ -1,3 +1,4 @@
+import { textAccent } from '../lib/accentContrast'
 import AccentStripe from './AccentStripe'
 import PhotoSlot from './PhotoSlot'
 import { useAccent } from '../lib/useAccent'
@@ -115,7 +116,7 @@ export default function Hero({
           ) : (
             <div
               className="font-body font-semibold text-[12px] tracking-[0.32em] uppercase mb-[18px]"
-              style={{ color }}
+              style={{ color: textAccent(color) }}
             >
               {eyebrow}
             </div>

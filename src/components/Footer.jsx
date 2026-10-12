@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { accentForPath, ACCENTS } from '../lib/pageAccents'
-import { onAccent } from '../lib/accentContrast'
+import { onAccent, textAccent } from '../lib/accentContrast'
 
 // Restyled 2026-08-11 to the studio's site mockups: four columns on the deep navy, a
 // heavy top border in the page's accent, Barlow throughout. Every address, link and
@@ -40,6 +40,7 @@ const LINK_COLUMNS = [
       { to: '/contact', label: 'Contact Us' },
       { to: '/privacy', label: 'Privacy' },
       { to: '/terms', label: 'Terms' },
+      { to: '/accessibility', label: 'Accessibility' },
     ],
   },
 ]
@@ -152,7 +153,7 @@ export default function Footer() {
           <div key={heading}>
             <div
               className="text-[11px] font-semibold uppercase tracking-[0.2em] mb-4"
-              style={{ color: accent }}
+              style={{ color: textAccent(accent) }}
             >
               {heading}
             </div>
@@ -173,7 +174,7 @@ export default function Footer() {
         <p className="text-mist-500 text-xs">
           © 2026 Capital Core Dance Studio. All rights reserved.
         </p>
-        <p className="text-mist-500/60 text-xs">Managed by Hicks Virtual Solutions LLC</p>
+        <p className="text-mist-500 text-xs">Managed by Hicks Virtual Solutions LLC</p>
       </div>
     </footer>
   )

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import AccentStripe from './AccentStripe'
 import { useAccent } from '../lib/useAccent'
-import { onAccent } from '../lib/accentContrast'
+import { onAccent, textAccent } from '../lib/accentContrast'
 
 // Repeating layout pieces from the site mockups, in one file so their measurements stay
 // together. Every size here is transcribed from the mockup, not chosen — change them
@@ -65,7 +65,7 @@ export function Kicker({ accent, children, className = '' }) {
   return (
     <div
       className={`font-body font-semibold text-[11.5px] tracking-[0.3em] uppercase mb-4 ${className}`}
-      style={{ color }}
+      style={{ color: textAccent(color) }}
     >
       {children}
     </div>
@@ -113,7 +113,7 @@ export function CtaBand({ accent, headline, body, action }) {
         </h2>
         {body && (
           <p
-            className="font-body text-[15px] leading-relaxed mt-4 opacity-80"
+            className="font-body text-[15px] leading-relaxed mt-4"
             style={{ color: onAccent(color) }}
           >
             {body}
@@ -147,7 +147,7 @@ export function StatRow({ stats, accent, className = '' }) {
     >
       {stats.map(({ value, label }) => (
         <div key={label}>
-          <div className="font-display text-[40px] leading-none" style={{ color }}>
+          <div className="font-display text-[40px] leading-none" style={{ color: textAccent(color) }}>
             {value}
           </div>
           <div className="font-body font-semibold text-[11px] tracking-[0.16em] text-mist-500 uppercase mt-1.5">

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { onAccent } from '../lib/accentContrast'
 import AccentStripe from './AccentStripe'
 import { accentForPath } from '../lib/pageAccents'
 
@@ -76,7 +77,8 @@ function NavGroup({ link, active, accent }) {
       ref={groupRef}
       className="relative flex items-end gap-1"
       onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+      onMouseLeave={() => { if (!groupRef.current?.contains(document.activeElement)) setOpen(false) }}
+      onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false) }}
     >
       <Link
         to={link.to}
@@ -103,7 +105,7 @@ function NavGroup({ link, active, accent }) {
           if (e.detail === 0) setOpen((o) => !o)
           else setOpen(true)
         }}
-        className="text-mist-200 hover:text-white text-[9px] leading-none px-0.5 pb-2"
+        className="text-mist-200 hover:text-white text-[9px] leading-none min-w-6 min-h-6 px-1 pb-2"
       >
         ▼
       </button>
@@ -136,6 +138,7 @@ function NavGroup({ link, active, accent }) {
 export default function Navbar() {
   const { pathname } = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
+  const menuButton = useRef(null)
   const pageAccent = accentForPath(pathname)
 
   // A parent is active on its own path or on any of its children's paths.
@@ -145,7 +148,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-ink-base sticky top-0 z-50">
+    <nav aria-label="Primary" onKeyDown={(event) => { if (event.key === 'Escape' && menuOpen) { setMenuOpen(false); menuButton.current?.focus() } }} className="bg-ink-base sticky top-0 z-50">
       <div className="max-w-[1440px] mx-auto px-6 lg:px-11 h-[76px] grid grid-cols-[1fr_auto_1fr] items-center gap-4">
         <Link to="/" className="flex items-center gap-3 flex-shrink-0 justify-self-start">
           <img
@@ -190,7 +193,7 @@ export default function Navbar() {
           <Link
             to="/contact"
             className="hidden lg:inline-flex font-body font-bold text-[13.5px] text-white px-[22px] py-3 transition-opacity hover:opacity-90"
-            style={{ background: pageAccent }}
+            style={{ background: pageAccent, color: onAccent(pageAccent) }}
           >
             Contact Us
           </Link>
@@ -200,6 +203,8 @@ export default function Navbar() {
             onClick={() => setMenuOpen((o) => !o)}
             aria-expanded={menuOpen}
             aria-label="Toggle menu"
+            ref={menuButton}
+            aria-controls="mobile-navigation"
           >
             {menuOpen ? '✕' : '☰'}
           </button>
@@ -209,6 +214,7 @@ export default function Navbar() {
       {/* Mobile sheet */}
       {menuOpen && (
         <div
+          id="mobile-navigation"
           data-testid="mobile-menu"
           className="lg:hidden bg-ink-deep border-t border-white/10 px-6 py-5 flex flex-col gap-4"
         >
@@ -247,7 +253,7 @@ export default function Navbar() {
             to="/contact"
             onClick={() => setMenuOpen(false)}
             className="font-body font-bold text-sm text-white px-5 py-3 text-center mt-1"
-            style={{ background: pageAccent }}
+            style={{ background: pageAccent, color: onAccent(pageAccent) }}
           >
             Contact Us
           </Link>

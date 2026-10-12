@@ -1,3 +1,4 @@
+import { textAccent } from '../lib/accentContrast'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
@@ -97,7 +98,7 @@ const COMPANY_INCLUDES = [
 
 function Kicker({ children }) {
   return (
-    <p className="text-xs font-bold tracking-[0.4em] uppercase mb-4" style={{ color: RED }}>{children}</p>
+    <p className="text-xs font-bold tracking-[0.4em] uppercase mb-4" style={{ color: textAccent(RED) }}>{children}</p>
   )
 }
 
@@ -122,7 +123,7 @@ function Marquee() {
           <div key={g} className="flex items-center" aria-hidden={g === 1 ? 'true' : undefined}>
             {half.map((w, i) => (
               <span key={`${g}-${i}`} className="flex items-center gap-8 px-8 font-display uppercase text-2xl text-white">
-                {w}<span style={{ color: RED }}>★</span>
+                {w}<span style={{ color: textAccent(RED) }}>★</span>
               </span>
             ))}
           </div>
@@ -144,6 +145,7 @@ export default function DanceCompany() {
         jsonLd={[simpleBreadcrumb('Dance Company', '/dance-company')]}
       />
       <Navbar />
+      <main id="main-content" tabIndex={-1} className="flex-1 min-w-0">
 
       <Hero
         eyebrow="Founding Season · 2026 – 2027"
@@ -164,7 +166,7 @@ export default function DanceCompany() {
 
       <Marquee />
 
-      <main className="flex-1">
+      <div className="flex-1">
         {/* ── Intro (white · split) ───────────────────────────────────── */}
         <section className="bg-ink-deep px-6 lg:px-24 py-16 lg:py-20">
           <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 items-center">
@@ -179,7 +181,7 @@ export default function DanceCompany() {
                 First-time competitor or seasoned veteran — this program pushes every dancer to their full
                 potential through elite instruction, real performance opportunities, and a team that has your back.
               </p>
-              <p className="font-display uppercase text-xl sm:text-2xl leading-tight" style={{ color: RED }}>
+              <p className="font-display uppercase text-xl sm:text-2xl leading-tight" style={{ color: textAccent(RED) }}>
                 Every great dancer starts with a willingness to learn.
               </p>
             </div>
@@ -196,7 +198,7 @@ export default function DanceCompany() {
             <ul className="grid grid-cols-1 gap-y-4">
               {VISION.map((v) => (
                 <li key={v} className="flex items-center gap-4 border-b border-white/15 pb-3">
-                  <span className="font-display text-xl" style={{ color: RED }}>/</span>
+                  <span className="font-display text-xl" style={{ color: textAccent(RED) }}>/</span>
                   <span className="font-display uppercase text-xl sm:text-2xl text-white">{v}</span>
                 </li>
               ))}
@@ -213,14 +215,14 @@ export default function DanceCompany() {
                 We welcome dancers of every level — beginner-friendly, with room for experienced dancers to keep
                 pushing.
               </p>
-              <p className="font-display uppercase text-2xl mt-6" style={{ color: RED }}>
+              <p className="font-display uppercase text-2xl mt-6" style={{ color: textAccent(RED) }}>
                 There is a place for them here.
               </p>
             </div>
             <ul className="flex flex-col gap-3">
               {EVERY_DANCER.map((e) => (
                 <li key={e} className="flex items-start gap-3 text-mist-300 border-b border-white/[0.12] pb-3">
-                  <span className="font-bold mt-0.5 flex-shrink-0" style={{ color: RED }}>▸</span>
+                  <span className="font-bold mt-0.5 flex-shrink-0" style={{ color: textAccent(RED) }}>▸</span>
                   <span className="text-base">{e}</span>
                 </li>
               ))}
@@ -271,7 +273,7 @@ export default function DanceCompany() {
             <div>
               <Kicker>Led By</Kicker>
               <h2 className="font-display uppercase text-5xl sm:text-6xl leading-[0.9] text-white">Yul Tyler Jr.</h2>
-              <p className="font-bold text-sm tracking-[0.2em] uppercase mt-4" style={{ color: RED }}>
+              <p className="font-bold text-sm tracking-[0.2em] uppercase mt-4" style={{ color: textAccent(RED) }}>
                 Nationally Award-Winning Competition Team Director
               </p>
             </div>
@@ -297,7 +299,7 @@ export default function DanceCompany() {
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2.5">
               {TRAINING.map((t) => (
                 <li key={t} className="flex items-center gap-3 border-b border-white/[0.12] pb-2">
-                  <span className="font-display" style={{ color: RED }}>/</span>
+                  <span className="font-display" style={{ color: textAccent(RED) }}>/</span>
                   <span className="font-display uppercase text-lg text-white">{t}</span>
                 </li>
               ))}
@@ -312,7 +314,7 @@ export default function DanceCompany() {
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
               {WHY.map((w) => (
                 <li key={w} className="flex items-start gap-3">
-                  <span className="font-bold mt-0.5 flex-shrink-0" style={{ color: RED }}>✔</span>
+                  <span className="font-bold mt-0.5 flex-shrink-0" style={{ color: textAccent(RED) }}>✔</span>
                   <span className="text-mist-200 text-base">{w}</span>
                 </li>
               ))}
@@ -341,7 +343,7 @@ export default function DanceCompany() {
               {COMPANY_INCLUDES.map(({ headline, detail }) => (
                 <li key={headline} className="border-b border-white/[0.12] pb-3.5">
                   <div className="flex items-start gap-3">
-                    <span className="font-bold mt-0.5 flex-shrink-0" style={{ color: RED }}>
+                    <span className="font-bold mt-0.5 flex-shrink-0" style={{ color: textAccent(RED) }}>
                       ✔
                     </span>
                     <div>
@@ -403,7 +405,7 @@ export default function DanceCompany() {
           <div className="relative max-w-2xl mx-auto">
             <Kicker>Join Our Founding Season</Kicker>
             <h2 className="font-display uppercase text-5xl sm:text-7xl leading-[0.85] mb-6">
-              Train. Grow. <span style={{ color: RED }}>Belong.</span>
+              Train. Grow. <span style={{ color: textAccent(RED) }}>Belong.</span>
             </h2>
             <p className="text-mist-300 text-base leading-relaxed mb-10">
               If your dancer is ready to grow, perform, and be part of a team that values excellence,
@@ -414,8 +416,9 @@ export default function DanceCompany() {
             </Link>
           </div>
         </section>
-      </main>
+      </div>
 
+      </main>
       <Footer />
     </div>
   )

@@ -162,7 +162,7 @@ export default function InstagramFeed() {
               ))}
             </ul>
             {branding && (
-              <p className="font-body text-[11px] tracking-[0.12em] uppercase text-mist-500/70 mt-5 m-0">
+              <p className="font-body text-[11px] tracking-[0.12em] uppercase text-mist-500 mt-5 m-0">
                 Instagram feed by{' '}
                 <a
                   href="https://behold.so"

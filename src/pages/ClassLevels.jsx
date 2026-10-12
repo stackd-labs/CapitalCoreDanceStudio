@@ -1,3 +1,4 @@
+import { textAccent } from '../lib/accentContrast'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
@@ -136,6 +137,7 @@ export default function ClassLevels() {
         jsonLd={CLASS_LEVELS_JSON_LD}
       />
       <Navbar />
+      <main id="main-content" tabIndex={-1} className="flex-1 min-w-0">
 
       <Hero
         eyebrow="Ages 2 through 17"
@@ -246,6 +248,7 @@ export default function ClassLevels() {
         }
       />
 
+      </main>
       <Footer />
     </div>
   )

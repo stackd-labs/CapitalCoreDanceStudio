@@ -225,7 +225,6 @@ export default function ClassCalendar({ schedule, accent }) {
                           data-cluster-size={cluster.length}
                           data-cluster-index={index}
                           onClick={(e) => openClass(cls, day, e)}
-                          aria-label={`${cls.name}, ${day} ${cls.time}`}
                           className={`absolute px-1.5 py-1 text-left overflow-hidden transition-colors focus:outline-none focus:ring-2 focus:ring-white ${BLOCK_BASE} ${CATEGORY_ACCENTS[cls.category] || CATEGORY_ACCENTS.adult}`}
                           style={{
                             top: startSlot * SLOT_PX + 1,
@@ -234,7 +233,7 @@ export default function ClassCalendar({ schedule, accent }) {
                             width: `${width}%`,
                           }}
                         >
-                          <span className="block font-body text-[10px] font-bold leading-tight">{cls.name}</span>
+                          <span className="block font-body text-[10px] font-bold leading-tight">{cls.name}</span>{' '}<span className="sr-only">{day} </span>
                           <span className="block font-body text-[9px] opacity-70 leading-tight">{cls.time}</span>
                         </button>
                       )
@@ -262,11 +261,10 @@ export default function ClassCalendar({ schedule, accent }) {
                         type="button"
                         data-testid="class-list-item"
                         onClick={(e) => openClass(cls, day, e)}
-                        aria-label={`${cls.name}, ${day} ${cls.time}, ${cls.ages}`}
                         className={`w-full px-5 py-4 flex items-center justify-between gap-4 text-left transition-colors ${BLOCK_BASE} ${CATEGORY_ACCENTS[cls.category] || CATEGORY_ACCENTS.adult}`}
                       >
                         <span className="flex-1 min-w-0">
-                          <span className="block font-body font-bold text-base">{cls.name}</span>
+                          <span className="block font-body font-bold text-base">{cls.name}</span>{' '}<span className="sr-only">{day} </span>
                           <span className="block font-body text-mist-500 text-sm mt-0.5">{cls.ages}</span>
                         </span>
                         <span className="font-body text-mist-200 text-sm font-medium flex-shrink-0">{cls.time}</span>

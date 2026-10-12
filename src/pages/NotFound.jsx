@@ -5,7 +5,7 @@ import SEO from '../components/SEO'
 import AccentStripe from '../components/AccentStripe'
 import { Kicker } from '../components/blocks'
 import { ACCENTS } from '../lib/pageAccents'
-import { onAccent } from '../lib/accentContrast'
+import { onAccent, textAccent } from '../lib/accentContrast'
 
 // Added 2026-08-19. Until now App.jsx had no catch-all, so every unmatched URL —
 // a typo, a stale bookmark, a link in an old email — rendered the app shell with
@@ -70,6 +70,7 @@ export default function NotFound() {
         noindex
       />
       <Navbar />
+      <main id="main-content" tabIndex={-1} className="flex-1 min-w-0">
 
       {/* A compact band rather than the shared Hero: Hero is a 640px marketing panel
           with a photo well, and there is nothing to sell on this page. */}
@@ -78,7 +79,7 @@ export default function NotFound() {
           <Kicker accent={ACCENT}>Page not found</Kicker>
           <div
             className="font-display uppercase leading-[0.85] text-[92px] sm:text-[130px] lg:text-[160px] mb-4"
-            style={{ color: ACCENT }}
+            style={{ color: textAccent(ACCENT) }}
             aria-hidden="true"
           >
             404
@@ -138,6 +139,7 @@ export default function NotFound() {
         </div>
       </section>
 
+      </main>
       <Footer />
     </div>
   )

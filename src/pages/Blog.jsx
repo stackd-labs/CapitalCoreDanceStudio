@@ -8,7 +8,7 @@ import { PrimaryAction, GhostAction, CtaBand, InverseAction } from '../component
 import { simpleBreadcrumb, blogListSchema } from '../lib/schema'
 import { POSTS } from '../lib/blog'
 import { ACCENTS } from '../lib/pageAccents'
-import { onAccent } from '../lib/accentContrast'
+import { onAccent, textAccent } from '../lib/accentContrast'
 
 // Rebuilt 2026-08-11 to the studio's site mockup (page 1j, accent orange): hero plus a
 // three-up card grid. Posts, categories, dates and excerpts all come from
@@ -40,6 +40,7 @@ export default function Blog() {
       />
 
       <Navbar />
+      <main id="main-content" tabIndex={-1} className="flex-1 min-w-0">
 
       <Hero
         eyebrow="Studio journal"
@@ -94,7 +95,7 @@ export default function Blog() {
                 </p>
                 <span
                   className="font-body text-[13px] font-bold group-hover:underline"
-                  style={{ color: ACCENT }}
+                  style={{ color: textAccent(ACCENT) }}
                 >
                   Read more →
                 </span>
@@ -111,6 +112,7 @@ export default function Blog() {
         action={<InverseAction to="/contact">Claim a Free Trial Class</InverseAction>}
       />
 
+      </main>
       <Footer />
     </div>
   )

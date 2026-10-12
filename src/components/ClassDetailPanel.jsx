@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { getClassInfo } from '../lib/classInfo'
 import { PROGRAMS } from '../lib/schedule'
 import { DEFAULT_ACCENT } from '../lib/pageAccents'
-import { onAccent } from '../lib/accentContrast'
+import { onAccent, textAccent } from '../lib/accentContrast'
 
 const PORTAL_REGISTER_URL = 'https://studio.capitalcoredance.com/register/classes'
 
@@ -103,7 +103,7 @@ export default function ClassDetailPanel({ classInfo, onClose, accent = DEFAULT_
         <div className="px-6 pt-6 pb-5">
           <p
             className="font-body text-xs font-bold tracking-[0.3em] uppercase mb-2"
-            style={{ color: accent }}
+            style={{ color: textAccent(accent) }}
           >
             {day} · {time}
           </p>

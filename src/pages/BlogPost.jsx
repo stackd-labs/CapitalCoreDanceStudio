@@ -6,7 +6,7 @@ import AccentStripe from '../components/AccentStripe'
 import { breadcrumbSchema, blogPostingSchema, faqSchema } from '../lib/schema'
 import { getPostBySlug, POSTS } from '../lib/blog'
 import { ACCENTS } from '../lib/pageAccents'
-import { onAccent } from '../lib/accentContrast'
+import { onAccent, textAccent } from '../lib/accentContrast'
 
 // Rebuilt 2026-08-11 onto the redesign. There is no mockup for an article page — the
 // studio's twelve mockups stop at the blog index — so this follows the system the
@@ -67,6 +67,7 @@ export default function BlogPost() {
       />
 
       <Navbar />
+      <main id="main-content" tabIndex={-1} className="flex-1 min-w-0">
 
       {/* Article header — the page devices at article scale, not a marketing hero. */}
       <header className="relative overflow-hidden bg-ink-base px-6 lg:px-24 pt-14 pb-12">
@@ -142,7 +143,7 @@ export default function BlogPost() {
           >
             <p
               className="font-body text-[10px] font-bold uppercase tracking-[0.25em] mb-2"
-              style={{ color: ACCENT }}
+              style={{ color: textAccent(ACCENT) }}
             >
               Quick answer
             </p>
@@ -171,7 +172,7 @@ export default function BlogPost() {
                         key={k}
                         className="flex gap-3 font-body text-[17px] leading-[1.75] text-mist-300"
                       >
-                        <span className="flex-shrink-0 font-bold" style={{ color: ACCENT }}>
+                        <span className="flex-shrink-0 font-bold" style={{ color: textAccent(ACCENT) }}>
                           ›
                         </span>
                         <span>{item}</span>
@@ -211,7 +212,7 @@ export default function BlogPost() {
                     <Link
                       to={link.to}
                       className="font-body text-[15px] font-semibold hover:underline"
-                      style={{ color: ACCENT }}
+                      style={{ color: textAccent(ACCENT) }}
                     >
                       {link.label} →
                     </Link>
@@ -256,7 +257,7 @@ export default function BlogPost() {
                   <span className="font-body text-[16px] font-semibold leading-snug text-mist-200 group-hover:text-white transition-colors">
                     {p.title}
                   </span>
-                  <span className="flex-shrink-0" style={{ color: ACCENT }}>
+                  <span className="flex-shrink-0" style={{ color: textAccent(ACCENT) }}>
                     →
                   </span>
                 </Link>
@@ -265,7 +266,7 @@ export default function BlogPost() {
             <Link
               to="/blog"
               className="inline-block mt-6 font-body text-sm font-bold hover:underline"
-              style={{ color: ACCENT }}
+              style={{ color: textAccent(ACCENT) }}
             >
               ← Back to all articles
             </Link>
@@ -273,6 +274,7 @@ export default function BlogPost() {
         </div>
       </article>
 
+      </main>
       <Footer />
     </div>
   )

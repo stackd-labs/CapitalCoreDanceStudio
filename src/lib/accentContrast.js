@@ -30,3 +30,9 @@ export function contrastRatio(a, b) {
 export function onAccent(hex) {
   return contrastRatio(hex, ON_LIGHT) >= contrastRatio(hex, ON_DARK) ? ON_LIGHT : ON_DARK
 }
+
+// Readable small text on the site's dark navy surfaces.
+export function textAccent(accent) {
+  const value = accent.toLowerCase()
+  return ({ '#e01b22': '#ff6b70', '#e01515': '#ff6b70', '#9b3df0': '#c38bf6', '#c0392b': '#ff8a80' })[value] || accent
+}

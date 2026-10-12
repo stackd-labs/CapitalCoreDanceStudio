@@ -6,9 +6,9 @@ import { Link } from 'react-router-dom'
  */
 export default function PrivacyNotice({ className = '' }) {
   return (
-    <p className={`text-[#5a6a8a] text-xs leading-relaxed ${className}`}>
+    <p className={`text-mist-400 text-xs leading-relaxed ${className}`}>
       By submitting, you agree to our{' '}
-      <Link to="/privacy" className="text-brand-red hover:underline">
+      <Link to="/privacy" className="text-white underline hover:underline">
         Privacy Policy
       </Link>{' '}
       and consent to Capital Core Dance Studio using the information you provide to

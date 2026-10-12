@@ -9,7 +9,7 @@ import { PrimaryAction, GhostAction } from '../components/blocks'
 import { simpleBreadcrumb } from '../lib/schema'
 import PrivacyNotice from '../components/PrivacyNotice'
 import { ACCENTS } from '../lib/pageAccents'
-import { onAccent } from '../lib/accentContrast'
+import { onAccent, textAccent } from '../lib/accentContrast'
 
 // Rebuilt 2026-08-11 to the studio's site mockup (page 1g). Contact is one of two pages
 // that wear the full five-accent stripe hero rather than a single wedge — the mockup
@@ -167,7 +167,7 @@ export default function Contact() {
   const labelClass =
     'font-body text-[11px] font-semibold tracking-[0.16em] uppercase text-mist-500'
   const inputClass =
-    'h-[46px] border border-white/20 bg-white/[0.04] px-4 font-body text-sm text-white placeholder:text-mist-500/70 focus:outline-none focus:border-white focus:bg-white/[0.08] transition-colors'
+    'h-[46px] border border-white/20 bg-white/[0.04] px-4 font-body text-sm text-white placeholder:text-mist-500 focus:outline-none focus:border-white focus:bg-white/[0.08] transition-colors'
 
   return (
     <div className="min-h-screen flex flex-col bg-ink-base">
@@ -178,6 +178,7 @@ export default function Contact() {
         jsonLd={simpleBreadcrumb('Contact', '/contact')}
       />
       <Navbar />
+      <main id="main-content" tabIndex={-1} className="flex-1 min-w-0">
 
       <Hero
         variant="stripe"
@@ -227,7 +228,7 @@ export default function Contact() {
             )}
 
             {status === 'success' ? (
-              <div className="py-14">
+              <div role="status" aria-live="polite" className="py-14">
                 <div className="font-display text-[64px] leading-none" style={{ color: ACCENTS.teal }}>
                   ✓
                 </div>
@@ -240,7 +241,7 @@ export default function Contact() {
                 <button
                   onClick={() => setStatus('idle')}
                   className="font-body text-sm font-bold hover:underline"
-                  style={{ color: ACCENT }}
+                  style={{ color: textAccent(ACCENT) }}
                 >
                   Send another message
                 </button>
@@ -402,12 +403,12 @@ export default function Contact() {
                     required
                     value={form.message}
                     onChange={handleChange}
-                    className="h-[130px] border border-white/20 bg-white/[0.04] px-4 py-3 font-body text-sm text-white placeholder:text-mist-500/70 focus:outline-none focus:border-white focus:bg-white/[0.08] transition-colors resize-none"
+                    className="h-[130px] border border-white/20 bg-white/[0.04] px-4 py-3 font-body text-sm text-white placeholder:text-mist-500 focus:outline-none focus:border-white focus:bg-white/[0.08] transition-colors resize-none"
                   />
                 </div>
 
                 {status === 'error' && (
-                  <p className="font-body text-sm mt-4" style={{ color: ACCENT }} role="alert">
+                  <p className="font-body text-sm mt-4" style={{ color: textAccent(ACCENT) }} role="alert">
                     {errorMsg}
                   </p>
                 )}
@@ -490,6 +491,7 @@ export default function Contact() {
         </div>
       </section>
 
+      </main>
       <Footer />
     </div>
   )

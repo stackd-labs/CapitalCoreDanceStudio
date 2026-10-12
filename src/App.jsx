@@ -18,6 +18,7 @@ import Blog from './pages/Blog'
 import BlogPost from './pages/BlogPost'
 import Privacy from './pages/Privacy'
 import Terms from './pages/Terms'
+import Accessibility from './pages/Accessibility'
 import NotFound from './pages/NotFound'
 import CookieBanner from './components/CookieBanner'
 
@@ -44,6 +45,7 @@ function ScrollToTop() {
 export default function App() {
   return (
     <BrowserRouter>
+      <a href="#main-content" className="skip-link">Skip to content</a>
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -72,6 +74,7 @@ export default function App() {
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="/privacy" element={<Privacy />} />
+        <Route path="/accessibility" element={<Accessibility />} />
         <Route path="/terms" element={<Terms />} />
         {/* Catch-all, added 2026-08-19. Without it an unmatched URL rendered the app
             shell and nothing else: a blank white page returning HTTP 200, which gives

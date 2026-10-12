@@ -11,7 +11,7 @@ import { courseListSchema, simpleBreadcrumb } from '../lib/schema'
 import { SCHEDULE, PROGRAMS } from '../lib/schedule'
 import { getClassInfo, photoForClass } from '../lib/classInfo'
 import { ACCENTS } from '../lib/pageAccents'
-import { onAccent } from '../lib/accentContrast'
+import { onAccent, textAccent } from '../lib/accentContrast'
 
 // Rebuilt 2026-08-11 to the studio's site mockup (page 1b, accent orange). The mockup
 // shows a hero, a filter bar and a card grid; the studio asked to keep the interactive
@@ -82,10 +82,10 @@ const PROGRAM_LABELS = Object.fromEntries(PROGRAMS.map((p) => [p.value, p.label]
 function FilterSelect({ label, options, value, onChange }) {
   return (
     <div className="flex flex-col gap-1.5 min-w-0">
-      <label className="font-body text-mist-500 text-[11px] font-semibold uppercase tracking-[0.2em]">
+      <label htmlFor={`filter-${label}`} className="font-body text-mist-500 text-[11px] font-semibold uppercase tracking-[0.2em]">
         {label}
       </label>
-      <select
+      <select id={`filter-${label}`}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className="bg-ink-panel border border-white/25 text-white font-body text-sm font-medium px-4 py-2.5 pr-9 appearance-none cursor-pointer hover:border-white/60 focus:outline-none focus:border-white transition-colors"
@@ -150,7 +150,7 @@ function ClassCard({ cls }) {
             href={PORTAL_REGISTER_URL}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: ACCENT }}
+            style={{ color: textAccent(ACCENT) }}
             className="hover:underline"
           >
             Register →
@@ -190,6 +190,7 @@ export default function Classes() {
         jsonLd={CLASSES_JSON_LD}
       />
       <Navbar />
+      <main id="main-content" tabIndex={-1} className="flex-1 min-w-0">
 
       <Hero
         eyebrow="2026 – 2027 Season"
@@ -250,7 +251,7 @@ export default function Classes() {
             Core classes start at age 5+, and Core Plus at age 8+. Classes are subject to change
             based on interest and registrations.{' '}
             See{' '}
-            <Link to="/tuition" className="font-semibold hover:underline" style={{ color: ACCENT }}>
+            <Link to="/tuition" className="font-semibold hover:underline" style={{ color: textAccent(ACCENT) }}>
               Tuition
             </Link>{' '}
             for monthly pricing.
@@ -267,7 +268,7 @@ export default function Classes() {
                     <span className="font-body text-mist-500 text-xs">({ages})</span>
                     <span
                       className="font-body text-[10px] font-bold uppercase tracking-[0.14em]"
-                      style={{ color: ACCENT }}
+                      style={{ color: textAccent(ACCENT) }}
                     >
                       {level}
                     </span>
@@ -337,6 +338,7 @@ export default function Classes() {
         </section>
       )}
 
+      </main>
       <Footer />
     </div>
   )

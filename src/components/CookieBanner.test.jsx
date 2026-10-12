@@ -19,7 +19,8 @@ beforeEach(() => {
 
 test('shows on a first visit and names itself to assistive tech', () => {
   renderBanner()
-  const dialog = screen.getByRole('dialog', { name: 'Privacy and cookie notice' })
+  // A labelled region, not a dialog: it does not trap focus or block the page (a11y pass).
+  const dialog = screen.getByRole('region', { name: 'Privacy and cookie notice' })
   expect(dialog).toBeInTheDocument()
   expect(screen.getByRole('link', { name: 'Privacy Policy' })).toHaveAttribute('href', '/privacy')
 })
@@ -27,13 +28,13 @@ test('shows on a first visit and names itself to assistive tech', () => {
 test('stays hidden once consent has been stored', () => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify({ status: 'accepted', at: '2026-08-19' }))
   renderBanner()
-  expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  expect(screen.queryByRole('region', { name: 'Privacy and cookie notice' })).not.toBeInTheDocument()
 })
 
 test('accepting dismisses it and records the choice', () => {
   renderBanner()
   fireEvent.click(screen.getByRole('button', { name: 'Got it' }))
-  expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  expect(screen.queryByRole('region', { name: 'Privacy and cookie notice' })).not.toBeInTheDocument()
   expect(JSON.parse(localStorage.getItem(STORAGE_KEY)).status).toBe('accepted')
 })
 
@@ -42,7 +43,7 @@ test('the close button accepts too, rather than leaving the notice to reappear',
   // hid the banner would put it back on the next page load, on every page.
   renderBanner()
   fireEvent.click(screen.getByRole('button', { name: 'Dismiss privacy notice' }))
-  expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  expect(screen.queryByRole('region', { name: 'Privacy and cookie notice' })).not.toBeInTheDocument()
   expect(localStorage.getItem(STORAGE_KEY)).toBeTruthy()
 })
 

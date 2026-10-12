@@ -59,7 +59,7 @@ test('block start slot is measured from the start of the derived window', () => 
   // calendar. The bounds are still DERIVED — they simply resolve to the evening
   // again — so 17:00 is slot 0, Thursday's 17:15 is slot 1, and 19:30 is slot 10.
   expect(within(grid).getByRole('button', { name: /Tiny Core Ballet & Tumble/ })).toHaveAttribute('data-start-slot', '0')
-  expect(within(grid).getByRole('button', { name: /Core Ballet & Jazz, Thursday/ })).toHaveAttribute('data-start-slot', '1')
+  expect(within(grid).getByRole('button', { name: /Core Ballet & Jazz Thursday/ })).toHaveAttribute('data-start-slot', '1')
   expect(within(grid).getByRole('button', { name: /Adult Pom/ })).toHaveAttribute('data-start-slot', '10')
 })
 
@@ -71,7 +71,7 @@ test('nothing on the calendar overlaps, so every block spans its full column', (
   renderCalendar()
   const grid = screen.getByTestId('class-grid')
   for (const block of within(grid).getAllByTestId('class-block')) {
-    expect(block, block.getAttribute('aria-label')).toHaveAttribute('data-cluster-size', '1')
+    expect(block, block.textContent).toHaveAttribute('data-cluster-size', '1')
     expect(block.style.width).toBe('100%')
   }
 })
@@ -81,7 +81,7 @@ test('a class with no concurrent neighbour spans the full day column', () => {
   const grid = screen.getByTestId('class-grid')
   // Ballet Tech starts exactly as the Dance Company ends, so nothing overlaps it. Adult
   // Femme/Flair held this role until it came off the schedule.
-  const solo = within(grid).getByRole('button', { name: /Ballet Tech, Monday/ })
+  const solo = within(grid).getByRole('button', { name: /Ballet Tech Monday/ })
   expect(solo).toHaveAttribute('data-cluster-size', '1')
   expect(solo.style.left).toBe('0%')
   expect(solo.style.width).toBe('100%')
@@ -91,19 +91,18 @@ test('each block names its class, day, and time for screen readers', () => {
   renderCalendar()
   const grid = screen.getByTestId('class-grid')
   expect(
-    within(grid).getByRole('button', { name: 'Musical Theatre, Tuesday 6:15 – 7:00 PM' })
+    within(grid).getByRole('button', { name: /^Musical Theatre\s*Tuesday\s*6:15 – 7:00 PM$/ })
   ).toBeInTheDocument()
 })
 
 test('a mobile list item names its class, day, time, and ages for screen readers', () => {
-  // aria-label short-circuits name-from-contents, so the visible ages text
-  // ("All Levels") must be repeated explicitly in the label or a screen-reader user
-  // never hears it, even though a sighted user sees it.
+  // The accessible name is built from the visible contents (class, a screen-reader-only day,
+  // ages, time), so what a sighted user reads is what a screen-reader user hears.
   renderCalendar()
   const list = screen.getByTestId('class-list')
   expect(
     within(list).getByRole('button', {
-      name: 'Musical Theatre, Tuesday 6:15 – 7:00 PM, All Ages',
+      name: /^Musical Theatre\s*Tuesday\s*All Ages\s*6:15 – 7:00 PM$/,
     })
   ).toBeInTheDocument()
 })
@@ -118,7 +117,10 @@ test('renders a column header for exactly the days the schedule runs', () => {
   const days = SCHEDULE.filter(({ classes }) => classes.length > 0).map(({ day }) => day)
   expect(days).not.toContain('Sunday')
   for (const day of days) {
-    expect(within(grid).getByText(day)).toBeInTheDocument()
+    // The day also appears as screen-reader-only text inside every block, so look for the
+    // visible column header: at least one match that is not sr-only.
+    const matches = within(grid).getAllByText(day)
+    expect(matches.some((el) => !el.classList.contains('sr-only')), day + ' header').toBe(true)
   }
 })
 

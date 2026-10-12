@@ -28,8 +28,8 @@ test('renders real class names', () => {
   expect(within(grid).getByRole('button', { name: /Tiny Core Ballet & Tumble/ })).toBeInTheDocument()
   // Anchored by day: two rows are named Core Hip Hop & Breakdancing since the
   // 2026-08-04 merge, so an unanchored match is ambiguous across the all-days grid.
-  expect(within(grid).getByRole('button', { name: /Core Hip Hop & Breakdancing, Monday/ })).toBeInTheDocument()
-  expect(within(grid).getByRole('button', { name: /Core Hip Hop & Breakdancing, Wednesday/ })).toBeInTheDocument()
+  expect(within(grid).getByRole('button', { name: /Core Hip Hop & Breakdancing Monday/ })).toBeInTheDocument()
+  expect(within(grid).getByRole('button', { name: /Core Hip Hop & Breakdancing Wednesday/ })).toBeInTheDocument()
   expect(within(grid).getByRole('button', { name: /Musical Theatre/ })).toBeInTheDocument()
 })
 
@@ -104,9 +104,10 @@ test('program filter narrows the calendar to one tier', () => {
   // from Monday to Thursday. Grid order is by day column, so Monday first.
   fireEvent.change(programSelect, { target: { value: 'core-plus' } })
   let blocks = within(screen.getByTestId('class-grid')).getAllByTestId('class-block')
-  expect(blocks.map((b) => b.getAttribute('aria-label'))).toEqual([
-    'Ballet Tech, Monday 7:00 – 7:45 PM',
-    'Core Plus Acro & Lyrical, Thursday 7:30 – 8:15 PM',
+  const text = (el) => el.textContent.replace(/\s+/g, ' ').trim()
+  expect(blocks.map(text)).toEqual([
+    'Ballet Tech Monday 7:00 – 7:45 PM',
+    'Core Plus Acro & Lyrical Thursday 7:30 – 8:15 PM',
   ])
 
   // Specialty replaces the old Technique case: two classes, on two different nights.
@@ -114,7 +115,7 @@ test('program filter narrows the calendar to one tier', () => {
   blocks = within(screen.getByTestId('class-grid')).getAllByTestId('class-block')
   expect(blocks).toHaveLength(2)
   for (const block of blocks) {
-    expect(block.getAttribute('aria-label')).toMatch(/^(Musical Theatre|Majorette)/)
+    expect(block.textContent).toMatch(/^(Musical Theatre|Majorette)/)
   }
 })
 
@@ -129,7 +130,7 @@ test('program and style filters compose rather than override', () => {
   const blocks = within(screen.getByTestId('class-grid')).getAllByTestId('class-block')
   expect(blocks).toHaveLength(2)
   for (const block of blocks) {
-    expect(block.getAttribute('aria-label')).toMatch(/^Core Hip Hop & Breakdancing/)
+    expect(block.textContent).toMatch(/^Core Hip Hop & Breakdancing/)
   }
 })
 
@@ -147,7 +148,7 @@ test('style filter narrows the calendar to matching classes', () => {
   const blocks = within(screen.getByTestId('class-grid')).getAllByTestId('class-block')
   expect(blocks).toHaveLength(2)
   for (const block of blocks) {
-    expect(block.getAttribute('aria-label')).toMatch(/Hip Hop/)
+    expect(block.textContent).toMatch(/Hip Hop/)
   }
 })
 

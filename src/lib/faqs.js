@@ -120,7 +120,7 @@ export const FAQS = [
       },
       {
         q: 'How much does Little Movers cost?',
-        a: 'Little Movers is priced separately from studio class tuition. Drop in for $10 a class, buy a Passport of 5 visits for $40 or 10 for $80. Monthly memberships are paused for now, so contact the studio if you are interested.',
+        a: 'Little Movers is priced separately from studio class tuition. Drop in for $5 a class, buy a Passport of 5 visits for $40 or 10 for $80. Monthly memberships are paused for now, so contact the studio if you are interested.',
       },
       {
         // 🔴 THIS ANSWER SAID "NOT YET" UNTIL 2026-09-02, months after booking opened.
@@ -145,11 +145,15 @@ export const FAQS = [
       },
       {
         q: 'Which adult classes do you run?',
-        a: 'Three, each 45 minutes: Femme Flair on Mondays, Pom on Wednesdays, and Contemporary on Fridays. You can take one, two, or all three.',
+        a: 'Adult Ballet/Tech and Adult Contemporary, each 45 minutes, on Friday evenings. You can take one or both.',
       },
       {
         q: 'How much do adult classes cost?',
-        a: 'A single 45-minute class is $85 a month, the same as any other 45-minute class at the studio. All three adult classes together are $165 a month, or you can drop in to a single class for $25.',
+        a: 'A single 45-minute class is $85 a month, the same as any other 45-minute class at the studio. You can also drop in to any adult class for $25.',
+      },
+      {
+        q: 'Can I drop in to a class without enrolling for the semester?',
+        a: 'Yes. You can drop in to any studio class for $25 a class, paid online at https://studio.capitalcoredance.com/pay/drop-in. Little Movers has its own drop-in rate of $5 a class.',
       },
       {
         q: 'How do I register for an adult class?',

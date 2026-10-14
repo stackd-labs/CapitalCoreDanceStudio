@@ -201,7 +201,7 @@ export default function ClassLevels() {
                 Dancing as an adult?
               </p>
               <p className="font-body text-mist-400 text-sm">
-                Our 16+ evening classes have their own page — Femme Flair, Pom, and Contemporary.
+                Our 16+ evening classes have their own page — Ballet/Tech and Contemporary.
               </p>
             </div>
             <Link

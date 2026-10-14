@@ -66,7 +66,7 @@ const SCHEDULE = [
   { Wednesday: { name: "Moovin' & Groovin'", ages: '0–5 years' } },
 ]
 
-const DROP_IN_PRICE = 10
+const DROP_IN_PRICE = 5
 
 // Three ways to join, framed by how often a family expects to come rather than by
 // price. `question` is the headline a parent recognises themselves in. The per-card
@@ -134,7 +134,7 @@ export default function LittleMovers() {
     <div className="min-h-screen flex flex-col bg-ink-base">
       <SEO
         title="Little Movers | Toddler &amp; Preschool Movement Classes in Midlothian, VA — Capital Core Dance"
-        description="Little Movers at Capital Core Dance in Midlothian, VA. A movement-based enrichment program for infants, toddlers, and preschoolers combining dance, music, sensory play, tumbling, and active exploration. Wednesday mornings from 10 to 11 AM, drop-in $10 a class. Booking is open on our studio portal."
+        description="Little Movers at Capital Core Dance in Midlothian, VA. A movement-based enrichment program for infants, toddlers, and preschoolers combining dance, music, sensory play, tumbling, and active exploration. Wednesday mornings from 10 to 11 AM, drop-in $5 a class. Booking is open on our studio portal."
         canonical="/little-movers"
         jsonLd={LITTLE_MOVERS_JSON_LD}
       />

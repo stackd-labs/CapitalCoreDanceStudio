@@ -137,7 +137,7 @@ test('program and style filters compose rather than override', () => {
 test('style filter narrows the calendar to matching classes', () => {
   renderClasses()
   const grid = screen.getByTestId('class-grid')
-  expect(within(grid).getAllByTestId('class-block')).toHaveLength(18)
+  expect(within(grid).getAllByTestId('class-block')).toHaveLength(17)
 
   const [, , styleSelect] = screen.getAllByRole('combobox')
   fireEvent.change(styleSelect, { target: { value: 'hiphop' } })
@@ -157,7 +157,7 @@ test('age filter narrows the calendar to matching classes', () => {
   const [, ageSelect] = screen.getAllByRole('combobox')
   fireEvent.change(ageSelect, { target: { value: 'adult' } })
   const blocks = within(screen.getByTestId('class-grid')).getAllByTestId('class-block')
-  expect(blocks).toHaveLength(3)
+  expect(blocks).toHaveLength(2)
 })
 
 test('a filter combination with no classes shows the empty state', () => {
@@ -208,7 +208,7 @@ test('renders Enroll Now CTA', () => {
 
 test('the class card grid mirrors the calendar and both follow the filters', () => {
   renderClasses()
-  expect(screen.getAllByTestId('class-card')).toHaveLength(18)
+  expect(screen.getAllByTestId('class-card')).toHaveLength(17)
 
   const [programSelect] = screen.getAllByRole('combobox')
   // Core Plus is two classes after the 2026-09-02 rework, not three. The number matters

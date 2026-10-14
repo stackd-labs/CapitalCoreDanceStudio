@@ -158,7 +158,7 @@ test('renders the three ways to join, each framed by how often a family comes', 
   // Drop-in: one flat price per class, no sibling rate.
   expect(cards[0].textContent).toContain('Just want to try it?')
   expect(cards[0].textContent).toContain('Drop-In')
-  expect(cards[0].textContent).toContain('$10')
+  expect(cards[0].textContent).toContain('$5')
   expect(cards[0].textContent).toContain('per class')
   expect(cards[0].textContent).not.toMatch(/first child|additional (child|sibling)/i)
 

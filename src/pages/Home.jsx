@@ -86,7 +86,7 @@ const HOME_CARDS = [
     to: '/adult-classes',
     name: 'Adult Classes',
     blurb:
-      'Evening classes for dancers 16 and up — Femme Flair, Pom and Contemporary. Beginner-friendly, and your first class is free.',
+      'Evening classes for dancers 16 and up — Ballet/Tech and Contemporary. Beginner-friendly, and your first class is free.',
     photoCaption: 'Adult class · photo',
     photoSrc: '/card-adult-dance.jpg',
     photoAlt: 'Adult dancers in an evening class at Capital Core Dance Studio',

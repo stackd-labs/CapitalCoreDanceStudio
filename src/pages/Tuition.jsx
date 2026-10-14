@@ -61,9 +61,7 @@ const SEPARATELY_PRICED = [
     to: '/adult-classes',
     name: 'Adult Classes',
     price: `${money(priceToNumber(monthlyPriceForMinutes(45)))} a month`,
-    blurb: `Ages 16+, one 45-minute class a month. All three adult classes are ${money(
-      ADULT_PRICING.unlimitedMonthly
-    )} a month, or drop in for ${money(ADULT_PRICING.dropIn)}. First class free.`,
+    blurb: `Ages 16+, one 45-minute class a month. Drop into any class for ${money(ADULT_PRICING.dropIn)}. First class free.`,
   },
   {
     to: '/dance-company',
@@ -95,6 +93,16 @@ const FEES = [
   // From REGISTRATION, not typed: this row said $65 while the portal charged $60.
   { label: 'Registration — per dancer, per semester', value: money(REGISTRATION.perSemester) },
   { label: 'Registration — full year (both semesters)', value: money(REGISTRATION.fullYear) },
+  // Any studio class can be dropped into, 2026-10-14. Little Movers keeps its own $5 drop-in.
+  { label: 'Drop-in — any studio class, per class', value: (
+      <>
+        {money(ADULT_PRICING.dropIn)} —{' '}
+        <a href={ADULT_PRICING.dropInUrl} className="font-semibold hover:underline" style={{ color: textAccent(ACCENT) }}>
+          pay online
+        </a>
+      </>
+    ),
+  },
   { label: 'Payment methods', value: 'Card, ACH, or check' },
 ]
 

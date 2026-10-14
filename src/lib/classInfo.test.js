@@ -48,12 +48,13 @@ const ALL_ROWS = SCHEDULE.flatMap(({ day, classes }) =>
   classes.map((c) => ({ ...c, day }))
 )
 
-test('the schedule still has 18 class rows', () => {
+test('the schedule still has 17 class rows', () => {
   // 22 → 18 across 2026-09-02. Off: Tumble Tech (both nights), Core Plus Lyrical &
   // Contemporary, Adult Femme/Flair. On: Adult Ballet/Tech. The three Dance Company
   // sessions were added and then taken off the CALENDAR the same day — they still
   // run, they are just not on the grid. See the note at the top of schedule.js.
-  expect(ALL_ROWS).toHaveLength(18)
+  // 18 → 17 on 2026-10-14: Adult Pom came off at the studio's request.
+  expect(ALL_ROWS).toHaveLength(17)
 })
 
 // Classes the studio added on 2026-09-02 that it has not yet written copy for. The
@@ -84,7 +85,7 @@ test('classInfo keeps copy only for current classes and recent departures', () =
   // Kept deliberately, not stale: all three came off the schedule on 2026-09-02 and
   // the studio may bring them back. A class returning should not need its description
   // rewritten. Prune this list if the studio confirms one is gone for good.
-  expect(orphans).toEqual(['Adult Femme Flair', 'Core Plus Lyrical & Contemporary', 'Pom Cheer', 'Tumble Tech'])
+  expect(orphans).toEqual(['Adult Femme Flair', 'Adult Pom', 'Core Plus Lyrical & Contemporary', 'Pom Cheer', 'Tumble Tech'])
 })
 
 test('every row has 24-hour start and end on 15-minute boundaries', () => {
@@ -145,9 +146,6 @@ test('the studio photo rules resolve to exactly this assignment across the Fall 
     // fixed, because the fix is a photograph, not a rule.
     'Adult Ballet/Tech': '/class-ballet.jpg',
     'Adult Contemporary': '/class-contemporary.jpg',
-    // Its own photograph as of 2026-08-17, no longer the shared pom one: this is a 16+
-    // class and the pom photo is of three teenagers. 'Pom Cheer' keeps that photo.
-    'Adult Pom': '/class-adult-pom.jpg',
     // Renamed from 'Core Plus Ballet & Contemporary' on 2026-09-02, and the rename
     // MOVED ITS PHOTOGRAPH: the old name hit the contemporary rule, "Ballet Tech" hits
     // the ballet one. Exactly the silent change this test exists to surface.

@@ -82,26 +82,9 @@ const UNIFORM = (() => {
   return { monthly: ADULT_CLASSES[0].monthly, minutes: ADULT_CLASSES[0].minutes }
 })()
 
-// The three ways to pay, 2026-08-13. Only the single-class rate is derived from class
-// length; the pass and the drop-in are flat adult-only offers held in src/lib/tuition.js.
-//
-// The page no longer claims a saving for the pass (2026-10-08: no discounts advertised
-// anywhere, for now). The figures below are kept because the pass price card still reads
-// PASS.monthly and PASS.count.
-const PASS = (() => {
-  if (!UNIFORM) return null
-  const single = priceToNumber(UNIFORM.monthly)
-  const count = ADULT_CLASSES.length
-  const { unlimitedMonthly } = ADULT_PRICING
-  return {
-    monthly: unlimitedMonthly,
-    single,
-    count,
-    separately: single * count,
-    savings: single * count - unlimitedMonthly,
-    beatsTwo: unlimitedMonthly < single * 2,
-  }
-})()
+// Two ways to pay. The 'Every class' pass ($165 a month) was taken away 2026-10-14; the
+// single-class rate is derived from class length and the drop-in is a flat adult offer in
+// src/lib/tuition.js. The drop-in applies to every adult class.
 
 // The evening window, computed from the three classes rather than typed out. This line
 // used to read "between 7:00 and 9:00 PM" as a literal and nearly went stale when
@@ -125,7 +108,7 @@ const GOOD_TO_KNOW = [
   'Adult classes are for dancers ages 16 and up.',
   'Every adult class is beginner-friendly and welcomes dancers of all experience levels.',
   'No dance experience necessary.',
-  `All three classes run in the evening, between ${EVENING_WINDOW}.`,
+  `Our adult classes run in the evening, between ${EVENING_WINDOW}.`,
 ]
 
 const ADULT_CLASSES_JSON_LD = [simpleBreadcrumb('Adult Classes', '/adult-classes')]
@@ -136,11 +119,11 @@ export default function AdultClasses() {
       <SEO
         title="Adult Dance Classes in Midlothian, VA | Capital Core Dance Studio"
         // ⚠ This sentence names the classes by hand while the page derives them. It
-        // said "Femme Flair on Mondays, Pom on Wednesdays, and Contemporary on Fridays"
+        // said "Femme Flair on Mondays, Pom on Wednesdays, and Contemporary on Fridays" (Pom came off 2026-10-14)
         // until 2026-09-02, after Femme Flair had come off the schedule entirely — a
         // meta description advertising a class that no longer runs. Re-check it
         // whenever the adult line-up changes.
-        description="Evening dance classes for adults 16+ in Midlothian, VA — Pom on Wednesdays, Ballet/Tech and Contemporary on Fridays. $85 a month for one 45-minute class, $165 a month for all three, or $25 to drop in. Beginner-friendly, no experience necessary, first class always free."
+        description="Evening dance classes for adults 16+ in Midlothian, VA — Ballet/Tech and Contemporary on Fridays. $85 a month for one 45-minute class, or $25 to drop into any class. Beginner-friendly, no experience necessary, first class always free."
         canonical="/adult-classes"
         jsonLd={ADULT_CLASSES_JSON_LD}
       />
@@ -151,7 +134,7 @@ export default function AdultClasses() {
         eyebrow="Ages 16 and up"
         title={['Adult', [{ text: 'classes', accent: ACCENT }]]}
         tagline="Evenings · all levels welcome"
-        body="Whether it's your first class ever or your return after years away. Three evening classes a week, and the first one is always free."
+        body="Whether it's your first class ever or your return after years away. Evening classes every week, and the first one is always free."
         photoSrc="/card-adult-dance.jpg"
         photoAlt="Adults dancing in an evening class at Capital Core Dance Studio in Midlothian, VA"
         photoObjectPosition="center 30%"
@@ -197,7 +180,7 @@ export default function AdultClasses() {
           <Kicker accent={ACCENT}>Ages 16+</Kicker>
           <SectionHeading className="text-white mb-10">Get back to the beat</SectionHeading>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-[26px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-[26px]">
             {ADULT_CLASSES.map(({ infoKey, day, time, minutes, monthly }) => {
               const info = getClassInfo(infoKey)
               return (
@@ -259,20 +242,19 @@ export default function AdultClasses() {
         </div>
       </section>
 
-      {/* Pricing. Three ways to pay as of 2026-08-13. The whole block hangs off UNIFORM
-          because every figure here is stated against the single-class rate — with no one
-          rate covering all three classes, the pass has nothing to be "less than". */}
-      {UNIFORM && PASS && (
+      {/* Pricing. Two ways to pay. The whole block hangs off UNIFORM
+          because every figure here is stated against the single-class rate — with no one */}
+      {UNIFORM && (
         <section className="bg-ink-base px-6 lg:px-24 py-16 lg:py-20">
           <div className="max-w-[1440px] mx-auto">
             <Kicker accent={ACCENT}>Pricing</Kicker>
-            <SectionHeading className="text-white mb-3">Three ways to dance</SectionHeading>
+            <SectionHeading className="text-white mb-3">Two ways to dance</SectionHeading>
             <p className="font-body text-mist-400 text-sm mb-10 max-w-2xl">
               Every adult class runs {UNIFORM.minutes} minutes, so a single class costs the same
-              whichever one you pick. Monthly rates are locked for the semester once you register.
+              whichever one you pick. Monthly rates are locked for the semester once you register, and you can drop into any class for the drop-in rate.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-[26px]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-[26px]">
               {/* One class */}
               <div
                 data-testid="adult-price-card"
@@ -294,37 +276,6 @@ export default function AdultClasses() {
                 </p>
               </div>
 
-              {/* Every class — the pass */}
-              <div
-                data-testid="adult-price-card"
-                className="border-2 bg-ink-deep px-7 py-8 flex flex-col"
-                style={{ borderColor: ACCENT }}
-              >
-                <div className="flex items-center justify-between gap-3 mb-4">
-                  <span className="font-body font-semibold text-[11px] tracking-[0.16em] uppercase text-mist-500">
-                    Every class
-                  </span>
-                  <span
-                    data-testid="adult-price-badge"
-                    className="font-body text-[10px] font-bold uppercase tracking-[0.14em] px-2 py-1"
-                    style={{ background: ACCENT, color: onAccent(ACCENT) }}
-                  >
-                    Best value
-                  </span>
-                </div>
-                <div
-                  data-testid="adult-pass-price"
-                  className="font-display text-[56px] leading-none"
-                  style={{ color: textAccent(ACCENT) }}
-                >
-                  {money(PASS.monthly)}
-                </div>
-                <div className="font-body text-mist-500 text-[12.5px] mt-2 mb-5">a month</div>
-                <p className="font-body text-[14.5px] leading-[1.6] text-mist-400 m-0 mt-auto">
-                  Take all {PASS.count} adult classes every week for one flat monthly price.
-                </p>
-              </div>
-
               {/* Drop-in */}
               <div
                 data-testid="adult-price-card"
@@ -342,7 +293,14 @@ export default function AdultClasses() {
                 </div>
                 <div className="font-body text-mist-500 text-[12.5px] mt-2 mb-5">per class</div>
                 <p className="font-body text-[14.5px] leading-[1.6] text-mist-400 m-0 mt-auto">
-                  Pay as you go when a month of classes doesn&apos;t suit your schedule.
+                  Drop into any adult class, or any other studio class, any week, and pay as you go.{' '}
+                  <a
+                    href={ADULT_PRICING.dropInUrl}
+                    className="font-semibold hover:underline"
+                    style={{ color: textAccent(ACCENT) }}
+                  >
+                    Pay for a drop-in
+                  </a>
                 </p>
               </div>
             </div>

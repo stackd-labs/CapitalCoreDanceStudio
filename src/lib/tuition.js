@@ -35,8 +35,8 @@ export function monthlyPriceForMinutes(minutes) {
 // display strings, because the page does arithmetic with them — see the pass copy on the
 // Adult Classes page, which works out its own saving rather than quoting a typed one.
 export const ADULT_PRICING = {
-  unlimitedMonthly: 165,
-  dropIn: 25,
+  dropInUrl: 'https://studio.capitalcoredance.com/pay/drop-in', // PayPal pay link, any studio class
+  dropIn: 25, // applies to EVERY studio class (2026-10-14), not just adult; Little Movers has its own $10
 }
 
 // Registration, per dancer. Corrected from $65 to $60 on 2026-08-17: the portal's own

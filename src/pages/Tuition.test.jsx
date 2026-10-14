@@ -115,7 +115,7 @@ test('the separately-priced links quote each rate from the shared source, not ty
   renderTuition()
   const section = screen.getByTestId('separately-priced')
   expect(section.textContent).toContain(`$${COMPANY_PRICING.monthly}`)
-  expect(section.textContent).toContain(`$${ADULT_PRICING.unlimitedMonthly}`)
+  expect(section.textContent).toContain(`$${ADULT_PRICING.dropIn}`)
 })
 
 test('does not promote the Little Movers membership (paused 2026-10-12)', () => {

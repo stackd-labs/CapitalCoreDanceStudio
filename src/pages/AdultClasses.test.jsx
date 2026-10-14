@@ -64,7 +64,7 @@ test('renders all three adult classes in schedule order', () => {
 test('each class shows its day and time from the Fall schedule', () => {
   renderAdultClasses()
   const cards = screen.getAllByTestId('adult-class-card')
-  expect(cards).toHaveLength(3)
+  expect(cards).toHaveLength(2)
   cards.forEach((card, i) => {
     const when = card.querySelector('[data-testid="adult-class-when"]').textContent
     expect(when).toContain(CLASSES[i].day)
@@ -177,7 +177,7 @@ test('each class quotes the tuition rate for its own length, not a typed-in figu
   // expectation here is computed from SCHEDULE plus the shared tuition table.
   renderAdultClasses()
   const prices = screen.getAllByTestId('adult-class-price').map((el) => el.textContent)
-  expect(prices).toHaveLength(3)
+  expect(prices).toHaveLength(2)
   ADULT_INFO_KEYS.forEach((infoKey, i) => {
     const row = SCHEDULE_ROWS_BY_INFO_KEY[infoKey]
     const minutes = classLengthMinutes(row)
@@ -216,9 +216,9 @@ test('the tuition page and the adults page cannot quote different rates', () => 
   expect(screen.getByTestId('adult-headline-price')).toHaveTextContent(fromTable.monthly)
 })
 
-test('offers three ways to pay, each at the figure the tuition module holds', () => {
+test('offers two ways to pay, each at the figure the tuition module holds', () => {
   renderAdultClasses()
-  expect(screen.getAllByTestId('adult-price-card')).toHaveLength(3)
+  expect(screen.getAllByTestId('adult-price-card')).toHaveLength(2)
 
   // Was hardcoded to 'Adult Femme Flair', which came off the schedule 2026-09-02 and
   // took this suite down with it. Reads the first adult class the schedule actually
@@ -227,22 +227,15 @@ test('offers three ways to pay, each at the figure the tuition module holds', ()
   expect(screen.getByTestId('adult-headline-price')).toHaveTextContent(
     monthlyPriceForMinutes(minutes)
   )
-  expect(screen.getByTestId('adult-pass-price')).toHaveTextContent(
-    `$${ADULT_PRICING.unlimitedMonthly}`
-  )
   expect(screen.getByTestId('adult-dropin-price')).toHaveTextContent(`$${ADULT_PRICING.dropIn}`)
-  expect(screen.getByTestId('adult-price-badge')).toHaveTextContent('Best value')
 })
 
-test('the pass states no saving or discount', () => {
-  // 2026-10-08: no discounts are advertised anywhere on the site, for now. The pass keeps
-  // its flat monthly price but no longer claims a saving against paying per class.
+test('the pass is gone and drop-in applies to any adult class', () => {
+  // 'Every class' ($165) taken away 2026-10-14. Still no discounts advertised (2026-10-08).
   renderAdultClasses()
-  const pass = screen.getByTestId('adult-pass-price').closest('[data-testid="adult-price-card"]')
-  expect(pass).toHaveTextContent(`all ${ADULT_INFO_KEYS.length} adult classes`)
-  expect(pass).toHaveTextContent('one flat monthly price')
-  expect(pass).not.toHaveTextContent(/off paying|less than the price|saving/i)
-  expect(document.body.textContent).not.toMatch(/discount/i)
+  expect(screen.queryByTestId('adult-pass-price')).toBeNull()
+  expect(screen.getByTestId('adult-dropin-price').closest('[data-testid="adult-price-card"]')).toHaveTextContent('any adult class')
+  expect(document.body.textContent).not.toMatch(/discount|$165/i)
 })
 
 test('links to ClassPass for members', () => {

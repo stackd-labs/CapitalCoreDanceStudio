@@ -35,8 +35,8 @@ test('clusterByOverlap treats a class ending exactly when the next starts as seq
 
 test('renders every class in both the grid and the mobile list', () => {
   renderCalendar()
-  expect(screen.getAllByTestId('class-block')).toHaveLength(18)
-  expect(screen.getAllByTestId('class-list-item')).toHaveLength(18)
+  expect(screen.getAllByTestId('class-block')).toHaveLength(17)
+  expect(screen.getAllByTestId('class-list-item')).toHaveLength(17)
 })
 
 test('block height encodes duration', () => {
@@ -60,7 +60,7 @@ test('block start slot is measured from the start of the derived window', () => 
   // again — so 17:00 is slot 0, Thursday's 17:15 is slot 1, and 19:30 is slot 10.
   expect(within(grid).getByRole('button', { name: /Tiny Core Ballet & Tumble/ })).toHaveAttribute('data-start-slot', '0')
   expect(within(grid).getByRole('button', { name: /Core Ballet & Jazz Thursday/ })).toHaveAttribute('data-start-slot', '1')
-  expect(within(grid).getByRole('button', { name: /Adult Pom/ })).toHaveAttribute('data-start-slot', '10')
+  expect(within(grid).getByRole('button', { name: /Majorette/ })).toHaveAttribute('data-start-slot', '7')
 })
 
 test('nothing on the calendar overlaps, so every block spans its full column', () => {
@@ -153,8 +153,8 @@ test('clicking a block opens its detail panel; Escape closes it and restores foc
 test('clicking a mobile list card opens the same panel', () => {
   renderCalendar()
   const list = screen.getByTestId('class-list')
-  fireEvent.click(within(list).getByRole('button', { name: /Adult Pom/ }))
-  expect(screen.getByRole('heading', { name: 'Adult Pom' })).toBeInTheDocument()
+  fireEvent.click(within(list).getByRole('button', { name: /Adult Contemporary/ }))
+  expect(screen.getByRole('heading', { name: 'Adult Contemporary' })).toBeInTheDocument()
 })
 
 test('renders only what it is given', () => {

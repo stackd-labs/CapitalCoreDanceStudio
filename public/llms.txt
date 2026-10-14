@@ -31,9 +31,9 @@ Classes are grouped into program tiers rather than named levels:
 ### Little Movers (https://www.capitalcoredance.com/little-movers)
 A movement-based enrichment program for infants, toddlers, and preschoolers, combining dance, music, sensory exploration, tumbling, and active play. Six classes: Baby & Me (0 to 18 months), Parent & Me Dance, Moovin' & Groovin', Tiny Tumblers, Sensory Steps, and the Little Movers Free Play Lab (all 18 months to 5 years).
 
-Schedule: Monday, Wednesday, and Friday mornings, three 45-minute classes at 9:30, 10:30, and 11:30. Pricing: $10 drop-in for the first child and $5 for each additional child, a Passport of 5 visits for $45 or 10 for $85, or a monthly membership at $89 that includes unlimited Little Movers classes plus one Tiny Core class.
+Schedule: Monday, Wednesday, and Friday mornings, three 45-minute classes at 9:30, 10:30, and 11:30. Pricing: $5 drop-in per child per class, a Passport of 5 visits for $45 or 10 for $85, or a monthly membership at $89 that includes unlimited Little Movers classes plus one Tiny Core class.
 
-Sibling rates, specific to Little Movers: the first child pays full price and every child after that is cheaper. An additional child's drop-in is $5 instead of $10, each additional Passport is 10% off (so a second 5-visit pass is $40.50 and a second 10-visit pass is $76.50), and each additional membership is $10 less per month than the one before it, so $89 for the first child, $79 for the second and $69 for the third. These apply to every child after the first, not only the second. The sibling rate is applied first and a promo code comes off the discounted total.
+Sibling rates, specific to Little Movers: the first child pays full price and every child after that is cheaper. The Little Movers drop-in is a flat $5 per child, each additional Passport is 10% off (so a second 5-visit pass is $40.50 and a second 10-visit pass is $76.50), and each additional membership is $10 less per month than the one before it, so $89 for the first child, $79 for the second and $69 for the third. These apply to every child after the first, not only the second. The sibling rate is applied first and a promo code comes off the discounted total.
 
 Promo code MOOVE26 takes 30% off a Little Movers Passport ($31.50 for 5 visits, $59.50 for 10), applied when you book, and 30% off the first month of a membership ($62.30), which the studio applies to the first invoice. It does not apply to single drop-in classes.
 
@@ -44,7 +44,7 @@ No Little Movers class is drop-off: a parent or caregiver is welcome to stay in 
 **Booking is open for Wednesday mornings** on the studio portal at https://studio.capitalcoredance.com/register/little-movers/book. Monday and Friday are on the published schedule but are not bookable yet — they are staffing up and will open once they have an instructor. Tiny Tumblers (Monday) and the Free Play Lab (Friday) therefore cannot be booked today, and Parent & Me Dance is on no published day.
 
 ### Adult Classes (https://www.capitalcoredance.com/adult-classes)
-Evening classes for ages 16 and up: Adult Femme/Flair on Monday, Adult Pom on Wednesday, and Adult Contemporary on Friday. Beginner friendly. One class is $85 a month, all three are $165 a month, or drop in for $25. First class is free.
+Evening classes for ages 16 and up: Adult Ballet/Tech and Adult Contemporary on Friday. Beginner friendly. One class is $85 a month, or drop into any class for $25. First class is free.
 
 ### Capital Core Dance Company (https://www.capitalcoredance.com/dance-company)
 The studio's youth performance and competition program, ages 6 and up, in its founding 2026/2027 season and led by director Yul Tyler Jr. Beginners are welcome and no competition experience is needed. $150 a month covers 3 hours of company practice a week plus up to 3 studio classes, which are recommended rather than required.
@@ -60,6 +60,8 @@ Monthly tuition is set by class length, not by style:
 - 60-minute classes: $105/month
 - 75-minute classes: $125/month
 - 90-minute classes: $150/month
+
+Drop-in: any studio class can be dropped into for $25 a class, paid at https://studio.capitalcoredance.com/pay/drop-in (Little Movers has its own $5 drop-in).
 
 Registration fee: $60 per dancer per semester, or $120 for the full year. Returning students receive a discount, and multi-class, multi-student, and sibling discounts plus family fee caps are available.
 

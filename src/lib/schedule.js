@@ -171,7 +171,9 @@ export const SCHEDULE = [
       { name: 'Majorette', time: '6:45 – 7:30 PM', start: '18:45', end: '19:30', infoKey: 'Majorette', program: 'specialty', ages: 'Ages 6–17', ageGroups: ['kids', 'teen'], category: 'tumble-cheer', studio: 'B', instructor: 'Ms. Milan' },
       // Adult class names already lead with "Adult", so they are not additionally
       // prefixed with their "Adult Core" tier.
-      { name: 'Adult Pom', time: '7:30 – 8:15 PM', start: '19:30', end: '20:15', infoKey: 'Adult Pom', program: 'adult-core', ages: 'Ages 16+ · Adult', ageGroups: ['adult'], category: 'adult', studio: 'B', instructor: 'Ms. Kendall' },
+      // Adult Pom (Wed 7:30 – 8:15 PM, Ms. Kendall) taken off 2026-10-14 at the studio's request;
+      // it had no enrollments. To restore, put this row back:
+      //   { name: 'Adult Pom', time: '7:30 – 8:15 PM', start: '19:30', end: '20:15', infoKey: 'Adult Pom', program: 'adult-core', ages: 'Ages 16+ · Adult', ageGroups: ['adult'], category: 'adult', studio: 'B', instructor: 'Ms. Kendall' },
     ],
   },
   {

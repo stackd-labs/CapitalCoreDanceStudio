@@ -299,7 +299,7 @@ export default function AdultClasses() {
                     className="font-semibold hover:underline"
                     style={{ color: textAccent(ACCENT) }}
                   >
-                    Pay for a drop-in
+                    Book a drop-in
                   </a>
                 </p>
               </div>
@@ -307,13 +307,13 @@ export default function AdultClasses() {
 
             <p className="font-body text-mist-500 text-xs mt-8">
               Your first class is always free —{' '}
-              <Link
-                to="/contact"
+              <a
+                href={ADULT_PRICING.trialUrl}
                 className="font-semibold hover:underline"
                 style={{ color: textAccent(ACCENT) }}
               >
-                get in touch to try one
-              </Link>{' '}
+                book your free first class
+              </a>{' '}
               before you pay anything.
             </p>
 

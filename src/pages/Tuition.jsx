@@ -53,7 +53,7 @@ const SEPARATELY_PRICED = [
   {
     to: '/little-movers',
     name: 'Little Movers',
-    price: 'From $10',
+    price: 'From $5',
     blurb:
       'Ages 0–5, Wednesday mornings, 10 to 11 AM. Pay per class or buy a visit pack. Contact the studio about monthly memberships.',
   },
@@ -61,7 +61,7 @@ const SEPARATELY_PRICED = [
     to: '/adult-classes',
     name: 'Adult Classes',
     price: `${money(priceToNumber(monthlyPriceForMinutes(45)))} a month`,
-    blurb: `Ages 16+, one 45-minute class a month. Drop into any class for ${money(ADULT_PRICING.dropIn)}. First class free.`,
+    blurb: `Ages 16+, one 45-minute class a month. Drop into any class, from ${money(ADULT_PRICING.dropInByLength[30])} to ${money(ADULT_PRICING.dropInByLength[60])}. First class free.`,
   },
   {
     to: '/dance-company',
@@ -94,11 +94,11 @@ const FEES = [
   { label: 'Registration — per dancer, per semester', value: money(REGISTRATION.perSemester) },
   { label: 'Registration — full year (both semesters)', value: money(REGISTRATION.fullYear) },
   // Any studio class can be dropped into, 2026-10-14. Little Movers keeps its own $5 drop-in.
-  { label: 'Drop-in — any studio class, per class', value: (
+  { label: 'Drop-in — any studio class, by class length', value: (
       <>
-        {money(ADULT_PRICING.dropIn)} —{' '}
+        {money(ADULT_PRICING.dropInByLength[30])} for 30 min, {money(ADULT_PRICING.dropInByLength[45])} for 45 min, {money(ADULT_PRICING.dropInByLength[60])} for 60+ min —{' '}
         <a href={ADULT_PRICING.dropInUrl} className="font-semibold hover:underline" style={{ color: textAccent(ACCENT) }}>
-          pay online
+          book a drop-in
         </a>
       </>
     ),

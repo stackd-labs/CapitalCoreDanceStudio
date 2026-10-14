@@ -35,8 +35,14 @@ export function monthlyPriceForMinutes(minutes) {
 // display strings, because the page does arithmetic with them — see the pass copy on the
 // Adult Classes page, which works out its own saving rather than quoting a typed one.
 export const ADULT_PRICING = {
-  dropInUrl: 'https://studio.capitalcoredance.com/pay/drop-in', // PayPal pay link, any studio class
-  dropIn: 25, // applies to EVERY studio class (2026-10-14), not just adult; Little Movers has its own $10
+  // The portal's booking page: pick a class and a date, pay at signup, spot held (2026-10-14).
+  dropInUrl: 'https://studio.capitalcoredance.com/register/drop-in',
+  // A free first class books on its own page.
+  trialUrl: 'https://studio.capitalcoredance.com/register/trial',
+  // Drop-in is priced by class length across EVERY studio class: 30 min $20, 45 min $25, 60+ min $30.
+  // Every adult class runs 45 minutes, so `dropIn` is the adult figure. Little Movers has its own $5.
+  dropIn: 25,
+  dropInByLength: { 30: 20, 45: 25, 60: 30 },
 }
 
 // Registration, per dancer. Corrected from $65 to $60 on 2026-08-17: the portal's own

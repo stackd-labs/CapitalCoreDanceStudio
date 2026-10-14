@@ -59,7 +59,7 @@ export const FAQS = [
     items: [
       {
         q: 'Is there a free trial class?',
-        a: 'Yes — your first class is always free, no commitment required. Just fill out our Contact form, choose "Register for a Free Trial" from the interest dropdown, and we\'ll match your dancer with the right class within 1–2 business days.',
+        a: 'Yes — your first class is always free, no commitment required. Pick a class and a date and we hold your spot: https://studio.capitalcoredance.com/register/trial. Not sure which class? Use our Contact form and we\'ll match your dancer with the right one within 1–2 business days.',
       },
       {
         // Names the portal address rather than just calling it "our student portal".
@@ -153,7 +153,7 @@ export const FAQS = [
       },
       {
         q: 'Can I drop in to a class without enrolling for the semester?',
-        a: 'Yes. You can drop in to any studio class for $25 a class, paid online at https://studio.capitalcoredance.com/pay/drop-in. Little Movers has its own drop-in rate of $5 a class.',
+        a: 'Yes. You can drop in to any studio class. It is $20 for a 30-minute class, $25 for 45 minutes and $30 for an hour or longer. Pick the class and date, pay at signup, and your spot is held: https://studio.capitalcoredance.com/register/drop-in. Little Movers has its own drop-in rate of $5 a class.',
       },
       {
         q: 'How do I register for an adult class?',

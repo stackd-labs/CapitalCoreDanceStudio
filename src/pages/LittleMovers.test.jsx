@@ -113,13 +113,13 @@ test('the page says the class is Wednesday 10 to 11 AM', () => {
   expect(description).not.toMatch(/9:30|10:30|11:30|Monday|Friday/)
 })
 
-test('credits the Ms. Ryan partnership on the class card, not in the schedule', () => {
+test('credits the Miss Ryan partnership on the class card, not in the schedule', () => {
   renderLittleMovers()
   // The studio asked for the schedule table to carry class name and age range only,
   // so the partnership is credited once, on the Moovin' & Groovin' card.
   const partners = screen.getAllByTestId('class-partner')
   expect(partners).toHaveLength(1)
-  expect(partners[0].textContent).toBe('Our signature class, in partnership with Ms. Ryan')
+  expect(partners[0].textContent).toBe('Our signature class, in partnership with Miss Ryan')
   expect(partners[0].closest('[data-testid="little-movers-class"]').textContent).toContain(
     "Moovin' & Groovin'"
   )
@@ -298,4 +298,18 @@ test('the schedule comes first, right after the hero and before the class card',
     (sec) => sec.compareDocumentPosition(schedule) & Node.DOCUMENT_POSITION_FOLLOWING
   )
   expect(priorSections.filter((sec) => !sec.contains(hero))).toHaveLength(0)
+})
+
+test('introduces Miss Ryan with her photo, a short bio and her background', () => {
+  renderLittleMovers()
+  const section = screen.getByTestId('meet-miss-ryan')
+  expect(within(section).getByRole('heading', { name: /Miss Ryan/ })).toBeInTheDocument()
+  const photo = within(section).getByRole('img')
+  expect(photo).toHaveAttribute('src', '/instructor-ryan.jpg')
+  expect(photo.getAttribute('alt')).toMatch(/Miss Ryan/)
+  expect(section.textContent).toMatch(/Moovin' & Groovin'/)
+  expect(within(section).getAllByTestId('ryan-chip').map((c) => c.textContent)).toEqual([
+    'Cheer', 'Hip-hop', 'Gymnastics', '10+ years with little ones',
+  ])
+  expect(section.textContent).not.toMatch(/—/)
 })

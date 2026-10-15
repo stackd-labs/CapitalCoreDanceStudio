@@ -34,7 +34,7 @@ const CLASSES = [
     ages: '0–5 years',
     // The partnership is credited here rather than in the schedule table, which the
     // studio asked to keep to class name and age range only.
-    partner: 'Our signature class, in partnership with Ms. Ryan',
+    partner: 'Our signature class, in partnership with Miss Ryan',
     description:
       'Parents and caregivers participate alongside their little one in a signature movement and music experience featuring creative dance and active learning.',
   },
@@ -106,6 +106,21 @@ const PRICING = [
     lines: [],
   },
 ]
+
+// The teacher behind Moovin' & Groovin', added 2026-10-14 from her own bio. Third person on
+// purpose: these are her facts in the studio's voice, not words put in her mouth.
+const RYAN_NAVY = '#0d1b34' // the page's own navy (bg-ink-base)
+const RYAN_YELLOW = '#f5c518'
+const MISS_RYAN = {
+  photo: '/instructor-ryan.jpg',
+  photoAlt: "Miss Ryan, founder of Moovin' & Groovin' and Little Movers teacher, smiling in a bright pink sweatshirt",
+  chips: ['Cheer', 'Hip-hop', 'Gymnastics', '10+ years with little ones'],
+  bio: [
+    "Meet Miss Ryan, the creator of Moovin' & Groovin' and the reason a room full of toddlers ends up dancing like nobody is watching. She built the class around one big idea: movement should be fun, so every little body gets the freedom to wiggle, try new things, and celebrate everything it can do.",
+    "Her bag of tricks comes from cheer, hip-hop and gymnastics, plus more than ten years of professional childcare, so she knows exactly how to keep tiny dancers giggling and growing. Away from the studio you will find her running, hiking, making something new, or leading ministry groups in her community.",
+  ],
+  closer: "She cannot wait to meet your family. Come get moving!",
+}
 
 const LITTLE_MOVERS_JSON_LD = [simpleBreadcrumb('Little Movers', '/little-movers')]
 
@@ -290,6 +305,69 @@ export default function LittleMovers() {
                 )}
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Meet the teacher. A cyan band on the otherwise navy page, so she stands out: navy
+          type and navy accents on the page's teal, with the yellow sticker kept. Square photo with an
+          offset block (the site has no rounded corners by design); the chips are her real
+          background from her bio. */}
+      <section
+        data-testid="meet-miss-ryan"
+        className="px-6 lg:px-24 py-16 lg:py-20"
+        style={{ background: ACCENT, color: RYAN_NAVY }}
+      >
+        <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,420px)_1fr] gap-12 lg:gap-16 items-center">
+          <div className="relative mx-auto w-full max-w-[420px]">
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 translate-x-4 translate-y-4"
+              style={{ background: RYAN_NAVY }}
+            />
+            <img
+              src={MISS_RYAN.photo}
+              alt={MISS_RYAN.photoAlt}
+              width="700"
+              height="700"
+              loading="lazy"
+              className="relative block w-full h-auto aspect-square object-cover"
+            />
+            <div
+              aria-hidden="true"
+              className="absolute -top-4 -right-3 sm:-right-5 rotate-6 px-3.5 py-2 font-display uppercase text-[15px] leading-none"
+              style={{ background: RYAN_YELLOW, color: RYAN_NAVY }}
+            >
+              Let&apos;s get moovin&apos;!
+            </div>
+          </div>
+
+          <div>
+            <div
+              className="font-body font-semibold text-[11.5px] tracking-[0.3em] uppercase mb-4 inline-block pb-1.5 border-b-[3px]"
+              style={{ borderColor: RYAN_YELLOW }}
+            >
+              Meet your teacher
+            </div>
+            <SectionHeading className="mb-6">Hi, it&apos;s Miss Ryan!</SectionHeading>
+            {MISS_RYAN.bio.map((p) => (
+              <p key={p.slice(0, 24)} className="font-body text-[15.5px] leading-[1.7] mb-4 max-w-xl" style={{ color: RYAN_NAVY }}>
+                {p}
+              </p>
+            ))}
+            <ul className="flex flex-wrap gap-2.5 mt-6 mb-6 list-none p-0">
+              {MISS_RYAN.chips.map((chip) => (
+                <li
+                  key={chip}
+                  data-testid="ryan-chip"
+                  className="font-body text-[12px] font-bold uppercase tracking-[0.12em] px-3.5 py-2 border-2"
+                  style={{ borderColor: RYAN_NAVY, color: RYAN_NAVY }}
+                >
+                  {chip}
+                </li>
+              ))}
+            </ul>
+            <p className="font-display uppercase text-[22px] leading-tight m-0">{MISS_RYAN.closer}</p>
           </div>
         </div>
       </section>

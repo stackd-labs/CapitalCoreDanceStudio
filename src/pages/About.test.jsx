@@ -197,7 +197,7 @@ test('the staff grid is ordered by first name, and shows only first names', () =
 
   renderAbout()
   const names = screen.getAllByTestId('staff-name').map((el) => el.textContent.trim())
-  expect(names).toEqual(['Adelle', 'Jillian', 'Kendall', 'Milan', 'Savannah', 'Yul'])
+  expect(names).toEqual(['Adelle', 'Jillian', 'Kendall', 'Milan', 'Ryan', 'Savannah', 'Yul'])
   expect(names).toEqual([...names].sort((a, b) => a.localeCompare(b)))
   // No titles and no surnames on the card, even though the roster still records them.
   for (const name of names) {

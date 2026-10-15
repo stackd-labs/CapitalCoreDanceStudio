@@ -64,6 +64,16 @@ const ROSTER = [
     bio: 'Ms. Milan has a strong background in cheerleading, tumbling, and dance, with years of training, performance, and leadership experience. She cheered for East End Youth Cheer, the Chamberlayne Packers, Salem Church Middle School, and Manchester High School, and tumbled with the Richmond Twisters. She also danced for Twisted Energy, a highly competitive majorette team. She is passionate about helping dancers grow in confidence and reach their full potential — on and off the floor.',
   },
   {
+    slug: 'ryan',
+    firstName: 'Ryan',
+    name: 'Miss Ryan',
+    role: 'Instructor',
+    specialties: 'Moovin’ & Groovin’ · Music & Movement',
+    photo: '/instructor-ryan.jpg',
+    photoAlt: 'Portrait of Miss Ryan, instructor at Capital Core Dance',
+    bio: 'Miss Ryan is the founder and creator of Moovin’ & Groovin’ with Miss Ryan, a movement-based program that gives young children a fun and encouraging place to move, play, and grow. Her classes combine music and movement while building confidence, coordination, and a love for being active. With a background in cheer, hip-hop, and gymnastics and more than 10 years of professional childcare experience, she creates classes that are engaging and welcoming to every child. Miss Ryan believes movement should be fun, giving kids the freedom to express themselves, try new things, and celebrate what their bodies can do. Outside the studio she loves running, hiking, creating, and leading ministry groups in her community.',
+  },
+  {
     slug: 'savannah',
     firstName: 'Savannah',
     name: 'Ms. Savannah',

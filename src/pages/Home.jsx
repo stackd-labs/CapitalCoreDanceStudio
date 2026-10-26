@@ -17,7 +17,6 @@ import {
 import { localBusinessSchema } from '../lib/schema'
 import { SCHEDULE } from '../lib/schedule'
 import { ACCENTS } from '../lib/pageAccents'
-import { onAccent } from '../lib/accentContrast'
 
 // Rebuilt 2026-08-11 to the studio's "Capital Core Site" mockup (page 1a, accent red).
 //
@@ -117,6 +116,10 @@ const HOME_CARDS = [
 // itself taken from the schedule. Give us real figures and they can go back in.
 const CLASS_COUNT = SCHEDULE.reduce((total, day) => total + day.classes.length, 0)
 
+// Deep emerald from the recital flyer's velvet curtains. White on it is about 13:1 and the
+// gold text and button about 8:1, so every line in the banner clears AA.
+const RECITAL_GREEN = '#0e3b2b'
+
 const STATS = [
   { value: String(CLASS_COUNT), label: 'Classes a week' },
   { value: '12', label: 'Class styles' },
@@ -190,13 +193,14 @@ export default function Home() {
 
       {/* Recital banner, added 2026-10-26 on the feat/recital-page branch. It takes the slot
           the Halloween Spirit Week and Hot Cocoa Party cards held under the hero, and goes
-          live with the /recital page on 1 November 2026. Gold like the page it points at.
+          live with the /recital page on 1 November 2026. Deep green, pulled from the flyer's velvet
+          curtains, so the flyer stands out; the gold stays on the text and the button.
           Take it out once the 19 December show has passed. */}
       <section
         data-testid="recital-banner"
         aria-label="Holiday Remix 2026 recital"
         className="px-6 lg:px-24 py-10 lg:py-12"
-        style={{ background: ACCENTS.gold }}
+        style={{ background: RECITAL_GREEN }}
       >
         <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row md:items-center gap-8 md:gap-12">
           <img
@@ -204,23 +208,26 @@ export default function Home() {
             alt="Holiday Remix 2026 recital flyer: a ballerina in a spotlight beside a decorated Christmas tree."
             width="360"
             height="432"
-            className="w-[180px] md:w-[200px] h-auto flex-none self-center md:self-auto"
+            className="w-[180px] md:w-[200px] h-auto flex-none self-center md:self-auto shadow-[0_8px_28px_rgba(0,0,0,0.45)] border border-white/20"
           />
-          <div className="flex-1" style={{ color: onAccent(ACCENTS.gold) }}>
-            <div className="font-body font-semibold text-[12px] tracking-[0.3em] uppercase mb-3">
+          <div className="flex-1 text-white">
+            <div
+              className="font-body font-semibold text-[12px] tracking-[0.3em] uppercase mb-3"
+              style={{ color: ACCENTS.gold }}
+            >
               Holiday Remix 2026
             </div>
             <h2 className="font-display uppercase text-[32px] sm:text-[40px] lg:text-[46px] leading-[0.98] text-balance m-0">
               Our recital is Saturday, December 19
             </h2>
-            <p className="font-body text-[16.5px] leading-relaxed mt-4 mb-0 max-w-[56ch]">
+            <p className="font-body text-[16.5px] leading-relaxed mt-4 mb-0 max-w-[56ch] text-mist-100">
               2 PM at Powhatan Middle School. Tickets go on sale November 20.
             </p>
           </div>
           <div className="flex-none">
-            <InverseAction to="/recital" data-testid="recital-banner-link">
+            <PrimaryAction accent={ACCENTS.gold} to="/recital" data-testid="recital-banner-link">
               See recital details &rarr;
-            </InverseAction>
+            </PrimaryAction>
           </div>
         </div>
       </section>

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { onAccent } from '../lib/accentContrast'
 import AccentStripe from './AccentStripe'
-import { accentForPath } from '../lib/pageAccents'
+import { accentForPath, ACCENTS } from '../lib/pageAccents'
 
 // Restyled 2026-08-11 to the studio's site mockups. The interaction logic — hover/click
 // submenu, outside-click and Escape handling, the mobile sheet — is unchanged from the
@@ -190,6 +190,19 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center justify-end justify-self-end col-start-3">
+          {/* Recital Information, added 2026-10-26 on the feat/recital-page branch. Orange so
+              it reads apart from the page-accent Contact Us beside it. Shown from xl up only:
+              at lg the centred nav already fills the bar, and a second button there pushes
+              into it. Below xl the same link lives in the mobile sheet and on the home banner.
+              Take it out with the banner after the 19 December show. */}
+          <Link
+            to="/recital"
+            data-testid="nav-recital-button"
+            className="hidden xl:inline-flex font-body font-bold text-[13.5px] px-[22px] py-3 mr-3 transition-opacity hover:opacity-90"
+            style={{ background: ACCENTS.orange, color: onAccent(ACCENTS.orange) }}
+          >
+            Recital Information
+          </Link>
           <Link
             to="/contact"
             className="hidden lg:inline-flex font-body font-bold text-[13.5px] text-white px-[22px] py-3 transition-opacity hover:opacity-90"
@@ -250,9 +263,18 @@ export default function Navbar() {
             </div>
           ))}
           <Link
+            to="/recital"
+            onClick={() => setMenuOpen(false)}
+            data-testid="mobile-recital-button"
+            className="font-body font-bold text-sm px-5 py-3 text-center mt-1"
+            style={{ background: ACCENTS.orange, color: onAccent(ACCENTS.orange) }}
+          >
+            Recital Information
+          </Link>
+          <Link
             to="/contact"
             onClick={() => setMenuOpen(false)}
-            className="font-body font-bold text-sm text-white px-5 py-3 text-center mt-1"
+            className="font-body font-bold text-sm text-white px-5 py-3 text-center"
             style={{ background: pageAccent, color: onAccent(pageAccent) }}
           >
             Contact Us

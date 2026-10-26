@@ -211,3 +211,11 @@ test('the mobile sheet follows the same order as the bar', () => {
     'Dance Company',
   ])
 })
+
+test('Recital Information buttons (bar and mobile sheet) link to /recital', () => {
+  renderNavbar()
+  expect(screen.getByTestId('nav-recital-button')).toHaveAttribute('href', '/recital')
+  expect(screen.getByTestId('nav-recital-button')).toHaveTextContent('Recital Information')
+  fireEvent.click(screen.getByLabelText('Toggle menu'))
+  expect(screen.getByTestId('mobile-recital-button')).toHaveAttribute('href', '/recital')
+})

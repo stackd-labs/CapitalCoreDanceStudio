@@ -187,6 +187,64 @@ export default function Home() {
           argument and the reason it was solid gold rather than a bordered navy band are
           both in that commit's version of this comment. */}
 
+      {/* Halloween week announcements, added 2026-10-26. Two flyer cards straight under
+          the hero, same slot the Open House strip used. Time-boxed: take this whole
+          section (and the two flyers in public/) out after Friday 30 October. The
+          Little Movers booking form lives in the studio portal, so that button leaves
+          the site. */}
+      <section
+        className="bg-ink-base px-6 lg:px-24 py-12 lg:py-16"
+        aria-label="Halloween announcements"
+        data-testid="halloween-announcements"
+      >
+        <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-7">
+          <div className="flex flex-col border border-white/[0.12]">
+            <img
+              src="/halloween-spirit-week.jpg"
+              alt="Halloween Spirit Week at Capital Core Dance Studio. Wear your costume to class, Monday October 26 through Friday October 30."
+              className="w-full h-auto block"
+            />
+            <div className="px-[26px] pt-[26px] pb-[30px]">
+              <Kicker accent={ACCENTS.orange}>This week</Kicker>
+              <div className="font-display uppercase text-white text-[27px] leading-none mb-2.5">
+                Halloween Spirit Week
+              </div>
+              <div className="font-body text-[14.5px] leading-[1.55] text-mist-400">
+                Monday, October 26 through Friday, October 30. Dancers are invited to wear
+                their favorite costumes to class. Dancers must still wear their required
+                dance shoes, and costumes must allow them to move safely and take part fully
+                in class.
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col border border-white/[0.12]">
+            <img
+              src="/little-movers-cocoa-party.jpg"
+              alt="Little Movers Halloween Hot Cocoa Party with Moovin and Groovin with Miss Ryan. Wednesday October 28, 10 to 11 AM, $5 per child."
+              className="w-full h-auto block"
+            />
+            <div className="px-[26px] pt-[26px] pb-[30px]">
+              <Kicker accent={ACCENTS.gold}>Wednesday, October 28</Kicker>
+              <div className="font-display uppercase text-white text-[27px] leading-none mb-2.5">
+                Little Movers Hot Cocoa Party
+              </div>
+              <div className="font-body text-[14.5px] leading-[1.55] text-mist-400 mb-6">
+                10:00 to 11:00 AM with Moovin&apos; &amp; Groovin&apos; with Miss Ryan. Just $5
+                per child, costumes encouraged. Music, movement, dancing, play and yummy hot
+                cocoa. Advance registration is required and spots are limited.
+              </div>
+              <PrimaryAction
+                accent={ACCENTS.gold}
+                href="https://studio.capitalcoredance.com/register/little-movers/book"
+                data-testid="cocoa-party-register"
+              >
+                Register for the party
+              </PrimaryAction>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Link blocks — programmes plus Birthdays / Adult Classes / Contact */}
       <section className="bg-ink-deep px-6 lg:px-24 py-16 lg:py-20">
         <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-7">

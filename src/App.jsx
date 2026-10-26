@@ -9,6 +9,7 @@ import About from './pages/About'
 import Tuition from './pages/Tuition'
 import DanceCompany from './pages/DanceCompany'
 import Birthdays from './pages/Birthdays'
+import Recital from './pages/Recital'
 import Contact from './pages/Contact'
 import Careers from './pages/Careers'
 import FAQ from './pages/FAQ'
@@ -59,6 +60,7 @@ export default function App() {
         <Route path="/specialty-classes" element={<SpecialtyClasses />} />
         <Route path="/dance-company" element={<DanceCompany />} />
         <Route path="/competition-team" element={<DanceCompany />} />
+        <Route path="/recital" element={<Recital />} />
         <Route path="/birthdays" element={<Birthdays />} />
         {/* The on-site birthday booking flow was retired 2026-08-03 and its pages are
             now deleted. These three paths were live for months and are sitting in old

@@ -95,6 +95,8 @@ const ACCENT_BY_PATH = {
   '/privacy': ACCENTS.pink,
 
   '/about': ACCENTS.gold,
+  // Holiday Remix 2026 recital, added 2026-10-26. Gold, as the studio asked.
+  '/recital': ACCENTS.gold,
   // Careers is reached from the footer and the home page's hiring strip, never the
   // navbar, so this accent is doing less navigational work than the others. It still
   // needs to be here: without it the page would inherit the red default and look like

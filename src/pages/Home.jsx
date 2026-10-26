@@ -17,6 +17,7 @@ import {
 import { localBusinessSchema } from '../lib/schema'
 import { SCHEDULE } from '../lib/schedule'
 import { ACCENTS } from '../lib/pageAccents'
+import { onAccent } from '../lib/accentContrast'
 
 // Rebuilt 2026-08-11 to the studio's "Capital Core Site" mockup (page 1a, accent red).
 //
@@ -187,60 +188,39 @@ export default function Home() {
           argument and the reason it was solid gold rather than a bordered navy band are
           both in that commit's version of this comment. */}
 
-      {/* Halloween week announcements, added 2026-10-26. Two flyer cards straight under
-          the hero, same slot the Open House strip used. Time-boxed: take this whole
-          section (and the two flyers in public/) out after Friday 30 October. The
-          Little Movers booking form lives in the studio portal, so that button leaves
-          the site. */}
+      {/* Recital banner, added 2026-10-26 on the feat/recital-page branch. It takes the slot
+          the Halloween Spirit Week and Hot Cocoa Party cards held under the hero, and goes
+          live with the /recital page on 1 November 2026. Gold like the page it points at.
+          Take it out once the 19 December show has passed. */}
       <section
-        className="bg-ink-base px-6 lg:px-24 py-12 lg:py-16"
-        aria-label="Halloween announcements"
-        data-testid="halloween-announcements"
+        data-testid="recital-banner"
+        aria-label="Holiday Remix 2026 recital"
+        className="px-6 lg:px-24 py-10 lg:py-12"
+        style={{ background: ACCENTS.gold }}
       >
-        <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-7">
-          <div className="flex flex-col border border-white/[0.12]">
-            <img
-              src="/halloween-spirit-week.jpg"
-              alt="Halloween Spirit Week at Capital Core Dance Studio. Wear your costume to class, Monday October 26 through Friday October 30."
-              className="w-full h-auto block"
-            />
-            <div className="px-[26px] pt-[26px] pb-[30px]">
-              <Kicker accent={ACCENTS.orange}>This week</Kicker>
-              <div className="font-display uppercase text-white text-[27px] leading-none mb-2.5">
-                Halloween Spirit Week
-              </div>
-              <div className="font-body text-[14.5px] leading-[1.55] text-mist-400">
-                Monday, October 26 through Friday, October 30. Dancers are invited to wear
-                their favorite costumes to class. Dancers must still wear their required
-                dance shoes, and costumes must allow them to move safely and take part fully
-                in class.
-              </div>
+        <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row md:items-center gap-8 md:gap-12">
+          <img
+            src="/holiday-remix-2026-card.jpg"
+            alt="Holiday Remix 2026 recital flyer: a ballerina in a spotlight beside a decorated Christmas tree."
+            width="360"
+            height="432"
+            className="w-[180px] md:w-[200px] h-auto flex-none self-center md:self-auto"
+          />
+          <div className="flex-1" style={{ color: onAccent(ACCENTS.gold) }}>
+            <div className="font-body font-semibold text-[12px] tracking-[0.3em] uppercase mb-3">
+              Holiday Remix 2026
             </div>
+            <h2 className="font-display uppercase text-[32px] sm:text-[40px] lg:text-[46px] leading-[0.98] text-balance m-0">
+              Our recital is Saturday, December 19
+            </h2>
+            <p className="font-body text-[16.5px] leading-relaxed mt-4 mb-0 max-w-[56ch]">
+              2 PM at Powhatan Middle School. Tickets go on sale November 20.
+            </p>
           </div>
-          <div className="flex flex-col border border-white/[0.12]">
-            <img
-              src="/little-movers-cocoa-party.jpg"
-              alt="Little Movers Halloween Hot Cocoa Party with Moovin and Groovin with Miss Ryan. Wednesday October 28, 10 to 11 AM, $5 per child."
-              className="w-full h-auto block"
-            />
-            <div className="px-[26px] pt-[26px] pb-[30px]">
-              <Kicker accent={ACCENTS.gold}>Wednesday, October 28</Kicker>
-              <div className="font-display uppercase text-white text-[27px] leading-none mb-2.5">
-                Little Movers Hot Cocoa Party
-              </div>
-              <div className="font-body text-[14.5px] leading-[1.55] text-mist-400 mb-6">
-                10:00 to 11:00 AM with Moovin&apos; &amp; Groovin&apos; with Miss Ryan. Just $5
-                per child, costumes encouraged. Music, movement, dancing, play and yummy hot
-                cocoa. Advance registration is required and spots are limited.
-              </div>
-              <PrimaryAction
-                accent={ACCENTS.gold}
-                href="https://studio.capitalcoredance.com/register/little-movers/book"
-                data-testid="cocoa-party-register"
-              >
-                Register for the party
-              </PrimaryAction>
-            </div>
+          <div className="flex-none">
+            <InverseAction to="/recital" data-testid="recital-banner-link">
+              See recital details &rarr;
+            </InverseAction>
           </div>
         </div>
       </section>

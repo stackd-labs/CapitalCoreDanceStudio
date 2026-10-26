@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import Tuition from './Tuition'
 import { ADULT_PRICING, COMPANY_PRICING, REGISTRATION } from '../lib/tuition'
@@ -25,8 +25,9 @@ test('states both semester date ranges', () => {
 test('marks both end-of-semester performance dates tentative', () => {
   renderTuition()
   // Parents plan travel around these, so the tentative qualifier must survive edits.
-  const fall = screen.getByText(/Recital/).closest('div')
-  const spring = screen.getByText(/^Show$/).closest('div')
+  // Scoped to <main>: the footer now carries a "Recital" link of its own.
+  const fall = within(screen.getByRole('main')).getByText(/Recital/).closest('div')
+  const spring = within(screen.getByRole('main')).getByText(/^Show$/).closest('div')
   expect(fall.textContent).toContain('December 19')
   expect(fall.textContent).toContain('(tentative)')
   expect(spring.textContent).toContain('May 22')

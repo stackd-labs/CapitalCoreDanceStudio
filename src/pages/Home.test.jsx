@@ -217,3 +217,10 @@ test('the finished open-house strip is gone, and the rest of the page is intact'
   expect(screen.getAllByTestId('home-card')).toHaveLength(6)
   expect(screen.getByTestId('hiring-strip')).toBeInTheDocument()
 })
+
+test('recital banner links to the recital page and the Halloween cards are gone', () => {
+  renderHome()
+  expect(screen.getByTestId('recital-banner-link')).toHaveAttribute('href', '/recital')
+  expect(screen.getByTestId('recital-banner')).toHaveTextContent(/December 19/)
+  expect(screen.queryByTestId('halloween-announcements')).not.toBeInTheDocument()
+})

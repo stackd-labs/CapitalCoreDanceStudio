@@ -130,7 +130,19 @@ export function eventSchema({
   offerUrl,
   offerPrice,
   offerName,
+  // Added 2026-10-26: the venue and image used to be hardcoded to the June 2026 recital's
+  // Richmond Christian School, which is wrong for every later show. The old values stay as
+  // the defaults so a caller that passes neither behaves as before.
+  location,
+  image,
 }) {
+  const place = location ?? {
+    name: 'Richmond Christian School',
+    streetAddress: '6511 Belmont Rd',
+    addressLocality: 'Chesterfield',
+    addressRegion: 'VA',
+    postalCode: '23832',
+  }
   return {
     '@context': 'https://schema.org',
     '@type': 'TheaterEvent',
@@ -142,17 +154,17 @@ export function eventSchema({
     eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
     location: {
       '@type': 'Place',
-      name: 'Richmond Christian School',
+      name: place.name,
       address: {
         '@type': 'PostalAddress',
-        streetAddress: '6511 Belmont Rd',
-        addressLocality: 'Chesterfield',
-        addressRegion: 'VA',
-        postalCode: '23832',
+        streetAddress: place.streetAddress,
+        addressLocality: place.addressLocality,
+        addressRegion: place.addressRegion,
+        postalCode: place.postalCode,
         addressCountry: 'US',
       },
     },
-    image: `${SITE_URL}/ticket-banner.png`,
+    image: image ?? `${SITE_URL}/ticket-banner.png`,
     organizer: {
       '@type': 'Organization',
       name: 'Capital Core Dance Studio',

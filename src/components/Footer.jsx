@@ -27,6 +27,7 @@ const LINK_COLUMNS = [
       { to: '/about', label: 'About Us' },
       { to: '/dance-company', label: 'Dance Company' },
       { to: '/birthdays', label: 'Birthdays' },
+      { to: '/recital', label: 'Recital' },
       { to: '/blog', label: 'Blog' },
       // Careers lives here and nowhere else in the chrome: the navbar is a parent's map
       // of the studio, and the people looking for this page are looking for the footer.

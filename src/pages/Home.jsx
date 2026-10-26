@@ -116,9 +116,10 @@ const HOME_CARDS = [
 // itself taken from the schedule. Give us real figures and they can go back in.
 const CLASS_COUNT = SCHEDULE.reduce((total, day) => total + day.classes.length, 0)
 
-// Deep emerald from the recital flyer's velvet curtains. White on it is about 13:1 and the
+// Two shades darker than the emerald in the recital flyer's velvet curtains, so the flyer
+// lifts off it. White on it is about 17:1 and the
 // gold text and button about 8:1, so every line in the banner clears AA.
-const RECITAL_GREEN = '#0e3b2b'
+const RECITAL_GREEN = '#061f16'
 
 const STATS = [
   { value: String(CLASS_COUNT), label: 'Classes a week' },

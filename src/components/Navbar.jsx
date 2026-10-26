@@ -83,7 +83,7 @@ function NavGroup({ link, active, accent }) {
       <Link
         to={link.to}
         aria-current={active ? 'page' : undefined}
-        className={`font-body font-semibold text-[13.5px] pb-1.5 border-b-[3px] transition-colors ${
+        className={`font-body font-semibold text-[12.5px] xl:text-[13.5px] pb-1.5 border-b-[3px] transition-colors ${
           active ? 'text-white' : 'text-mist-200 hover:text-white'
         }`}
         style={{ borderColor: accent }}
@@ -156,7 +156,7 @@ export default function Navbar() {
             alt="Capital Core Dance Studio"
             className="h-11 w-11 object-contain flex-shrink-0"
           />
-          <div className="leading-none">
+          <div className="leading-none hidden min-[1180px]:block whitespace-nowrap">
             <div className="text-white font-body font-bold text-[15px] tracking-[0.14em]">
               CAPITAL CORE
             </div>
@@ -167,7 +167,7 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop nav — centered */}
-        <div data-testid="desktop-nav" className="hidden lg:flex items-end justify-center gap-7">
+        <div data-testid="desktop-nav" className="hidden lg:flex items-end justify-center gap-4 xl:gap-5 2xl:gap-7">
           {NAV_LINKS.map((link) => {
             const accent = accentForPath(link.to)
             const active = isActive(link)
@@ -178,7 +178,7 @@ export default function Navbar() {
                 key={link.to}
                 to={link.to}
                 aria-current={active ? 'page' : undefined}
-                className={`font-body font-semibold text-[13.5px] pb-1.5 border-b-[3px] transition-colors ${
+                className={`font-body font-semibold text-[12.5px] xl:text-[13.5px] pb-1.5 border-b-[3px] transition-colors ${
                   active ? 'text-white' : 'text-mist-200 hover:text-white'
                 }`}
                 style={{ borderColor: accent }}
@@ -191,21 +191,21 @@ export default function Navbar() {
 
         <div className="flex items-center justify-end justify-self-end col-start-3">
           {/* Recital Information, added 2026-10-26 on the feat/recital-page branch. Orange so
-              it reads apart from the page-accent Contact Us beside it. Shown from xl up only:
-              at lg the centred nav already fills the bar, and a second button there pushes
-              into it. Below xl the same link lives in the mobile sheet and on the home banner.
+              it reads apart from the page-accent Contact Us beside it. Shown at every desktop
+              width: from lg to xl the nav text, gaps and button padding are tightened so the
+              bar still fits at 1024px. Below lg the same link is in the mobile sheet.
               Take it out with the banner after the 19 December show. */}
           <Link
             to="/recital"
             data-testid="nav-recital-button"
-            className="hidden xl:inline-flex font-body font-bold text-[13.5px] px-[22px] py-3 mr-3 transition-opacity hover:opacity-90"
+            className="hidden lg:inline-flex whitespace-nowrap font-body font-bold text-[12.5px] xl:text-[13.5px] px-3.5 xl:px-[22px] py-3 mr-2 xl:mr-3 transition-opacity hover:opacity-90"
             style={{ background: ACCENTS.orange, color: onAccent(ACCENTS.orange) }}
           >
             Recital Information
           </Link>
           <Link
             to="/contact"
-            className="hidden lg:inline-flex font-body font-bold text-[13.5px] text-white px-[22px] py-3 transition-opacity hover:opacity-90"
+            className="hidden lg:inline-flex whitespace-nowrap font-body font-bold text-[12.5px] xl:text-[13.5px] text-white px-3.5 xl:px-[22px] py-3 transition-opacity hover:opacity-90"
             style={{ background: pageAccent, color: onAccent(pageAccent) }}
           >
             Contact Us

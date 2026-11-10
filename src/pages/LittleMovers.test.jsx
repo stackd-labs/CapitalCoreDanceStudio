@@ -4,17 +4,17 @@ import LittleMovers from './LittleMovers'
 import { FAQS } from '../lib/faqs'
 import { monthlyPriceForMinutes, priceToNumber } from '../lib/tuition'
 
-// ONE class for now (2026-10-12): Moovin' & Groovin', ages 0–5, parents participate. The
-// other five (Baby & Me, Parent & Me Dance, Tiny Tumblers, Sensory Steps, Free Play Lab) are
-// off the page and must not creep back without the studio saying so.
-const CLASSES = [["Moovin' & Groovin'", '0–5 years']]
-const REMOVED = ['Baby & Me', 'Parent & Me', 'Tiny Tumblers', 'Sensory Steps', 'Free Play Lab']
-
-// ONE class a week since 2026-10-08: Wednesday 10:00 to 11:00 AM. It was Monday / Wednesday
-// / Friday in three 45-minute slots (9:30, 10:30, 11:30) until the studio cut it back.
-const SLOT = '10:00 – 11:00 AM'
-const DAYS_SHOWN = ['Wednesday']
-const DAYS_GONE = ['Monday', 'Tuesday', 'Thursday', 'Friday']
+// All six classes are back on the page (2026-11-10) while Little Movers is paused, so
+// families can see what the spring 2027 waitlist is for. None is bookable and there is no
+// schedule: the Wednesday 10-11 AM grid and the single-class section both came off.
+const CLASSES = [
+  ['Baby & Me', '0–18 months'],
+  ['Parent & Me Dance', '18 months–3 years'],
+  ["Moovin' & Groovin'", '18 months–5 years'],
+  ['Tiny Tumblers', '18 months–5 years'],
+  ['Sensory Steps', '18 months–5 years'],
+  ['Little Movers Free Play Lab', '18 months–5 years'],
+]
 
 function renderLittleMovers() {
   return render(
@@ -54,80 +54,48 @@ test('the classes heading does not hardcode a count that can go stale', () => {
   expect(screen.queryByText(/Six ways to move/i)).not.toBeInTheDocument()
 })
 
-test('renders only Moovin & Groovin, ages 0-5 with parents participating, none badged', () => {
+test('renders all six classes under the hero, each with ages and a description, none badged', () => {
   renderLittleMovers()
   const cards = screen.getAllByTestId('little-movers-class')
-  expect(cards).toHaveLength(1)
-  expect(cards[0].textContent).toMatch(/Parents and caregivers participate/)
-  for (const gone of REMOVED) expect(document.body.textContent, gone).not.toContain(gone)
+  expect(cards).toHaveLength(CLASSES.length)
   cards.forEach((card, i) => {
     const [name, ages] = CLASSES[i]
     expect(card.textContent).toContain(name)
     expect(card.textContent).toContain(ages)
-    // Every class must carry a description, not just a name and an age.
     expect(card.querySelector('p').textContent.trim().length).toBeGreaterThan(30)
-    // The old "Coming soon" badge went with the Monday / Friday staffing note.
     expect(card.textContent).not.toMatch(/coming soon/i)
   })
+  expect(cards[2].textContent).toMatch(/Parents and caregivers participate/)
 })
 
-test('the schedule is one Wednesday class, 10 to 11 AM', () => {
+test('there is no schedule and no Wednesday class-times section', () => {
+  // Cut 2026-11-10: nothing is bookable, so a timetable would read as bookable.
   renderLittleMovers()
-  const table = screen.getByTestId('schedule-table')
-  // One header row plus one time-slot row.
-  const rows = within(table).getAllByRole('row')
-  expect(rows).toHaveLength(2)
-
-  expect(within(table).getByText(SLOT)).toBeInTheDocument()
-  const headers = screen.getAllByTestId('schedule-day-header')
-  expect(headers.map((h) => h.dataset.day)).toEqual(DAYS_SHOWN)
-  expect(within(rows[1]).getAllByRole('cell')).toHaveLength(1)
-  expect(within(table).getByTestId('schedule-entry').textContent).toMatch(/Moovin/)
-  expect(within(table).getByTestId('schedule-entry').textContent).toContain('0–5 years')
-
-  // The mobile list carries the same single slot.
-  const list = screen.getByTestId('schedule-list')
-  expect(within(list).getAllByTestId('schedule-entry')).toHaveLength(1)
-  expect(within(list).getByText('Wednesday')).toBeInTheDocument()
-  expect(within(list).getByText(SLOT)).toBeInTheDocument()
+  expect(screen.queryByTestId('schedule-table')).not.toBeInTheDocument()
+  expect(screen.queryByTestId('schedule-list')).not.toBeInTheDocument()
+  expect(document.getElementById('schedule')).toBeNull()
+  expect(screen.queryByRole('heading', { name: /Wednesday mornings/ })).not.toBeInTheDocument()
+  expect(screen.queryByText('Our class')).not.toBeInTheDocument()
+  // The hero's "See class times" button pointed at the schedule.
+  expect(screen.queryByText(/See class times/i)).not.toBeInTheDocument()
 })
 
-test('Monday, Tuesday, Thursday and Friday are off the schedule and nothing says "not booking yet"', () => {
+test('the hero and meta description say to join the waitlist for spring 2027', () => {
   renderLittleMovers()
-  const table = screen.getByTestId('schedule-table')
-  const list = screen.getByTestId('schedule-list')
-  for (const day of DAYS_GONE) {
-    expect(within(table).queryByText(day), `${day} in the table`).not.toBeInTheDocument()
-    expect(within(list).queryByText(day), `${day} in the mobile list`).not.toBeInTheDocument()
-  }
-  expect(screen.queryByTestId('day-not-bookable')).not.toBeInTheDocument()
-  expect(screen.queryByTestId('staffing-note')).not.toBeInTheDocument()
-  expect(screen.queryByText(/staffing up/i)).not.toBeInTheDocument()
-})
-
-test('the page says the class is Wednesday 10 to 11 AM', () => {
-  renderLittleMovers()
-  expect(screen.getByRole('heading', { name: /Wednesday mornings, 10 to 11 AM/ })).toBeInTheDocument()
+  expect(screen.getAllByText(/Join our waitlist for spring 2027/).length).toBeGreaterThan(0)
   const description = document.querySelector('meta[name="description"]')?.getAttribute('content')
-  expect(description).toMatch(/Wednesday mornings from 10 to 11 AM/)
-  expect(description).not.toMatch(/9:30|10:30|11:30|Monday|Friday/)
+  expect(description).toMatch(/Join our waitlist for spring 2027/)
+  expect(description).not.toMatch(/9:30|10:30|11:30|Monday|Friday|Booking is open/)
 })
 
-test('credits the Miss Ryan partnership on the class card, not in the schedule', () => {
+test('credits the Miss Ryan partnership on the Moovin & Groovin card', () => {
   renderLittleMovers()
-  // The studio asked for the schedule table to carry class name and age range only,
-  // so the partnership is credited once, on the Moovin' & Groovin' card.
   const partners = screen.getAllByTestId('class-partner')
   expect(partners).toHaveLength(1)
   expect(partners[0].textContent).toBe('Our signature class, in partnership with Miss Ryan')
   expect(partners[0].closest('[data-testid="little-movers-class"]').textContent).toContain(
     "Moovin' & Groovin'"
   )
-
-  // Nothing in either schedule view names an instructor.
-  for (const testid of ['schedule-table', 'schedule-list']) {
-    expect(within(screen.getByTestId(testid)).queryByText(/Ms\. Ryan/)).not.toBeInTheDocument()
-  }
 })
 
 test('the membership is greyed out, unpriced, and points to the studio', () => {
@@ -140,12 +108,10 @@ test('the membership is greyed out, unpriced, and points to the studio', () => {
   expect(membership.textContent).not.toMatch(/$89|$24|Tiny Core|Best value/)
 })
 
-test('states the class length range and that no class is drop-off', () => {
-  // The studio settled it on 2026-08-19 — a caregiver always stays. This is a promise a
-  // parent chooses the programme on, so it is pinned. The "45 minutes" claim went with the
-  // three-slot grid: the class is now one hour.
+test('states that no class is drop-off', () => {
+  // The studio settled it on 2026-08-19: a caregiver always stays. A promise a parent
+  // chooses the programme on, so it is pinned.
   renderLittleMovers()
-  expect(screen.getByText(/once a week, on Wednesday mornings from 10:00 to 11:00 AM/)).toBeInTheDocument()
   expect(screen.getByText(/No\s+Little Movers\s+class is drop-off/i)).toBeInTheDocument()
   expect(screen.getByText(/stay in the\s+class or wait in the studio/i)).toBeInTheDocument()
 })
@@ -229,17 +195,16 @@ test('the finished open house is gone from the page and its meta description', (
   expect(description).not.toMatch(/September 2/)
 })
 
-test('the persistent call to action books a Little Movers class on the portal', () => {
-  // The portal moved this form to the /book path on 2026-09-02. The bare
-  // /register/little-movers URL is no longer the booking page, so the exact path is
-  // pinned rather than a /register/little-movers prefix match.
+test('the persistent call to action joins the Little Movers waitlist on the portal', () => {
+  // Booking was paused 2026-11-10 and replaced by the waitlist form. To reopen, point this
+  // back at /register/little-movers/book (and flip LM_BOOKING_OPEN in the portal).
   renderLittleMovers()
-  const bookLinks = screen.getAllByRole('link', { name: 'Book a class →' })
+  const bookLinks = screen.getAllByRole('link', { name: 'Join the waitlist →' })
   expect(bookLinks).toHaveLength(2) // hero and closing band
   for (const link of bookLinks) {
     expect(link).toHaveAttribute(
       'href',
-      'https://studio.capitalcoredance.com/register/little-movers/book'
+      'https://studio.capitalcoredance.com/register/little-movers-waitlist'
     )
     expect(link).toHaveAttribute('rel', 'noopener noreferrer')
   }
@@ -256,7 +221,7 @@ test('no copy still claims registration is closed', () => {
 test('closing call to action reads as the studio wrote it', () => {
   renderLittleMovers()
   expect(screen.getByRole('heading', { name: 'Ready to Get Moving?' })).toBeInTheDocument()
-  expect(screen.getByText(/Join the Little Movers family/)).toBeInTheDocument()
+  expect(screen.getByText(/Join our waitlist for spring 2027. We will let you know the moment/)).toBeInTheDocument()
 })
 
 test('uses the teal solid wedge, and reaches only the Little Movers booking form', () => {
@@ -274,30 +239,27 @@ test('uses the teal solid wedge, and reaches only the Little Movers booking form
     .map((a) => a.getAttribute('href'))
   expect(portalHrefs.length).toBeGreaterThan(0)
   for (const href of portalHrefs) {
-    expect(href).toBe('https://studio.capitalcoredance.com/register/little-movers/book')
+    expect(href).toBe('https://studio.capitalcoredance.com/register/little-movers-waitlist')
   }
 })
 
-test('the schedule time column is a row header, not a data cell', () => {
-  // Regression: it was briefly a <td>, which drops the row-header semantics screen
-  // readers use to announce which time slot a class sits in.
+test('the classes come first, right after the hero', () => {
   renderLittleMovers()
-  const table = screen.getByTestId('schedule-table')
-  const rowHeaders = within(table).getAllByRole('rowheader')
-  expect(rowHeaders.map((th) => th.textContent)).toEqual([SLOT])
-})
-
-test('the schedule comes first, right after the hero and before the class card', () => {
-  renderLittleMovers()
-  const schedule = document.getElementById('schedule')
-  const card = screen.getByTestId('little-movers-class')
-  expect(schedule.compareDocumentPosition(card) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  const classes = document.getElementById('classes')
   const hero = screen.getByRole('heading', { level: 1 })
-  expect(hero.compareDocumentPosition(schedule) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  expect(hero.compareDocumentPosition(classes) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   const priorSections = [...document.querySelectorAll('main section')].filter(
-    (sec) => sec.compareDocumentPosition(schedule) & Node.DOCUMENT_POSITION_FOLLOWING
+    (sec) => sec.compareDocumentPosition(classes) & Node.DOCUMENT_POSITION_FOLLOWING
   )
   expect(priorSections.filter((sec) => !sec.contains(hero))).toHaveLength(0)
+})
+
+test('the Miss Ryan section sits directly above pricing', () => {
+  renderLittleMovers()
+  const sections = [...document.querySelectorAll('main section')]
+  const ryan = screen.getByTestId('meet-miss-ryan')
+  const pricing = screen.getAllByTestId('pricing-card')[0].closest('section')
+  expect(sections.indexOf(pricing) - sections.indexOf(ryan)).toBe(1)
 })
 
 test('introduces Miss Ryan with her photo, a short bio and her background', () => {

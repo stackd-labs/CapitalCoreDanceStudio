@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
 import Hero from '../components/Hero'
-import { Kicker, SectionHeading, PrimaryAction, GhostAction, CtaBand, InverseAction } from '../components/blocks'
+import { Kicker, SectionHeading, PrimaryAction, CtaBand, InverseAction } from '../components/blocks'
 import { simpleBreadcrumb } from '../lib/schema'
 import { ACCENTS } from '../lib/pageAccents'
 import { onAccent, textAccent } from '../lib/accentContrast'
@@ -23,20 +23,51 @@ const ACCENT = ACCENTS.teal
 // /register/little-movers URL this used to point at is no longer the booking page.
 //
 // This is the PERSISTENT programme call to action and it has no end date.
-const PORTAL_LITTLE_MOVERS_URL = 'https://studio.capitalcoredance.com/register/little-movers/book'
+//
+// 🔴 BOOKING PAUSED 2026-11-10 (the studio's call: Ms. Ryan is out). The page stays up for
+// information, every Book button became "Join the waitlist", and the portal form is the
+// open-house-style lead form below. The portal also refuses little_movers bookings
+// server-side (LM_BOOKING_OPEN in dancestudioportal's lib/little-movers-status.ts), so
+// reopening takes BOTH: flip that flag and point WAITLIST_URL back at /register/little-movers/book.
+const WAITLIST_URL = 'https://studio.capitalcoredance.com/register/little-movers-waitlist'
 
-// The one Little Movers class for now (2026-10-12, at the studio's request): Moovin' &
-// Groovin'. Baby & Me, Parent & Me Dance, Tiny Tumblers, Sensory Steps and the Free Play
-// Lab came off the page; their copy is in git history for when they return.
+// All six classes again (2026-11-10), back on the page while Little Movers is paused so
+// families can see what the waitlist is for. Copy and ages restored from git history
+// (before the 2026-10-12 cut to one class); Moovin' & Groovin' keeps its current wording.
+// None of these are bookable: see WAITLIST_URL above.
 const CLASSES = [
   {
+    name: 'Baby & Me',
+    ages: '0–18 months',
+    description: 'Gentle movement, music, sensory exploration, and bonding.',
+  },
+  {
+    name: 'Parent & Me Dance',
+    ages: '18 months–3 years',
+    description: 'Interactive movement classes designed for toddlers and caregivers.',
+  },
+  {
     name: "Moovin' & Groovin'",
-    ages: '0–5 years',
-    // The partnership is credited here rather than in the schedule table, which the
-    // studio asked to keep to class name and age range only.
+    ages: '18 months–5 years',
+    // The partnership is credited on the card, not in a schedule.
     partner: 'Our signature class, in partnership with Miss Ryan',
     description:
       'Parents and caregivers participate alongside their little one in a signature movement and music experience featuring creative dance and active learning.',
+  },
+  {
+    name: 'Tiny Tumblers',
+    ages: '18 months–5 years',
+    description: 'Beginner tumbling, balance, flexibility, and coordination.',
+  },
+  {
+    name: 'Sensory Steps',
+    ages: '18 months–5 years',
+    description: 'Movement-based sensory exploration with props, music, and imaginative play.',
+  },
+  {
+    name: 'Little Movers Free Play Lab',
+    ages: '18 months–5 years',
+    description: 'Supervised obstacle courses, climbing, balance stations, and active play.',
   },
 ]
 
@@ -49,21 +80,6 @@ const BENEFITS = [
   'Gross motor development',
   'Rhythm and musicality',
   'Independence',
-]
-
-// One class a week: Wednesday mornings, 10:00 to 11:00 AM. Cut from Monday / Wednesday /
-// Friday (three 45-minute slots at 9:30, 10:30 and 11:30) on 2026-10-08, at the studio's
-// request. The old grid and its staffing notes are in git history.
-//
-// ▶ The portal's booking wizard (LM_SCHEDULE in dancestudioportal) still generates the old
-// Wednesday slots; the same change has to be made there.
-const TIME_SLOTS = ['10:00 – 11:00 AM']
-const DAYS = ['Wednesday']
-
-// SCHEDULE[slotIndex][day]. The one hour covers every age, so the cell names the program
-// and carries its own age range rather than looking one up from CLASSES.
-const SCHEDULE = [
-  { Wednesday: { name: "Moovin' & Groovin'", ages: '0–5 years' } },
 ]
 
 const DROP_IN_PRICE = 5
@@ -133,23 +149,12 @@ const CLASS_SHAPE = [
   { n: '04', name: 'Stickers & goodbye', blurb: 'A calm finish, a sticker, and something to show you.' },
 ]
 
-// One schedule cell: class name and age range.
-function ScheduleCell({ entry }) {
-  if (!entry) return null
-  return (
-    <div data-testid="schedule-entry" className="text-left">
-      <div className="font-body text-white font-bold text-sm leading-snug">{entry.name}</div>
-      <div className="font-body text-mist-500 text-xs mt-0.5">{entry.ages}</div>
-    </div>
-  )
-}
-
 export default function LittleMovers() {
   return (
     <div className="min-h-screen flex flex-col bg-ink-base">
       <SEO
         title="Little Movers | Toddler &amp; Preschool Movement Classes in Midlothian, VA — Capital Core Dance"
-        description="Little Movers at Capital Core Dance in Midlothian, VA. A movement-based enrichment program for infants, toddlers, and preschoolers combining dance, music, sensory play, tumbling, and active exploration. Wednesday mornings from 10 to 11 AM, drop-in $5 a class. Booking is open on our studio portal."
+        description="Little Movers at Capital Core Dance in Midlothian, VA. A movement-based enrichment program for infants, toddlers, and preschoolers combining dance, music, sensory play, tumbling, and active exploration. Join our waitlist for spring 2027 to be the first to know when classes return."
         canonical="/little-movers"
         jsonLd={LITTLE_MOVERS_JSON_LD}
       />
@@ -160,7 +165,7 @@ export default function LittleMovers() {
         eyebrow="Ages 0 – 5 years"
         title={['Little', [{ text: 'Movers', accent: ACCENT }]]}
         tagline="Movement. Play. Learn. Grow."
-        body="A first dance experience for infants, toddlers and preschoolers — a Wednesday morning class, 10 to 11 AM, built on music, sensory play and active exploration."
+        body="Join our waitlist for spring 2027. Little Movers is a first dance experience for infants, toddlers and preschoolers, built on music, sensory play and active exploration."
         photoCaption="Toddlers in class"
         photoSrc="/little-movers-hero.jpg"
         photoAlt="Five toddlers in pastel leotards and tutus standing at the barre in a Little Movers class"
@@ -168,119 +173,30 @@ export default function LittleMovers() {
         titleClassName="text-[42px] sm:text-[56px] lg:text-[76px] leading-[0.92]"
         actions={
           <>
-            <PrimaryAction href={PORTAL_LITTLE_MOVERS_URL}>Book a class →</PrimaryAction>
-            <GhostAction href="#schedule">See class times</GhostAction>
+            <PrimaryAction href={WAITLIST_URL}>Join the waitlist →</PrimaryAction>
           </>
         }
       />
 
-      {/* Weekly schedule. One class a week since 2026-10-08. */}
-      <section id="schedule" className="px-6 lg:px-24 py-16 lg:py-20 scroll-mt-24">
-        <div className="max-w-[1440px] mx-auto">
-          <Kicker accent={ACCENT}>Weekly schedule</Kicker>
-          <SectionHeading className="text-white mb-3">
-            Wednesday mornings, 10 to 11 AM
-          </SectionHeading>
-          <p className="font-body text-mist-400 text-sm mb-10 max-w-2xl">
-            Little Movers meets once a week, on Wednesday mornings from 10:00 to 11:00 AM. No
-            Little Movers class is drop-off: a parent or caregiver is welcome to stay in the
-            class or wait in the studio. Booking is open on our studio portal, which carries the
-            current week&apos;s class and what is still available.
-          </p>
-
-          {/* Table at md and up */}
-          <div className="hidden md:block overflow-x-auto">
-            <table data-testid="schedule-table" className="w-full border-collapse">
-              <thead>
-                <tr>
-                  <th className="text-left font-body text-mist-500 text-[10px] font-bold uppercase tracking-wider pb-3 pr-4 w-32">
-                    Time
-                  </th>
-                  {DAYS.map((day) => (
-                    <th
-                      key={day}
-                      data-testid="schedule-day-header"
-                      data-day={day}
-                      className="text-left font-body text-white text-xs font-bold uppercase tracking-wider pb-3 px-3"
-                    >
-                      {day}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {SCHEDULE.map((row, i) => (
-                  <tr key={TIME_SLOTS[i]} className="border-t border-white/10">
-                    <th
-                      scope="row"
-                      className="text-left font-body text-sm font-semibold py-4 pr-4 whitespace-nowrap"
-                      style={{ color: textAccent(ACCENT) }}
-                    >
-                      {TIME_SLOTS[i]}
-                    </th>
-                    {DAYS.map((day) => (
-                      <td key={day} className="align-top py-4 px-3">
-                        <ScheduleCell entry={row[day]} />
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Day-by-day below md */}
-          <div data-testid="schedule-list" className="md:hidden flex flex-col gap-8">
-            {DAYS.map((day) => (
-              <div key={day} data-testid="schedule-day" data-day={day}>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="font-display uppercase text-white text-xl">{day}</div>
-                  <div className="flex-1 h-px bg-white/15" />
-                </div>
-                <div className="flex flex-col gap-3">
-                  {SCHEDULE.map((row, i) =>
-                    row[day] ? (
-                      <div
-                        key={`${day}-${i}`}
-                        className="border border-white/[0.12] bg-ink-panel px-4 py-3 flex items-start justify-between gap-4"
-                      >
-                        <ScheduleCell entry={row[day]} />
-                        <div
-                          className="font-body text-sm font-medium flex-shrink-0 text-right"
-                          style={{ color: textAccent(ACCENT) }}
-                        >
-                          {TIME_SLOTS[i]}
-                        </div>
-                      </div>
-                    ) : null
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* The Little Movers Open House ran here — one gold notice band under the hero, on
-          Wednesday 2 September 2026. Removed 2026-09-02 once the morning was over, along
-          with src/lib/openHouse.js and the matching strip on Home. Recoverable from git
-          history if the studio runs another one. */}
-
-      {/* The classes — the mockup's tier cards, filled with the studio's own classes. The
-          heading deliberately carries no count: it said "Six ways to move" while only five
-          were on the grid, and a hardcoded number goes stale every time a class moves. */}
-      <section className="bg-ink-deep px-6 lg:px-24 py-16 lg:py-20">
+      {/* The classes, straight under the hero (2026-11-10): all six, none bookable. The
+          heading carries no count, because a hardcoded number goes stale when a class moves. */}
+      <section id="classes" className="px-6 lg:px-24 py-16 lg:py-20 scroll-mt-24">
         <div className="max-w-[1440px] mx-auto">
           <Kicker accent={ACCENT}>The classes</Kicker>
-          <SectionHeading className="text-white mb-10">Our class</SectionHeading>
-          <div className="grid grid-cols-1 max-w-xl gap-[26px]">
+          <SectionHeading className="text-white mb-3">Our classes</SectionHeading>
+          <p className="font-body text-mist-400 text-sm mb-10 max-w-2xl">
+            Join our waitlist for spring 2027. These are the classes we plan to offer when Little
+            Movers returns. No Little Movers class is drop-off: a parent or caregiver is welcome to
+            stay in the class or wait in the studio.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[26px]">
             {CLASSES.map(({ name, ages, description, partner }) => (
               <div
                 key={name}
                 data-testid="little-movers-class"
                 className="border border-white/[0.12] px-7 pt-8 pb-[34px]"
               >
-                <div className="font-display text-[38px] leading-none" style={{ color: textAccent(ACCENT) }}>
+                <div className="font-display text-[34px] leading-none" style={{ color: textAccent(ACCENT) }}>
                   {ages}
                 </div>
                 <div className="flex items-start justify-between gap-3 mt-3 mb-3">
@@ -306,6 +222,58 @@ export default function LittleMovers() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* What a class looks like */}
+      <section className="px-6 lg:px-24 py-16 lg:py-20">
+        <div className="max-w-[1440px] mx-auto">
+          <SectionHeading className="text-white mb-10">What a class looks like</SectionHeading>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {CLASS_SHAPE.map(({ n, name, blurb }) => (
+              <div
+                key={n}
+                data-testid="class-step"
+                className="border-t-[3px] pt-[18px]"
+                style={{ borderColor: ACCENT }}
+              >
+                <div
+                  className="font-body text-[11px] font-semibold tracking-[0.2em] uppercase mb-2.5"
+                  style={{ color: textAccent(ACCENT) }}
+                >
+                  {n}
+                </div>
+                <div className="font-body font-bold text-[18px] leading-[1.3] text-white mb-2">
+                  {name}
+                </div>
+                <div className="font-body text-[14px] leading-[1.6] text-mist-400">{blurb}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Benefits */}
+      <section className="bg-ink-deep px-6 lg:px-24 py-16 lg:py-20">
+        <div className="max-w-[1440px] mx-auto">
+          <Kicker accent={ACCENT}>Why it matters</Kicker>
+          <SectionHeading className="text-white mb-3">
+            Little Movers helps children develop
+          </SectionHeading>
+          <ul className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-3 mt-8">
+            {BENEFITS.map((item) => (
+              <li
+                key={item}
+                data-testid="benefit"
+                className="font-body text-mist-300 text-sm flex gap-2.5"
+              >
+                <span className="flex-shrink-0" style={{ color: textAccent(ACCENT) }}>
+                  ✓
+                </span>
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
@@ -372,58 +340,6 @@ export default function LittleMovers() {
         </div>
       </section>
 
-      {/* What a class looks like */}
-      <section className="px-6 lg:px-24 py-16 lg:py-20">
-        <div className="max-w-[1440px] mx-auto">
-          <SectionHeading className="text-white mb-10">What a class looks like</SectionHeading>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {CLASS_SHAPE.map(({ n, name, blurb }) => (
-              <div
-                key={n}
-                data-testid="class-step"
-                className="border-t-[3px] pt-[18px]"
-                style={{ borderColor: ACCENT }}
-              >
-                <div
-                  className="font-body text-[11px] font-semibold tracking-[0.2em] uppercase mb-2.5"
-                  style={{ color: textAccent(ACCENT) }}
-                >
-                  {n}
-                </div>
-                <div className="font-body font-bold text-[18px] leading-[1.3] text-white mb-2">
-                  {name}
-                </div>
-                <div className="font-body text-[14px] leading-[1.6] text-mist-400">{blurb}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Benefits */}
-      <section className="bg-ink-deep px-6 lg:px-24 py-16 lg:py-20">
-        <div className="max-w-[1440px] mx-auto">
-          <Kicker accent={ACCENT}>Why it matters</Kicker>
-          <SectionHeading className="text-white mb-3">
-            Little Movers helps children develop
-          </SectionHeading>
-          <ul className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-3 mt-8">
-            {BENEFITS.map((item) => (
-              <li
-                key={item}
-                data-testid="benefit"
-                className="font-body text-mist-300 text-sm flex gap-2.5"
-              >
-                <span className="flex-shrink-0" style={{ color: textAccent(ACCENT) }}>
-                  ✓
-                </span>
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
       {/* Pricing */}
       <section className="px-6 lg:px-24 py-16 lg:py-20">
         <div className="max-w-[1440px] mx-auto">
@@ -432,8 +348,8 @@ export default function LittleMovers() {
             Flexible options for every family
           </SectionHeading>
           <p className="font-body text-mist-400 text-sm mb-10 max-w-2xl">
-            Drop in or buy a visit pass, and book on the studio portal. Monthly memberships are
-            paused for now, so contact the studio if you are interested.
+            Classes are paused, so nothing is bookable right now. These are the options we plan to
+            offer when Little Movers returns. Monthly memberships are paused as well.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-[26px]">
@@ -500,8 +416,8 @@ export default function LittleMovers() {
       <CtaBand
         accent={ACCENT}
         headline="Ready to Get Moving?"
-        body="Join the Little Movers family and discover a fun, flexible way for your child to learn, explore, and grow through movement. Book a single class or a visit passport on our studio portal."
-        action={<InverseAction href={PORTAL_LITTLE_MOVERS_URL}>Book a class →</InverseAction>}
+        body="Join our waitlist for spring 2027. We will let you know the moment Little Movers classes are back."
+        action={<InverseAction href={WAITLIST_URL}>Join the waitlist →</InverseAction>}
       />
 
       </main>

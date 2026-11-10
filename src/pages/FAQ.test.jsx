@@ -81,9 +81,11 @@ test('does not tell a parent Little Movers registration is closed', () => {
   expect(answer).not.toMatch(/^Not yet/i)
   expect(answer).not.toMatch(/to be confirmed/i)
   expect(answer).not.toMatch(/as soon as registration opens/i)
-  expect(answer).toMatch(/^Yes/i)
-  // The path the wizard actually lives at.
-  expect(answer).toContain('register/little-movers/book')
+  // Booking was paused 2026-11-10: the honest answer is no, with the waitlist and the
+  // spring 2027 return. When booking reopens, restore /^Yes/ and register/little-movers/book.
+  expect(answer).toMatch(/paused/i)
+  expect(answer).toMatch(/spring of 2027/i)
+  expect(answer).toContain('register/little-movers-waitlist')
 })
 
 test('the Little Movers schedule answer is one Wednesday class, 10 to 11 AM', () => {

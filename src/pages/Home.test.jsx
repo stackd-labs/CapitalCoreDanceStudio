@@ -34,7 +34,7 @@ test('each letter of CORE takes a different brand accent', () => {
 test('renders the hero eyebrow, tagline and both actions', () => {
   renderHome()
   expect(screen.getByText(/Now enrolling · 2026 – 2027/i)).toBeInTheDocument()
-  expect(screen.getByText(/Recreational · Competition · Little Movers/i)).toBeInTheDocument()
+  expect(screen.getByText(/Recreational · Competition · Adults/i)).toBeInTheDocument()
   expect(screen.getByRole('link', { name: 'Find a class' })).toHaveAttribute('href', '/classes')
   expect(screen.getByRole('link', { name: 'Tour the studio' })).toHaveAttribute('href', '/about')
 })
@@ -46,7 +46,7 @@ test('offers all six link blocks, each linking to its page', () => {
   const expected = [
     ['/classes', 'Recreational'],
     ['/dance-company', 'Dance Company'],
-    ['/little-movers', 'Little Movers'],
+    ['/recital', 'Recital Information'],
     ['/birthdays', 'Birthdays'],
     ['/adult-classes', 'Adult Classes'],
     ['/contact', 'Contact Us'],

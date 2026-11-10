@@ -131,8 +131,9 @@ export const FAQS = [
         //
         // Keep it in step with src/pages/LittleMovers.jsx: Little Movers is one Wednesday
         // class, 10 to 11 AM (since 2026-10-08), and the portal has to match.
-        q: 'Can I register for Little Movers yet?',
-        a: 'Yes. Booking is open on our studio portal at studio.capitalcoredance.com/register/little-movers/book — you can book a single class or a visit Passport there.',
+        q: 'Can I register for Little Movers?',
+        // Paused 2026-11-10 (the studio's call): booking is closed and a waitlist replaced it.
+        a: 'Not right now. Little Movers is paused and may return in the spring of 2027. You can join the waitlist at studio.capitalcoredance.com/register/little-movers-waitlist and we will let you know when classes are back.',
       },
     ],
   },

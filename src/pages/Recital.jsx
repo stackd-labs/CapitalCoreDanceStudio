@@ -82,9 +82,13 @@ export default function Recital() {
         title={['Holiday', [{ text: 'Remix', accent: ACCENT }, { text: ' 2026' }]]}
         tagline="A celebration of joy, music, art & dance"
         body="The Capital Core Dance Studio recital. Join us at Powhatan Middle School to watch our dancers take the stage."
-        photoSrc="/holiday-remix-2026-card.jpg"
-        photoAlt="Holiday Remix 2026 recital flyer: a ballerina in a spotlight beside a decorated Christmas tree. A celebration of joy, music, art and dance. December 19th, 2026."
-        photoObjectPosition="center"
+        // A portrait collage (2026-11-10): the recital flyer dissolving into dancers on
+        // stage, from the flyer and a stage photograph from the Leveless project. The
+        // desktop well is a 400-wide portrait box this fits exactly; the low object
+        // position keeps the dancers in the short mobile band.
+        photoSrc="/holiday-remix-2026-hero.jpg"
+        photoAlt="Holiday Remix 2026 recital flyer, Capital Core Dance Studio, fading into dancers performing on stage under colored spotlights."
+        photoObjectPosition="center 88%"
         clipStart={22}
         accent={ACCENT}
         actions={

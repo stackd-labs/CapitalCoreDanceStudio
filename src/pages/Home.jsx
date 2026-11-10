@@ -63,15 +63,18 @@ const HOME_CARDS = [
     photoAlt: 'Capital Core Dance Company dancers performing on stage in navy costumes',
   },
   {
-    to: '/little-movers',
-    name: 'Little Movers',
+    // Replaced the Little Movers card on 2026-11-10 (Little Movers is paused; the page and its
+    // waitlist are still reachable from the nav). Take this card out after the 19 December show.
+    to: '/recital',
+    name: 'Recital Information',
     blurb:
-      'A movement-based enrichment program for infants, toddlers and preschoolers, with a caregiver alongside.',
-    photoCaption: 'Toddler class · photo',
-    // 16:9 crop of the Little Movers hero photograph, cut to the card shape for the
-    // same reason as the Dance Company card above.
-    photoSrc: '/card-little-movers.jpg',
-    photoAlt: 'Toddlers in pastel leotards and tutus at the barre in a Little Movers class',
+      'Holiday Remix 2026: Saturday, December 19 at 2 PM at Powhatan Middle School. Tickets go on sale November 20.',
+    photoCaption: 'Holiday Remix 2026 recital',
+    // A collage (2026-11-10): the recital flyer on the left, dissolving into a dancer
+    // ensemble on stage on the right. Built from the flyer and a stage photograph from the
+    // Leveless project, cut to the card's 2:1 well so `cover` crops nothing important.
+    photoSrc: '/card-recital.jpg',
+    photoAlt: 'Holiday Remix 2026 recital flyer beside dancers performing on stage under colored spotlights.',
   },
   {
     to: '/birthdays',
@@ -151,7 +154,7 @@ export default function Home() {
         variant="stripe"
         eyebrow="Now enrolling · 2026 – 2027"
         title={['Every dancer', ['has a ', ...CORE_LETTERS].map((c) => (typeof c === 'string' ? { text: c } : c))]}
-        tagline="Recreational · Competition · Little Movers"
+        tagline="Recreational · Competition · Adults"
         /* PLACEHOLDER — mockup filler, needs the studio's own intro. The free-trial
            offer is a link to Contact as of 2026-08-13: it is the one claim here a visitor
            can act on, and booking a free class goes through the studio rather than the

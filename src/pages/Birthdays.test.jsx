@@ -45,8 +45,20 @@ test('does not link to the retired on-site booking flow', () => {
 
 test('states the deposit and booking terms', () => {
   renderBirthdays()
-  expect(screen.getByText('$50 non-refundable deposit required')).toBeInTheDocument()
+  expect(
+    screen.getByText('$50 non-refundable deposit secures your date once we confirm it')
+  ).toBeInTheDocument()
   expect(screen.getByText('Remaining balance due on party day')).toBeInTheDocument()
+})
+
+test('says birthday parties are spring 2027 requests only, with no 2026 dates', () => {
+  renderBirthdays()
+  const notice = screen.getByTestId('spring-notice')
+  expect(notice).toHaveTextContent('January 2027')
+  expect(notice).toHaveTextContent("aren't booking any dates in 2026")
+  expect(notice).toHaveTextContent('Sundays at 11:00 AM or 5:00 PM')
+  // The weekend/weekday wording described the fall session; it must not come back.
+  expect(document.body).not.toHaveTextContent('Available weekends')
 })
 
 test('renders the three packages with the studio\u2019s real prices', () => {

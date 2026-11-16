@@ -42,13 +42,15 @@ const PARTY_DETAILS = [
   'Up to 10 children included',
   'Ages 2–17',
   'Additional children may be added',
-  'Available weekends (limited weekday availability)',
+  'Spring 2027 parties: Sundays at 11:00 AM or 5:00 PM',
 ]
 
 const BOOKING = [
-  '$50 non-refundable deposit required',
+  'Now taking requests for the spring session (January 2027 onward)',
+  'Request your dates; we confirm availability first',
+  '$50 non-refundable deposit secures your date once we confirm it',
   'Remaining balance due on party day',
-  'Limited availability — advance booking encouraged!',
+  'Limited availability — request early!',
 ]
 
 const THEMES = [
@@ -101,13 +103,14 @@ const HOW_IT_WORKS = [
   {
     n: '01',
     name: 'Request a date',
-    blurb: 'Send your preferred date and theme through the studio portal. Takes a couple of minutes.',
+    blurb:
+      'Send up to two preferred dates (January 2027 or later) and your theme through the studio portal. Takes a couple of minutes.',
   },
   {
     n: '02',
     name: "We'll confirm",
     blurb:
-      "We check the studio calendar and confirm your date and details within 1–2 business days. A $50 deposit holds it.",
+      "We check the studio calendar and let you know within 1–2 business days whether your date is available. Once confirmed, a $50 deposit holds it.",
   },
   {
     n: '03',
@@ -183,6 +186,22 @@ export default function Birthdays() {
           </>
         }
       />
+
+      {/* Spring 2027 request notice. Request-only: no 2026 dates, availability confirmed by
+          the studio before any deposit. Added 2026-11-16. */}
+      <section
+        data-testid="spring-notice"
+        className="px-6 lg:px-24 py-8 border-y border-white/[0.14] bg-ink-base"
+      >
+        <div className="max-w-[1440px] mx-auto">
+          <Kicker accent={ACCENT}>Spring session · January 2027</Kicker>
+          <p className="font-body text-mist-300 text-[15px] leading-relaxed max-w-3xl">
+            We&apos;re now taking birthday party requests for the spring session, starting January
+            2027. We aren&apos;t booking any dates in 2026. Send the dates you&apos;d like and we&apos;ll
+            let you know if they&apos;re available. Parties run on Sundays at 11:00 AM or 5:00 PM.
+          </p>
+        </div>
+      </section>
 
       {/* Packages */}
       <section id="packages" className="bg-ink-deep px-6 lg:px-24 py-16 lg:py-20 scroll-mt-24">
@@ -327,8 +346,8 @@ export default function Birthdays() {
               Start Your Party Request →
             </PrimaryAction>
             <p className="font-body text-mist-500 text-xs mt-4 max-w-md leading-relaxed">
-              Requests are handled on our studio portal — we&apos;ll confirm your date and details
-              within 1–2 business days.
+              Requests are handled on our studio portal. Nothing is charged when you submit; we&apos;ll
+              let you know within 1–2 business days whether your date is available.
             </p>
           </div>
 
@@ -357,7 +376,7 @@ export default function Birthdays() {
       <CtaBand
         accent={ACCENT}
         headline="Let's throw a party"
-        body="Tell us your date and theme and we'll take it from there."
+        body="Tell us your spring 2027 dates and theme and we'll let you know what's available."
         action={
           <InverseAction href={PORTAL_PARTY_REQUEST_URL}>Request a date →</InverseAction>
         }

@@ -1,5 +1,4 @@
 import { Resend } from 'resend'
-import { computeOrder } from '../src/lib/recitalTickets.js'
 
 // Trimmed 2026-08-19 from fourteen form types to one.
 //
@@ -109,111 +108,6 @@ function overLength(data) {
 }
 
 
-/* ── Holiday Remix 2026 recital tickets ─────────────────────────────────────────────
- * Paid with PayPal in the browser; this endpoint is the record. There is no database,
- * so the studio email IS the order. Same rules as the contact form: spam gets a fake
- * 200, and the money path never throws away an order.
- *
- * The total is recomputed here from the quantities. The PayPal order is then fetched
- * from PayPal and checked (COMPLETED, same amount). A mismatch or a missing
- * PAYPAL_CLIENT_SECRET does NOT drop the order, because the buyer has already paid:
- * it is emailed to the studio flagged UNVERIFIED so a person looks at it. */
-const PAYPAL_API = process.env.PAYPAL_API_BASE || 'https://api-m.paypal.com'
-
-const USED_PAYPAL_ORDERS = new Set()
-
-async function verifyPaypal(orderId, expectedTotal) {
-  const secret = process.env.PAYPAL_CLIENT_SECRET
-  const clientId = process.env.VITE_PAYPAL_CLIENT_ID
-  if (!secret || !clientId) return { ok: false, note: 'PAYPAL_CLIENT_SECRET not set, payment not checked' }
-  try {
-    const auth = Buffer.from(`${clientId}:${secret}`).toString('base64')
-    const tr = await fetch(`${PAYPAL_API}/v1/oauth2/token`, {
-      method: 'POST',
-      headers: { Authorization: `Basic ${auth}`, 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: 'grant_type=client_credentials',
-    })
-    if (!tr.ok) return { ok: false, note: `PayPal auth failed (${tr.status})` }
-    const { access_token } = await tr.json()
-    const or = await fetch(`${PAYPAL_API}/v2/checkout/orders/${encodeURIComponent(orderId)}`, {
-      headers: { Authorization: `Bearer ${access_token}` },
-    })
-    if (!or.ok) return { ok: false, note: `PayPal order lookup failed (${or.status})` }
-    const order = await or.json()
-    if (order.status !== 'COMPLETED') return { ok: false, note: `PayPal status is ${order.status}` }
-    const pu = order?.purchase_units?.[0]
-    // Judge the money that was actually captured, not the amount the browser asked for.
-    const cap = pu?.payments?.captures?.[0]
-    if (!cap || cap.status !== 'COMPLETED') return { ok: false, note: `PayPal capture status is ${cap?.status ?? 'missing'}` }
-    if (cap.amount?.currency_code !== 'USD') return { ok: false, note: `wrong currency ${cap.amount?.currency_code}` }
-    const paid = Number(cap.amount?.value)
-    if (Math.abs(paid - expectedTotal) > 0.005) return { ok: false, note: `PayPal charged $${paid}, expected $${expectedTotal}` }
-    // Set PAYPAL_MERCHANT_ID to also confirm the money went to the studio's account.
-    const merchant = process.env.PAYPAL_MERCHANT_ID
-    if (merchant && pu?.payee?.merchant_id !== merchant) return { ok: false, note: 'payment went to a different PayPal account' }
-    // Best effort per server instance: there is no store, so a replayed ID on a cold
-    // instance is not caught. The studio email carries the order ID for a human check.
-    if (USED_PAYPAL_ORDERS.has(orderId)) return { ok: false, note: 'DUPLICATE: this PayPal order ID was already used' }
-    USED_PAYPAL_ORDERS.add(orderId)
-    return { ok: true, note: 'PayPal confirmed the payment' }
-  } catch (err) {
-    return { ok: false, note: `PayPal check error: ${err?.message ?? err}` }
-  }
-}
-
-const TICKET_MAX_LEN = { name: 120, email: 200, promoCode: 40, paypalOrderId: 64 }
-
-export function ticketSpamReason(data) {
-  if (String(data.ccd_ref ?? '').trim() !== '') return 'honeypot'
-  const elapsed = Number(data.elapsedMs)
-  if (!Number.isFinite(elapsed) || elapsed < MIN_FILL_MS) return 'too-fast'
-  if (!EMAIL_RE.test(String(data.email ?? '').trim())) return 'bad-email'
-  if (!String(data.name ?? '').trim()) return 'missing-name'
-  if ((String(data.name ?? '').match(LINK_RE) || []).length) return 'link-in-name'
-  return null
-}
-
-const money = (n) => `$${Number(n).toFixed(2)}`
-
-function ticketLines(o) {
-  return [
-    o.adult ? `Adult × ${o.adult}` : null,
-    o.kid ? `Ages 4 to 11 × ${o.kid}` : null,
-    o.child ? `3 and under (free) × ${o.child}` : null,
-  ].filter(Boolean)
-}
-
-const SHOW = 'Holiday Remix 2026 · Saturday, December 19, 2026 at 2:00 PM · Powhatan Middle School, 4135 Old Buckingham Rd, Powhatan, VA 23139'
-
-function buildTicketStudioEmail(d, o, check) {
-  const flag = o.total > 0
-    ? (check.ok ? '' : `<p style="color:#b00020"><strong>CHECK THIS PAYMENT:</strong> ${escapeHtml(check.note)}</p>`)
-    : ''
-  return `
-    <h2>New Recital Ticket Order</h2>
-    ${flag}
-    <p><strong>Name:</strong> ${escapeHtml(d.name)}</p>
-    <p><strong>Email:</strong> ${escapeHtml(d.email)}</p>
-    <p><strong>Tickets:</strong> ${ticketLines(o).map(escapeHtml).join('; ')} (${o.ticketCount} total)</p>
-    ${o.promo ? `<p><strong>Promo:</strong> ${escapeHtml(o.promo.code)} (−${money(o.discount)})</p>` : ''}
-    <p><strong>Total:</strong> ${money(o.total)}${o.total > 0 ? ` · PayPal order ${escapeHtml(d.paypalOrderId)} · ${escapeHtml(check.note)}` : ' (free tickets, no payment)'}</p>
-    <p>${escapeHtml(SHOW)}</p>
-  `
-}
-
-function buildTicketBuyerEmail(d, o) {
-  return `
-    <h2>Your Holiday Remix 2026 tickets</h2>
-    <p>Hi ${escapeHtml(d.name)}, thank you! Here is your confirmation.</p>
-    <p><strong>${escapeHtml(ticketLines(o).join('; '))}</strong></p>
-    <p><strong>Total paid:</strong> ${money(o.total)}</p>
-    <p>${escapeHtml(SHOW)}</p>
-    <p>Tickets are general admission. Please keep this email and show it at the door. Children 3 and under are free.</p>
-    <p>Questions? Reply to this email or write info@capitalcoredance.com.</p>
-    <p>Capital Core Dance Studio</p>
-  `
-}
-
 /* Copy the submission into the studio portal.
  *
  * WHY THIS EXISTS. The portal used to learn about website forms from a Supabase
@@ -313,39 +207,6 @@ export default async function handler(req, res) {
     }
     subject = data.interest === 'trial' ? 'New Free Trial Request' : 'New Contact Form Submission'
     html = buildContactEmail(data)
-  } else if (formType === 'recital_tickets') {
-    const tooLong = Object.entries(TICKET_MAX_LEN).find(([f, max]) => String(data[f] ?? '').length > max)?.[0]
-    if (tooLong) return res.status(400).json({ error: `${tooLong} is too long` })
-    const reason = ticketSpamReason(data)
-    if (reason) {
-      console.warn(`[notify] ticket order dropped as spam: ${reason}`)
-      return res.status(200).json({ ok: true })
-    }
-    const o = computeOrder(data)
-    if (o.ticketCount < 1) return res.status(400).json({ error: 'No tickets selected' })
-    if (o.total > 0 && !String(data.paypalOrderId ?? '').trim()) return res.status(400).json({ error: 'Missing payment' })
-    const check = o.total > 0 ? await verifyPaypal(String(data.paypalOrderId), o.total) : { ok: true, note: 'free order' }
-    subject = check.ok ? 'New Recital Ticket Order' : 'New Recital Ticket Order (CHECK PAYMENT)'
-    html = buildTicketStudioEmail(data, o, check)
-    try {
-      await resend.emails.send({ from: process.env.FROM_EMAIL, to: process.env.ADMIN_EMAIL, subject, html })
-    } catch (err) {
-      console.error('Resend error:', err)
-      return res.status(500).json({ error: 'Failed to send email' })
-    }
-    // The buyer's receipt is best effort: the studio already has the order.
-    try {
-      await resend.emails.send({
-        from: process.env.FROM_EMAIL,
-        to: String(data.email).trim(),
-        replyTo: process.env.ADMIN_EMAIL,
-        subject: 'Your Holiday Remix 2026 tickets',
-        html: buildTicketBuyerEmail(data, o),
-      })
-    } catch (err) {
-      console.error('Buyer receipt failed:', err)
-    }
-    return res.status(200).json({ ok: true, total: o.total })
   } else {
     return res.status(400).json({ error: 'Unknown formType' })
   }

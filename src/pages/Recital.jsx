@@ -6,16 +6,18 @@ import { Kicker, SectionHeading, PrimaryAction, GhostAction, CtaBand, InverseAct
 import { eventSchema, simpleBreadcrumb } from '../lib/schema'
 import { ACCENTS } from '../lib/pageAccents'
 import { onAccent } from '../lib/accentContrast'
-import RecitalTicketCheckout from '../components/RecitalTicketCheckout'
 
 // Added 2026-10-26: the Holiday Remix 2026 recital. The June 2026 recital pages were
 // deleted on 2026-08-19 and this is a new page, not a restoration. It sits on the same
 // blocks as every other section page and wears gold.
 //
 // Deliberately NOT on this page: recital fees. Those ($ per routine) are for enrolled
-// families and go out by email and the portal, so they stay off the public site. Tickets
-// are shown but not sold yet; they go on sale 20 November, and a buy button is added then.
+// families and go out by email and the portal, so they stay off the public site.
+// Tickets are SOLD in the studio portal, not here: the prices are shown below and the
+// button sends the buyer to the portal's /recital-tickets page, which takes the PayPal
+// payment and attaches the order to their portal account when their email matches one.
 const ACCENT = ACCENTS.gold
+const TICKETS_URL = 'https://studio.capitalcoredance.com/recital-tickets'
 
 const VENUE = {
   name: 'Powhatan Middle School',
@@ -145,11 +147,30 @@ export default function Recital() {
           <Kicker accent={ACCENT}>Tickets</Kicker>
           <SectionHeading className="text-white mb-5">Get your tickets</SectionHeading>
           <p className="font-body text-mist-300 text-[17px] leading-relaxed max-w-[60ch]">
-            Tickets on sale now! Seating is open seating, so sit wherever you like. Choose your
-            tickets, pay securely with PayPal, and your confirmation arrives by email. Show it at
-            the door.
+            Tickets on sale now! Seating is open seating, so sit wherever you like. Tickets are
+            bought securely through the studio portal, and your confirmation arrives by email.
           </p>
-          <RecitalTicketCheckout />
+          <div className="mt-8 mb-10">
+            <PrimaryAction accent={ACCENT} href={TICKETS_URL} data-testid="recital-buy-tickets">
+              Buy tickets now
+            </PrimaryAction>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
+            {TICKETS.map((t) => (
+              <div
+                key={t.label}
+                data-testid="recital-ticket"
+                className="border border-white/[0.12] px-[26px] pt-[26px] pb-[30px] border-t-[3px]"
+                style={{ borderTopColor: ACCENT }}
+              >
+                <div className="font-display uppercase text-[56px] leading-none" style={{ color: ACCENT }}>
+                  {t.price}
+                </div>
+                <div className="font-display uppercase text-white text-[24px] leading-none mt-4 mb-2">{t.label}</div>
+                <div className="font-body text-[14.5px] leading-[1.55] text-mist-400">{t.note}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

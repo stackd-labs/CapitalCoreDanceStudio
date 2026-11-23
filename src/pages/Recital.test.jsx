@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import Recital from './Recital'
 
@@ -28,22 +28,17 @@ test('lists the three ticket tiers: $25 adult, $15 ages 4 to 11, free 3 and unde
   expect(tiers).toMatch(/Free.*3 and under/)
 })
 
-test('sells tickets: steppers, total and a name/email form', () => {
+test('Buy tickets now sends buyers to the portal ticket page and says open seating', () => {
   renderPage()
-  expect(screen.getByRole('heading', { name: /Get your tickets/i })).toBeInTheDocument()
-  fireEvent.click(screen.getByRole('button', { name: /Add one Adult ticket/i }))
-  fireEvent.click(screen.getByRole('button', { name: /Add one Adult ticket/i }))
-  fireEvent.click(screen.getByRole('button', { name: /Add one Ages 4 to 11 ticket/i }))
-  expect(screen.getByTestId('ticket-total').textContent).toMatch(/\$65\.00/)
-  expect(screen.getByLabelText(/Your name/i)).toBeInTheDocument()
+  expect(screen.getByTestId('recital-buy-tickets')).toHaveAttribute('href', 'https://studio.capitalcoredance.com/recital-tickets')
+  expect(screen.getByTestId('recital-buy-tickets')).toHaveTextContent(/Buy tickets now/i)
+  expect(screen.getByText(/Seating is open seating/i)).toBeInTheDocument()
 })
 
-test('promo code takes 20% off adult tickets', () => {
+test('does not sell tickets on the marketing site itself (no form, no PayPal)', () => {
   renderPage()
-  fireEvent.click(screen.getByRole('button', { name: /Add one Adult ticket/i }))
-  fireEvent.change(screen.getByLabelText(/Promo code/i), { target: { value: 'volunteer' } })
-  fireEvent.click(screen.getByRole('button', { name: /Apply/i }))
-  expect(screen.getByTestId('ticket-total').textContent).toMatch(/\$20\.00/)
+  expect(screen.queryByLabelText(/Your name/i)).not.toBeInTheDocument()
+  expect(document.getElementById('pp-tickets')).toBeNull()
 })
 
 test('keeps the recital fees off the public page', () => {

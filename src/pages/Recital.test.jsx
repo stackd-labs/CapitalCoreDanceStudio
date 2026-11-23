@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import Recital from './Recital'
 
@@ -28,10 +28,22 @@ test('lists the three ticket tiers: $25 adult, $15 ages 4 to 11, free 3 and unde
   expect(tiers).toMatch(/Free.*3 and under/)
 })
 
-test('says tickets go on sale November 20 and has no buy button yet', () => {
+test('sells tickets: steppers, total and a name/email form', () => {
   renderPage()
-  expect(screen.getByText(/Tickets go on sale November 20/i)).toBeInTheDocument()
-  expect(screen.queryByRole('link', { name: /buy|purchase|checkout/i })).not.toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: /Get your tickets/i })).toBeInTheDocument()
+  fireEvent.click(screen.getByRole('button', { name: /Add one Adult ticket/i }))
+  fireEvent.click(screen.getByRole('button', { name: /Add one Adult ticket/i }))
+  fireEvent.click(screen.getByRole('button', { name: /Add one Ages 4 to 11 ticket/i }))
+  expect(screen.getByTestId('ticket-total').textContent).toMatch(/\$65\.00/)
+  expect(screen.getByLabelText(/Your name/i)).toBeInTheDocument()
+})
+
+test('promo code takes 20% off adult tickets', () => {
+  renderPage()
+  fireEvent.click(screen.getByRole('button', { name: /Add one Adult ticket/i }))
+  fireEvent.change(screen.getByLabelText(/Promo code/i), { target: { value: 'volunteer' } })
+  fireEvent.click(screen.getByRole('button', { name: /Apply/i }))
+  expect(screen.getByTestId('ticket-total').textContent).toMatch(/\$20\.00/)
 })
 
 test('keeps the recital fees off the public page', () => {

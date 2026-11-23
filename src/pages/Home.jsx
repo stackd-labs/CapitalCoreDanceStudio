@@ -68,7 +68,7 @@ const HOME_CARDS = [
     to: '/recital',
     name: 'Recital Information',
     blurb:
-      'Holiday Remix 2026: Saturday, December 19 at 2 PM at Powhatan Middle School. Tickets go on sale November 20.',
+      'Holiday Remix 2026: Saturday, December 19 at 2 PM at Powhatan Middle School. Tickets on sale now! Open seating.',
     photoCaption: 'Holiday Remix 2026 recital',
     // A collage (2026-11-10): the recital flyer on the left, dissolving into a dancer
     // ensemble on stage on the right. Built from the flyer and a stage photograph from the
@@ -225,12 +225,12 @@ export default function Home() {
               Our recital is Saturday, December 19
             </h2>
             <p className="font-body text-[16.5px] leading-relaxed mt-4 mb-0 max-w-[56ch] text-mist-100">
-              2 PM at Powhatan Middle School. Tickets go on sale November 20.
+              2 PM at Powhatan Middle School. Tickets on sale now! Seating is open seating.
             </p>
           </div>
           <div className="flex-none">
             <PrimaryAction accent={ACCENTS.gold} to="/recital" data-testid="recital-banner-link">
-              See recital details &rarr;
+              Get tickets &rarr;
             </PrimaryAction>
           </div>
         </div>

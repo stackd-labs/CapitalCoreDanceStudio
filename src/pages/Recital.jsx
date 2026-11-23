@@ -6,6 +6,7 @@ import { Kicker, SectionHeading, PrimaryAction, GhostAction, CtaBand, InverseAct
 import { eventSchema, simpleBreadcrumb } from '../lib/schema'
 import { ACCENTS } from '../lib/pageAccents'
 import { onAccent } from '../lib/accentContrast'
+import RecitalTicketCheckout from '../components/RecitalTicketCheckout'
 
 // Added 2026-10-26: the Holiday Remix 2026 recital. The June 2026 recital pages were
 // deleted on 2026-08-19 and this is a new page, not a restoration. It sits on the same
@@ -70,7 +71,7 @@ export default function Recital() {
     <div className="min-h-screen flex flex-col bg-ink-base">
       <SEO
         title="Holiday Remix 2026 Recital | Capital Core Dance Studio"
-        description="Holiday Remix 2026, the Capital Core Dance Studio recital. Saturday, December 19 at 2 PM at Powhatan Middle School. Adult tickets $25, ages 4 to 11 $15, children 3 and under free. Tickets on sale November 20."
+        description="Holiday Remix 2026, the Capital Core Dance Studio recital. Saturday, December 19 at 2 PM at Powhatan Middle School. Adult tickets $25, ages 4 to 11 $15, children 3 and under free. Tickets on sale now."
         canonical="/recital"
         jsonLd={RECITAL_JSON_LD}
       />
@@ -93,7 +94,7 @@ export default function Recital() {
         accent={ACCENT}
         actions={
           <>
-            <PrimaryAction accent={ACCENT} href="#tickets">Ticket info</PrimaryAction>
+            <PrimaryAction accent={ACCENT} href="#tickets">Get tickets</PrimaryAction>
             <GhostAction to="/contact">Ask us a question</GhostAction>
           </>
         }
@@ -142,32 +143,13 @@ export default function Recital() {
       <section id="tickets" className="bg-ink-base px-6 lg:px-24 py-16 lg:py-20 scroll-mt-24" aria-label="Tickets">
         <div className="max-w-[1440px] mx-auto">
           <Kicker accent={ACCENT}>Tickets</Kicker>
-          <SectionHeading className="text-white mb-5">Tickets go on sale November 20</SectionHeading>
-          <p className="font-body text-mist-300 text-[17px] leading-relaxed mb-10 max-w-[60ch]">
-            Ticket pricing is below. We will share where to buy as soon as sales open, so check
-            back here or follow along on Instagram.
+          <SectionHeading className="text-white mb-5">Get your tickets</SectionHeading>
+          <p className="font-body text-mist-300 text-[17px] leading-relaxed max-w-[60ch]">
+            Tickets on sale now! Seating is open seating, so sit wherever you like. Choose your
+            tickets, pay securely with PayPal, and your confirmation arrives by email. Show it at
+            the door.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
-            {TICKETS.map((t) => (
-              <div
-                key={t.label}
-                data-testid="recital-ticket"
-                className="border border-white/[0.12] px-[26px] pt-[26px] pb-[30px] border-t-[3px]"
-                style={{ borderTopColor: ACCENT }}
-              >
-                <div className="font-display uppercase text-[56px] leading-none" style={{ color: ACCENT }}>
-                  {t.price}
-                </div>
-                <div className="font-display uppercase text-white text-[24px] leading-none mt-4 mb-2">{t.label}</div>
-                <div className="font-body text-[14.5px] leading-[1.55] text-mist-400">{t.note}</div>
-              </div>
-            ))}
-          </div>
-          <p className="font-body text-mist-300 text-[16px] leading-relaxed mt-10 max-w-[60ch]">
-            <strong className="text-white">Volunteers:</strong> families who volunteer can buy
-            discounted tickets, up to 6. Discounted tickets are bought using the
-            volunteer&apos;s email address, and sign-ups will be shared soon.
-          </p>
+          <RecitalTicketCheckout />
         </div>
       </section>
 
@@ -193,7 +175,7 @@ export default function Recital() {
             <SectionHeading className="text-white mb-6">More details on the way</SectionHeading>
             <p className="font-body text-mist-300 text-[17px] leading-relaxed max-w-[60ch]">
               Over the next few weeks we will share costume information, Picture Day, rehearsal
-              details, ticket sales, show order, and recital weekend logistics. This page will be
+              details, show order, and recital weekend logistics. This page will be
               updated as each piece is confirmed.
             </p>
           </div>

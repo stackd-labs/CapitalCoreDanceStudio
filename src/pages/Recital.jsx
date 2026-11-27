@@ -43,11 +43,21 @@ const TICKETS = [
   { price: 'Free', label: '3 and under', note: 'No ticket cost' },
 ]
 
-const EXPECT = [
-  'Every class performs, so every dancer has a place in the show.',
-  'Some classes perform two routines, and there is an optional opening routine.',
-  'Competition team families get their routine instructions from the team managers.',
-  'Picture Day will offer group and individual photos, with photo packages to purchase. The date is still to come.',
+// "What to expect" became "Get involved" (Chanel 2026-11-27): volunteers, guest performers, vendors.
+const GET_INVOLVED = [
+  { key: 'volunteers', label: 'Volunteers', text: 'We would love your help behind the scenes and throughout recital weekend.', link: 'volunteer' },
+  { key: 'guests', label: 'Guests', text: 'We are looking for guests to join our show! If you would like to be part of Holiday Remix 2026, let us know.', link: 'contact' },
+  { key: 'vendors', label: 'Vendors', text: 'Have a business you want to promote, or items you would like to sell at the recital? Let us know and we will be in touch.', link: 'contact' },
+]
+
+// Recital weekend details, matching the "Everything You Need to Know" email to families
+// (Chanel 2026-11-27). Fees and balances stay off this public page on purpose.
+const OPENING_ROUTINE_URL = 'https://studio.capitalcoredance.com/register/opening-routine'
+const VOLUNTEER_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfgwuYcj4eoHVu3PBFjyHb2itTamObqNI5f-IRha1dEPAbYgA/viewform?usp=header'
+
+const WEEKEND = [
+  ['Dress rehearsal', 'Friday, December 18, 6:00 to 8:30 PM at Powhatan Middle School. Dancers arrive by 6:15 PM.'],
+  ['Show day', 'Saturday, December 19. Dancers arrive between 12:30 and 1:00 PM and go to the dancer check-in table. The show starts at 2:00 PM.'],
 ]
 
 const RECITAL_JSON_LD = [
@@ -176,29 +186,70 @@ export default function Recital() {
 
       <section className="bg-ink-deep px-6 lg:px-24 py-16 lg:py-20" aria-label="What to expect">
         <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
-          <div>
-            <Kicker accent={ACCENT}>What to expect</Kicker>
-            <SectionHeading className="text-white mb-6">On the stage</SectionHeading>
-            <ul className="list-none m-0 p-0 flex flex-col gap-4">
-              {EXPECT.map((line) => (
-                <li
-                  key={line}
-                  className="font-body text-mist-300 text-[17px] leading-relaxed pl-5 border-l-2"
-                  style={{ borderColor: ACCENT }}
-                >
-                  {line}
-                </li>
+          <div data-testid="recital-get-involved">
+            <Kicker accent={ACCENT}>Get involved</Kicker>
+            <SectionHeading className="text-white mb-6">Volunteers, guests and vendors</SectionHeading>
+            <dl className="flex flex-col gap-5 m-0">
+              {GET_INVOLVED.map((g) => (
+                <div key={g.key} className="pl-5 border-l-2" style={{ borderColor: ACCENT }}>
+                  <dt className="font-body text-xs font-bold tracking-[0.2em] uppercase text-mist-400">{g.label}</dt>
+                  <dd className="font-body text-mist-300 text-[17px] leading-relaxed m-0">
+                    {g.text}{' '}
+                    {g.link === 'volunteer' ? (
+                      <a href={VOLUNTEER_URL} target="_blank" rel="noopener noreferrer" className="underline text-white">Sign up to volunteer</a>
+                    ) : (
+                      <a href="/contact" className="underline text-white">Contact us</a>
+                    )}
+                  </dd>
+                </div>
               ))}
-            </ul>
+            </dl>
           </div>
-          <div>
-            <Kicker accent={ACCENT}>Coming soon</Kicker>
-            <SectionHeading className="text-white mb-6">More details on the way</SectionHeading>
-            <p className="font-body text-mist-300 text-[17px] leading-relaxed max-w-[60ch]">
-              Over the next few weeks we will share costume information, Picture Day, rehearsal
-              details, show order, and recital weekend logistics. This page will be
-              updated as each piece is confirmed.
-            </p>
+          <div data-testid="recital-weekend">
+            <Kicker accent={ACCENT}>Recital weekend</Kicker>
+            <SectionHeading className="text-white mb-6">Rehearsal and show day</SectionHeading>
+            <dl className="flex flex-col gap-5 m-0">
+              {WEEKEND.map(([label, value]) => (
+                <div key={label} className="pl-5 border-l-2" style={{ borderColor: ACCENT }}>
+                  <dt className="font-body text-xs font-bold tracking-[0.2em] uppercase text-mist-400">{label}</dt>
+                  <dd className="font-body text-white text-[17px] leading-relaxed m-0">{value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
+
+        <div className="max-w-[1440px] mx-auto mt-16 flex flex-col gap-10">
+          {/* Opening routine, full width and the headline of this block (Chanel 2026-11-27). */}
+          <div
+            className="border border-white/[0.12] border-t-[3px] px-[26px] lg:px-12 pt-[30px] lg:pt-12 pb-[34px] lg:pb-12 grid grid-cols-1 lg:grid-cols-[1fr_minmax(0,520px)] gap-8 lg:gap-16 items-center"
+            style={{ borderTopColor: ACCENT, background: 'rgba(255,255,255,0.03)' }}
+            data-testid="recital-opening-routine"
+          >
+            <div>
+              <Kicker accent={ACCENT}>Super practice · Sunday, December 6</Kicker>
+              <h2 className="font-display uppercase leading-[0.95] text-[48px] sm:text-[64px] lg:text-[80px] m-0">
+                <span className="text-white">Opening </span>
+                <span style={{ color: ACCENT }}>Routine</span>
+              </h2>
+            </div>
+            <div>
+              <p className="font-body text-mist-300 text-[17px] leading-relaxed mb-5">
+                If we get enough interest, we would love to put together an Opening Routine to kick off
+                the show! We will hold one super practice to learn it.
+              </p>
+              <dl className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-7 m-0">
+                {[['When', 'Sunday, December 6'], ['Time', '10:00 AM to 12:00 PM'], ['Who', 'Dancers 6 and up, no cost']].map(([label, value]) => (
+                  <div key={label} className="pl-4 border-l-2" style={{ borderColor: ACCENT }}>
+                    <dt className="font-body text-xs font-bold tracking-[0.2em] uppercase text-mist-400">{label}</dt>
+                    <dd className="font-body text-white text-[16px] leading-snug m-0">{value}</dd>
+                  </div>
+                ))}
+              </dl>
+              <PrimaryAction accent={ACCENT} href={OPENING_ROUTINE_URL} data-testid="recital-opening-signup">
+                Sign up for the opening routine
+              </PrimaryAction>
+            </div>
           </div>
         </div>
       </section>
